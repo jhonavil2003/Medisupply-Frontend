@@ -1,0 +1,88 @@
+
+<div class="vendedor-list-container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+        <a class="btn-icon" [routerLink]="['/dashboard-admin']" style="font-size: 1.4rem; padding: 6px 10px;">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h2 style="margin: 0;">Gestión de Vendedores</h2>
+    </div> 
+    <button class="btn-primary agregar" (click)="agregarVendedor()">
+      <i class="fas fa-plus"></i> Agregar Vendedor
+    </button>
+  </div>
+  <div class="search-bar" style="flex: 1;">
+    <input type="text" placeholder="Buscar por documento, correo, teléfono o región..." [(ngModel)]="filtroBusqueda" (keyup.enter)="filtrarVendedores()">
+  <button class="btn-primary buscar" (click)="filtrarVendedores()"><i class="fas fa-search"></i></button>
+  </div>
+
+  <div class="card">
+    <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Documento</th>
+          <th>Nombre</th>
+          <th>Correo</th>
+          <th>Teléfono</th>
+          <th>Región</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let vendedor of vendedoresFiltrados; let i = index">
+          <td>{{ vendedor.documento }}</td>
+          <td>{{ vendedor.nombre }}</td>
+          <td>{{ vendedor.correo }}</td>
+          <td>{{ vendedor.telefono }}</td>
+          <td>{{ vendedor.region }}</td>
+          <td class="actions">
+            <button class="btn-icon" title="Ver" (click)="verVendedor(i)"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" title="Editar" (click)="editarVendedor(i)"><i class="fas fa-edit"></i></button>
+            <button class="btn-icon danger" title="Eliminar" (click)="eliminarVendedor(i)"><i class="fas fa-trash"></i></button>
+          </td>
+        </tr>
+        </tbody>
+    </table>
+    </div>
+
+    <!-- Paginación -->
+    <div class="pagination">
+    <button>&laquo; Anterior</button>
+    <span>Página 1 de 1</span>
+    <button>Siguiente &raquo;</button>
+    </div>
+
+    <!-- Modal Detalle -->
+    <div class="modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+    <div class="modal-content" *ngIf="vendedorDetalle">
+        <span class="close" (click)="cerrarDetalleVendedor()">&times;</span>
+        <h2>Detalle del Vendedor</h2>
+    <p><strong>Documento:</strong> {{ vendedorDetalle.documento }}</p>
+    <p><strong>Nombre:</strong> {{ vendedorDetalle.nombre }}</p>
+    <p><strong>Correo:</strong> {{ vendedorDetalle.correo }}</p>
+    <p><strong>Teléfono:</strong> {{ vendedorDetalle.telefono }}</p>
+    <p><strong>Región:</strong> {{ vendedorDetalle.region }}</p>
+    </div>
+    </div>
+
+    <!-- Modal Edición -->
+    <div class="modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+    <div class="modal-content" *ngIf="vendedorEditando">
+        <span class="close" (click)="cancelarEdicionVendedor()">&times;</span>
+        <h2>{{ modoEdicion ? 'Editar Vendedor' : 'Agregar Vendedor' }}</h2>
+        <form (ngSubmit)="guardarEdicionVendedor()">
+  <label>Documento</label>
+  <input type="text" [(ngModel)]="vendedorEditando.documento" name="documento" required>
+  <label>Nombre</label>
+  <input type="text" [(ngModel)]="vendedorEditando.nombre" name="nombre" required>
+  <label>Correo</label>
+  <input type="email" [(ngModel)]="vendedorEditando.correo" name="correo" required>
+  <label>Teléfono</label>
+  <input type="text" [(ngModel)]="vendedorEditando.telefono" name="telefono" required>
+  <label>Región</label>
+  <input type="text" [(ngModel)]="vendedorEditando.region" name="region" required>
+        <button type="submit" class="btn-primary">Guardar</button>
+        </form>
+    </div>
+    </div>
+</div>

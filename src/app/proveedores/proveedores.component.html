@@ -1,0 +1,12 @@
+
+<div class="proveedores-container">
+  <h2>Proveedores</h2>
+  <ul>
+    <li *ngFor="let proveedor of proveedores">
+      <strong>{{ proveedor.razonSocial }}</strong> (RUC: {{ proveedor.ruc }})<br>
+      Teléfono: {{ proveedor.telefono }} | Correo: {{ proveedor.correoContacto }}<br>
+      Estado: <span [ngClass]="{'badge success': proveedor.estado === 'Activo', 'badge warning': proveedor.estado === 'Inactivo'}">{{ proveedor.estado }}</span><br>
+      Certificaciones vigentes: {{ proveedor.certificacionesVigentes.join(', ') }}
+    </li>
+  </ul>
+</div>

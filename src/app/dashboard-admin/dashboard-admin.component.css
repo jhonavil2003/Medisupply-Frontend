@@ -1,0 +1,194 @@
+.card {
+  min-height: 180px;
+}
+.card .cta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+/* home_cards.css - Estilos para la cabecera y cards del home */
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 18px 24px;
+  margin-bottom: 24px;
+}
+.title h2 {
+  margin: 0;
+  font-size: 2rem;
+  color: var(--color-primary);
+}
+.title p {
+  margin: 0;
+  color: var(--color-muted);
+}
+.controls {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+.controls-relative {
+  position: relative;
+}
+.lang-select {
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  font-size: 1rem;
+  cursor: pointer;
+  padding: 4px 10px;
+  border-radius: var(--radius);
+}
+.lang-menu {
+  display: none;
+  position: absolute;
+  top: 36px;
+  left: 0;
+  background: var(--color-white);
+  box-shadow: var(--shadow);
+  border-radius: var(--radius);
+  z-index: 100;
+  min-width: 120px;
+}
+.lang-menu.show {
+  display: block;
+}
+.lang-menu-btn {
+  display: block;
+  width: 100%;
+  background: none;
+  border: none;
+  color: var(--color-primary);
+  padding: 8px 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.lang-menu-btn:hover {
+  background: var(--color-sidebar-hover);
+}
+.notif {
+  background: none;
+  border: none;
+  font-size: 1.3rem;
+  color: var(--color-primary);
+  cursor: pointer;
+}
+.profile-info-name {
+  font-weight: 600;
+}
+.profile-info-role {
+  font-size: 0.95rem;
+  color: var(--color-muted);
+}
+.avatar {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 24px;
+}
+ .card {
+   background: var(--color-white);
+   border-radius: var(--radius);
+   box-shadow: var(--shadow);
+   padding: 24px 18px;
+   display: flex;
+   flex-direction: column;
+   gap: 12px;
+   height: 100%;
+ }
+/* Forzar que el contenido de la tarjeta ocupe todo el espacio y el botón quede abajo */
+.card > .card-top {
+  flex: 1 1 auto;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+ .card > .cta {
+  align-self: flex-start;
+  justify-content: flex-start;
+  width: 100%;
+  display: flex;
+ }
+
+
+.card .icon {
+  margin-right: 12px;
+  color: var(--color-primary);
+}
+.card-top {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+.card h3 {
+  margin: 0 0 4px 0;
+  font-size: 1.2rem;
+  color: var(--color-primary);
+}
+.card .muted {
+  color: var(--color-muted);
+  font-size: 0.98rem;
+}
+.card .cta {
+  margin-top: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+.btn {
+  background: var(--color-primary);
+  color: var(--color-white);
+  border: none;
+  border-radius: var(--radius);
+  padding: 8px 18px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 160ms;
+  font-size: 1rem;
+}
+.btn.secondary {
+  background: var(--color-sidebar-hover);
+  color: var(--color-primary);
+}
+.card.wide {
+  grid-column: span 2;
+  min-width: 0;
+}
+.map-placeholder {
+  background: var(--color-sidebar-hover);
+  color: var(--color-muted);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+  font-size: 1rem;
+}
+@media (max-width: 700px) {
+  .topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 12px 8px;
+  }
+  .grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .card {
+    padding: 12px 8px;
+  }
+}

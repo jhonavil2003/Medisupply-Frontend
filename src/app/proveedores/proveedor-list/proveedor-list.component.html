@@ -1,0 +1,102 @@
+
+<div class="proveedor-list-container">
+     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+      <div style="display: flex; align-items: center; gap: 16px;">
+        <a class="btn-icon" [routerLink]="['/dashboard-admin']" style="font-size: 1.4rem; padding: 6px 10px;">
+          <i class="fas fa-arrow-left"></i>
+        </a>
+        <h2 style="margin: 0;">Gestión de Proveedores</h2>
+      </div>
+
+      <button class="btn-primary" (click)="agregarProveedorAleatorio()">
+        <i class="fas fa-plus"></i> Agregar Proveedor
+      </button>
+    </div>
+    <div class="search-bar" style="flex: 1;">
+  <input type="text" placeholder="Buscar por razón social o RUC..." [(ngModel)]="filtroBusqueda" (keyup.enter)="filtrarProveedores()">
+  <button (click)="filtrarProveedores()"><i class="fas fa-search"></i></button>
+    </div>
+
+  <div class="card">
+  <table class="modern-table">
+      <thead>
+        <tr>
+          <th>Razón Social</th>
+          <th>RUC</th>
+          <th>Teléfono</th>
+          <th>Correo de contacto</th>
+          <th>Estado</th>
+          <th>Certificaciones vigentes</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+  <tr *ngFor="let proveedor of proveedoresFiltrados; let i = index">
+          <td>{{ proveedor.razonSocial }}</td>
+          <td>{{ proveedor.ruc }}</td>
+          <td>{{ proveedor.telefono }}</td>
+          <td>{{ proveedor.correoContacto }}</td>
+          <td>
+              {{ proveedor.estado }}
+          </td>
+          <td>
+            <span *ngFor="let cert of proveedor.certificacionesVigentes; let last = last">
+              {{ cert }}<span *ngIf="!last">, </span>
+            </span>
+          </td>
+          <td class="actions">
+            <button class="btn-icon" title="Ver" (click)="verProveedor(i)"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" title="Editar" (click)="editarProveedor(i)"><i class="fas fa-edit"></i></button>
+            <button class="btn-icon danger" title="Eliminar" (click)="eliminarProveedor(i)"><i class="fas fa-trash"></i></button>
+          </td>
+  <!-- Modal Detalle -->
+  <div class="modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+    <div class="modal-content" *ngIf="proveedorDetalle">
+      <span class="close" (click)="cerrarDetalleProveedor()">&times;</span>
+      <h2>Detalle del Proveedor</h2>
+      <p><strong>Razón Social:</strong> {{ proveedorDetalle.razonSocial }}</p>
+      <p><strong>RUC:</strong> {{ proveedorDetalle.ruc }}</p>
+      <p><strong>Teléfono:</strong> {{ proveedorDetalle.telefono }}</p>
+      <p><strong>Correo de contacto:</strong> {{ proveedorDetalle.correoContacto }}</p>
+      <p><strong>Estado:</strong> <span [ngClass]="{'badge success': proveedorDetalle.estado === 'Activo', 'badge warning': proveedorDetalle.estado === 'Inactivo'}">{{ proveedorDetalle.estado }}</span></p>
+      <p><strong>Certificaciones vigentes:</strong> {{ proveedorDetalle.certificacionesVigentes.join(', ') }}</p>
+    </div>
+  </div>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Modal Edición -->
+  <div class="modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+    <div class="modal-content" *ngIf="proveedorEditando">
+      <span class="close" (click)="cancelarEdicionProveedor()">&times;</span>
+      <h2>Editar Proveedor</h2>
+      <form (ngSubmit)="guardarEdicionProveedor()">
+        <label>Razón Social</label>
+        <input type="text" [(ngModel)]="proveedorEditando.razonSocial" name="razonSocial" required>
+        <label>RUC</label>
+        <input type="text" [(ngModel)]="proveedorEditando.ruc" name="ruc" required>
+        <label>Teléfono</label>
+        <input type="text" [(ngModel)]="proveedorEditando.telefono" name="telefono" required>
+        <label>Correo de contacto</label>
+        <input type="email" [(ngModel)]="proveedorEditando.correoContacto" name="correoContacto" required>
+        <label>Estado</label>
+        <select [(ngModel)]="proveedorEditando.estado" name="estado">
+          <option value="Activo">Activo</option>
+          <option value="Inactivo">Inactivo</option>
+        </select>
+        <label>Certificaciones vigentes</label>
+        <input type="text" [(ngModel)]="proveedorEditando.certificacionesVigentes" name="certificacionesVigentes" placeholder="Separadas por coma">
+        <button type="submit" class="btn-primary">Guardar</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Paginación -->
+  <div class="pagination">
+    <button>&laquo; Anterior</button>
+    <span>Página 1 de 1</span>
+    <button>Siguiente &raquo;</button>
+  </div>
+</div>
