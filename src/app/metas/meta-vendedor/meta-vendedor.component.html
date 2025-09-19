@@ -1,0 +1,7 @@
+<h2>Mis metas de venta</h2>
+<ul>
+  <li *ngFor="let meta of metas">
+    <strong>{{ meta.producto }}</strong> — {{ meta.region }} — {{ meta.trimestre }}:
+    <span>{{ meta.valorObjetivo }} {{ meta.tipo === 'unidades' ? 'unidades' : 'moneda' }}</span>
+  </li>
+</ul>

@@ -14,14 +14,16 @@
     </div>
     <div class="controls" role="group" aria-label="Controles de usuario">
       <div class="controls-relative">
-        <button id="langBtn" class="lang-select" aria-haspopup="true" aria-expanded="false" aria-controls="langMenu" title="Cambiar idioma">
-          <span aria-hidden="true">🌐</span>
-          <span class="muted" style="margin-left:6px">ES</span>
-        </button>
-        <div id="langMenu" class="lang-menu" role="menu" aria-labelledby="langBtn">
-          <button role="menuitem" class="small-link lang-menu-btn" data-locale="es" data-i18n="lang.es">Español</button>
-          <button role="menuitem" class="small-link lang-menu-btn" data-locale="en" data-i18n="lang.en">English</button>
-          <button role="menuitem" class="small-link lang-menu-btn" data-locale="pt" data-i18n="lang.pt">Português</button>
+        <div class="lang-select-wrap" style="position:relative;">
+          <button class="lang-select" (click)="showLangMenu = !showLangMenu" [attr.aria-expanded]="showLangMenu" aria-haspopup="true" aria-controls="langMenu" title="Cambiar idioma">
+            <span aria-hidden="true">🌐</span>
+            <span class="muted" style="margin-left:6px">{{ selectedLanguage.toUpperCase() }}</span>
+          </button>
+          <div *ngIf="showLangMenu" class="lang-menu" id="langMenu" role="menu">
+            <button *ngFor="let lang of languages" role="menuitem" class="small-link lang-menu-btn" (click)="selectedLanguage = lang.code; showLangMenu = false">
+              {{ lang.label }}
+            </button>
+          </div>
         </div>
       </div>
       <button class="notif" aria-label="Notificaciones" title="Notificaciones" tabindex="0">🔔</button>
@@ -35,7 +37,7 @@
     </div>
   </header>
   <section class="grid" aria-label="Accesos rápidos">
-    <!-- Card 1 -->
+    <!-- Card 1 Proveedores -->
     <article class="card" aria-labelledby="card1-title" tabindex="0">
       <div class="card-top">
         <div class="icon" aria-hidden="true">
@@ -47,11 +49,14 @@
         </div>
       </div>
       <div class="cta">
-        <button class="btn" routerLink="/proveedor-list" aria-label="Registrar nuevo proveedor" data-i18n="btn.register">Registrar nuevo</button>
+        <button mat-raised-button color="primary" routerLink="/proveedor-list" aria-label="Registrar nuevo proveedor" data-i18n="btn.register">Registrar nuevo</button>
+        <p>   </p>
+        <button mat-raised-button color="primary" routerLink="/proveedor-upload" aria-label="Carga masiva" data-i18n="btn.register">Carga masiva</button>
+
       </div>
     </article>
     
-    <!-- Card 6 -->
+    <!-- Card 6 Productos -->
     <article class="card" aria-labelledby="card6-title" tabindex="0">
       <div class="card-top">
         <div class="icon" aria-hidden="true">
@@ -63,7 +68,9 @@
         </div>
       </div>
       <div class="cta">
-        <button class="btn" routerLink="/producto-list" aria-label="Registrar nuevo producto" data-i18n="btn.register">Registrar nuevo</button>
+        <button mat-raised-button color="primary" routerLink="/producto-list" aria-label="Registrar nuevo producto" data-i18n="btn.register">Registrar nuevo</button>
+        <p>   </p>
+        <button mat-raised-button color="primary" routerLink="/producto-upload" aria-label="Carga masiva" data-i18n="btn.register">Carga masiva</button>
       </div>
     </article>
 
@@ -79,7 +86,7 @@
         </div>
       </div>
       <div class="cta">
-        <button class="btn" routerLink="/vendedor-list" aria-label="Agregar vendedor" data-i18n="btn.add_vendor">Agregar vendedor</button>
+        <button mat-raised-button color="primary" routerLink="/vendedor-list" aria-label="Agregar vendedor" data-i18n="btn.add_vendor">Agregar vendedor</button>
       </div>
     </article>
 
@@ -95,7 +102,7 @@
         </div>
       </div>
       <div class="cta">
-        <button class="btn" onclick="alert('Ver reportes')" aria-label="Ver reportes" data-i18n="btn.view_reports">Ver reportes</button>
+          <button mat-raised-button color="primary" routerLink="/informe-ventas" aria-label="Ver reporte" data-i18n="btn.ver_reporte">Ver reporte</button>
       </div>
     </article>
 
@@ -111,7 +118,7 @@
         </div>
       </div> 
       <div class="cta">
-        <button class="btn" onclick="alert('Buscar producto')" aria-label="Buscar producto" data-i18n="btn.buscar_reporte">Mapa / Heatmap de inventario (vista previa)</button>
+  <button mat-raised-button color="primary" routerLink="/producto-localizacion" aria-label="Buscar producto" data-i18n="btn.buscar_reporte">Buscar localización de producto</button>
       </div>
 
     </article>
@@ -128,10 +135,26 @@
         </div>
       </div>
       <div class="cta">
-        <button class="btn" onclick="alert('Ir a Rutas')" aria-label="Ver rutas">Ver rutas</button>
+  <button mat-raised-button color="primary" routerLink="/rutas-entrega" aria-label="Ver rutas">Ver rutas</button>
       </div>
     </article>
 
+
+    <!-- Card 7 Metas de venta -->
+    <article class="card" aria-labelledby="card7-title" tabindex="0">
+      <div class="card-top">
+        <div class="icon" aria-hidden="true">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#1E63A8" stroke-width="1.6"/><path d="M8 12l2.5 2.5L16 9" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </div>
+        <div>
+          <h3 id="card7-title">Metas de venta</h3>
+          <p class="muted">Definición, asignación y seguimiento de metas.</p>
+        </div>
+      </div>
+      <div class="cta">
+        <button mat-raised-button color="primary" routerLink="/metas-list" aria-label="Gestionar metas de venta">Gestionar metas</button>
+      </div>
+    </article>
   </section>
 
 <script>

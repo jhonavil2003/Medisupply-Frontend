@@ -1,0 +1,83 @@
+.ruta-lista-container {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 24px 0;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+.filtros {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.tabla-rutas {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 1rem;
+}
+.tabla-rutas th, .tabla-rutas td {
+  border: 1px solid #e0e0e0;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+}
+.tabla-rutas th {
+  background: #f4f6f9;
+  color: #1976d2;
+}
+.estado-pendiente {
+  color: #d32f2f;
+  font-weight: bold;
+}
+.estado-curso {
+  color: #f9a825;
+  font-weight: bold;
+}
+.estado-completada {
+  color: #388e3c;
+  font-weight: bold;
+}
+.btn-outline {
+  background: #f4f6f9;
+  border: 1px solid #1976d2;
+  color: #1976d2;
+  border-radius: 8px;
+  padding: 0.4rem 1rem;
+  margin-left: 0.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-outline:hover {
+  background: #e3f2fd;
+}
+.detalle-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.detalle-content {
+  background: #fff;
+  border-radius: 12px;
+  padding: 2rem 2.5rem;
+  min-width: 350px;
+  max-width: 95vw;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.12);
+}
+.detalle-content h3 {
+  margin-top: 0;
+}
+.detalle-actions {
+  margin-top: 1.5rem;
+  display: flex;
+  gap: 1rem;
+}

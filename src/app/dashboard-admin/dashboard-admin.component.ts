@@ -6,6 +6,7 @@ import { Component } from '@angular/core';
   styleUrls: ['./dashboard-admin.component.css']
 })
 export class DashboardAdminComponent {
+  showLangMenu = false;
   sidebarVisible = true;
 
   toggleSidebar() {

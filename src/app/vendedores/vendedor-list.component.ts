@@ -1,15 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
 import { VendedorService } from './vendedor.service';
 import { Vendedor } from './vendedor';
+import { NotificationService } from '../notification.service';
+
 
 @Component({
   selector: 'app-vendedor-list',
   templateUrl: './vendedor-list.component.html',
   styleUrls: ['./vendedor-list.component.css']
 })
-export class VendedorListComponent implements OnInit {
+export class VendedorListComponent implements OnInit, AfterViewInit {
   vendedores: Vendedor[] = [];
-  vendedoresFiltrados: Vendedor[] = [];
   filtroBusqueda: string = '';
   vendedorEditando: Vendedor | null = null;
   vendedorEditIndex: number | null = null;
@@ -17,29 +21,46 @@ export class VendedorListComponent implements OnInit {
   modoEdicion: boolean = false;
   mostrarDetalle: boolean = false;
   vendedorDetalle: Vendedor | null = null;
+  dataSource = new MatTableDataSource<Vendedor>();
+  displayedColumns: string[] = ['documento', 'nombre', 'correo', 'telefono', 'region', 'acciones'];
 
-  constructor(private vendedorService: VendedorService) {}
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private vendedorService: VendedorService, 
+    private notify: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.vendedorService.getVendedores().subscribe(data => {
       this.vendedores = data;
-      this.vendedoresFiltrados = [...data];
+      this.dataSource.data = this.vendedores;
     });
   }
 
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.filterPredicate = (data: Vendedor, filter: string) => {
+      filter = filter.trim().toLowerCase();
+      return (
+        data.documento.toLowerCase().includes(filter) ||
+        data.nombre.toLowerCase().includes(filter) ||
+        data.correo.toLowerCase().includes(filter) ||
+        data.telefono.toLowerCase().includes(filter) ||
+        data.region.toLowerCase().includes(filter)
+      );
+    };
+  }
+
   filtrarVendedores() {
+    this.dataSource.data = this.vendedores;
     const filtro = this.filtroBusqueda.trim().toLowerCase();
-    if (!filtro) {
-      this.vendedoresFiltrados = [...this.vendedores];
-      return;
+    this.dataSource.filter = filtro;
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
     }
-    this.vendedoresFiltrados = this.vendedores.filter(v =>
-      v.documento.toLowerCase().includes(filtro) ||
-      v.nombre.toLowerCase().includes(filtro) ||
-      v.correo.toLowerCase().includes(filtro) ||
-      v.telefono.toLowerCase().includes(filtro) ||
-      v.region.toLowerCase().includes(filtro)
-    );
   }
 
   agregarVendedor() {
@@ -50,7 +71,8 @@ export class VendedorListComponent implements OnInit {
   }
 
   editarVendedor(index: number) {
-    this.vendedorEditando = { ...this.vendedoresFiltrados[index] };
+    const data = this.dataSource.filteredData;
+    this.vendedorEditando = { ...data[index] };
     this.vendedorEditIndex = index;
     this.mostrarModal = true;
     this.modoEdicion = true;
@@ -59,7 +81,8 @@ export class VendedorListComponent implements OnInit {
   guardarEdicionVendedor() {
     if (this.vendedorEditando) {
       if (this.vendedorEditIndex !== null) {
-        const idxGlobal = this.vendedores.findIndex(v => v.documento === this.vendedoresFiltrados[this.vendedorEditIndex!].documento);
+        const data = this.dataSource.filteredData;
+        const idxGlobal = this.vendedores.findIndex(v => v.documento === data[this.vendedorEditIndex!].documento);
         if (idxGlobal !== -1) {
           this.vendedores[idxGlobal] = { ...this.vendedorEditando };
         }
@@ -72,6 +95,7 @@ export class VendedorListComponent implements OnInit {
       this.vendedorEditando = null;
       this.vendedorEditIndex = null;
       this.modoEdicion = false;
+      this.notify.success('Registro guardado correctamente');
     }
   }
 
@@ -84,19 +108,22 @@ export class VendedorListComponent implements OnInit {
 
   eliminarVendedor(index: number) {
     if (confirm('¿Está seguro de eliminar este vendedor?')) {
-      const documento = this.vendedoresFiltrados[index].documento;
+      const data = this.dataSource.filteredData;
+      const documento = data[index].documento;
       this.vendedores = this.vendedores.filter(v => v.documento !== documento);
       this.filtrarVendedores();
+      this.notify.success('Registro eliminado');
     }
   }
 
   verVendedor(index: number) {
-    this.vendedorDetalle = this.vendedoresFiltrados[index];
+    const data = this.dataSource.filteredData;
+    this.vendedorDetalle = data[index];
     this.mostrarDetalle = true;
   }
 
   cerrarDetalleVendedor() {
     this.mostrarDetalle = false;
     this.vendedorDetalle = null;
-  }
+  }  
 }

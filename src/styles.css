@@ -1,3 +1,14 @@
+.container {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 24px 0;
+}
+.container h2 {
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
 /* === Estilos modernos para tablas reutilizables === */
 .modern-table {
   width: 100%;
@@ -56,6 +67,15 @@
   --font-base: Inter, Roboto, Arial, sans-serif;
 }
 
+.toast-top-right {
+  top: 1rem !important;
+  right: 1rem !important;
+  bottom: auto !important;
+  left: auto !important;
+  position: fixed !important; /* 👈 asegura que no dependa del contenedor */
+  z-index: 9999 !important;   /* por encima del menú */
+}
+
 body {
   background: var(--color-bg);
   font-family: var(--font-base);
@@ -81,3 +101,6 @@ body {
   background: #f5f6fa;
   padding: 24px;
 }/* You can add global styles to this file, and also import other style files */
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

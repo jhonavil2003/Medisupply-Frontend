@@ -1,13 +1,18 @@
-import { Component, OnInit } from '@angular/core';
-import { ProductoService } from './producto.service';
-import { Producto } from './producto';
+import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
+import { MatSort } from '@angular/material/sort';
+import { ProductoService } from '../producto.service';
+import { Producto } from '../producto';
+import { NotificationService } from '../../notification.service';
+
 
 @Component({
   selector: 'app-producto-list',
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
 })
-export class ProductoListComponent implements OnInit {
+export class ProductoListComponent implements OnInit, AfterViewInit {
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   filtroBusqueda: string = '';
@@ -18,27 +23,44 @@ export class ProductoListComponent implements OnInit {
   mostrarDetalle: boolean = false;
   productoDetalle: Producto | null = null;
 
-  constructor(private productoService: ProductoService) {}
+  dataSource = new MatTableDataSource<Producto>();
+  displayedColumns: string[] = ['codigo', 'nombre', 'categoria', 'proveedor', 'estado', 'acciones'];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  constructor(
+    private productoService: ProductoService,
+    private notify: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.productoService.getProductos().subscribe(data => {
       this.productos = data;
       this.productosFiltrados = [...data];
+      this.dataSource.data = this.productosFiltrados;
     });
   }
 
+
+
   filtrarProductos() {
     const filtro = this.filtroBusqueda.trim().toLowerCase();
-    if (!filtro) {
-      this.productosFiltrados = [...this.productos];
-      return;
-    }
-    this.productosFiltrados = this.productos.filter(p =>
-      p.nombre.toLowerCase().includes(filtro) ||
-      p.codigo.toLowerCase().includes(filtro) ||
-      p.categoria.toLowerCase().includes(filtro) ||
-      p.proveedor.toLowerCase().includes(filtro)
-    );
+    this.dataSource.filter = filtro;
+  }
+
+  // Para que el filtro busque en todas las columnas relevantes
+  ngAfterViewInit() {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+    this.dataSource.filterPredicate = (data: Producto, filter: string) => {
+      return (
+        data.nombre.toLowerCase().includes(filter) ||
+        data.codigo.toLowerCase().includes(filter) ||
+        data.categoria.toLowerCase().includes(filter) ||
+        data.proveedor.toLowerCase().includes(filter)
+      );
+    };
   }
 
   agregarProducto() {
@@ -67,10 +89,12 @@ export class ProductoListComponent implements OnInit {
         this.productos = [...this.productoService['productos']];
       }
       this.filtrarProductos();
+      this.dataSource.data = this.productosFiltrados;
       this.mostrarModal = false;
       this.productoEditando = null;
       this.productoEditIndex = null;
       this.modoEdicion = false;
+      this.notify.success('Registro guardado correctamente');
     }
   }
 
@@ -86,6 +110,8 @@ export class ProductoListComponent implements OnInit {
       const codigo = this.productosFiltrados[index].codigo;
       this.productos = this.productos.filter(p => p.codigo !== codigo);
       this.filtrarProductos();
+      this.dataSource.data = this.productosFiltrados;
+      this.notify.success('Registro eliminado');
     }
   }
 

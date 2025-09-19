@@ -1,0 +1,46 @@
+<div class="container">
+  <!-- Header -->
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">Carga másiva de Productos</h2>
+    </div>
+  </div>
+
+  <!-- Subtítulo -->
+  <h3 class="subtitle">Cargar archivo CSV</h3>
+
+  <!-- Caja de carga -->
+  <div class="upload-box"
+       (dragover)="onDragOver($event)" 
+       (drop)="onFileDrop($event)">
+    <i class="fas fa-file-csv upload-icon"></i>
+    <p>Arrastra y suelta tu archivo aquí o</p>
+    <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".csv" hidden />
+    <label for="fileInput" class="btn-outline">Seleccionar archivo</label>
+
+    <div *ngIf="archivoSeleccionado" class="file-info">
+      <span><i class="fas fa-check-circle"></i> {{ archivoSeleccionado.name }}</span>
+    </div>
+  </div>
+
+  <!-- Botón procesar -->
+  <div class="actions">
+    <button class="btn-primary" (click)="procesarArchivo()" [disabled]="!archivoValido">
+      <i class="fas fa-upload"></i> Cargar el archivo a la Base de Datos
+    </button>
+  </div>
+
+  <!-- Nota -->
+  <div class="note-box">
+    <i class="fas fa-info-circle"></i>
+    <span>Recuerde que el archivo debe llamarse <strong>Producto.csv</strong></span>
+  </div>
+
+  <!-- Barra de progreso -->
+  <div *ngIf="cargando" class="progress-bar">
+    <span class="spinner"></span> Cargando...
+  </div>
+</div>
