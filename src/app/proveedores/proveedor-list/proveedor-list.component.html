@@ -7,36 +7,34 @@
       </a>
       <h2 style="margin: 0;">Gestión de proveedores</h2>
     </div>
-
-      <button class="btn-primary" (click)="agregarProveedorAleatorio()">
-        <i class="fas fa-plus"></i> Agregar Proveedor
-      </button>
-    </div>
-
-    <div class="search-bar" style="flex: 1;">
-      <div class="search-wrap">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>Buscar proveedor</mat-label>
-      <input matInput
-        placeholder="Razón social, RUC, teléfono, correo, estado o certificación..."
-        [(ngModel)]="filtroBusqueda"
-        (ngModelChange)="filtrarProveedores()"
-        (keyup.enter)="filtrarProveedores()" />
-      <button *ngIf="filtroBusqueda"
-      matSuffix
-      mat-icon-button
-      aria-label="Limpiar"
-      (click)="filtroBusqueda=''; filtrarProveedores()">
-    <mat-icon>close</mat-icon>
-      </button>
-          <mat-icon matSuffix>search</mat-icon>
-        </mat-form-field>
-        <button mat-raised-button color="primary" class="search-btn" (click)="filtrarProveedores()">
-          <mat-icon>search</mat-icon>
+    <button mat-raised-button color="primary" (click)="agregarProveedorAleatorio()" aria-label="Agregar proveedor" data-i18n="btn.register">
+      <mat-icon>add</mat-icon> Agregar Proveedor
+    </button>
+  </div>
+  <div class="search-bar" style="flex: 1;">
+    <div class="search-wrap">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>Buscar proveedor</mat-label>
+        <input matInput
+          placeholder="Razón social, RUC, teléfono, correo, estado o certificación..."
+          [(ngModel)]="filtroBusqueda"
+          (ngModelChange)="filtrarProveedores()"
+          (keyup.enter)="filtrarProveedores()" 
+        />
+        <button *ngIf="filtroBusqueda"
+          matSuffix
+          mat-icon-button
+          aria-label="Limpiar"
+          (click)="filtroBusqueda=''; filtrarProveedores()" color="primary">
+          <mat-icon>close</mat-icon>
         </button>
-      </div>
+        <mat-icon matSuffix>search</mat-icon>
+      </mat-form-field>
+      <button mat-raised-button color="primary" class="search-btn" (click)="filtrarProveedores()">
+        <mat-icon>search</mat-icon>
+      </button>
     </div>
-
+  </div>
 
   <div class="card">
     <table mat-table [dataSource]="dataSource" matSort class="modern-table">
@@ -83,30 +81,67 @@
   </div>
 
   <!-- Modal Edición -->
-  <div class="modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-    <div class="modal-content" *ngIf="proveedorEditando">
-      <span class="close" (click)="cancelarEdicionProveedor()">&times;</span>
+  <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+    <div class="detalle-content" *ngIf="proveedorEditando">
+    <button mat-icon-button (click)="cancelarEdicionProveedor()" aria-label="Cerrar" class="close" type="button">
+      <mat-icon>close</mat-icon>
+    </button>
       <h2>Editar Proveedor</h2>
-      <form (ngSubmit)="guardarEdicionProveedor()">
-        <label>Razón Social</label>
-        <input type="text" [(ngModel)]="proveedorEditando.razonSocial" name="razonSocial" required>
-        <label>RUC</label>
-        <input type="text" [(ngModel)]="proveedorEditando.ruc" name="ruc" required>
-        <label>Teléfono</label>
-        <input type="text" [(ngModel)]="proveedorEditando.telefono" name="telefono" required>
-        <label>Correo de contacto</label>
-        <input type="email" [(ngModel)]="proveedorEditando.correoContacto" name="correoContacto" required>
-        <label>Estado</label>
-        <select [(ngModel)]="proveedorEditando.estado" name="estado">
-          <option value="Activo">Activo</option>
-          <option value="Inactivo">Inactivo</option>
-        </select>
-        <label>Certificaciones vigentes</label>
-        <input type="text" [(ngModel)]="proveedorEditando.certificacionesVigentes" name="certificacionesVigentes" placeholder="Separadas por coma">
-        <button type="submit" class="btn-primary">Guardar</button>
+      <form (ngSubmit)="guardarEdicionProveedor()" class="form-container" #proveedorForm="ngForm">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Razón Social</mat-label>
+          <input matInput type="text" [(ngModel)]="proveedorEditando.razonSocial" name="razonSocial" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>RUC</mat-label>
+          <input matInput type="text" [(ngModel)]="proveedorEditando.ruc" name="ruc" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Teléfono</mat-label>
+          <input matInput type="text" [(ngModel)]="proveedorEditando.telefono" name="telefono" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Correo de contacto</mat-label>
+          <input matInput type="email" [(ngModel)]="proveedorEditando.correoContacto" name="correoContacto" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Estado</mat-label>
+          <mat-select [(ngModel)]="proveedorEditando.estado" name="estado">
+            <mat-option value="Activo">Activo</mat-option>
+            <mat-option value="Inactivo">Inactivo</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Certificaciones vigentes</mat-label>
+          <input matInput type="text" [(ngModel)]="proveedorEditando.certificacionesVigentes" name="certificacionesVigentes" placeholder="Separadas por coma">
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit">Guardar</button>
+        </div>
       </form>
     </div>
   </div>
 
-  <!-- Modal Detalle y Modal Edición permanecen igual -->
+  <!-- Modal Detalle -->
+  <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+    <div class="detalle-content" *ngIf="proveedorDetalle">
+      <button mat-icon-button (click)="cerrarDetalleProveedor()" aria-label="Cerrar" class="close" type="button">
+        <mat-icon>close</mat-icon>
+      </button>
+      <h2>Detalle del Proveedor</h2>
+      <p><strong>Razón Social:</strong> {{ proveedorDetalle.razonSocial }}</p>
+      <p><strong>RUC:</strong> {{ proveedorDetalle.ruc }}</p>
+      <p><strong>Teléfono:</strong> {{ proveedorDetalle.telefono }}</p>
+      <p><strong>Correo de contacto:</strong> {{ proveedorDetalle.correoContacto }}</p>
+      <p><strong>Estado:</strong> {{ proveedorDetalle.estado }}</p>
+      <p><strong>Certificaciones vigentes:</strong> 
+        <span *ngIf="proveedorDetalle.certificacionesVigentes && proveedorDetalle.certificacionesVigentes.length; else noCerts">
+          <span *ngFor="let cert of proveedorDetalle.certificacionesVigentes; let last = last">
+            {{ cert }}<span *ngIf="!last">, </span>
+          </span>
+        </span>
+        <ng-template #noCerts>Sin certificaciones</ng-template>
+      </p>
+    </div>
+  </div>
 </div>

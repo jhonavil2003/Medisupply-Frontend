@@ -6,9 +6,11 @@
       </a>
       <h2 style="margin: 0;">Gestión de Vendedores</h2>
     </div>
-    <button class="btn-primary agregar" (click)="agregarVendedor()">
-      <i class="fas fa-plus"></i> Agregar Vendedor
+    <button mat-raised-button color="primary" (click)="agregarVendedor()">
+      <mat-icon>add</mat-icon>
+      Agregar Vendedor
     </button>
+
   </div>
 
   <div class="search-bar" style="flex: 1;">
@@ -75,36 +77,60 @@
   <!-- Modal Detalle y Modal Edición permanecen igual -->
 
     <!-- Modal Detalle -->
-    <div class="modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-    <div class="modal-content" *ngIf="vendedorDetalle">
-        <span class="close" (click)="cerrarDetalleVendedor()">&times;</span>
+    <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+      
+      <div class="detalle-content" *ngIf="vendedorDetalle">
+        <button mat-icon-button (click)="cerrarDetalleVendedor()" aria-label="Cerrar" class="close" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
         <h2>Detalle del Vendedor</h2>
-    <p><strong>Documento:</strong> {{ vendedorDetalle.documento }}</p>
-    <p><strong>Nombre:</strong> {{ vendedorDetalle.nombre }}</p>
-    <p><strong>Correo:</strong> {{ vendedorDetalle.correo }}</p>
-    <p><strong>Teléfono:</strong> {{ vendedorDetalle.telefono }}</p>
-    <p><strong>Región:</strong> {{ vendedorDetalle.region }}</p>
-    </div>
+        <p></p>
+        <p><strong>Documento:</strong> {{ vendedorDetalle.documento }}</p>
+        <p><strong>Nombre:</strong> {{ vendedorDetalle.nombre }}</p>
+        <p><strong>Correo:</strong> {{ vendedorDetalle.correo }}</p>
+        <p><strong>Teléfono:</strong> {{ vendedorDetalle.telefono }}</p>
+        <p><strong>Región:</strong> {{ vendedorDetalle.region }}</p>
+      </div>
     </div>
 
     <!-- Modal Edición -->
-    <div class="modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-    <div class="modal-content" *ngIf="vendedorEditando">
-        <span class="close" (click)="cancelarEdicionVendedor()">&times;</span>
-        <h2>{{ modoEdicion ? 'Editar Vendedor' : 'Agregar Vendedor' }}</h2>
-        <form (ngSubmit)="guardarEdicionVendedor()">
-  <label>Documento</label>
-  <input type="text" [(ngModel)]="vendedorEditando.documento" name="documento" required>
-  <label>Nombre</label>
-  <input type="text" [(ngModel)]="vendedorEditando.nombre" name="nombre" required>
-  <label>Correo</label>
-  <input type="email" [(ngModel)]="vendedorEditando.correo" name="correo" required>
-  <label>Teléfono</label>
-  <input type="text" [(ngModel)]="vendedorEditando.telefono" name="telefono" required>
-  <label>Región</label>
-  <input type="text" [(ngModel)]="vendedorEditando.region" name="region" required>
-        <button type="submit" class="btn-primary">Guardar</button>
+    <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+      <div class="detalle-content" *ngIf="vendedorEditando">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+          <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Vendedor' : 'Agregar Vendedor' }}</h2>
+          <button mat-icon-button (click)="cancelarEdicionVendedor()" aria-label="Cerrar" class="close" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+        <p></p>
+        <form (ngSubmit)="guardarEdicionVendedor()" class="form-container">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Documento</mat-label>
+            <input matInput type="text" [(ngModel)]="vendedorEditando.documento" name="documento" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nombre</mat-label>
+            <input matInput type="text" [(ngModel)]="vendedorEditando.nombre" name="nombre" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Correo</mat-label>
+            <input matInput type="email" [(ngModel)]="vendedorEditando.correo" name="correo" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Teléfono</mat-label>
+            <input matInput type="text" [(ngModel)]="vendedorEditando.telefono" name="telefono" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Región</mat-label>
+            <input matInput type="text" [(ngModel)]="vendedorEditando.region" name="region" required>
+          </mat-form-field>
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit">
+              <mat-icon>save</mat-icon>
+              Guardar
+            </button>
+          </div>
         </form>
-    </div>
+      </div>
     </div>
 </div>

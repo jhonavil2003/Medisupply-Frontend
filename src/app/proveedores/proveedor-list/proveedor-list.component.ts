@@ -4,6 +4,7 @@ import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ProveedorService } from '../proveedor.service';
 import { Proveedor } from '../proveedor';
+import { NotificationService } from '../../notification.service';
 
 @Component({
   selector: 'app-proveedor-list',
@@ -26,7 +27,9 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private proveedorService: ProveedorService) {}
+  constructor(private proveedorService: ProveedorService,
+    private notify: NotificationService
+  ) {}
 
   ngOnInit(): void {
     this.proveedorService.getProveedores().subscribe(data => {
@@ -53,12 +56,25 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
 
   filtrarProveedores() {
-    // Siempre trabajar sobre la lista actualizada
-    this.dataSource.data = this.proveedores;
     const filtro = this.filtroBusqueda.trim().toLowerCase();
-    this.dataSource.filter = filtro;
-    if (this.dataSource.paginator) {
-      this.dataSource.paginator.firstPage();
+    if (filtro === '') {
+      this.proveedoresFiltrados = [...this.proveedores];
+    } else {
+      this.proveedoresFiltrados = this.proveedores.filter(proveedor =>
+        proveedor.razonSocial.toLowerCase().includes(filtro) ||
+        proveedor.ruc.toLowerCase().includes(filtro) ||
+        proveedor.telefono.toLowerCase().includes(filtro) ||
+        proveedor.correoContacto.toLowerCase().includes(filtro) ||
+        proveedor.estado.toLowerCase().includes(filtro) ||
+        (proveedor.certificacionesVigentes && proveedor.certificacionesVigentes.join(', ').toLowerCase().includes(filtro))
+      );
+    }
+    this.dataSource.data = this.proveedoresFiltrados;
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
     }
   }
 
@@ -71,8 +87,7 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
 
   editarProveedor(index: number) {
-    const data = this.dataSource.filteredData;
-    this.proveedorEditando = { ...data[index] };
+    this.proveedorEditando = { ...this.proveedoresFiltrados[index] };
     this.proveedorEditIndex = index;
     this.mostrarModal = true;
     this.modoEdicion = true;
@@ -82,15 +97,16 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
     if (this.proveedorEditando) {
       if (this.proveedorEditIndex !== null) {
         // Editar existente
-        const data = this.dataSource.filteredData;
-        const idxGlobal = this.proveedores.findIndex(p => p.ruc === data[this.proveedorEditIndex!].ruc);
+        const idxGlobal = this.proveedores.findIndex(p => p.ruc === this.proveedoresFiltrados[this.proveedorEditIndex!].ruc);
         if (idxGlobal !== -1) {
           this.proveedores[idxGlobal] = { ...this.proveedorEditando };
         }
+        this.notify.success('Se guardaron los cambios del proveedor');
       } else {
         // Agregar nuevo
         this.proveedorService.addProveedor(this.proveedorEditando);
         this.proveedores = [...this.proveedorService['proveedores']];
+        this.notify.success('Se agrego el nuevo proveedor');
       }
       this.filtrarProveedores();
       this.mostrarModal = false;
@@ -114,6 +130,7 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       const ruc = data[index].ruc;
       this.proveedores = this.proveedores.filter(p => p.ruc !== ruc);
       this.filtrarProveedores();
+      this.notify.success('Registro eliminado');
     }
   }
   verProveedor(index: number) {

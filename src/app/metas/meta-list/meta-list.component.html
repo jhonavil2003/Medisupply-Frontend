@@ -12,8 +12,8 @@
     </button>
   </div>
 
-<div class="search-bar" style="flex: 1;">
-    <div class="search-wrap">
+<div class="search-bar">
+  <div class="search-wrap" style="width: 100%;">
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Buscar metas</mat-label>
         <input matInput
@@ -75,10 +75,13 @@
   </div>
 
   <!-- Modal Detalle -->
-  <div class="modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-    <div class="modal-content" *ngIf="metaDetalle">
-      <span class="close" (click)="cerrarDetalle()">&times;</span>
+  <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+    <div class="detalle-content" *ngIf="metaDetalle">
+        <button mat-icon-button (click)="cerrarDetalle()" aria-label="Cerrar" class="close" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
       <h2>Detalle de la Meta</h2>
+       <p></p>  
       <p><strong>Producto:</strong> {{ metaDetalle.producto }}</p>
       <p><strong>Región:</strong> {{ metaDetalle.region }}</p>
       <p><strong>Trimestre:</strong> {{ metaDetalle.trimestre }}</p>
@@ -90,34 +93,51 @@
   </div>
 
   <!-- Modal Edición/Creación -->
-  <div class="modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-    <div class="modal-content" *ngIf="metaEditando">
-      <span class="close" (click)="cancelarEdicion()">&times;</span>
-      <h2>{{ modoEdicion ? 'Editar Meta' : 'Agregar Meta' }}</h2>
-      <form (ngSubmit)="guardarMeta()">
-        <label>Producto</label>
-        <select [(ngModel)]="metaEditando.producto" name="producto" required>
-          <option value="" disabled>Seleccione...</option>
-          <option *ngFor="let p of productos" [value]="p">{{ p }}</option>
-        </select>
-        <label>Región</label>
-        <select [(ngModel)]="metaEditando.region" name="region" required>
-          <option value="" disabled>Seleccione...</option>
-          <option *ngFor="let r of regiones" [value]="r">{{ r }}</option>
-        </select>
-        <label>Trimestre</label>
-        <select [(ngModel)]="metaEditando.trimestre" name="trimestre" required>
-          <option value="" disabled>Seleccione...</option>
-          <option *ngFor="let t of trimestres" [value]="t">{{ t }}</option>
-        </select>
-        <label>Valor objetivo</label>
-        <input type="number" [(ngModel)]="metaEditando.valorObjetivo" name="valorObjetivo" min="1" required>
-        <label>Tipo</label>
-        <select [(ngModel)]="metaEditando.tipo" name="tipo" required>
-          <option value="unidades">Unidades</option>
-          <option value="monetario">Monetario</option>
-        </select>
-        <button type="submit" class="btn-primary">Guardar</button>
+  <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+    <div class="detalle-content" *ngIf="metaEditando">
+      <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+        <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Meta' : 'Agregar Meta' }}</h2>
+        <button mat-icon-button (click)="cancelarEdicion()" aria-label="Cerrar" class="close" type="button">
+          <mat-icon>close</mat-icon>
+        </button>
+      </div>
+      <p></p>
+      <form (ngSubmit)="guardarMeta()" class="form-container">
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Producto</mat-label>
+          <mat-select [(ngModel)]="metaEditando.producto" name="producto" required>
+            <mat-option value="" disabled>Seleccione...</mat-option>
+            <mat-option *ngFor="let p of productos" [value]="p">{{ p }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Región</mat-label>
+          <mat-select [(ngModel)]="metaEditando.region" name="region" required>
+            <mat-option value="" disabled>Seleccione...</mat-option>
+            <mat-option *ngFor="let r of regiones" [value]="r">{{ r }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Trimestre</mat-label>
+          <mat-select [(ngModel)]="metaEditando.trimestre" name="trimestre" required>
+            <mat-option value="" disabled>Seleccione...</mat-option>
+            <mat-option *ngFor="let t of trimestres" [value]="t">{{ t }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Valor objetivo</mat-label>
+          <input matInput type="number" [(ngModel)]="metaEditando.valorObjetivo" name="valorObjetivo" min="1" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Tipo</mat-label>
+          <mat-select [(ngModel)]="metaEditando.tipo" name="tipo" required>
+            <mat-option value="unidades">Unidades</mat-option>
+            <mat-option value="monetario">Monetario</mat-option>
+          </mat-select>
+        </mat-form-field>
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit">Guardar</button>
+        </div>
       </form>
     </div>
   </div>

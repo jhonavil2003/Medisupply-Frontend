@@ -46,7 +46,23 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
 
   filtrarProductos() {
     const filtro = this.filtroBusqueda.trim().toLowerCase();
-    this.dataSource.filter = filtro;
+    if (filtro === '') {
+      this.productosFiltrados = [...this.productos];
+    } else {
+      this.productosFiltrados = this.productos.filter(producto =>
+        producto.nombre.toLowerCase().includes(filtro) ||
+        producto.codigo.toLowerCase().includes(filtro) ||
+        producto.categoria.toLowerCase().includes(filtro) ||
+        producto.proveedor.toLowerCase().includes(filtro)
+      );
+    }
+    this.dataSource.data = this.productosFiltrados;
+    if (this.paginator) {
+      this.dataSource.paginator = this.paginator;
+    }
+    if (this.sort) {
+      this.dataSource.sort = this.sort;
+    }
   }
 
   // Para que el filtro busque en todas las columnas relevantes
@@ -80,16 +96,17 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   guardarEdicionProducto() {
     if (this.productoEditando) {
       if (this.productoEditIndex !== null) {
+        // Editar
         const idxGlobal = this.productos.findIndex(p => p.codigo === this.productosFiltrados[this.productoEditIndex!].codigo);
         if (idxGlobal !== -1) {
           this.productos[idxGlobal] = { ...this.productoEditando };
         }
       } else {
+        // Agregar
         this.productoService.addProducto(this.productoEditando);
         this.productos = [...this.productoService['productos']];
       }
       this.filtrarProductos();
-      this.dataSource.data = this.productosFiltrados;
       this.mostrarModal = false;
       this.productoEditando = null;
       this.productoEditIndex = null;
@@ -110,7 +127,6 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
       const codigo = this.productosFiltrados[index].codigo;
       this.productos = this.productos.filter(p => p.codigo !== codigo);
       this.filtrarProductos();
-      this.dataSource.data = this.productosFiltrados;
       this.notify.success('Registro eliminado');
     }
   }
