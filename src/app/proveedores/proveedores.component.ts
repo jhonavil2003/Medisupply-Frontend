@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { ProveedorService } from './proveedor.service';
 import { Proveedor } from './proveedor';
 
 @Component({
   selector: 'app-proveedores',
+  standalone: true,
+  imports: [CommonModule],
   templateUrl: './proveedores.component.html',
   styleUrls: ['./proveedores.component.css']
 })
