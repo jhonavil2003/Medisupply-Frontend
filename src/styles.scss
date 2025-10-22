@@ -1,6 +1,8 @@
 /* === Estilos globales para modales y formularios === */
 @use '@angular/material' as mat;
 
+@include mat.core();
+
 // =============================
 // 🎨 1. Tokens de diseño global
 // =============================
@@ -37,9 +39,9 @@ $my-blue-palette: (
   300: #64b5f6,
   400: #42a5f5,
   500: #2196f3,
-  600: var(--color-primary),       // base
-  700: var(--color-primary-dark),  // hover
-  800: var(--color-primary-darker),// active
+  600: #1E63A8,       // base
+  700: #1565c0,  // hover
+  800: #0d47a1,// active
   900: #0d47a1,
   A100: #82b1ff,
   A200: #448aff,
@@ -66,11 +68,11 @@ $my-blue-palette: (
 // ==============================
 // 🎨 3. Tema Material Design
 // ==============================
-$my-primary: mat.define-palette($my-blue-palette, 600, 700, 800);
-$my-accent: mat.define-palette(mat.$pink-palette, 500);
-$my-warn: mat.define-palette(mat.$red-palette);
+$my-primary: mat.m2-define-palette($my-blue-palette, 600, 700, 800);
+$my-accent: mat.m2-define-palette(mat.$m2-pink-palette, 500);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
 
-$my-theme: mat.define-light-theme((
+$my-theme: mat.m2-define-light-theme((
   color: (
     primary: $my-primary,
     accent: $my-accent,
