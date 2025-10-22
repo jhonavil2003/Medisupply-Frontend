@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -35,6 +35,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./informe-ventas.component.css']
 })
 export class InformeVentasComponent implements OnInit {
+  private toastr = inject(ToastrService);
+
   vendedores: string[] = ['Juan Pérez', 'Ana Torres', 'Carlos Ruiz'];
   productos: string[] = ['Producto A', 'Producto B', 'Producto C'];
   zonas: string[] = ['Norte', 'Sur', 'Este', 'Oeste'];
@@ -49,8 +51,6 @@ export class InformeVentasComponent implements OnInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(private toastr: ToastrService) {}
 
   ngOnInit() {
     this.simularDatos();

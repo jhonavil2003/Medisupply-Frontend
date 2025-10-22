@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ProveedorService } from './proveedor.service';
 import { Proveedor } from './proveedor';
@@ -11,9 +11,9 @@ import { Proveedor } from './proveedor';
   styleUrls: ['./proveedores.component.css']
 })
 export class ProveedoresComponent implements OnInit {
-  proveedores: Proveedor[] = [];
+  private proveedorService = inject(ProveedorService);
 
-  constructor(private proveedorService: ProveedorService) {}
+  proveedores: Proveedor[] = [];
 
   ngOnInit(): void {
     this.proveedorService.getProveedores().subscribe(data => this.proveedores = data);

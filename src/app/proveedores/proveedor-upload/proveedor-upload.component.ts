@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
@@ -21,11 +21,11 @@ import { NotificationService } from '../../notification.service';
   styleUrls: ['./proveedor-upload.component.css']
 })
 export class ProveedorUploadComponent {
+  private notify = inject(NotificationService);
+
   archivoSeleccionado: File | null = null;
   archivoValido: boolean = false;
   cargando: boolean = false;
-
-  constructor(private notify: NotificationService) {}
 
   onFileSelected(event: Event): void {
     const input = event.target as HTMLInputElement;

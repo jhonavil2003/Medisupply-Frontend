@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -32,6 +32,9 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./meta-list.component.css']
 })
 export class MetaListComponent implements OnInit {
+  private metaService = inject(MetaService);
+  private toastr = inject(ToastrService);
+
   metas: MetaVenta[] = [];
   metasFiltradas: MetaVenta[] = [];
   filtroBusqueda: string = '';
@@ -44,8 +47,6 @@ export class MetaListComponent implements OnInit {
   productos = ['Producto A', 'Producto B', 'Producto C'];
   regiones = ['Norte', 'Sur', 'Este', 'Oeste'];
   trimestres = ['Q1', 'Q2', 'Q3', 'Q4'];
-
-  constructor(private metaService: MetaService, private toastr: ToastrService) {}
 
   ngOnInit() {
     this.cargarMetas();

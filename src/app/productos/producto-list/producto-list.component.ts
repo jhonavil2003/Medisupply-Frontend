@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -37,6 +37,9 @@ import { NotificationService } from '../../notification.service';
   styleUrls: ['./producto-list.component.css']
 })
 export class ProductoListComponent implements OnInit, AfterViewInit {
+  private productoService = inject(ProductoService);
+  private notify = inject(NotificationService);
+
   productos: Producto[] = [];
   productosFiltrados: Producto[] = [];
   filtroBusqueda: string = '';
@@ -52,11 +55,6 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(
-    private productoService: ProductoService,
-    private notify: NotificationService
-  ) {}
 
   ngOnInit(): void {
     this.productoService.getProductos().subscribe(data => {

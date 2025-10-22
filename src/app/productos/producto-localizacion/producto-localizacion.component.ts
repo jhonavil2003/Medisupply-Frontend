@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -33,6 +33,8 @@ import { ProductoLocalizacion } from './producto-localizacion.model';
   styleUrls: ['./producto-localizacion.component.css']
 })
 export class ProductoLocalizacionComponent implements AfterViewInit {
+  private service = inject(ProductoLocalizacionService);
+
   query = '';
   resultados: ProductoLocalizacion[] = [];
   cargando = false;
@@ -46,8 +48,6 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(private service: ProductoLocalizacionService) {}
 
   buscar() {
     this.error = '';

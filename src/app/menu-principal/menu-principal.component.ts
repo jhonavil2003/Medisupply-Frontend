@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 
@@ -10,12 +10,12 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./menu-principal.component.css']
 })
 export class MenuPrincipalComponent {
+  private router = inject(Router);
+
   sidebarVisible = true;
   gestionOpen = false;
   ventasOpen = false;
   logisticaOpen = false;
-
-  constructor(private router: Router) {}
 
   navigateTo(route: string) {
     this.router.navigate([`/${route}`]);

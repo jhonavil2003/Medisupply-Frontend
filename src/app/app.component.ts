@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
 import { MenuPrincipalComponent } from './menu-principal/menu-principal.component';
@@ -11,8 +11,9 @@ import { MenuPrincipalComponent } from './menu-principal/menu-principal.componen
   styleUrl: './app.component.css'
 })
 export class AppComponent {
+  private toastr = inject(ToastrService);
+
   title = 'mynewapp';
-  constructor(private toastr: ToastrService) {}
 
   showSuccess() {
     this.toastr.success('La operación fue exitosa ✅', 'Éxito');

@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -36,6 +36,9 @@ import { NotificationService } from '../../notification.service';
   styleUrls: ['./proveedor-list.component.css']
 })
 export class ProveedorListComponent implements OnInit, AfterViewInit {
+  private proveedorService = inject(ProveedorService);
+  private notify = inject(NotificationService);
+
   proveedores: Proveedor[] = [];
   proveedorEditando: Proveedor | null = null;
   proveedorEditIndex: number | null = null;
@@ -50,10 +53,6 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
-
-  constructor(private proveedorService: ProveedorService,
-    private notify: NotificationService
-  ) {}
 
   ngOnInit(): void {
     this.proveedorService.getProveedores().subscribe(data => {

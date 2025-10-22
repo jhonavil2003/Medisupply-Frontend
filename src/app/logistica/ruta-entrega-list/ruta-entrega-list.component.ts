@@ -1,4 +1,4 @@
-import { Component, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -37,6 +37,8 @@ import { RutaEntrega } from '../ruta-entrega.model';
   styleUrls: ['./ruta-entrega-list.component.css']
 })
 export class RutaEntregaListaComponent implements AfterViewInit {
+  private rutaService = inject(RutaEntregaService);
+
   rutas: RutaEntrega[] = [];
   filtroEstado: '' | 'pendiente' | 'en_curso' | 'completada' = '';
   filtroBusqueda: string = '';
@@ -48,7 +50,7 @@ export class RutaEntregaListaComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private rutaService: RutaEntregaService) {
+  constructor() {
     this.rutaService.getRutas().subscribe(rutas => {
       this.rutas = rutas;
       this.aplicarFiltros();
