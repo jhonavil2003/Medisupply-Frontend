@@ -16,32 +16,34 @@
     <div class="search-wrap">
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Buscar producto</mat-label>
-    <input matInput
-      placeholder="Nombre, código, categoría o proveedor..."
-      [(ngModel)]="filtroBusqueda"
-      (ngModelChange)="filtrarProductos()"
-      (keyup.enter)="filtrarProductos()" />
+        <input matInput
+          placeholder="Nombre, código, categoría o proveedor..."
+          [(ngModel)]="filtroBusqueda"
+          (ngModelChange)="filtrarProductos()"
+          (keyup.enter)="filtrarProductos()" />
 
-  <button *ngIf="filtroBusqueda"
-    matSuffix
-    mat-icon-button
-    aria-label="Limpiar"
-    (click)="filtroBusqueda=''; filtrarProductos()">
-    <mat-icon>close</mat-icon>
-  </button>
+        @if (filtroBusqueda) {
+          <button
+            matSuffix
+            mat-icon-button
+            aria-label="Limpiar"
+            (click)="filtroBusqueda=''; filtrarProductos()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
 
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
 
-    <!-- botón al costado (Opción 1) -->
-    <button mat-raised-button
-            color="primary"
-            class="search-btn"
-            (click)="filtrarProductos()">
-      <mat-icon>search</mat-icon>
-    </button>
+      <!-- botón al costado (Opción 1) -->
+      <button mat-raised-button
+        color="primary"
+        class="search-btn"
+        (click)="filtrarProductos()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
   </div>
-</div>
 
   <div class="card">
     <table mat-table [dataSource]="dataSource" matSort class="modern-table">
@@ -81,64 +83,60 @@
 
   <!-- Modal Detalle -->
   <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-    <div class="detalle-content" *ngIf="productoDetalle">
-      <button mat-icon-button (click)="cerrarDetalleProducto()" aria-label="Cerrar detalle" class="close">
-        <mat-icon>close</mat-icon>
-      </button>
-      <h2>Detalle del Producto</h2>
-      <p><strong>Código:</strong> {{ productoDetalle.codigo }}</p>
-      <p><strong>Nombre:</strong> {{ productoDetalle.nombre }}</p>
-      <p><strong>Categoría:</strong> {{ productoDetalle.categoria }}</p>
-      <p><strong>Proveedor:</strong> {{ productoDetalle.proveedor }}</p>
-      <p><strong>Estado:</strong> {{ productoDetalle.estado }}</p>
-    </div>
+    @if (productoDetalle) {
+      <div class="detalle-content">
+        <button mat-icon-button (click)="cerrarDetalleProducto()" aria-label="Cerrar detalle" class="close">
+          <mat-icon>close</mat-icon>
+        </button>
+        <h2>Detalle del Producto</h2>
+        <p><strong>Código:</strong> {{ productoDetalle.codigo }}</p>
+        <p><strong>Nombre:</strong> {{ productoDetalle.nombre }}</p>
+        <p><strong>Categoría:</strong> {{ productoDetalle.categoria }}</p>
+        <p><strong>Proveedor:</strong> {{ productoDetalle.proveedor }}</p>
+        <p><strong>Estado:</strong> {{ productoDetalle.estado }}</p>
+      </div>
+    }
   </div>
 
   <!-- Modal Edición -->
   <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-  <div class="detalle-content mat-elevation-z4" *ngIf="productoEditando">
-    <!-- Botón cerrar en esquina -->
-    <button mat-icon-button (click)="cancelarEdicionProducto()" aria-label="Cerrar" class="close">
-      <mat-icon>close</mat-icon>
-    </button>
-
-    <h2 mat-dialog-title>{{ modoEdicion ? 'Editar Producto' : 'Agregar Producto' }}</h2>
-
-    <form (ngSubmit)="guardarEdicionProducto()" class="form-container" #productoForm="ngForm">
-      
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Código</mat-label>
-        <input matInput type="text" [(ngModel)]="productoEditando.codigo" name="codigo" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Nombre</mat-label>
-        <input matInput type="text" [(ngModel)]="productoEditando.nombre" name="nombre" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Categoría</mat-label>
-        <input matInput type="text" [(ngModel)]="productoEditando.categoria" name="categoria" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Proveedor</mat-label>
-        <input matInput type="text" [(ngModel)]="productoEditando.proveedor" name="proveedor" required>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="form-field">
-        <mat-label>Estado</mat-label>
-        <mat-select [(ngModel)]="productoEditando.estado" name="estado">
-          <mat-option value="Disponible">Disponible</mat-option>
-          <mat-option value="No disponible">No disponible</mat-option>
-        </mat-select>
-      </mat-form-field>
-
-      <div class="actions">
-        <button mat-flat-button color="primary" type="submit">Guardar</button>
+    @if (productoEditando) {
+      <div class="detalle-content mat-elevation-z4">
+        <!-- Botón cerrar en esquina -->
+        <button mat-icon-button (click)="cancelarEdicionProducto()" aria-label="Cerrar" class="close">
+          <mat-icon>close</mat-icon>
+        </button>
+        <h2 mat-dialog-title>{{ modoEdicion ? 'Editar Producto' : 'Agregar Producto' }}</h2>
+        <form (ngSubmit)="guardarEdicionProducto()" class="form-container" #productoForm="ngForm">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Código</mat-label>
+            <input matInput type="text" [(ngModel)]="productoEditando.codigo" name="codigo" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nombre</mat-label>
+            <input matInput type="text" [(ngModel)]="productoEditando.nombre" name="nombre" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Categoría</mat-label>
+            <input matInput type="text" [(ngModel)]="productoEditando.categoria" name="categoria" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Proveedor</mat-label>
+            <input matInput type="text" [(ngModel)]="productoEditando.proveedor" name="proveedor" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Estado</mat-label>
+            <mat-select [(ngModel)]="productoEditando.estado" name="estado">
+              <mat-option value="Disponible">Disponible</mat-option>
+              <mat-option value="No disponible">No disponible</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="actions">
+            <button mat-flat-button color="primary" type="submit">Guardar</button>
+          </div>
+        </form>
       </div>
-    </form>
+    }
   </div>
-</div>
 
 </div>

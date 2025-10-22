@@ -18,17 +18,19 @@
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Buscar vendedor</mat-label>
         <input matInput
-              placeholder="Documento, nombre, correo, teléfono o región..."
-              [(ngModel)]="filtroBusqueda"
-              (ngModelChange)="filtrarVendedores()"
-              (keyup.enter)="filtrarVendedores()" />
-        <button *ngIf="filtroBusqueda"
-                matSuffix
-                mat-icon-button
-                aria-label="Limpiar"
-                (click)="filtroBusqueda=''; filtrarVendedores()">
-          <mat-icon>close</mat-icon>
-        </button>
+          placeholder="Documento, nombre, correo, teléfono o región..."
+          [(ngModel)]="filtroBusqueda"
+          (ngModelChange)="filtrarVendedores()"
+          (keyup.enter)="filtrarVendedores()" />
+        @if (filtroBusqueda) {
+          <button
+            matSuffix
+            mat-icon-button
+            aria-label="Limpiar"
+            (click)="filtroBusqueda=''; filtrarVendedores()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
       <button mat-raised-button color="primary" class="search-btn" (click)="filtrarVendedores()">
@@ -76,10 +78,11 @@
 
   <!-- Modal Detalle y Modal Edición permanecen igual -->
 
-    <!-- Modal Detalle -->
-    <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-      
-      <div class="detalle-content" *ngIf="vendedorDetalle">
+  <!-- Modal Detalle -->
+  <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
+
+    @if (vendedorDetalle) {
+      <div class="detalle-content">
         <button mat-icon-button (click)="cerrarDetalleVendedor()" aria-label="Cerrar" class="close" type="button">
           <mat-icon>close</mat-icon>
         </button>
@@ -91,11 +94,13 @@
         <p><strong>Teléfono:</strong> {{ vendedorDetalle.telefono }}</p>
         <p><strong>Región:</strong> {{ vendedorDetalle.region }}</p>
       </div>
-    </div>
+    }
+  </div>
 
-    <!-- Modal Edición -->
-    <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-      <div class="detalle-content" *ngIf="vendedorEditando">
+  <!-- Modal Edición -->
+  <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
+    @if (vendedorEditando) {
+      <div class="detalle-content">
         <div style="display: flex; align-items: flex-start; justify-content: space-between;">
           <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Vendedor' : 'Agregar Vendedor' }}</h2>
           <button mat-icon-button (click)="cancelarEdicionVendedor()" aria-label="Cerrar" class="close" type="button">
@@ -132,5 +137,6 @@
           </div>
         </form>
       </div>
-    </div>
+    }
+  </div>
 </div>

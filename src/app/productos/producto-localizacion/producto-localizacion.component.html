@@ -7,7 +7,7 @@
       <h2 style="margin: 0;">Localización de producto en bodega</h2>
     </div>
   </div>
-  
+
   <form (ngSubmit)="buscar()" class="busqueda-form" style="display: flex; gap: 16px; align-items: center;">
     <mat-form-field appearance="outline" class="search-field" style="flex: 1;">
       <mat-label>Búsqueda de producto</mat-label>
@@ -17,92 +17,106 @@
       <mat-icon>search</mat-icon> Buscar
     </button>
   </form>
-  <div *ngIf="error" class="error-msg">
-    <i class="fas fa-exclamation-circle"></i> {{ error }}
-  </div>
-  <div *ngIf="cargando" class="progress-bar">
-    <span class="spinner"></span> Buscando...
-  </div>
-  <div *ngIf="dataSource.data.length > 0" class="resultados">
-    <h3>Resultados</h3>
-    <div class="card">
-      <table mat-table [dataSource]="dataSource" matSort class="modern-table">
-        <ng-container matColumnDef="nombre">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
-          <td mat-cell *matCellDef="let p">{{ p.nombre }}<br><span class="sku">{{ p.sku }}</span></td>
-        </ng-container>
-        <ng-container matColumnDef="ubicacion">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
-          <td mat-cell *matCellDef="let p">{{ p.ubicacion.pasillo }}-{{ p.ubicacion.estanteria }}-{{ p.ubicacion.nivel }}-{{ p.ubicacion.posicion }}</td>
-        </ng-container>
-        <ng-container matColumnDef="lote">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Lote</th>
-          <td mat-cell *matCellDef="let p">{{ p.lote }}</td>
-        </ng-container>
-        <ng-container matColumnDef="fechaVencimiento">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Vencimiento</th>
-          <td mat-cell *matCellDef="let p">{{ p.fechaVencimiento | date:'yyyy-MM-dd' }}</td>
-        </ng-container>
-        <ng-container matColumnDef="temperatura">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Temp.</th>
-          <td mat-cell *matCellDef="let p">{{ p.temperatura }}</td>
-        </ng-container>
-        <ng-container matColumnDef="cantidad">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
-          <td mat-cell *matCellDef="let p" [ngClass]="{ 'sin-stock': p.cantidad === 0 }">{{ p.cantidad }}</td>
-        </ng-container>
-        <ng-container matColumnDef="zona">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Zona</th>
-          <td mat-cell *matCellDef="let p">{{ p.ubicacion.zona }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="acciones">
-          <th mat-header-cell *matHeaderCellDef>Acciones</th>
-          <td mat-cell *matCellDef="let p" class="actions">
-            <button class="btn-icon" matTooltip="Copiar ubicación" (click)="copiarUbicacion(p.ubicacion.pasillo + '-' + p.ubicacion.estanteria + '-' + p.ubicacion.nivel + '-' + p.ubicacion.posicion)">
-              <i class="fas fa-map"></i>
-            </button>
-            <button class="btn-icon" matTooltip="Ver detalle" (click)="verDetalle(p)">
-              <i class="fas fa-eye"></i>
-            </button>
-          </td>
-        </ng-container>
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
-      <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  @if (error) {
+    <div class="error-msg">
+      <i class="fas fa-exclamation-circle"></i> {{ error }}
     </div>
-  </div>
+  }
+  @if (cargando) {
+    <div class="progress-bar">
+      <span class="spinner"></span> Buscando...
+    </div>
+  }
+  @if (dataSource.data.length > 0) {
+    <div class="resultados">
+      <h3>Resultados</h3>
+      <div class="card">
+        <table mat-table [dataSource]="dataSource" matSort class="modern-table">
+          <ng-container matColumnDef="nombre">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+            <td mat-cell *matCellDef="let p">{{ p.nombre }}<br><span class="sku">{{ p.sku }}</span></td>
+          </ng-container>
+          <ng-container matColumnDef="ubicacion">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
+            <td mat-cell *matCellDef="let p">{{ p.ubicacion.pasillo }}-{{ p.ubicacion.estanteria }}-{{ p.ubicacion.nivel }}-{{ p.ubicacion.posicion }}</td>
+          </ng-container>
+          <ng-container matColumnDef="lote">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Lote</th>
+            <td mat-cell *matCellDef="let p">{{ p.lote }}</td>
+          </ng-container>
+          <ng-container matColumnDef="fechaVencimiento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Vencimiento</th>
+            <td mat-cell *matCellDef="let p">{{ p.fechaVencimiento | date:'yyyy-MM-dd' }}</td>
+          </ng-container>
+          <ng-container matColumnDef="temperatura">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Temp.</th>
+            <td mat-cell *matCellDef="let p">{{ p.temperatura }}</td>
+          </ng-container>
+          <ng-container matColumnDef="cantidad">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
+            <td mat-cell *matCellDef="let p" [ngClass]="{ 'sin-stock': p.cantidad === 0 }">{{ p.cantidad }}</td>
+          </ng-container>
+          <ng-container matColumnDef="zona">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Zona</th>
+            <td mat-cell *matCellDef="let p">{{ p.ubicacion.zona }}</td>
+          </ng-container>
+          <ng-container matColumnDef="acciones">
+            <th mat-header-cell *matHeaderCellDef>Acciones</th>
+            <td mat-cell *matCellDef="let p" class="actions">
+              <button class="btn-icon" matTooltip="Copiar ubicación" (click)="copiarUbicacion(p.ubicacion.pasillo + '-' + p.ubicacion.estanteria + '-' + p.ubicacion.nivel + '-' + p.ubicacion.posicion)">
+                <i class="fas fa-map"></i>
+              </button>
+              <button class="btn-icon" matTooltip="Ver detalle" (click)="verDetalle(p)">
+                <i class="fas fa-eye"></i>
+              </button>
+            </td>
+          </ng-container>
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+        <mat-paginator [pageSize]="10" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+      </div>
+    </div>
+  }
   <!--Modal detalle-->
-  <div *ngIf="mostrarDetalle && productoDetalle" class="detalle-modal">
-    <div class="detalle-content">
-      <button mat-icon-button (click)="cerrarDetalle()" aria-label="Cerrar detalle">
-        <mat-icon>close</mat-icon>
-      </button>
-      <h3 class="mat-h3">Detalle de localización</h3>
-      <p><strong>Producto:</strong> {{ productoDetalle.nombre }} ({{ productoDetalle.sku }})</p>
-      <p><strong>Código interno:</strong> {{ productoDetalle.codigoInterno }}</p>
-      <p><strong>Código de barras/QR:</strong> {{ productoDetalle.codigoBarrasQR }}</p>
-      <p><strong>Ubicación:</strong> {{ productoDetalle.ubicacion.pasillo }}-{{ productoDetalle.ubicacion.estanteria }}-{{ productoDetalle.ubicacion.nivel }}-{{ productoDetalle.ubicacion.posicion }}</p>
-      <p><strong>Lote:</strong> {{ productoDetalle.lote }}</p>
-      <p><strong>Fecha de vencimiento:</strong> {{ productoDetalle.fechaVencimiento | date:'yyyy-MM-dd' }}</p>
-      <p><strong>Temperatura requerida:</strong> {{ productoDetalle.temperatura }}</p>
-      <p><strong>Zona:</strong> {{ productoDetalle.ubicacion.zona }}</p>
-      <p *ngIf="productoDetalle.ubicacion.camara"><strong>Cámara:</strong> {{ productoDetalle.ubicacion.camara }}</p>
-      <p *ngIf="productoDetalle.ubicacion.estadoCamara"><strong>Estado cámara:</strong> {{ productoDetalle.ubicacion.estadoCamara }}</p>
-      <p><strong>Cantidad disponible:</strong> <span [ngClass]="{ 'sin-stock': productoDetalle.cantidad === 0 }">{{ productoDetalle.cantidad }}</span></p>
-      <div *ngIf="productoDetalle.historialUbicaciones">
-        <h4>Historial de ubicaciones</h4>
-        <ul>
-          <li *ngFor="let h of productoDetalle.historialUbicaciones">
-            {{ h.fecha | date:'yyyy-MM-dd HH:mm' }} - {{ h.ubicacion }} ({{ h.cantidad }})
-          </li>
-        </ul>
-      </div>
-
-      <div class="detalle-actions">
-        <button class="btn-outline" disabled><i class="fas fa-map"></i> Ver en mapa de bodega</button>
+  @if (mostrarDetalle && productoDetalle) {
+    <div class="detalle-modal">
+      <div class="detalle-content">
+        <button mat-icon-button (click)="cerrarDetalle()" aria-label="Cerrar detalle">
+          <mat-icon>close</mat-icon>
+        </button>
+        <h3 class="mat-h3">Detalle de localización</h3>
+        <p><strong>Producto:</strong> {{ productoDetalle.nombre }} ({{ productoDetalle.sku }})</p>
+        <p><strong>Código interno:</strong> {{ productoDetalle.codigoInterno }}</p>
+        <p><strong>Código de barras/QR:</strong> {{ productoDetalle.codigoBarrasQR }}</p>
+        <p><strong>Ubicación:</strong> {{ productoDetalle.ubicacion.pasillo }}-{{ productoDetalle.ubicacion.estanteria }}-{{ productoDetalle.ubicacion.nivel }}-{{ productoDetalle.ubicacion.posicion }}</p>
+        <p><strong>Lote:</strong> {{ productoDetalle.lote }}</p>
+        <p><strong>Fecha de vencimiento:</strong> {{ productoDetalle.fechaVencimiento | date:'yyyy-MM-dd' }}</p>
+        <p><strong>Temperatura requerida:</strong> {{ productoDetalle.temperatura }}</p>
+        <p><strong>Zona:</strong> {{ productoDetalle.ubicacion.zona }}</p>
+        @if (productoDetalle.ubicacion.camara) {
+          <p><strong>Cámara:</strong> {{ productoDetalle.ubicacion.camara }}</p>
+        }
+        @if (productoDetalle.ubicacion.estadoCamara) {
+          <p><strong>Estado cámara:</strong> {{ productoDetalle.ubicacion.estadoCamara }}</p>
+        }
+        <p><strong>Cantidad disponible:</strong> <span [ngClass]="{ 'sin-stock': productoDetalle.cantidad === 0 }">{{ productoDetalle.cantidad }}</span></p>
+        @if (productoDetalle.historialUbicaciones) {
+          <div>
+            <h4>Historial de ubicaciones</h4>
+            <ul>
+              @for (h of productoDetalle.historialUbicaciones; track h) {
+                <li>
+                  {{ h.fecha | date:'yyyy-MM-dd HH:mm' }} - {{ h.ubicacion }} ({{ h.cantidad }})
+                </li>
+              }
+            </ul>
+          </div>
+        }
+        <div class="detalle-actions">
+          <button class="btn-outline" disabled><i class="fas fa-map"></i> Ver en mapa de bodega</button>
+        </div>
       </div>
     </div>
-  </div>
+  }
 </div>

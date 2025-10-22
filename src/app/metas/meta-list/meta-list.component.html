@@ -12,36 +12,38 @@
     </button>
   </div>
 
-<div class="search-bar">
-  <div class="search-wrap" style="width: 100%;">
+  <div class="search-bar">
+    <div class="search-wrap" style="width: 100%;">
       <mat-form-field appearance="outline" class="search-field">
         <mat-label>Buscar metas</mat-label>
         <input matInput
-              placeholder="Producto, región, trimestre o responsable..."
-              [(ngModel)]="filtroBusqueda"
-              (keyup.enter)="filtrarMetas()" />
+          placeholder="Producto, región, trimestre o responsable..."
+          [(ngModel)]="filtroBusqueda"
+          (keyup.enter)="filtrarMetas()" />
 
-        <button *ngIf="filtroBusqueda"
-                matSuffix
-                mat-icon-button
-                aria-label="Limpiar"
-                (click)="filtroBusqueda=''">
-          <mat-icon>close</mat-icon>
-        </button>
+        @if (filtroBusqueda) {
+          <button
+            matSuffix
+            mat-icon-button
+            aria-label="Limpiar"
+            (click)="filtroBusqueda=''">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
 
         <mat-icon matSuffix>search</mat-icon>
       </mat-form-field>
-<!-- botón al costado (Opción 1) -->
-    <button mat-raised-button
-            color="primary"
-            class="search-btn"
-            (click)="filtrarMetas()">
-      <mat-icon>search</mat-icon>
-    </button>
+      <!-- botón al costado (Opción 1) -->
+      <button mat-raised-button
+        color="primary"
+        class="search-btn"
+        (click)="filtrarMetas()">
+        <mat-icon>search</mat-icon>
+      </button>
+    </div>
   </div>
-</div>
 
-  
+
 
   <div class="card">
     <table class="modern-table">
@@ -57,88 +59,100 @@
         </tr>
       </thead>
       <tbody>
-        <tr *ngFor="let meta of metasFiltradas">
-          <td>{{ meta.producto }}</td>
-          <td>{{ meta.region }}</td>
-          <td>{{ meta.trimestre }}</td>
-          <td>{{ meta.valorObjetivo }}</td>
-          <td>{{ meta.tipo }}</td>
-          <td>{{ meta.usuarioResponsable }}</td>
-          <td class="actions">
-            <button class="btn-icon" title="Ver" (click)="verMeta(meta)"><i class="fas fa-eye"></i></button>
-            <button class="btn-icon" title="Editar" [disabled]="!meta.editable" (click)="editarMeta(meta)"><i class="fas fa-edit"></i></button>
-            <button class="btn-icon danger" title="Eliminar" (click)="eliminarMeta(meta)"><i class="fas fa-trash"></i></button>
-          </td>
-        </tr>
+        @for (meta of metasFiltradas; track meta) {
+          <tr>
+            <td>{{ meta.producto }}</td>
+            <td>{{ meta.region }}</td>
+            <td>{{ meta.trimestre }}</td>
+            <td>{{ meta.valorObjetivo }}</td>
+            <td>{{ meta.tipo }}</td>
+            <td>{{ meta.usuarioResponsable }}</td>
+            <td class="actions">
+              <button class="btn-icon" title="Ver" (click)="verMeta(meta)"><i class="fas fa-eye"></i></button>
+              <button class="btn-icon" title="Editar" [disabled]="!meta.editable" (click)="editarMeta(meta)"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon danger" title="Eliminar" (click)="eliminarMeta(meta)"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>
+        }
       </tbody>
     </table>
   </div>
 
   <!-- Modal Detalle -->
   <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-    <div class="detalle-content" *ngIf="metaDetalle">
+    @if (metaDetalle) {
+      <div class="detalle-content">
         <button mat-icon-button (click)="cerrarDetalle()" aria-label="Cerrar" class="close" type="button">
           <mat-icon>close</mat-icon>
         </button>
-      <h2>Detalle de la Meta</h2>
-       <p></p>  
-      <p><strong>Producto:</strong> {{ metaDetalle.producto }}</p>
-      <p><strong>Región:</strong> {{ metaDetalle.region }}</p>
-      <p><strong>Trimestre:</strong> {{ metaDetalle.trimestre }}</p>
-      <p><strong>Valor objetivo:</strong> {{ metaDetalle.valorObjetivo }}</p>
-      <p><strong>Tipo:</strong> {{ metaDetalle.tipo }}</p>
-      <p><strong>Responsable:</strong> {{ metaDetalle.usuarioResponsable }}</p>
-      <p><strong>Fecha de creación:</strong> {{ metaDetalle.fechaCreacion | date:'short' }}</p>
-    </div>
+        <h2>Detalle de la Meta</h2>
+        <p></p>
+        <p><strong>Producto:</strong> {{ metaDetalle.producto }}</p>
+        <p><strong>Región:</strong> {{ metaDetalle.region }}</p>
+        <p><strong>Trimestre:</strong> {{ metaDetalle.trimestre }}</p>
+        <p><strong>Valor objetivo:</strong> {{ metaDetalle.valorObjetivo }}</p>
+        <p><strong>Tipo:</strong> {{ metaDetalle.tipo }}</p>
+        <p><strong>Responsable:</strong> {{ metaDetalle.usuarioResponsable }}</p>
+        <p><strong>Fecha de creación:</strong> {{ metaDetalle.fechaCreacion | date:'short' }}</p>
+      </div>
+    }
   </div>
 
   <!-- Modal Edición/Creación -->
   <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-    <div class="detalle-content" *ngIf="metaEditando">
-      <div style="display: flex; align-items: flex-start; justify-content: space-between;">
-        <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Meta' : 'Agregar Meta' }}</h2>
-        <button mat-icon-button (click)="cancelarEdicion()" aria-label="Cerrar" class="close" type="button">
-          <mat-icon>close</mat-icon>
-        </button>
-      </div>
-      <p></p>
-      <form (ngSubmit)="guardarMeta()" class="form-container">
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Producto</mat-label>
-          <mat-select [(ngModel)]="metaEditando.producto" name="producto" required>
-            <mat-option value="" disabled>Seleccione...</mat-option>
-            <mat-option *ngFor="let p of productos" [value]="p">{{ p }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Región</mat-label>
-          <mat-select [(ngModel)]="metaEditando.region" name="region" required>
-            <mat-option value="" disabled>Seleccione...</mat-option>
-            <mat-option *ngFor="let r of regiones" [value]="r">{{ r }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Trimestre</mat-label>
-          <mat-select [(ngModel)]="metaEditando.trimestre" name="trimestre" required>
-            <mat-option value="" disabled>Seleccione...</mat-option>
-            <mat-option *ngFor="let t of trimestres" [value]="t">{{ t }}</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Valor objetivo</mat-label>
-          <input matInput type="number" [(ngModel)]="metaEditando.valorObjetivo" name="valorObjetivo" min="1" required>
-        </mat-form-field>
-        <mat-form-field appearance="outline" class="form-field">
-          <mat-label>Tipo</mat-label>
-          <mat-select [(ngModel)]="metaEditando.tipo" name="tipo" required>
-            <mat-option value="unidades">Unidades</mat-option>
-            <mat-option value="monetario">Monetario</mat-option>
-          </mat-select>
-        </mat-form-field>
-        <div class="form-actions">
-          <button mat-flat-button color="primary" type="submit">Guardar</button>
+    @if (metaEditando) {
+      <div class="detalle-content">
+        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
+          <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Meta' : 'Agregar Meta' }}</h2>
+          <button mat-icon-button (click)="cancelarEdicion()" aria-label="Cerrar" class="close" type="button">
+            <mat-icon>close</mat-icon>
+          </button>
         </div>
-      </form>
-    </div>
+        <p></p>
+        <form (ngSubmit)="guardarMeta()" class="form-container">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Producto</mat-label>
+            <mat-select [(ngModel)]="metaEditando.producto" name="producto" required>
+              <mat-option value="" disabled>Seleccione...</mat-option>
+              @for (p of productos; track p) {
+                <mat-option [value]="p">{{ p }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Región</mat-label>
+            <mat-select [(ngModel)]="metaEditando.region" name="region" required>
+              <mat-option value="" disabled>Seleccione...</mat-option>
+              @for (r of regiones; track r) {
+                <mat-option [value]="r">{{ r }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Trimestre</mat-label>
+            <mat-select [(ngModel)]="metaEditando.trimestre" name="trimestre" required>
+              <mat-option value="" disabled>Seleccione...</mat-option>
+              @for (t of trimestres; track t) {
+                <mat-option [value]="t">{{ t }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Valor objetivo</mat-label>
+            <input matInput type="number" [(ngModel)]="metaEditando.valorObjetivo" name="valorObjetivo" min="1" required>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Tipo</mat-label>
+            <mat-select [(ngModel)]="metaEditando.tipo" name="tipo" required>
+              <mat-option value="unidades">Unidades</mat-option>
+              <mat-option value="monetario">Monetario</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div class="form-actions">
+            <button mat-flat-button color="primary" type="submit">Guardar</button>
+          </div>
+        </form>
+      </div>
+    }
   </div>
 </div>

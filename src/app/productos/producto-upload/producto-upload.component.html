@@ -14,16 +14,18 @@
 
   <!-- Caja de carga -->
   <div class="upload-box"
-       (dragover)="onDragOver($event)" 
-       (drop)="onFileDrop($event)">
+    (dragover)="onDragOver($event)"
+    (drop)="onFileDrop($event)">
     <i class="fas fa-file-csv upload-icon"></i>
     <p>Arrastra y suelta tu archivo aquí o</p>
     <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".csv" hidden />
     <label for="fileInput" class="btn-outline">Seleccionar archivo</label>
 
-    <div *ngIf="archivoSeleccionado" class="file-info">
-      <span><i class="fas fa-check-circle"></i> {{ archivoSeleccionado.name }}</span>
-    </div>
+    @if (archivoSeleccionado) {
+      <div class="file-info">
+        <span><i class="fas fa-check-circle"></i> {{ archivoSeleccionado.name }}</span>
+      </div>
+    }
   </div>
 
   <!-- Botón procesar -->
@@ -40,7 +42,9 @@
   </div>
 
   <!-- Barra de progreso -->
-  <div *ngIf="cargando" class="progress-bar">
-    <span class="spinner"></span> Cargando...
-  </div>
+  @if (cargando) {
+    <div class="progress-bar">
+      <span class="spinner"></span> Cargando...
+    </div>
+  }
 </div>

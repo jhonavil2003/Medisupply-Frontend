@@ -15,8 +15,8 @@
         <option value="en_curso">En curso</option>
         <option value="completada">Completada</option>
       </select>
-      </div>
-      
+    </div>
+
   </div>
 
   <div class="card">
@@ -66,36 +66,40 @@
   </div>
 
   <!-- Modal Detalle -->
-  <div *ngIf="mostrarDetalle && rutaSeleccionada" class="detalle-modal">
-    <div class="detalle-content">
-      <button mat-icon-button class="close" (click)="cerrarDetalle()" aria-label="Cerrar detalle">
-        <mat-icon>close</mat-icon>
-      </button>
-      <h2>Detalle de ruta {{ rutaSeleccionada.id }}</h2>
-      <p><strong>Fecha:</strong> {{ rutaSeleccionada.fecha | date:'yyyy-MM-dd HH:mm' }}</p>
-      <p><strong>Vehículos:</strong> {{ rutaSeleccionada.vehiculos.join(', ') }}</p>
-      <p><strong>Conductor:</strong> {{ rutaSeleccionada.conductor }}</p>
-      <p><strong>Estado:</strong> {{ rutaSeleccionada.estado | titlecase }}</p>
-      <h4>Pedidos incluidos</h4>
-      <ul>
-        <mat-list>
-          <mat-list-item *ngFor="let p of rutaSeleccionada.pedidos">
-            <div matLine>
-              <strong>{{ p.id }}</strong> - {{ p.destino }}
-            </div>
-            <div matLine>
-              <span class="muted">{{ p.detalle }}</span>
+  @if (mostrarDetalle && rutaSeleccionada) {
+    <div class="detalle-modal">
+      <div class="detalle-content">
+        <button mat-icon-button class="close" (click)="cerrarDetalle()" aria-label="Cerrar detalle">
+          <mat-icon>close</mat-icon>
+        </button>
+        <h2>Detalle de ruta {{ rutaSeleccionada.id }}</h2>
+        <p><strong>Fecha:</strong> {{ rutaSeleccionada.fecha | date:'yyyy-MM-dd HH:mm' }}</p>
+        <p><strong>Vehículos:</strong> {{ rutaSeleccionada.vehiculos.join(', ') }}</p>
+        <p><strong>Conductor:</strong> {{ rutaSeleccionada.conductor }}</p>
+        <p><strong>Estado:</strong> {{ rutaSeleccionada.estado | titlecase }}</p>
+        <h4>Pedidos incluidos</h4>
+        <ul>
+          <mat-list>
+            @for (p of rutaSeleccionada.pedidos; track p) {
+              <mat-list-item>
+                <div matLine>
+                  <strong>{{ p.id }}</strong> - {{ p.destino }}
+                </div>
+                <div matLine>
+                  <span class="muted">{{ p.detalle }}</span>
               <span [ngClass]="{
                 'estado-pendiente': p.estado === 'pendiente',
                 'estado-curso': p.estado === 'en_ruta',
                 'estado-completada': p.estado === 'entregado'
               }">
-                ({{ p.estado | titlecase }})
-              </span>
-            </div>
-          </mat-list-item>
-        </mat-list>
-      </ul>
+                    ({{ p.estado | titlecase }})
+                  </span>
+                </div>
+              </mat-list-item>
+            }
+          </mat-list>
+        </ul>
+      </div>
     </div>
-  </div>
+  }
 </div>

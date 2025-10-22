@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
@@ -11,13 +11,12 @@ import { NotificationService } from '../../notification.service';
   selector: 'app-producto-upload',
   standalone: true,
   imports: [
-    CommonModule,
     RouterModule,
     MatButtonModule,
     MatIconModule,
     MatCardModule,
     MatProgressSpinnerModule
-  ],
+],
   templateUrl: './producto-upload.component.html',
   styleUrls: ['./producto-upload.component.css']
 })
