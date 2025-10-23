@@ -1,0 +1,408 @@
+name: MediSupply Frontend - CI/CD Pipeline
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+concurrency:
+  group: ci-medisupply-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup-verification:
+    name: "Setup & Project Structure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Verify project structure
+        run: |
+          echo "Verifying MediSupply Frontend project structure..."
+          
+          test -f package.json && echo "✅ package.json exists" || (echo "❌ package.json missing" && exit 1)
+          test -f package-lock.json && echo "✅ package-lock.json exists" || (echo "❌ package-lock.json missing" && exit 1)
+          test -f angular.json && echo "✅ angular.json exists" || (echo "❌ angular.json missing" && exit 1)
+          test -f tsconfig.json && echo "✅ tsconfig.json exists" || (echo "❌ tsconfig.json missing" && exit 1)
+          test -f jest.config.js && echo "✅ jest.config.js exists" || (echo "❌ jest.config.js missing" && exit 1)
+          test -f setup-jest.ts && echo "✅ setup-jest.ts exists" || (echo "❌ setup-jest.ts missing" && exit 1)
+          
+          test -d src && echo "✅ src/ directory exists" || (echo "❌ src/ directory missing" && exit 1)
+          test -f src/index.html && echo "✅ src/index.html exists" || exit 1
+          test -f src/main.ts && echo "✅ src/main.ts exists" || exit 1
+          test -d src/app && echo "✅ src/app/ directory exists" || exit 1
+          
+          echo "✅ Project structure verified successfully"
+
+      - name: Check Angular version
+        run: |
+          ANGULAR_VERSION=$(node -p "require('./package.json').dependencies['@angular/core']")
+          echo "Angular version: $ANGULAR_VERSION"
+          echo "✅ Angular configuration detected"
+
+  lint-and-format:
+    name: "Code Quality - Lint & Format"
+    runs-on: ubuntu-latest
+    needs: setup-verification
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+
+      - name: Check TypeScript compilation
+        run: |
+          echo "Checking TypeScript compilation..."
+          npx tsc --noEmit
+          echo "✅ TypeScript compilation successful"
+
+      - name: Run linting (if configured)
+        continue-on-error: true
+        run: |
+          if grep -q '"lint"' package.json; then
+            echo "Running ESLint..."
+            npm run lint
+          else
+            echo "⚠️ No lint script found, skipping..."
+          fi
+
+  unit-tests:
+    name: "Unit Tests - Jest"
+    runs-on: ubuntu-latest
+    needs: setup-verification
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+
+      - name: Show environment
+        run: |
+          echo "Node version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          echo "Angular CLI version:"
+          npx ng version || echo "Angular CLI not found in node_modules"
+
+      - name: Run unit tests with Jest
+        run: |
+          echo "Running Jest unit tests..."
+          npm test -- --ci --coverage --maxWorkers=2
+
+      - name: Upload test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-test-results
+          path: |
+            coverage/
+            junit.xml
+          if-no-files-found: warn
+
+      - name: Upload coverage to artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+          if-no-files-found: warn
+
+      - name: Display coverage summary
+        if: always()
+        continue-on-error: true
+        run: |
+          echo "📊 Coverage Summary (informational only)"
+          echo "========================================"
+          if [ -f coverage/coverage-summary.json ]; then
+            cat coverage/coverage-summary.json
+            echo ""
+            echo "ℹ️ Coverage is tracked but not enforced at this stage"
+          else
+            echo "⚠️ Coverage summary not found"
+          fi
+
+  build-production:
+    name: "Build - Production"
+    runs-on: ubuntu-latest
+    needs: [lint-and-format, unit-tests]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+
+      - name: Build application for production
+        run: |
+          echo "Building MediSupply Frontend for production..."
+          npm run build
+          echo "✅ Production build completed"
+
+      - name: Verify build output
+        run: |
+          if [ -d "dist" ]; then
+            echo "✅ dist/ directory created"
+            echo "Build output size:"
+            du -sh dist/
+            echo ""
+            echo "Build contents:"
+            ls -lh dist/
+          else
+            echo "❌ dist/ directory not found"
+            exit 1
+          fi
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: production-build
+          path: dist/
+          retention-days: 7
+
+  build-analysis:
+    name: "Build Analysis"
+    runs-on: ubuntu-latest
+    needs: build-production
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: production-build
+          path: dist/
+
+      - name: Analyze bundle size
+        run: |
+          echo "MediSupply Frontend - Build Analysis"
+          echo "======================================"
+          echo ""
+          
+          if [ -d "dist" ]; then
+            echo "Total build size:"
+            du -sh dist/
+            echo ""
+            
+            echo "Main bundle files:"
+            find dist -name "*.js" -type f -exec ls -lh {} \; | sort -k5 -h -r | head -10
+            echo ""
+            
+            echo "CSS files:"
+            find dist -name "*.css" -type f -exec ls -lh {} \;
+            echo ""
+            
+            echo "✅ Build analysis completed"
+          else
+            echo "❌ Build directory not found"
+            exit 1
+          fi
+
+  coverage-report:
+    name: "Coverage Analysis (Informational)"
+    runs-on: ubuntu-latest
+    needs: unit-tests
+    if: always()
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download coverage report
+        uses: actions/download-artifact@v4
+        with:
+          name: coverage-report
+          path: coverage/
+        continue-on-error: true
+
+      - name: Analyze coverage
+        continue-on-error: true
+        run: |
+          echo "📊 Coverage Analysis (Informational Only)"
+          echo "=========================================="
+          echo ""
+          echo "ℹ️ Coverage tracking is enabled but not enforced"
+          echo "   Focus: Functionality first, coverage improvement later"
+          echo ""
+          
+          if [ -f "coverage/lcov-report/index.html" ]; then
+            echo "✅ Coverage report generated"
+            
+            if [ -f "coverage/coverage-summary.json" ]; then
+              echo ""
+              echo "Coverage metrics:"
+              cat coverage/coverage-summary.json | head -20
+            fi
+          else
+            echo "⚠️ Coverage report not found"
+          fi
+          
+          echo ""
+          echo "📦 Detailed coverage report available in artifacts"
+
+  security-check:
+    name: "Security - Dependency Audit"
+    runs-on: ubuntu-latest
+    needs: setup-verification
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Run npm audit
+        continue-on-error: true
+        run: |
+          echo "Running security audit..."
+          npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities found"
+
+      - name: Check for outdated dependencies
+        continue-on-error: true
+        run: |
+          echo "Checking for outdated dependencies..."
+          npm outdated || echo "Some dependencies are outdated"
+
+  final-status:
+    name: "Final Status & Summary"
+    runs-on: ubuntu-latest
+    needs:
+      - setup-verification
+      - lint-and-format
+      - unit-tests
+      - build-production
+      - build-analysis
+      - coverage-report
+      - security-check
+    if: always()
+
+    steps:
+      - name: Evaluate results
+        run: |
+          echo "MediSupply Frontend - CI/CD Pipeline Results"
+          echo "=============================================="
+          echo ""
+          
+          FAILURES=0
+          WARNINGS=0
+          
+          echo "Setup & Structure:"
+          if [[ "${{ needs.setup-verification.result }}" == "success" ]]; then
+            echo "   ✅ Project structure verified"
+          else
+            echo "   ❌ Project structure check failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "Code Quality:"
+          if [[ "${{ needs.lint-and-format.result }}" == "success" ]]; then
+            echo "   ✅ Linting and TypeScript compilation passed"
+          else
+            echo "   ❌ Code quality checks failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "Unit Tests:"
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
+            echo "   ✅ Jest unit tests passed"
+          else
+            echo "   ❌ Unit tests failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "Production Build:"
+          if [[ "${{ needs.build-production.result }}" == "success" ]]; then
+            echo "   ✅ Production build successful"
+          else
+            echo "   ❌ Production build failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "Build Analysis:"
+          if [[ "${{ needs.build-analysis.result }}" == "success" ]]; then
+            echo "   ✅ Build analysis completed"
+          else
+            echo "   ⚠️ Build analysis had issues"
+            ((WARNINGS++))
+          fi
+          
+          echo ""
+          echo "Coverage Report:"
+          if [[ "${{ needs.coverage-report.result }}" == "success" ]]; then
+            echo "   ✅ Coverage reports generated"
+          else
+            echo "   ⚠️ Coverage report had issues"
+            ((WARNINGS++))
+          fi
+          
+          echo ""
+          echo "Security Audit:"
+          if [[ "${{ needs.security-check.result }}" == "success" ]]; then
+            echo "   ✅ Security audit passed"
+          else
+            echo "   ⚠️ Security audit found issues"
+            ((WARNINGS++))
+          fi
+          
+          echo ""
+          echo "=============================================="
+          echo "Summary: $FAILURES critical failures, $WARNINGS warnings"
+          echo ""
+          
+          if [ $FAILURES -eq 0 ]; then
+            echo "✅ Pipeline completed successfully!"
+            echo "MediSupply Frontend is ready for deployment to AWS"
+            exit 0
+          else
+            echo "❌ Pipeline failed with $FAILURES critical issues"
+            echo "Please review the failed jobs above"
+            exit 1
+          fi

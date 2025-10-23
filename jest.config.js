@@ -10,7 +10,24 @@ module.exports = {
     'src/**/*.ts',
     '!src/**/*.spec.ts',
     '!src/main.ts',
+    '!src/main.server.ts',
+    '!src/server.ts',
+    '!src/app/**/*.server.ts',
+    '!src/app/app.config.server.ts',
+    '!src/app/app.routes.server.ts',
     '!src/environments/**'
+  ],
+  coverageReporters: ['html', 'text', 'text-summary', 'lcov', 'json-summary'],
+  reporters: [
+    'default',
+    ['jest-junit', {
+      outputDirectory: '.',
+      outputName: 'junit.xml',
+      classNameTemplate: '{classname}',
+      titleTemplate: '{title}',
+      ancestorSeparator: ' › ',
+      usePathForSuiteName: true
+    }]
   ],
   moduleNameMapper: {
     '@app/(.*)': '<rootDir>/src/app/$1',
