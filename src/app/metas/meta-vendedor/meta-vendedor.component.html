@@ -1,6 +1,6 @@
 <h2>Mis metas de venta</h2>
 <ul>
-  @for (meta of metas; track meta) {
+  @for (meta of metas(); track meta) {
     <li>
       <strong>{{ meta.producto }}</strong> — {{ meta.region }} — {{ meta.trimestre }}:
       <span>{{ meta.valorObjetivo }} {{ meta.tipo === 'unidades' ? 'unidades' : 'moneda' }}</span>

@@ -1,5 +1,5 @@
 // notification.service.ts
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
 import { MatDialog } from '@angular/material/dialog';
 
@@ -8,10 +8,8 @@ import { MatDialog } from '@angular/material/dialog';
   providedIn: 'root'
 })
 export class NotificationService {
-  constructor(
-    private toastr: ToastrService,
-    private dialog: MatDialog
-  ) {}
+  private toastr = inject(ToastrService);
+  private dialog = inject(MatDialog);
 
   // ✅ Toasts
   success(msg: string, title?: string) {
