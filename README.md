@@ -1,24 +1,8 @@
 # MISO-ProyectoFinal1
 
-Proyecto Final 1 - MediSupply
 
-## Descripción
-Este proyecto Angular permite administrar proveedores, productos y vendedores con una interfaz moderna, filtros de búsqueda, navegación intuitiva y CRUD completo.
 
-## Requisitos
-- Node.js (v18 o superior recomendado)
-- Angular CLI
-- Git
-
-## Instalación y uso
-
-### 1. Clonar el repositorio
-```sh
-git clone https://github.com/wilderlopezm2024/MISO-ProyectoFinal1.git
-cd MISO-ProyectoFinal1
-```
-
-### 2. Instalar dependencias
+### 1. Instalar dependencias
 ```sh
 npm install
 ```
@@ -105,6 +89,3 @@ La elección del color azul y la tipografía sans-serif responde a principios de
 
 ## Autor
 Grupo 11
-
----
-¿Dudas o sugerencias? Abre un issue en el repositorio.
