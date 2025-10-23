@@ -88,79 +88,21 @@ jobs:
           echo "Running Jest unit tests..."
           npm test -- --ci --coverage --maxWorkers=2
 
-      - name: Upload test results
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: jest-test-results
-          path: |
-            coverage/
-            junit.xml
-          if-no-files-found: warn
-
-      - name: Upload coverage to artifact
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-          if-no-files-found: warn
-
       - name: Display coverage summary
         if: always()
         continue-on-error: true
         run: |
-          echo "📊 Coverage Summary (informational only)"
-          echo "========================================"
+          echo ""
+          echo "📊 Coverage Summary"
+          echo "==================="
+          echo ""
           if [ -f coverage/coverage-summary.json ]; then
             cat coverage/coverage-summary.json
-            echo ""
-            echo "ℹ️ Coverage is tracked but not enforced at this stage"
           else
             echo "⚠️ Coverage summary not found"
           fi
-
-  coverage-report:
-    name: "Coverage Analysis (Informational)"
-    runs-on: ubuntu-latest
-    needs: unit-tests
-    if: always()
-    continue-on-error: true
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download coverage report
-        uses: actions/download-artifact@v4
-        with:
-          name: coverage-report
-          path: coverage/
-        continue-on-error: true
-
-      - name: Analyze coverage
-        continue-on-error: true
-        run: |
-          echo "📊 Coverage Analysis (Informational Only)"
-          echo "=========================================="
           echo ""
-          echo "ℹ️ Coverage tracking is enabled but not enforced"
-          echo "   Focus: Functionality first, coverage improvement later"
-          echo ""
-          
-          if [ -f "coverage/lcov-report/index.html" ]; then
-            echo "✅ Coverage report generated"
-            
-            if [ -f "coverage/coverage-summary.json" ]; then
-              echo ""
-              echo "Coverage metrics:"
-              cat coverage/coverage-summary.json | head -20
-            fi
-          else
-            echo "⚠️ Coverage report not found"
-          fi
-          
-          echo ""
-          echo "📦 Detailed coverage report available in artifacts"
+          echo "ℹ️ Coverage is tracked but not enforced"
 
   final-status:
     name: "Final Status & Summary"
@@ -168,7 +110,6 @@ jobs:
     needs:
       - setup-verification
       - unit-tests
-      - coverage-report
     if: always()
 
     steps:
@@ -179,7 +120,6 @@ jobs:
           echo ""
           
           FAILURES=0
-          WARNINGS=0
           
           echo "Setup & Structure:"
           if [[ "${{ needs.setup-verification.result }}" == "success" ]]; then
@@ -199,17 +139,8 @@ jobs:
           fi
           
           echo ""
-          echo "Coverage Report:"
-          if [[ "${{ needs.coverage-report.result }}" == "success" ]]; then
-            echo "   ✅ Coverage reports generated"
-          else
-            echo "   ℹ️ Coverage report informational (non-blocking)"
-            ((WARNINGS++))
-          fi
-          
-          echo ""
           echo "=============================================="
-          echo "Summary: $FAILURES critical failures, $WARNINGS informational warnings"
+          echo "Summary: $FAILURES critical failures"
           echo ""
           
           if [ $FAILURES -eq 0 ]; then
