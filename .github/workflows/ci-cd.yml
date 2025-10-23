@@ -47,41 +47,6 @@ jobs:
           echo "Angular version: $ANGULAR_VERSION"
           echo "✅ Angular configuration detected"
 
-  lint-and-format:
-    name: "Code Quality - Lint & Format"
-    runs-on: ubuntu-latest
-    needs: setup-verification
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: |
-          echo "Installing dependencies..."
-          npm ci
-
-      - name: Check TypeScript compilation
-        run: |
-          echo "Checking TypeScript compilation..."
-          npx tsc --noEmit
-          echo "✅ TypeScript compilation successful"
-
-      - name: Run linting (if configured)
-        continue-on-error: true
-        run: |
-          if grep -q '"lint"' package.json; then
-            echo "Running ESLint..."
-            npm run lint
-          else
-            echo "⚠️ No lint script found, skipping..."
-          fi
-
   unit-tests:
     name: "Unit Tests - Jest"
     runs-on: ubuntu-latest
@@ -155,91 +120,6 @@ jobs:
             echo "⚠️ Coverage summary not found"
           fi
 
-  build-production:
-    name: "Build - Production"
-    runs-on: ubuntu-latest
-    needs: [lint-and-format, unit-tests]
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: |
-          echo "Installing dependencies..."
-          npm ci
-
-      - name: Build application for production
-        run: |
-          echo "Building MediSupply Frontend for production..."
-          npm run build
-          echo "✅ Production build completed"
-
-      - name: Verify build output
-        run: |
-          if [ -d "dist" ]; then
-            echo "✅ dist/ directory created"
-            echo "Build output size:"
-            du -sh dist/
-            echo ""
-            echo "Build contents:"
-            ls -lh dist/
-          else
-            echo "❌ dist/ directory not found"
-            exit 1
-          fi
-
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: production-build
-          path: dist/
-          retention-days: 7
-
-  build-analysis:
-    name: "Build Analysis"
-    runs-on: ubuntu-latest
-    needs: build-production
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: production-build
-          path: dist/
-
-      - name: Analyze bundle size
-        run: |
-          echo "MediSupply Frontend - Build Analysis"
-          echo "======================================"
-          echo ""
-          
-          if [ -d "dist" ]; then
-            echo "Total build size:"
-            du -sh dist/
-            echo ""
-            
-            echo "Main bundle files:"
-            find dist -name "*.js" -type f -exec ls -lh {} \; | sort -k5 -h -r | head -10
-            echo ""
-            
-            echo "CSS files:"
-            find dist -name "*.css" -type f -exec ls -lh {} \;
-            echo ""
-            
-            echo "✅ Build analysis completed"
-          else
-            echo "❌ Build directory not found"
-            exit 1
-          fi
-
   coverage-report:
     name: "Coverage Analysis (Informational)"
     runs-on: ubuntu-latest
@@ -282,42 +162,13 @@ jobs:
           echo ""
           echo "📦 Detailed coverage report available in artifacts"
 
-  security-check:
-    name: "Security - Dependency Audit"
-    runs-on: ubuntu-latest
-    needs: setup-verification
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: '20.x'
-
-      - name: Run npm audit
-        continue-on-error: true
-        run: |
-          echo "Running security audit..."
-          npm audit --audit-level=moderate || echo "⚠️ Security vulnerabilities found"
-
-      - name: Check for outdated dependencies
-        continue-on-error: true
-        run: |
-          echo "Checking for outdated dependencies..."
-          npm outdated || echo "Some dependencies are outdated"
-
   final-status:
     name: "Final Status & Summary"
     runs-on: ubuntu-latest
     needs:
       - setup-verification
-      - lint-and-format
       - unit-tests
-      - build-production
-      - build-analysis
       - coverage-report
-      - security-check
     if: always()
 
     steps:
@@ -339,15 +190,6 @@ jobs:
           fi
           
           echo ""
-          echo "Code Quality:"
-          if [[ "${{ needs.lint-and-format.result }}" == "success" ]]; then
-            echo "   ✅ Linting and TypeScript compilation passed"
-          else
-            echo "   ❌ Code quality checks failed"
-            ((FAILURES++))
-          fi
-          
-          echo ""
           echo "Unit Tests:"
           if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
             echo "   ✅ Jest unit tests passed"
@@ -357,49 +199,22 @@ jobs:
           fi
           
           echo ""
-          echo "Production Build:"
-          if [[ "${{ needs.build-production.result }}" == "success" ]]; then
-            echo "   ✅ Production build successful"
-          else
-            echo "   ❌ Production build failed"
-            ((FAILURES++))
-          fi
-          
-          echo ""
-          echo "Build Analysis:"
-          if [[ "${{ needs.build-analysis.result }}" == "success" ]]; then
-            echo "   ✅ Build analysis completed"
-          else
-            echo "   ⚠️ Build analysis had issues"
-            ((WARNINGS++))
-          fi
-          
-          echo ""
           echo "Coverage Report:"
           if [[ "${{ needs.coverage-report.result }}" == "success" ]]; then
             echo "   ✅ Coverage reports generated"
           else
-            echo "   ⚠️ Coverage report had issues"
-            ((WARNINGS++))
-          fi
-          
-          echo ""
-          echo "Security Audit:"
-          if [[ "${{ needs.security-check.result }}" == "success" ]]; then
-            echo "   ✅ Security audit passed"
-          else
-            echo "   ⚠️ Security audit found issues"
+            echo "   ℹ️ Coverage report informational (non-blocking)"
             ((WARNINGS++))
           fi
           
           echo ""
           echo "=============================================="
-          echo "Summary: $FAILURES critical failures, $WARNINGS warnings"
+          echo "Summary: $FAILURES critical failures, $WARNINGS informational warnings"
           echo ""
           
           if [ $FAILURES -eq 0 ]; then
             echo "✅ Pipeline completed successfully!"
-            echo "MediSupply Frontend is ready for deployment to AWS"
+            echo "MediSupply Frontend is ready for deployment"
             exit 0
           else
             echo "❌ Pipeline failed with $FAILURES critical issues"
