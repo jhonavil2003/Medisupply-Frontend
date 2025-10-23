@@ -1,59 +1,110 @@
-# Medisupply
+# MISO-ProyectoFinal1
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.2.
+Proyecto Final 1 - MediSupply
 
-## Development server
+## Descripción
+Este proyecto Angular permite administrar proveedores, productos y vendedores con una interfaz moderna, filtros de búsqueda, navegación intuitiva y CRUD completo.
 
-To start a local development server, run:
+## Requisitos
+- Node.js (v18 o superior recomendado)
+- Angular CLI
+- Git
 
-```bash
+## Instalación y uso
+
+### 1. Clonar el repositorio
+```sh
+git clone https://github.com/wilderlopezm2024/MISO-ProyectoFinal1.git
+cd MISO-ProyectoFinal1
+```
+
+### 2. Instalar dependencias
+```sh
+npm install
+```
+
+### 3. Ejecutar la aplicación
+```sh
 ng serve
 ```
+La app estará disponible en [http://localhost:4200](http://localhost:4200)
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Estructura principal
+- `src/app/proveedores` - Módulo de proveedores
+- `src/app/productos` - Módulo de productos
+- `src/app/vendedores` - Módulo de vendedores
+- `src/app/dashboard-admin` - Dashboard principal
+- `src/app/menu-principal` - Menú principal
 
-## Code scaffolding
+## Funcionalidades
+- Listado, búsqueda y filtrado de entidades
+- Agregar, editar y eliminar registros
+- Navegación entre módulos
+- Diseño responsivo y moderno
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
 
-```bash
-ng generate component component-name
-```
+## Capturas de pantalla y recursos visuales
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+### Dashboard principal
+![Dashboard](src/assets/dashboard.png)
 
-```bash
-ng generate --help
-```
+### Productos
+![Productos](src/assets/productos.png)
 
-## Building
+### Proveedores
+![Proveedores](src/assets/proveedores.png)
 
-To build the project run:
+### Proveedores - Carga masiva
+![Proveedores carga masiva](src/assets/proveedores_carga_masiva.png)
 
-```bash
-ng build
-```
+### Vendedores
+![Vendedores](src/assets/vendedores.png)
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+### Metas
+![Metas](src/assets/metas.png)
 
-## Running unit tests
+### Rutas
+![Rutas](src/assets/rutas.png)
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+### Reporte de ventas
+![Reporte de ventas](src/assets/reporte_ventas.png)
 
-```bash
-ng test
-```
+## Justificación de diseño
 
-## Running end-to-end tests
+### Colorimetría
 
-For end-to-end (e2e) testing, run:
+**Color primario azul (`--color-primary`):**
+- El azul transmite confianza, profesionalismo y seguridad, valores esenciales para aplicaciones empresariales y de gestión.
+- Es un color que no genera fatiga visual, ideal para interfaces de uso prolongado.
+- Las variantes de azul para hover y active refuerzan la jerarquía visual y la interacción, manteniendo coherencia y dinamismo.
 
-```bash
-ng e2e
-```
+**Colores de estado (verde, naranja, rojo):**
+- Se utilizan para comunicar estados de éxito, advertencia y error, siguiendo convenciones universales y facilitando la interpretación inmediata.
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+**Fondos claros y contrastes:**
+- Los fondos blancos y grises claros aseguran máxima legibilidad y un aspecto moderno y profesional, permitiendo que los elementos interactivos y la información relevante destaquen.
 
-## Additional Resources
+---
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+### Tipografía
+
+**Fuente base sans-serif (`Inter, Roboto, Arial, sans-serif`):**
+- Las fuentes sans-serif son estándar en aplicaciones web modernas por su alta legibilidad y aspecto profesional.
+- `Inter` y `Roboto` están diseñadas para interfaces digitales, optimizadas para distintos tamaños y resoluciones, mejorando la experiencia en escritorio y móvil.
+- El uso de una familia de fuentes con fallback garantiza compatibilidad y consistencia visual en todos los sistemas y navegadores.
+
+**Jerarquía y peso:**
+- Títulos y encabezados usan mayor peso y tamaño para guiar la atención y facilitar la navegación visual.
+- Textos secundarios y de ayuda emplean tonos grises y menor peso para no competir con la información principal, manteniendo la interfaz limpia y ordenada.
+
+---
+
+### Resumen
+
+La elección del color azul y la tipografía sans-serif responde a principios de usabilidad, accesibilidad y percepción profesional, asegurando que la aplicación sea confiable, agradable y fácil de usar para cualquier usuario.
+
+## Autor
+Grupo 11
+
+---
+¿Dudas o sugerencias? Abre un issue en el repositorio.

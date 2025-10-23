@@ -1,0 +1,253 @@
+/* === Estilos globales para modales y formularios === */
+@use '@angular/material' as mat;
+
+@include mat.core();
+
+// =============================
+// 🎨 1. Tokens de diseño global
+// =============================
+:root {
+  --color-primary: #1E63A8;
+  --color-primary-dark: #1565c0; // hover
+  --color-primary-darker: #0d47a1; // active
+  --color-bg: #F7FAFC;
+  --color-white: #fff;
+  --color-muted: #6B7280;
+  --color-sidebar-bg: #0d2c54;
+  --color-sidebar-hover: #133c6d;
+  --color-success: #22c55e;
+  --color-warning: #f59e42;
+  --color-danger: #dc2626;
+  --color-danger-dark: #b91c1c;
+  --color-border: #cbd5e1;
+  --color-table-row: #fff;
+  --color-table-row-alt: #f3f6fa;
+  --color-table-row-hover: #e6eef9;
+  --color-table-header: #f3f6fa;
+  --radius: 10px;
+  --shadow: 0 4px 16px rgba(30,99,168,0.08);
+  --font-base: Inter, Roboto, Arial, sans-serif;
+}
+
+// =====================================
+// 🎨 2. Definición de paleta personalizada
+// =====================================
+$my-blue-palette: (
+  50:  #e3f2fd,
+  100: #bbdefb,
+  200: #90caf9,
+  300: #64b5f6,
+  400: #42a5f5,
+  500: #2196f3,
+  600: #1E63A8,       // base
+  700: #1565c0,  // hover
+  800: #0d47a1,// active
+  900: #0d47a1,
+  A100: #82b1ff,
+  A200: #448aff,
+  A400: #2979ff,
+  A700: #2962ff,
+  contrast: (
+    50:  black,
+    100: black,
+    200: black,
+    300: black,
+    400: black,
+    500: white,
+    600: white,
+    700: white,
+    800: white,
+    900: white,
+    A100: black,
+    A200: white,
+    A400: white,
+    A700: white,
+  )
+);
+
+// ==============================
+// 🎨 3. Tema Material Design
+// ==============================
+$my-primary: mat.m2-define-palette($my-blue-palette, 600, 700, 800);
+$my-accent: mat.m2-define-palette(mat.$m2-pink-palette, 500);
+$my-warn: mat.m2-define-palette(mat.$m2-red-palette);
+
+$my-theme: mat.m2-define-light-theme((
+  color: (
+    primary: $my-primary,
+    accent: $my-accent,
+    warn: $my-warn,
+  )
+));
+
+@include mat.all-component-themes($my-theme);
+
+// =============================
+// ✨ 4. Estilos globales
+// =============================
+.container {
+  background: var(--color-white);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  margin: 24px 0;
+}
+
+.container h2 {
+  color: var(--color-primary);
+  margin-bottom: 16px;
+}
+
+// Tablas modernas
+.modern-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-family: var(--font-base);
+  font-size: 0.97rem;
+  letter-spacing: 0.01em;
+
+  th {
+    font-size: 1.05rem;
+    font-weight: 400;
+    color: var(--color-primary);
+    padding: 12px 8px;
+    border-bottom: 2px solid var(--color-border);
+  }
+
+  td {
+    font-size: 0.97rem;
+    color: #444;
+    padding: 10px 8px;
+    border-bottom: 1px solid var(--color-table-row-alt);
+  }
+
+  thead tr {
+    background: var(--color-table-header);
+  }
+
+  tbody tr:nth-child(odd) {
+    background: var(--color-table-row) !important;
+  }
+
+  tbody tr:nth-child(even) {
+    background: var(--color-table-row-alt) !important;
+  }
+
+  tbody tr:hover {
+    background: var(--color-table-row-hover) !important;
+  }
+}
+
+// Toastr
+.toast-top-right {
+  top: 1rem !important;
+  right: 1rem !important;
+  position: fixed !important;
+  z-index: 9999 !important;
+}
+
+// Layout
+body {
+  background: var(--color-bg);
+  font-family: var(--font-base);
+  margin: 0;
+  color: #222;
+}
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.main-content {
+  flex: 1;
+  background: #f5f6fa;
+  padding: 24px;
+  min-width: 0;
+}
+
+html, body {
+  height: 100%;
+}
+
+// Botones de acción
+
+/* Acciones para tablas (íconos de acción) */
+.actions {
+  display: flex;
+  gap: 18px;
+  justify-content: center;
+  align-items: center;
+}
+
+.btn-icon {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  font-size: 1.25rem;
+  color: var(--color-icon);
+  transition: color 0.2s;
+}
+
+.btn-icon:hover {
+  color: var(--color-primary);
+}
+
+// Títulos Material
+.mat-h2,
+.mat-h3 {
+  color: var(--color-primary);
+}
+
+// Modales (solo los nuevos con MatDialog)
+.detalle-modal {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+
+
+.modal-content, .detalle-content {
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 420px;
+  max-width: 95vw;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: var(--shadow);
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  font-size: 1.2rem;
+  z-index: 10;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 0;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}

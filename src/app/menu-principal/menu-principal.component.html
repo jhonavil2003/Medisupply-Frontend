@@ -1,0 +1,52 @@
+<div class="sidebar" [ngClass]="{ 'collapsed': !sidebarVisible }">
+  <button class="toggle-btn" (click)="toggleSidebar()">
+    <i class="fas fa-bars"></i>
+  </button>
+  <ul>
+    <li>
+      <i class="fas fa-home"></i>
+      <span class="menu-text" (click)="navigateTo('')">Inicio</span>
+    </li>
+    <li (click)="toggleSubmenu('gestion')" [ngClass]="{ 'active': gestionOpen }">
+      <i class="fas fa-clipboard-list"></i>
+      <span class="menu-text">Gestión</span>
+      <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': gestionOpen }"></i>
+    </li>
+    <ul class="submenu" [ngStyle]="{ display: gestionOpen ? 'flex' : 'none' }">
+  <li class="menuitem" (click)="navigateTo('proveedor-list')">Proveedores</li>
+  <li class="menuitem" (click)="navigateTo('producto-list')">Productos</li>
+  <li class="menuitem" (click)="navigateTo('vendedor-list')">Vendedores</li>
+  <li class="menuitem" (click)="navigateTo('metas-list')">Metas de venta</li>
+    </ul>
+    <li (click)="toggleSubmenu('ventas')" [ngClass]="{ 'active': ventasOpen }">
+      <i class="fas fa-chart-line"></i>
+      <span class="menu-text">Ventas y Reportes</span>
+      <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': ventasOpen }"></i>
+    </li>
+    <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
+  <li class="menuitem" (click)="navigateTo('metas-list')">Planes de venta</li>
+  <li class="menuitem" (click)="navigateTo('informe-ventas')">Reportes e informes</li>
+    </ul>
+    <li (click)="toggleSubmenu('logistica')" [ngClass]="{ 'active': logisticaOpen }">
+      <i class="fas fa-truck"></i>
+      <span class="menu-text">Logística</span>
+      <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': logisticaOpen }"></i>
+    </li>
+    <ul class="submenu" [ngStyle]="{ display: logisticaOpen ? 'flex' : 'none' }">
+  <li class="menuitem" (click)="navigateTo('producto-localizacion')">Inventario / Localización</li>
+  <li class="menuitem" (click)="navigateTo('rutas-entrega')">Rutas de entrega</li>
+    </ul>
+    <li>
+      <i class="fas fa-question-circle"></i>
+      <span class="menu-text">Ayuda</span>
+    </li>
+    <li>
+      <i class="fas fa-life-ring"></i>
+      <span class="menu-text">Soporte</span>
+    </li>
+    <li>
+      <i class="fas fa-file-alt"></i>
+      <span class="menu-text">Política de privacidad</span>
+    </li>
+  </ul>
+</div>

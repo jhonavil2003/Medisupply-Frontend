@@ -1,0 +1,110 @@
+/* lateral3.css - Estilos para el sidebar y contenido principal */
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  display: flex;
+}
+
+/* Sidebar */
+.sidebar {
+  background-color: var(--color-sidebar-bg);
+  color: var(--color-white);
+  height: 100vh;
+  width: 240px;
+  transition: width 0.3s;
+  overflow: hidden;
+}
+
+.sidebar.collapsed {
+  width: 70px;
+}
+
+.sidebar .toggle-btn {
+  background: none;
+  border: none;
+  color: var(--color-white);
+  font-size: 20px;
+  margin: 10px;
+  cursor: pointer;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+  margin: 15px 0;
+}
+
+.sidebar ul li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 15px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.sidebar ul li:hover {
+  background-color: var(--color-sidebar-hover);
+}
+
+.sidebar ul li i {
+  font-size: 18px;
+  margin-right: 12px;
+  min-width: 25px;
+  text-align: center;
+}
+
+
+.sidebar ul li .menu-text {
+  flex: 1;
+  text-align: left;
+}
+
+.sidebar ul li .arrow {
+  transition: transform 0.3s;
+  margin-left: 8px;
+}
+
+.sidebar ul li .arrow.open {
+  transform: rotate(90deg);
+}
+
+
+.sidebar.collapsed ul li span,
+.sidebar.collapsed ul li .arrow {
+  display: none;
+}
+
+/* Submenús */
+.submenu {
+  display: none;
+  flex-direction: column;
+  padding-left: 20px;
+  background: var(--color-sidebar-bg);
+  margin-top: -5px;
+}
+
+.submenu li {
+  padding: 6px 0;
+  font-size: 14px;
+  color: var(--color-muted);
+}
+
+.submenu li:hover {
+  color: var(--color-white);
+}
+
+.sidebar ul li.active + .submenu {
+  display: flex;
+}
+
+.sidebar.collapsed .submenu {
+  display: none !important;
+}
+
+/* Contenido principal */
+.content {
+  flex: 1;
+  padding: 20px;
+  background-color: var(--color-bg);
+}
