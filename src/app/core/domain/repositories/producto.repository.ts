@@ -1,47 +1,23 @@
 import { Observable } from 'rxjs';
-import { ProductoEntity, CreateProductoDto, UpdateProductoDto } from '../entities/producto.entity';
+import { 
+  ProductoEntity, 
+  ProductoDetailedEntity,
+  ProductListResponse,
+  ProductQueryParams
+} from '../entities/producto.entity';
 
-/**
- * Contrato del repositorio de Productos
- */
 export abstract class ProductoRepository {
-  /**
-   * Obtiene todos los productos
-   */
-  abstract getAll(): Observable<ProductoEntity[]>;
-
-  /**
-   * Obtiene un producto por ID
-   */
-  abstract getById(id: string): Observable<ProductoEntity | null>;
-
-  /**
-   * Busca productos por criterio
-   */
-  abstract search(criteria: string): Observable<ProductoEntity[]>;
-
-  /**
-   * Crea un nuevo producto
-   */
-  abstract create(producto: CreateProductoDto): Observable<ProductoEntity>;
-
-  /**
-   * Actualiza un producto existente
-   */
-  abstract update(producto: UpdateProductoDto): Observable<ProductoEntity>;
-
-  /**
-   * Elimina un producto por ID
-   */
-  abstract delete(id: string): Observable<boolean>;
-
-  /**
-   * Filtra productos por categoría
-   */
-  abstract filterByCategoria(categoria: string): Observable<ProductoEntity[]>;
-
-  /**
-   * Filtra productos por proveedor
-   */
-  abstract filterByProveedor(proveedorId: string): Observable<ProductoEntity[]>;
+  abstract getAll(params?: ProductQueryParams): Observable<ProductListResponse>;
+  
+  abstract getBySku(sku: string): Observable<ProductoDetailedEntity>;
+  
+  abstract searchProducts(searchTerm: string, page?: number, perPage?: number): Observable<ProductListResponse>;
+  
+  abstract getActiveProducts(page?: number, perPage?: number): Observable<ProductListResponse>;
+  
+  abstract getProductsByCategory(category: string, page?: number): Observable<ProductListResponse>;
+  
+  abstract getColdChainProducts(page?: number): Observable<ProductListResponse>;
+  
+  abstract getProductsBySupplier(supplierId: number, page?: number): Observable<ProductListResponse>;
 }

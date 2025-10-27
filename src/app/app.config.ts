@@ -10,6 +10,7 @@ import { CORE_PROVIDERS } from './core/core.providers';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    ...CORE_PROVIDERS,
     provideBrowserGlobalErrorListeners(),
     provideZonelessChangeDetection(),
     provideRouter(routes),
@@ -21,7 +22,6 @@ export const appConfig: ApplicationConfig = {
       positionClass: 'toast-top-right',
       preventDuplicates: true,
       progressBar: true
-    }),
-    ...CORE_PROVIDERS
+    })
   ]
 };

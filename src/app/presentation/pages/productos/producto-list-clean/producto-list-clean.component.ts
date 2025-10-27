@@ -22,7 +22,7 @@ import { SearchProductosUseCase } from '../../../../core/application/use-cases/p
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
-  selector: 'app-producto-list',
+  selector: 'app-producto-list-clean',
   standalone: true,
   imports: [
     CommonModule,
@@ -41,10 +41,10 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatChipsModule,
     MatCheckboxModule
   ],
-  templateUrl: './producto-list.component.html',
-  styleUrls: ['./producto-list.component.css']
+  templateUrl: './producto-list-clean.component.html',
+  styleUrls: ['./producto-list-clean.component.css']
 })
-export class ProductoListComponent implements OnInit, AfterViewInit {
+export class ProductoListCleanComponent implements OnInit, AfterViewInit {
   private getAllProductosUseCase = inject(GetAllProductosUseCase);
   private searchProductosUseCase = inject(SearchProductosUseCase);
   private notify = inject(NotificationService);
