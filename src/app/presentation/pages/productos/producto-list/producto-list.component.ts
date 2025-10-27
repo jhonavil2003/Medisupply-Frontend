@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ProductoService } from '../producto.service';
 import { Producto } from '../producto';
-import { NotificationService } from '../../notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 
 @Component({

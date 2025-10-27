@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ToastrService } from 'ngx-toastr';
-import { MenuPrincipalComponent } from './menu-principal/menu-principal.component';
+import { MenuPrincipalComponent } from './presentation/layout/menu-principal/menu-principal.component';
 
 @Component({
   selector: 'app-root',

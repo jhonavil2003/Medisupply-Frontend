@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { VendedorService } from './vendedor.service';
 import { Vendedor } from './vendedor';
-import { NotificationService } from '../notification.service';
+import { NotificationService } from '../../shared/services/notification.service';
 
 
 @Component({

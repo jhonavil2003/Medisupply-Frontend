@@ -13,7 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { ProveedorService } from '../proveedor.service';
 import { Proveedor } from '../proveedor';
-import { NotificationService } from '../../notification.service';
+import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
   selector: 'app-proveedor-list',
