@@ -1,0 +1,110 @@
+/* Ajuste de ancho y padding del modal para que el botón guardar sea visible */
+.detalle-modal {
+  display: none;
+  position: fixed;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
+  background: rgba(0,0,0,0.5);
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.detalle-content {
+  background: var(--color-white);
+  border-radius: 12px;
+  padding: 2rem;
+  width: 420px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+
+/* contenedor flex que iguala alturas */
+.search-wrap {
+  display: flex;
+  gap: 8px;
+  align-items: stretch; /* clave: que los hijos estiren verticalmente */
+  width: 100%;
+}
+
+/* mat-form-field ocupa todo el espacio disponible */
+.search-field {
+  flex: 1;
+  margin: 0; /* evita márgenes inesperados */
+}
+
+/* botón se estira para igualar la altura del mat-form-field */
+.search-btn {
+  align-self: stretch;       /* hace que la altura coincida */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 14px;
+  min-width: 48px;
+  box-shadow: none;          /* opcional, para look más plano */
+}
+
+/* ajuste visual: que el botón no tenga mucho padding vertical */
+.search-btn .mat-button-wrapper {
+  padding: 0 10px; 
+}
+
+/* fallback si tu tema produce otra altura (opcional) */
+@media (min-width: 0px) {
+  .search-field .mat-form-field-wrapper,
+  .search-field .mat-form-field-flex {
+    min-height: 56px; /* keep consistent with Material default outline */
+  }
+  .search-btn { min-height: 56px; }
+}
+
+/* en pantallas pequeñas */
+@media (max-width: 600px) {
+  .search-wrap { flex-direction: column; }
+  .search-btn { width: 100%; }
+  .search-field { width: 100%; }
+}
+/* iguala la altura del botón al campo */
+
+.search-bar .search-btn {
+  height: 46px;              /* coincide con la altura típica de mat-form-field outline */
+  min-width: 48px;
+  padding: 0 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: none;          /* opcional: que no compita con la sombra del campo */
+}
+
+/* en pantallas pequeñas reducir un poco */
+@media (max-width: 600px) {
+  .search-bar .search-btn {
+    height: 48px;
+  }
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 0;
+}
+
+.form-field {
+  width: 100%;
+}
+
+.actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1.5rem;
+}
+

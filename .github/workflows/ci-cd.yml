@@ -1,0 +1,154 @@
+name: MediSupply Frontend - CI/CD Pipeline
+
+on:
+  push:
+    branches: [ '**' ]
+  pull_request:
+    branches: [ '**' ]
+
+concurrency:
+  group: ci-medisupply-frontend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  setup-verification:
+    name: "Setup & Project Structure"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+
+      - name: Verify project structure
+        run: |
+          echo "Verifying MediSupply Frontend project structure..."
+          
+          test -f package.json && echo "✅ package.json exists" || (echo "❌ package.json missing" && exit 1)
+          test -f package-lock.json && echo "✅ package-lock.json exists" || (echo "❌ package-lock.json missing" && exit 1)
+          test -f angular.json && echo "✅ angular.json exists" || (echo "❌ angular.json missing" && exit 1)
+          test -f tsconfig.json && echo "✅ tsconfig.json exists" || (echo "❌ tsconfig.json missing" && exit 1)
+          test -f jest.config.js && echo "✅ jest.config.js exists" || (echo "❌ jest.config.js missing" && exit 1)
+          test -f setup-jest.ts && echo "✅ setup-jest.ts exists" || (echo "❌ setup-jest.ts missing" && exit 1)
+          
+          test -d src && echo "✅ src/ directory exists" || (echo "❌ src/ directory missing" && exit 1)
+          test -f src/index.html && echo "✅ src/index.html exists" || exit 1
+          test -f src/main.ts && echo "✅ src/main.ts exists" || exit 1
+          test -d src/app && echo "✅ src/app/ directory exists" || exit 1
+          
+          echo "✅ Project structure verified successfully"
+
+      - name: Check Angular version
+        run: |
+          ANGULAR_VERSION=$(node -p "require('./package.json').dependencies['@angular/core']")
+          echo "Angular version: $ANGULAR_VERSION"
+          echo "✅ Angular configuration detected"
+
+  unit-tests:
+    name: "Unit Tests - Jest"
+    runs-on: ubuntu-latest
+    needs: setup-verification
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Cache node_modules
+        id: cache-node-modules
+        uses: actions/cache@v4
+        with:
+          path: node_modules
+          key: node-modules-${{ runner.os }}-${{ hashFiles('package-lock.json') }}
+          restore-keys: |
+            node-modules-${{ runner.os }}-
+
+      - name: Install dependencies
+        if: steps.cache-node-modules.outputs.cache-hit != 'true'
+        run: |
+          echo "Installing dependencies..."
+          npm ci
+
+      - name: Show environment
+        run: |
+          echo "Node version: $(node --version)"
+          echo "npm version: $(npm --version)"
+          echo "Angular CLI version:"
+          npx ng version || echo "Angular CLI not found in node_modules"
+
+      - name: Run unit tests with Jest
+        run: |
+          echo "Running Jest unit tests..."
+          npm test -- --ci --coverage --maxWorkers=2
+
+      - name: Display coverage summary
+        if: always()
+        continue-on-error: true
+        run: |
+          echo ""
+          echo "📊 Coverage Summary"
+          echo "==================="
+          echo ""
+          if [ -f coverage/coverage-summary.json ]; then
+            cat coverage/coverage-summary.json
+          else
+            echo "⚠️ Coverage summary not found"
+          fi
+          echo ""
+          echo "ℹ️ Coverage is tracked but not enforced"
+
+  final-status:
+    name: "Final Status & Summary"
+    runs-on: ubuntu-latest
+    needs:
+      - setup-verification
+      - unit-tests
+    if: always()
+
+    steps:
+      - name: Evaluate results
+        run: |
+          echo "MediSupply Frontend - CI/CD Pipeline Results"
+          echo "=============================================="
+          echo ""
+          
+          FAILURES=0
+          
+          echo "Setup & Structure:"
+          if [[ "${{ needs.setup-verification.result }}" == "success" ]]; then
+            echo "   ✅ Project structure verified"
+          else
+            echo "   ❌ Project structure check failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "Unit Tests:"
+          if [[ "${{ needs.unit-tests.result }}" == "success" ]]; then
+            echo "   ✅ Jest unit tests passed"
+          else
+            echo "   ❌ Unit tests failed"
+            ((FAILURES++))
+          fi
+          
+          echo ""
+          echo "=============================================="
+          echo "Summary: $FAILURES critical failures"
+          echo ""
+          
+          if [ $FAILURES -eq 0 ]; then
+            echo "✅ Pipeline completed successfully!"
+            echo "MediSupply Frontend is ready for deployment"
+            exit 0
+          else
+            echo "❌ Pipeline failed with $FAILURES critical issues"
+            echo "Please review the failed jobs above"
+            exit 1
+          fi

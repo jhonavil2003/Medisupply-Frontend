@@ -1,0 +1,158 @@
+.producto-catalog-container {
+  padding: 20px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header-card {
+  margin-bottom: 20px;
+}
+
+.header-card h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.search-filters-card {
+  margin-bottom: 20px;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.search-field {
+  margin-bottom: 16px;
+}
+
+.filters-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.results-info {
+  margin: 16px 0;
+  padding: 12px;
+  background: #f5f5f5;
+  border-radius: 4px;
+}
+
+.results-info p {
+  margin: 0;
+  font-size: 14px;
+}
+
+.table-card {
+  margin-bottom: 20px;
+}
+
+.table-container {
+  overflow-x: auto;
+}
+
+.products-table {
+  width: 100%;
+}
+
+.product-name {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.product-name strong {
+  font-size: 14px;
+}
+
+.product-name small {
+  font-size: 12px;
+  color: #666;
+}
+
+.price-cell {
+  display: flex;
+  flex-direction: column;
+}
+
+.price-cell .price {
+  font-weight: 600;
+  color: #2e7d32;
+}
+
+.price-cell small {
+  font-size: 11px;
+  color: #666;
+}
+
+.cold-icon {
+  vertical-align: middle;
+}
+
+.temp-range {
+  font-size: 12px;
+  color: #1976d2;
+  display: block;
+  margin-top: 4px;
+}
+
+mat-chip {
+  font-size: 12px;
+}
+
+.error-card {
+  background: #ffebee;
+  color: #c62828;
+  margin: 20px 0;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.error-card mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+}
+
+.no-results-card {
+  text-align: center;
+  padding: 40px;
+}
+
+.no-results-card mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #999;
+}
+
+.no-results-card h3 {
+  color: #666;
+  margin: 16px 0 8px;
+}
+
+.no-results-card p {
+  color: #999;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 768px) {
+  .filters-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .filter-actions {
+    flex-direction: column;
+    gap: 12px;
+    align-items: stretch;
+  }
+}

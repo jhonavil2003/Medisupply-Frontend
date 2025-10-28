@@ -1,0 +1,17 @@
+import { inject, Injectable } from '@angular/core';
+import { Observable } from 'rxjs';
+import { ProveedorRepository } from '../../../domain/repositories/proveedor.repository';
+import { ProveedorEntity } from '../../../domain/entities/proveedor.entity';
+
+@Injectable({ providedIn: 'root' })
+export class SearchProveedoresUseCase {
+  private repository = inject(ProveedorRepository);
+
+  execute(criteria: string): Observable<ProveedorEntity[]> {
+    if (!criteria || criteria.trim().length === 0) {
+      return this.repository.getAll();
+    }
+
+    return this.repository.search(criteria.trim());
+  }
+}
