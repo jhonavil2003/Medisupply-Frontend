@@ -186,7 +186,7 @@
               <button mat-icon-button color="primary" (click)="verDetalle(product)" matTooltip="Ver detalle">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button mat-icon-button color="accent" [routerLink]="['/products', product.sku]" matTooltip="Editar">
+              <button mat-icon-button color="accent" (click)="editarProducto(product)" matTooltip="Editar">
                 <mat-icon>edit</mat-icon>
               </button>
             </td>

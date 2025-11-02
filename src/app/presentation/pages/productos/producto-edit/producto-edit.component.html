@@ -1,0 +1,159 @@
+<div class="edit-product-container">
+  <!-- Loading Spinner for Product -->
+  <div *ngIf="loadingProduct()" class="loading-container">
+    <mat-spinner diameter="40"></mat-spinner>
+    <p>Cargando producto...</p>
+  </div>
+
+  <!-- Edit Form -->
+  <mat-card *ngIf="!loadingProduct()" class="form-card">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>edit</mat-icon>
+        Editar Producto
+        <span class="product-sku" *ngIf="originalProduct">({{ originalProduct.sku }})</span>
+      </mat-card-title>
+    </mat-card-header>
+    
+    <mat-card-content>
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <!-- SKU -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>SKU *</mat-label>
+            <input matInput formControlName="sku" placeholder="Ej: MED-001">
+            <mat-error>{{ getFieldError('sku') }}</mat-error>
+          </mat-form-field>
+
+          <!-- Name -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Nombre *</mat-label>
+            <input matInput formControlName="name" placeholder="Ej: Paracetamol 500mg">
+            <mat-error>{{ getFieldError('name') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Category -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Categoría *</mat-label>
+            <mat-select formControlName="category">
+              <mat-option *ngFor="let category of categories" [value]="category">
+                {{ category }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getFieldError('category') }}</mat-error>
+          </mat-form-field>
+
+          <!-- Subcategory -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Subcategoría</mat-label>
+            <input matInput formControlName="subcategory" placeholder="Ej: Analgésicos">
+          </mat-form-field>
+        </div>
+
+        <!-- Description -->
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Descripción</mat-label>
+          <textarea matInput formControlName="description" rows="3" 
+                    placeholder="Descripción detallada del producto"></textarea>
+        </mat-form-field>
+
+        <div class="form-row">
+          <!-- Unit Price -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Precio Unitario *</mat-label>
+            <input matInput type="number" step="0.01" formControlName="unit_price">
+            <mat-error>{{ getFieldError('unit_price') }}</mat-error>
+          </mat-form-field>
+
+          <!-- Currency -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Moneda *</mat-label>
+            <mat-select formControlName="currency">
+              <mat-option *ngFor="let currency of currencies" [value]="currency">
+                {{ currency }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Unit of Measure -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Unidad de Medida *</mat-label>
+            <mat-select formControlName="unit_of_measure">
+              <mat-option *ngFor="let unit of unitsOfMeasure" [value]="unit">
+                {{ unit }}
+              </mat-option>
+            </mat-select>
+            <mat-error>{{ getFieldError('unit_of_measure') }}</mat-error>
+          </mat-form-field>
+
+          <!-- Supplier ID -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>ID del Proveedor *</mat-label>
+            <input matInput type="number" formControlName="supplier_id">
+            <mat-error>{{ getFieldError('supplier_id') }}</mat-error>
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Manufacturer -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Fabricante</mat-label>
+            <input matInput formControlName="manufacturer" placeholder="Ej: Lab Pharma">
+          </mat-form-field>
+
+          <!-- Country of Origin -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>País de Origen</mat-label>
+            <input matInput formControlName="country_of_origin" placeholder="Ej: Colombia">
+          </mat-form-field>
+        </div>
+
+        <div class="form-row">
+          <!-- Barcode -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Código de Barras</mat-label>
+            <input matInput formControlName="barcode" placeholder="Ej: 1234567890">
+          </mat-form-field>
+
+          <!-- Image URL -->
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>URL de Imagen</mat-label>
+            <input matInput formControlName="image_url" placeholder="https://...">
+          </mat-form-field>
+        </div>
+
+        <!-- Checkboxes -->
+        <div class="checkbox-row">
+          <mat-checkbox formControlName="requires_cold_chain">
+            Requiere Cadena de Frío
+          </mat-checkbox>
+          
+          <mat-checkbox formControlName="is_active">
+            Producto Activo
+          </mat-checkbox>
+          
+          <mat-checkbox formControlName="is_discontinued">
+            Producto Discontinuado
+          </mat-checkbox>
+        </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button mat-button type="button" (click)="onCancel()" [disabled]="loading()">
+            Cancelar
+          </button>
+          
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+            <mat-spinner *ngIf="loading()" diameter="20"></mat-spinner>
+            <mat-icon *ngIf="!loading()">save</mat-icon>
+            {{ loading() ? 'Guardando...' : 'Actualizar Producto' }}
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>

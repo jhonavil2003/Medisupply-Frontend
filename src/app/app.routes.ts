@@ -22,6 +22,11 @@ export const routes: Routes = [
       .then(m => m.ProductoCreateComponent)
   },
   { 
+    path: 'producto-edit/:id', 
+    loadComponent: () => import('./presentation/pages/productos/producto-edit/producto-edit.component')
+      .then(m => m.ProductoEditComponent)
+  },
+  { 
     path: 'dashboard-admin', 
     loadComponent: () => import('./presentation/pages/dashboard-admin/dashboard-admin.component')
       .then(m => m.DashboardAdminComponent)
