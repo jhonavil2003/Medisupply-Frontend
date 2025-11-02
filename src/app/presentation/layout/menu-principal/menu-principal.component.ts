@@ -18,7 +18,11 @@ export class MenuPrincipalComponent {
   logisticaOpen = false;
 
   navigateTo(route: string) {
-    this.router.navigate([`/${route}`]);
+    console.log('Navigating to route:', route);
+    this.router.navigate([`/${route}`]).then(
+      (success) => console.log('Navigation success:', success),
+      (error) => console.error('Navigation error:', error)
+    );
   }
 
   toggleSidebar() {
