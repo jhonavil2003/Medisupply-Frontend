@@ -15,20 +15,27 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Component and dependencies
 import { ProductoListComponent } from './producto-list.component';
 import { GetAllProductosUseCase } from '../../../../core/application/use-cases/producto/get-products.use-case';
 import { SearchProductosUseCase } from '../../../../core/application/use-cases/producto/search-products.use-case';
+import { DeleteProductUseCase } from '../../../../core/application/use-cases/producto/delete-product.use-case';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 import { ProductoEntity, ProductListResponse, Pagination } from '../../../../core/domain/entities/producto.entity';
+import { Router } from '@angular/router';
 
 describe('ProductoListComponent', () => {
   let component: ProductoListComponent;
   let fixture: ComponentFixture<ProductoListComponent>;
   let getAllProductosUseCaseMock: jest.Mocked<GetAllProductosUseCase>;
   let searchProductosUseCaseMock: jest.Mocked<SearchProductosUseCase>;
+  let deleteProductUseCaseMock: jest.Mocked<DeleteProductUseCase>;
   let notificationServiceMock: jest.Mocked<NotificationService>;
+  let confirmDialogServiceMock: jest.Mocked<ConfirmDialogService>;
+  let routerMock: jest.Mocked<Router>;
 
   // Mock data
   const mockProducts: ProductoEntity[] = [
@@ -96,11 +103,25 @@ describe('ProductoListComponent', () => {
       execute: jest.fn().mockReturnValue(of(mockResponse))
     } as any;
     
+    deleteProductUseCaseMock = {
+      execute: jest.fn().mockReturnValue(of(undefined))
+    } as any;
+    
     notificationServiceMock = {
       error: jest.fn(),
       info: jest.fn(),
       success: jest.fn(),
       warning: jest.fn()
+    } as any;
+
+    confirmDialogServiceMock = {
+      confirmDelete: jest.fn().mockReturnValue(of(true)),
+      confirmAction: jest.fn().mockReturnValue(of(true)),
+      confirm: jest.fn().mockReturnValue(of(true))
+    } as any;
+
+    routerMock = {
+      navigate: jest.fn()
     } as any;
 
     await TestBed.configureTestingModule({
@@ -118,12 +139,16 @@ describe('ProductoListComponent', () => {
         MatCardModule,
         MatProgressBarModule,
         MatChipsModule,
-        MatCheckboxModule
+        MatCheckboxModule,
+        MatTooltipModule
       ],
       providers: [
         { provide: GetAllProductosUseCase, useValue: getAllProductosUseCaseMock },
         { provide: SearchProductosUseCase, useValue: searchProductosUseCaseMock },
-        { provide: NotificationService, useValue: notificationServiceMock }
+        { provide: DeleteProductUseCase, useValue: deleteProductUseCaseMock },
+        { provide: NotificationService, useValue: notificationServiceMock },
+        { provide: ConfirmDialogService, useValue: confirmDialogServiceMock },
+        { provide: Router, useValue: routerMock }
       ]
     }).compileComponents();
 
@@ -245,6 +270,58 @@ describe('ProductoListComponent', () => {
       expect(component.filterForm.get('is_active')?.value).toBe(true);
       expect(component.filterForm.get('per_page')?.value).toBe(20);
     });
+
+    it('should filter out empty, null and undefined values from currentFilters', () => {
+      component.searchControl.setValue('');
+      component.filterForm.patchValue({
+        category: '',
+        subcategory: null,
+        requires_cold_chain: undefined,
+        is_active: true
+      });
+
+      const filters = component.currentFilters();
+      
+      expect(filters.search).toBeUndefined();
+      expect(filters.category).toBeUndefined();
+      expect(filters.subcategory).toBeUndefined();
+      expect(filters.requires_cold_chain).toBeUndefined();
+      expect(filters.is_active).toBe(true);
+    });
+
+    it('should use default values when form values are falsy', () => {
+      // Test fallback values in currentFilters
+      component.searchControl.setValue(null);
+      component.filterForm.patchValue({
+        category: null,
+        subcategory: null,
+        per_page: null
+      });
+      component.pagination.set(null);
+
+      const filters = component.currentFilters();
+      
+      expect(filters.search).toBeUndefined();
+      expect(filters.category).toBeUndefined();
+      expect(filters.subcategory).toBeUndefined();
+      expect(filters.page).toBe(1); // fallback for pagination()?.page || 1
+      expect(filters.per_page).toBe(20); // fallback for formValues.per_page || 20
+    });
+
+    it('should use default page value when pagination page is falsy', () => {
+      // Set pagination with falsy page value to test the || 1 fallback
+      component.pagination.set({
+        page: 0, // falsy value
+        per_page: 20,
+        total_pages: 1,
+        total_items: 1,
+        has_next: false,
+        has_prev: false
+      });
+
+      const filters = component.currentFilters();
+      expect(filters.page).toBe(1); // Should fallback to 1 when page is 0 (falsy)
+    });
   });
 
   describe('Pagination', () => {
@@ -313,9 +390,19 @@ describe('ProductoListComponent', () => {
     it('should handle verDetalle method', () => {
       component.verDetalle(mockProducts[0]);
       
-      expect(notificationServiceMock.info).toHaveBeenCalledWith(
-        `Ver detalle de: ${mockProducts[0].name}`
-      );
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-detail', mockProducts[0].id]);
+    });
+
+    it('should handle editarProducto method', () => {
+      component.editarProducto(mockProducts[0]);
+      
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-edit', mockProducts[0].id]);
+    });
+
+    it('should handle navigateToCreate method', () => {
+      component.navigateToCreate();
+      
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-create']);
     });
   });
 
@@ -345,6 +432,72 @@ describe('ProductoListComponent', () => {
     it('should setup paginator and sort after view init', () => {
       component.ngAfterViewInit();
       expect(component.dataSource).toBeDefined();
+    });
+  });
+
+  describe('Delete Functionality', () => {
+    beforeEach(() => {
+      fixture.detectChanges();
+    });
+
+    it('should call delete product use case when confirmed', async () => {
+      confirmDialogServiceMock.confirmDelete.mockReturnValue(of(true));
+      deleteProductUseCaseMock.execute.mockReturnValue(of(undefined));
+      
+      await component.eliminarProducto(mockProducts[0]);
+      
+      expect(confirmDialogServiceMock.confirmDelete).toHaveBeenCalledWith(mockProducts[0].name);
+      expect(deleteProductUseCaseMock.execute).toHaveBeenCalledWith(mockProducts[0].id);
+      expect(notificationServiceMock.success).toHaveBeenCalledWith(
+        `Producto "${mockProducts[0].name}" eliminado correctamente`
+      );
+    });
+
+    it('should not call delete product use case when cancelled', async () => {
+      confirmDialogServiceMock.confirmDelete.mockReturnValue(of(false));
+      
+      await component.eliminarProducto(mockProducts[0]);
+      
+      expect(confirmDialogServiceMock.confirmDelete).toHaveBeenCalledWith(mockProducts[0].name);
+      expect(deleteProductUseCaseMock.execute).not.toHaveBeenCalled();
+      expect(notificationServiceMock.success).not.toHaveBeenCalled();
+    });
+
+    it('should handle delete error correctly', async () => {
+      const errorMessage = 'Error deleting product';
+      confirmDialogServiceMock.confirmDelete.mockReturnValue(of(true));
+      deleteProductUseCaseMock.execute.mockReturnValue(throwError(() => new Error(errorMessage)));
+      
+      await component.eliminarProducto(mockProducts[0]);
+      
+      expect(notificationServiceMock.error).toHaveBeenCalledWith(
+        `Error al eliminar el producto: ${errorMessage}`
+      );
+    });
+
+    it('should reload products after successful deletion', async () => {
+      confirmDialogServiceMock.confirmDelete.mockReturnValue(of(true));
+      deleteProductUseCaseMock.execute.mockReturnValue(of(undefined));
+      getAllProductosUseCaseMock.execute.mockClear();
+      
+      await component.eliminarProducto(mockProducts[0]);
+      
+      expect(getAllProductosUseCaseMock.execute).toHaveBeenCalled();
+    });
+
+    it('should reload products with page 1 when pagination is null', async () => {
+      confirmDialogServiceMock.confirmDelete.mockReturnValue(of(true));
+      deleteProductUseCaseMock.execute.mockReturnValue(of(undefined));
+      getAllProductosUseCaseMock.execute.mockClear();
+      
+      // Set pagination to null to test the fallback
+      component.pagination.set(null);
+      
+      await component.eliminarProducto(mockProducts[0]);
+      
+      expect(getAllProductosUseCaseMock.execute).toHaveBeenCalledWith(
+        expect.objectContaining({ page: 1 })
+      );
     });
   });
 });

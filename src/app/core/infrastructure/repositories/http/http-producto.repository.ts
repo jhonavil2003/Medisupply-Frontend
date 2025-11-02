@@ -86,6 +86,11 @@ export class HttpProductoRepository extends ProductoRepository {
       .pipe(catchError(this.handleError));
   }
 
+  delete(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productId}`)
+      .pipe(catchError(this.handleError));
+  }
+
   private buildHttpParams(params: ProductQueryParams): HttpParams {
     let httpParams = new HttpParams();
 
