@@ -141,7 +141,6 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
           this.loading.set(false);
           this.errorMessage.set(error.message);
           this.notify.error(error.message);
-          console.error('Error loading products:', error);
         }
       });
   }
