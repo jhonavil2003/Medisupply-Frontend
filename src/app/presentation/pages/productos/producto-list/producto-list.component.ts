@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -48,6 +48,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   private getAllProductosUseCase = inject(GetAllProductosUseCase);
   private searchProductosUseCase = inject(SearchProductosUseCase);
   private notify = inject(NotificationService);
+  private router = inject(Router);
 
   products = signal<ProductoEntity[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -184,5 +185,9 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
 
   verDetalle(product: ProductoEntity): void {
     this.notify.info(`Ver detalle de: ${product.name}`);
+  }
+
+  navigateToCreate(): void {
+    this.router.navigate(['/producto-create']);
   }
 }
