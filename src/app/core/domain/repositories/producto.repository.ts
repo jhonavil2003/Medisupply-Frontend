@@ -68,4 +68,6 @@ export abstract class ProductoRepository {
   abstract create(productData: CreateProductRequest): Observable<ProductoDetailedEntity>;
   
   abstract update(productId: number, productData: UpdateProductRequest): Observable<ProductoDetailedEntity>;
+  
+  abstract delete(productId: number): Observable<void>;
 }
