@@ -187,6 +187,10 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
     this.notify.info(`Ver detalle de: ${product.name}`);
   }
 
+  editarProducto(product: ProductoEntity): void {
+    this.router.navigate(['/producto-edit', product.id]);
+  }
+
   navigateToCreate(): void {
     this.router.navigate(['/producto-create']);
   }
