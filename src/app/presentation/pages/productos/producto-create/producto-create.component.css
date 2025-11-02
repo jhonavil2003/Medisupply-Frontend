@@ -1,0 +1,98 @@
+.create-product-container {
+  max-width: 800px;
+  margin: 2rem auto;
+  padding: 1rem;
+}
+
+.form-card {
+  padding: 1.5rem;
+}
+
+.form-card mat-card-header {
+  margin-bottom: 2rem;
+}
+
+.form-card mat-card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 1.5rem;
+  color: #1976d2;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-field {
+  flex: 1;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.checkbox-container {
+  margin: 1.5rem 0;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e0e0e0;
+}
+
+.action-buttons button {
+  min-width: 120px;
+}
+
+.action-buttons mat-spinner {
+  margin-right: 0.5rem;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .create-product-container {
+    margin: 1rem;
+    padding: 0.5rem;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+/* Form validation styles */
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-text-field-wrapper {
+  border-color: #f44336;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-error {
+  color: #f44336;
+  font-size: 0.75rem;
+}
+
+/* Loading button styles */
+.action-buttons button[disabled] {
+  opacity: 0.6;
+}
+
+.action-buttons mat-spinner {
+  width: 20px !important;
+  height: 20px !important;
+}

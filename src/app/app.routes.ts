@@ -17,6 +17,11 @@ export const routes: Routes = [
       .then(m => m.ProductoListComponent)
   },
   { 
+    path: 'producto-create', 
+    loadComponent: () => import('./presentation/pages/productos/producto-create/producto-create.component')
+      .then(m => m.ProductoCreateComponent)
+  },
+  { 
     path: 'dashboard-admin', 
     loadComponent: () => import('./presentation/pages/dashboard-admin/dashboard-admin.component')
       .then(m => m.DashboardAdminComponent)
