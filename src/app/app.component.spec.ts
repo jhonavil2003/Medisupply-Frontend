@@ -41,8 +41,8 @@ describe('AppComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should have title as mynewapp', () => {
-      expect(component.title).toEqual('mynewapp');
+    it('should have title as medisupply', () => {
+      expect(component.title).toEqual('medisupply');
     });
   });
 
@@ -98,13 +98,13 @@ describe('AppComponent', () => {
     });
 
     it('should maintain correct title throughout lifecycle', () => {
-      expect(component.title).toBe('mynewapp');
-      
+      expect(component.title).toBe('medisupply');
+
       component.showSuccess();
-      expect(component.title).toBe('mynewapp');
-      
+      expect(component.title).toBe('medisupply');
+
       component.showError();
-      expect(component.title).toBe('mynewapp');
+      expect(component.title).toBe('medisupply');
     });
 
     it('should call toastr methods with exact parameters', () => {
@@ -129,22 +129,22 @@ describe('AppComponent', () => {
       for (let i = 0; i < 10; i++) {
         component.showSuccess();
       }
-      
+
       expect(mockToastr.success).toHaveBeenCalledTimes(10);
     });
 
     it('should handle all notification types in rapid succession', () => {
       const start = performance.now();
-      
+
       for (let i = 0; i < 25; i++) {
         component.showSuccess();
         component.showError();
         component.showInfo();
         component.showWarning();
       }
-      
+
       const end = performance.now();
-      
+
       expect(end - start).toBeLessThan(100); // Should complete in less than 100ms
       expect(mockToastr.success).toHaveBeenCalledTimes(25);
       expect(mockToastr.error).toHaveBeenCalledTimes(25);
