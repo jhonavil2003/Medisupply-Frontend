@@ -10,6 +10,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { GetOrderByIdUseCase } from '../../../../core/application/use-cases/order/get-order-by-id.usecase';
 import { OrderEntity, OrderItemEntity } from '../../../../core/domain/entities/order.entity';
+import { GoogleMapComponent } from '../../../shared/components/google-map/google-map.component';
 
 @Component({
   selector: 'app-order-detail',
@@ -23,7 +24,8 @@ import { OrderEntity, OrderItemEntity } from '../../../../core/domain/entities/o
     MatChipsModule,
     MatProgressSpinnerModule,
     MatTooltipModule,
-    MatDividerModule
+    MatDividerModule,
+    GoogleMapComponent
   ],
   templateUrl: './order-detail.component.html',
   styleUrls: ['./order-detail.component.css']

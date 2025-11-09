@@ -140,10 +140,16 @@
                   {{ order()!.deliveryLatitude!.toFixed(6) }}, {{ order()!.deliveryLongitude!.toFixed(6) }}
                 </span>
               </div>
-              <button mat-raised-button color="primary" (click)="openGoogleMaps()" class="btn-map">
-                <mat-icon>map</mat-icon>
-                Ver en Google Maps
-              </button>
+              
+              <!-- Mapa Integrado -->
+              <div class="map-wrapper">
+                <app-google-map
+                  [latitude]="order()!.deliveryLatitude!"
+                  [longitude]="order()!.deliveryLongitude!"
+                  [markerTitle]="'Dirección de Entrega - ' + order()!.orderNumber"
+                  [zoom]="15">
+                </app-google-map>
+              </div>
             }
           </mat-card-content>
         </mat-card>
