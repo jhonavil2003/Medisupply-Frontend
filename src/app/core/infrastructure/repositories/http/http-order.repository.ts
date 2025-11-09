@@ -280,4 +280,45 @@ export class HttpOrderRepository extends OrderRepository {
   ): Observable<OrdersListResponse> {
     return this.getOrders({ status: status as any, page, perPage });
   }
+
+  /**
+   * Actualiza el estado de una orden
+   */
+  override updateOrderStatus(orderId: number, newStatus: string): Observable<OrderEntity> {
+    return this.http.patch<BackendOrder>(
+      `${this.apiUrl}/${orderId}`,
+      { status: newStatus }
+    ).pipe(
+      map(order => this.mapOrderToDomain(order)),
+      catchError(error => {
+        console.error(`Error updating order ${orderId} status:`, error);
+        throw error;
+      })
+    );
+  }
+
+  /**
+   * Actualiza el estado de múltiples órdenes
+   */
+  override updateMultipleOrdersStatus(
+    orderIds: number[], 
+    newStatus: string
+  ): Observable<{ success: boolean; updatedCount: number }> {
+    return this.http.patch<{ success: boolean; updated_count: number }>(
+      `${this.apiUrl}/bulk-update`,
+      { 
+        order_ids: orderIds,
+        status: newStatus 
+      }
+    ).pipe(
+      map(response => ({
+        success: response.success,
+        updatedCount: response.updated_count
+      })),
+      catchError(error => {
+        console.error('Error updating multiple orders status:', error);
+        throw error;
+      })
+    );
+  }
 }

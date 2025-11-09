@@ -29,4 +29,14 @@ export abstract class OrderRepository {
    * Obtiene órdenes por estado
    */
   abstract getOrdersByStatus(status: string, page?: number, perPage?: number): Observable<OrdersListResponse>;
+
+  /**
+   * Actualiza el estado de una orden
+   */
+  abstract updateOrderStatus(orderId: number, newStatus: string): Observable<OrderEntity>;
+
+  /**
+   * Actualiza el estado de múltiples órdenes
+   */
+  abstract updateMultipleOrdersStatus(orderIds: number[], newStatus: string): Observable<{ success: boolean; updatedCount: number }>;
 }

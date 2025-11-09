@@ -92,6 +92,11 @@ export const routes: Routes = [
       .then(m => m.OrderDetailComponent)
   },
   { 
+    path: 'confirmar-ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-confirmation/order-confirmation.component')
+      .then(m => m.OrderConfirmationComponent)
+  },
+  { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
       .then(m => m.MetaListComponent)
