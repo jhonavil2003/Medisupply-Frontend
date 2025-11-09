@@ -1,0 +1,124 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button mat-icon-button (click)="navigateBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <mat-card-title>Detalle del Vendedor</mat-card-title>
+        </div>
+        <div class="header-actions">
+          @if (vendedor()) {
+            <button mat-raised-button color="primary" (click)="navigateToEdit()">
+              <mat-icon>edit</mat-icon>
+              Editar
+            </button>
+          }
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+          <p>Cargando detalles del vendedor...</p>
+        </div>
+      } @else if (vendedor()) {
+        <div class="detail-grid">
+          <!-- Employee ID -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>badge</mat-icon>
+              <span>ID Empleado</span>
+            </div>
+            <div class="detail-value">{{ vendedor()!.employeeId }}</div>
+          </div>
+
+          <!-- Full Name -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>person</mat-icon>
+              <span>Nombre Completo</span>
+            </div>
+            <div class="detail-value">
+              {{ vendedor()!.firstName }} {{ vendedor()!.lastName }}
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>email</mat-icon>
+              <span>Correo Electrónico</span>
+            </div>
+            <div class="detail-value">{{ vendedor()!.email }}</div>
+          </div>
+
+          <!-- Phone -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>phone</mat-icon>
+              <span>Teléfono</span>
+            </div>
+            <div class="detail-value">{{ vendedor()!.phone || '-' }}</div>
+          </div>
+
+          <!-- Territory -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>place</mat-icon>
+              <span>Territorio</span>
+            </div>
+            <div class="detail-value">{{ vendedor()!.territory || '-' }}</div>
+          </div>
+
+          <!-- Hire Date -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>event</mat-icon>
+              <span>Fecha de Contratación</span>
+            </div>
+            <div class="detail-value">{{ formatDate(vendedor()!.hireDate) }}</div>
+          </div>
+
+          <!-- Status -->
+          <div class="detail-item">
+            <div class="detail-label">
+              <mat-icon>toggle_on</mat-icon>
+              <span>Estado</span>
+            </div>
+            <div class="detail-value">
+              <mat-chip [class]="vendedor()!.isActive ? 'status-active' : 'status-inactive'">
+                {{ vendedor()!.isActive ? 'Activo' : 'Inactivo' }}
+              </mat-chip>
+            </div>
+          </div>
+
+          <!-- Created At -->
+          @if (vendedor()!.createdAt) {
+            <div class="detail-item">
+              <div class="detail-label">
+                <mat-icon>schedule</mat-icon>
+                <span>Fecha de Creación</span>
+              </div>
+              <div class="detail-value">{{ formatDate(vendedor()!.createdAt) }}</div>
+            </div>
+          }
+
+          <!-- Updated At -->
+          @if (vendedor()!.updatedAt) {
+            <div class="detail-item">
+              <div class="detail-label">
+                <mat-icon>update</mat-icon>
+                <span>Última Actualización</span>
+              </div>
+              <div class="detail-value">{{ formatDate(vendedor()!.updatedAt) }}</div>
+            </div>
+          }
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

@@ -80,7 +80,8 @@
               "buildTarget": "medisupply:build:production"
             },
             "development": {
-              "buildTarget": "medisupply:build:development"
+              "buildTarget": "medisupply:build:development",
+              "proxyConfig": "proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

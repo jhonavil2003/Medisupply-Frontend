@@ -37,9 +37,29 @@ export const routes: Routes = [
       .then(m => m.DashboardAdminComponent)
   },
   { 
-    path: 'vendedor-list', 
-    loadComponent: () => import('./presentation/pages/vendedores/vendedor-list.component')
+    path: 'vendedores', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-list/vendedor-list.component')
       .then(m => m.VendedorListComponent)
+  },
+  { 
+    path: 'vendedores/create', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-create/vendedor-create.component')
+      .then(m => m.VendedorCreateComponent)
+  },
+  { 
+    path: 'vendedores/:id', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-detail/vendedor-detail.component')
+      .then(m => m.VendedorDetailComponent)
+  },
+  { 
+    path: 'vendedores/:id/edit', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-edit/vendedor-edit.component')
+      .then(m => m.VendedorEditComponent)
+  },
+  { 
+    path: 'vendedor-list', 
+    redirectTo: 'vendedores',
+    pathMatch: 'full'
   },
   { 
     path: 'producto-upload', 

@@ -1,0 +1,197 @@
+import { Component, OnInit, ViewChild, AfterViewInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormControl, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
+import { MatTableModule, MatTableDataSource } from '@angular/material/table';
+import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
+import { MatSortModule, MatSort } from '@angular/material/sort';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatCardModule } from '@angular/material/card';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+
+import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
+import {
+  GetAllVendedoresUseCase,
+  SearchVendedoresUseCase,
+  DeleteVendedorUseCase
+} from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
+import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
+
+@Component({
+  selector: 'app-vendedor-list',
+  standalone: true,
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    RouterModule,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatButtonModule,
+    MatIconModule,
+    MatCardModule,
+    MatChipsModule,
+    MatTooltipModule,
+    MatProgressBarModule
+  ],
+  templateUrl: './vendedor-list.component.html',
+  styleUrls: ['./vendedor-list.component.css']
+})
+export class VendedorListComponent implements OnInit, AfterViewInit {
+  private getAllVendedoresUseCase = inject(GetAllVendedoresUseCase);
+  private searchVendedoresUseCase = inject(SearchVendedoresUseCase);
+  private deleteVendedorUseCase = inject(DeleteVendedorUseCase);
+  private notify = inject(NotificationService);
+  private confirmDialog = inject(ConfirmDialogService);
+  private router = inject(Router);
+
+  vendedores = signal<VendedorEntity[]>([]);
+  loading = signal(false);
+  errorMessage = signal<string | null>(null);
+
+  searchControl = new FormControl('');
+
+  dataSource = new MatTableDataSource<VendedorEntity>();
+  displayedColumns = ['employeeId', 'firstName', 'lastName', 'email', 'phone', 'territory', 'isActive', 'acciones'];
+
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+
+  ngOnInit(): void {
+    this.loadVendedores();
+    this.setupSearch();
+  }
+
+  ngAfterViewInit(): void {
+    this.dataSource.paginator = this.paginator;
+    this.dataSource.sort = this.sort;
+  }
+
+  private setupSearch(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(searchTerm => {
+        if (searchTerm && searchTerm.trim().length > 0) {
+          this.search(searchTerm.trim());
+        } else {
+          this.loadVendedores();
+        }
+      });
+  }
+
+  loadVendedores(): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    console.log('🔍 Cargando vendedores...');
+    this.getAllVendedoresUseCase.execute().subscribe({
+      next: (vendedores) => {
+        console.log('✅ Vendedores recibidos:', vendedores);
+        console.log('📊 Cantidad:', vendedores.length);
+        this.vendedores.set(vendedores);
+        this.dataSource.data = vendedores;
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('❌ Error al cargar vendedores:', error);
+        console.error('📋 Detalles del error:', {
+          message: error.message,
+          status: error.status,
+          statusText: error.statusText,
+          url: error.url
+        });
+        this.errorMessage.set('Error al cargar vendedores');
+        this.notify.error('Error al cargar la lista de vendedores');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  search(criteria: string): void {
+    this.loading.set(true);
+    this.errorMessage.set(null);
+
+    this.searchVendedoresUseCase.execute(criteria).subscribe({
+      next: (vendedores) => {
+        this.vendedores.set(vendedores);
+        this.dataSource.data = vendedores;
+        this.loading.set(false);
+      },
+      error: (error) => {
+        console.error('Error al buscar vendedores:', error);
+        this.errorMessage.set('Error al buscar vendedores');
+        this.notify.error('Error en la búsqueda');
+        this.loading.set(false);
+      }
+    });
+  }
+
+  clearSearch(): void {
+    this.searchControl.setValue('');
+    this.loadVendedores();
+  }
+
+  navigateToCreate(): void {
+    this.router.navigate(['/vendedores/create']);
+  }
+
+  navigateToDetail(id: number): void {
+    this.router.navigate(['/vendedores', id]);
+  }
+
+  navigateToEdit(id: number): void {
+    this.router.navigate(['/vendedores', id, 'edit']);
+  }
+
+  deleteVendedor(vendedor: VendedorEntity): void {
+    if (!vendedor.id) {
+      this.notify.error('No se puede eliminar: vendedor sin ID');
+      return;
+    }
+
+    this.confirmDialog.confirm({
+      title: '¿Está seguro?',
+      message: `¿Desea eliminar al vendedor ${vendedor.firstName} ${vendedor.lastName}?`,
+      confirmText: 'Eliminar',
+      cancelText: 'Cancelar',
+      type: 'danger'
+    }).subscribe(confirmed => {
+      if (confirmed && vendedor.id) {
+        this.loading.set(true);
+        
+        this.deleteVendedorUseCase.execute(vendedor.id).subscribe({
+          next: (success) => {
+            if (success) {
+              this.notify.success('Vendedor eliminado correctamente');
+              this.loadVendedores();
+            } else {
+              this.notify.error('No se pudo eliminar el vendedor. Puede tener visitas asociadas.');
+              this.loading.set(false);
+            }
+          },
+          error: (error) => {
+            console.error('Error al eliminar vendedor:', error);
+            this.notify.error('Error al eliminar vendedor. Puede tener visitas asociadas.');
+            this.loading.set(false);
+          }
+        });
+      }
+    });
+  }
+
+  navigateBack(): void {
+    this.router.navigate(['/dashboard-admin']);
+  }
+}
