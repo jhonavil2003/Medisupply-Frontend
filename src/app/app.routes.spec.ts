@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(14);
+      expect(routes.length).toBe(18); // Actualizado para incluir las 4 nuevas rutas de vendedores
     });
   });
 
@@ -130,7 +130,8 @@ describe('App Routes', () => {
     it('should have vendedor-list route', () => {
       const vendedorRoute = routes.find(route => route.path === 'vendedor-list');
       expect(vendedorRoute).toBeDefined();
-      expect(vendedorRoute?.loadComponent).toBeDefined();
+      // Esta es una ruta redirect, no tiene loadComponent
+      expect(vendedorRoute?.redirectTo).toBe('vendedores');
     });
 
     it('should have producto-upload route', () => {
@@ -173,8 +174,13 @@ describe('App Routes', () => {
   describe('Lazy Loading Configuration', () => {
     it('should have loadComponent for all routes', () => {
       routes.forEach(route => {
-        expect(route.loadComponent).toBeDefined();
-        expect(typeof route.loadComponent).toBe('function');
+        // Skip redirect routes
+        if (route.redirectTo) {
+          expect(route.loadComponent).toBeUndefined();
+        } else {
+          expect(route.loadComponent).toBeDefined();
+          expect(typeof route.loadComponent).toBe('function');
+        }
       });
     });
 
@@ -227,9 +233,12 @@ describe('App Routes', () => {
     it('should have valid route objects', () => {
       routes.forEach(route => {
         expect(route).toHaveProperty('path');
-        expect(route).toHaveProperty('loadComponent');
+        // Skip redirect routes
+        if (!route.redirectTo) {
+          expect(route).toHaveProperty('loadComponent');
+          expect(typeof route.loadComponent).toBe('function');
+        }
         expect(typeof route.path).toBe('string');
-        expect(typeof route.loadComponent).toBe('function');
       });
     });
 
@@ -254,9 +263,12 @@ describe('App Routes', () => {
     it('should have consistent route structure', () => {
       routes.forEach((route, index) => {
         expect(route.path).toBeDefined();
-        expect(route.loadComponent).toBeDefined();
+        // Skip redirect routes
+        if (!route.redirectTo) {
+          expect(route.loadComponent).toBeDefined();
+          expect(typeof route.loadComponent).toBe('function');
+        }
         expect(typeof route.path).toBe('string');
-        expect(typeof route.loadComponent).toBe('function');
       });
     });
   });
@@ -268,14 +280,16 @@ describe('App Routes', () => {
         const path = route.path;
         expect(typeof path).toBe('string');
 
-        // Access loadComponent property
+        // Access loadComponent property (skip redirect routes)
         const loadComponent = route.loadComponent;
-        expect(typeof loadComponent).toBe('function');
+        if (!route.redirectTo) {
+          expect(typeof loadComponent).toBe('function');
 
-        // Call loadComponent to ensure it returns a promise
-        if (loadComponent) {
-          const result = loadComponent();
-          expect(result).toHaveProperty('then');
+          // Call loadComponent to ensure it returns a promise
+          if (loadComponent) {
+            const result = loadComponent();
+            expect(result).toBeInstanceOf(Promise);
+          }
         }
       });
     });
@@ -284,9 +298,10 @@ describe('App Routes', () => {
       // Test array methods
       expect(routes.length).toBeGreaterThan(0);
       expect(routes.map(r => r.path)).toContain('');
-      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(2);
+      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(4); // producto/:id, vendedor/:id/detail, vendedor/:id/edit
       expect(routes.some(r => r.path === 'dashboard-admin')).toBe(true);
-      expect(routes.every(r => r.loadComponent !== undefined)).toBe(true);
+      // Excluir redirect routes de la validación de loadComponent
+      expect(routes.filter(r => !r.redirectTo).every(r => r.loadComponent !== undefined)).toBe(true);
     });
 
     it('should handle edge cases in route configuration', () => {
@@ -296,7 +311,7 @@ describe('App Routes', () => {
 
       // Test parameterized paths
       const paramRoutes = routes.filter(r => r.path && r.path.includes(':'));
-      expect(paramRoutes.length).toBe(2);
+      expect(paramRoutes.length).toBe(4); // producto/:id, vendedor/:id/detail, vendedor/:id/edit
 
       // Test loadComponent functions
       routes.forEach(route => {
