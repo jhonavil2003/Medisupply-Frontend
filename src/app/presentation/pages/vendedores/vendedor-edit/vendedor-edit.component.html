@@ -1,0 +1,107 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button mat-icon-button (click)="cancel()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <mat-card-title>Editar Vendedor</mat-card-title>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+          <p>Cargando datos del vendedor...</p>
+        </div>
+      } @else {
+        <form [formGroup]="vendedorForm" (ngSubmit)="onSubmit()">
+          <div class="form-grid">
+            <!-- Employee ID -->
+            <mat-form-field appearance="outline">
+              <mat-label>ID Empleado</mat-label>
+              <input matInput formControlName="employeeId" required>
+              @if (vendedorForm.get('employeeId')?.invalid && vendedorForm.get('employeeId')?.touched) {
+                <mat-error>{{ getErrorMessage('employeeId') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- First Name -->
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput formControlName="firstName" required>
+              @if (vendedorForm.get('firstName')?.invalid && vendedorForm.get('firstName')?.touched) {
+                <mat-error>{{ getErrorMessage('firstName') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Last Name -->
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido</mat-label>
+              <input matInput formControlName="lastName" required>
+              @if (vendedorForm.get('lastName')?.invalid && vendedorForm.get('lastName')?.touched) {
+                <mat-error>{{ getErrorMessage('lastName') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Email -->
+            <mat-form-field appearance="outline">
+              <mat-label>Correo Electrónico</mat-label>
+              <input matInput type="email" formControlName="email" required>
+              @if (vendedorForm.get('email')?.invalid && vendedorForm.get('email')?.touched) {
+                <mat-error>{{ getErrorMessage('email') }}</mat-error>
+              }
+            </mat-form-field>
+
+            <!-- Phone -->
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput formControlName="phone">
+              <mat-icon matPrefix>phone</mat-icon>
+            </mat-form-field>
+
+            <!-- Territory -->
+            <mat-form-field appearance="outline">
+              <mat-label>Territorio</mat-label>
+              <input matInput formControlName="territory">
+              <mat-icon matPrefix>place</mat-icon>
+            </mat-form-field>
+
+            <!-- Hire Date -->
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha de Contratación</mat-label>
+              <input matInput [matDatepicker]="picker" formControlName="hireDate">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+            </mat-form-field>
+
+            <!-- Is Active -->
+            <div class="checkbox-field">
+              <mat-checkbox formControlName="isActive">
+                Vendedor Activo
+              </mat-checkbox>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button mat-stroked-button type="button" (click)="cancel()" [disabled]="loading()">
+              <mat-icon>close</mat-icon>
+              Cancelar
+            </button>
+            <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+              @if (loading()) {
+                <mat-spinner diameter="20"></mat-spinner>
+              } @else {
+                <mat-icon>save</mat-icon>
+              }
+              Actualizar Vendedor
+            </button>
+          </div>
+        </form>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

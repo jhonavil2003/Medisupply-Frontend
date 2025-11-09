@@ -4,5 +4,11 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+  "/salespersons": {
+    "target": "http://localhost:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }
