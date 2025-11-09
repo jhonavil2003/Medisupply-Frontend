@@ -82,6 +82,16 @@ export const routes: Routes = [
       .then(m => m.RutaEntregaListaComponent)
   },
   { 
+    path: 'ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-list/order-list.component')
+      .then(m => m.OrderListComponent)
+  },
+  { 
+    path: 'ordenes/:id', 
+    loadComponent: () => import('./presentation/pages/logistica/order-detail/order-detail.component')
+      .then(m => m.OrderDetailComponent)
+  },
+  { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
       .then(m => m.MetaListComponent)

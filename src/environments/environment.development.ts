@@ -12,9 +12,15 @@ const catalogBaseUrl = 'http://localhost:3001'
 // El proxy redirigirá /inventory/** a http://localhost:3002/inventory/**
 const logisticsBaseUrl = ''
 
+// Servicio de ventas (puerto 3003)
+// Usar ruta vacía para aprovechar el proxy configurado en proxy.conf.json
+// El proxy redirigirá /orders/** a http://localhost:3003/orders/**
+const salesBaseUrl = ''
+
 export const environment = {
     production: false,
     baseUrl: catalogBaseUrl,
     catalogApiUrl: catalogBaseUrl,
-    logisticsApiUrl: logisticsBaseUrl
+    logisticsApiUrl: logisticsBaseUrl,
+    salesApiUrl: salesBaseUrl
 };
