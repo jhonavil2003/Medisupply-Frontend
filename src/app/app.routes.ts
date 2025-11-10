@@ -97,6 +97,11 @@ export const routes: Routes = [
       .then(m => m.OrderConfirmationComponent)
   },
   { 
+    path: 'generar-rutas', 
+    loadComponent: () => import('./presentation/pages/logistica/route-generation/route-generation.component')
+      .then(m => m.RouteGenerationComponent)
+  },
+  { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
       .then(m => m.MetaListComponent)
