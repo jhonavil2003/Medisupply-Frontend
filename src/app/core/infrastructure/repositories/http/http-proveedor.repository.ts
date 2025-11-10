@@ -22,6 +22,14 @@ interface SupplierApiModel {
   certification_date?: string | null;
   certification_expiry?: string | null;
   is_active?: boolean;
+  country?: string | null;
+  website?: string | null;
+  address_line1?: string | null;
+  city?: string | null;
+  state?: string | null;
+  payment_terms?: string | null;
+  credit_limit?: number | null;
+  currency?: string | null;
   created_at?: string | null;
   updated_at?: string | null;
 }
@@ -111,6 +119,14 @@ export class HttpProveedorRepository extends ProveedorRepository {
       ruc: s.tax_id || '',
       telefono: s.phone || '',
       correoContacto: s.email || '',
+      country: s.country || undefined,
+      website: s.website || undefined,
+      addressLine1: s.address_line1 || undefined,
+      city: s.city || undefined,
+      state: s.state || undefined,
+      paymentTerms: s.payment_terms || undefined,
+      creditLimit: (s.credit_limit !== null && s.credit_limit !== undefined) ? Number(s.credit_limit) : undefined,
+      currency: s.currency || undefined,
       estado,
       certificacionesVigentes: certificaciones,
       fechaRegistro: s['created_at'] ? new Date(s['created_at']) : undefined,
@@ -127,7 +143,14 @@ export class HttpProveedorRepository extends ProveedorRepository {
       phone: dto.telefono,
       is_active: dto.estado === EstadoProveedor.ACTIVO,
       is_certified: (dto.certificacionesVigentes || []).length > 0,
-      country: dto.country || 'Colombia'
+      country: dto.country || 'Colombia',
+      website: dto.website || null,
+      address_line1: dto.addressLine1 || null,
+      city: dto.city || null,
+      state: dto.state || null,
+      payment_terms: dto.paymentTerms || null,
+      credit_limit: dto.creditLimit ?? null,
+      currency: dto.currency || null
     };
   }
 
@@ -140,6 +163,13 @@ export class HttpProveedorRepository extends ProveedorRepository {
     if (dto.estado !== undefined) payload.is_active = dto.estado === EstadoProveedor.ACTIVO;
     if (dto.certificacionesVigentes !== undefined) payload.is_certified = dto.certificacionesVigentes.length > 0;
     if ((dto as any).country !== undefined) payload.country = (dto as any).country;
+    if ((dto as any).website !== undefined) payload.website = (dto as any).website;
+    if ((dto as any).addressLine1 !== undefined) payload.address_line1 = (dto as any).addressLine1;
+    if ((dto as any).city !== undefined) payload.city = (dto as any).city;
+    if ((dto as any).state !== undefined) payload.state = (dto as any).state;
+    if ((dto as any).paymentTerms !== undefined) payload.payment_terms = (dto as any).paymentTerms;
+    if ((dto as any).creditLimit !== undefined) payload.credit_limit = (dto as any).creditLimit;
+    if ((dto as any).currency !== undefined) payload.currency = (dto as any).currency;
     return payload;
   }
 

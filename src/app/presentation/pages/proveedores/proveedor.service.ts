@@ -126,6 +126,13 @@ export class ProveedorService {
       telefono: e.telefono,
       correoContacto: e.correoContacto,
       country: (e as any).country,
+      website: (e as any).website,
+      addressLine1: (e as any).addressLine1,
+      city: (e as any).city,
+      state: (e as any).state,
+      paymentTerms: (e as any).paymentTerms,
+      creditLimit: (e as any).creditLimit,
+      currency: (e as any).currency,
       estado: e.estado === EstadoProveedor.ACTIVO ? 'Activo' : 'Inactivo',
       certificacionesVigentes: e.certificacionesVigentes || []
     };

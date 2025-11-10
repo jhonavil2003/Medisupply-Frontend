@@ -141,6 +141,34 @@
           <mat-label>Certificaciones vigentes</mat-label>
           <input matInput type="text" formControlName="certificacionesVigentes" placeholder="Separadas por coma">
         </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Sitio web</mat-label>
+          <input matInput type="url" formControlName="website" placeholder="https://example.com">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Dirección (línea 1)</mat-label>
+          <input matInput type="text" formControlName="addressLine1" placeholder="Calle, número, etc.">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Ciudad</mat-label>
+          <input matInput type="text" formControlName="city">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Departamento / Estado</mat-label>
+          <input matInput type="text" formControlName="state">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Términos de pago</mat-label>
+          <input matInput type="text" formControlName="paymentTerms" placeholder="e.g. 30 días">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Límite de crédito</mat-label>
+          <input matInput type="number" formControlName="creditLimit" min="0">
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>Moneda</mat-label>
+          <input matInput type="text" formControlName="currency" placeholder="USD, PEN, COP...">
+        </mat-form-field>
         <div class="form-actions">
           <button mat-flat-button color="primary" type="submit">Guardar</button>
         </div>

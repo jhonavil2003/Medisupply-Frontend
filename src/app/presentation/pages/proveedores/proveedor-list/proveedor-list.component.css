@@ -14,7 +14,7 @@
   background: var(--color-white);
   border-radius: 12px;
   padding: 2rem;
-  width: 420px;
+  width: 920px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -108,14 +108,33 @@
 }
 
 .form-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   padding: 0;
+  align-items: start;
 }
 
 .form-field {
   width: 100%;
+}
+
+.form-field.full {
+  grid-column: 1 / -1; /* ocupa ambas columnas */
+}
+
+.required-asterisk {
+  color: #d32f2f; /* rojo Material */
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+/* ensure actions row spans full width */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
 }
 
 .actions {

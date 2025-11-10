@@ -76,7 +76,14 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       correoContacto: ['', [Validators.required, Validators.email]],
       country: ['Colombia', Validators.required],
       estado: ['Activo', Validators.required],
-      certificacionesVigentes: ['']
+      certificacionesVigentes: [''],
+      website: [''],
+      addressLine1: [''],
+      city: [''],
+      state: [''],
+      paymentTerms: [''],
+      creditLimit: [''],
+      currency: ['']
     });
   }
 
@@ -132,7 +139,14 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       correoContacto: nuevo.correoContacto,
       country: nuevo.country || 'Colombia',
       estado: nuevo.estado,
-      certificacionesVigentes: (nuevo.certificacionesVigentes || []).join(', ')
+      certificacionesVigentes: (nuevo.certificacionesVigentes || []).join(', '),
+      website: (nuevo as any).website || '',
+      addressLine1: (nuevo as any).addressLine1 || '',
+      city: (nuevo as any).city || '',
+      state: (nuevo as any).state || '',
+      paymentTerms: (nuevo as any).paymentTerms || '',
+      creditLimit: (nuevo as any).creditLimit ?? '',
+      currency: (nuevo as any).currency || ''
     });
   }
 
@@ -149,7 +163,14 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       correoContacto: item.correoContacto,
       country: item.country || 'Colombia',
       estado: item.estado,
-      certificacionesVigentes: (item.certificacionesVigentes || []).join(', ')
+      certificacionesVigentes: (item.certificacionesVigentes || []).join(', '),
+      website: item.website || '',
+      addressLine1: item.addressLine1 || '',
+      city: item.city || '',
+      state: item.state || '',
+      paymentTerms: item.paymentTerms || '',
+      creditLimit: item.creditLimit ?? '',
+      currency: item.currency || ''
     });
     console.log('[ProveedorList] editarProveedor - index:', index, 'id:', item.id, 'modoEdicion:', this.modoEdicion);
   }
@@ -169,6 +190,14 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       ruc: formValue.ruc,
       telefono: formValue.telefono,
       correoContacto: formValue.correoContacto,
+  country: formValue.country,
+  website: formValue.website || undefined,
+  addressLine1: formValue.addressLine1 || undefined,
+  city: formValue.city || undefined,
+  state: formValue.state || undefined,
+  paymentTerms: formValue.paymentTerms || undefined,
+  creditLimit: formValue.creditLimit ? Number(formValue.creditLimit) : undefined,
+  currency: formValue.currency || undefined,
       estado: formValue.estado,
       certificacionesVigentes: formValue.certificacionesVigentes ? formValue.certificacionesVigentes.split(',').map((s: string) => s.trim()) : []
     };
