@@ -3,17 +3,27 @@ import {
   MetaVentaEntity, 
   CreateMetaVentaDto, 
   UpdateMetaVentaDto,
-  ComparacionMetaResultado 
+  Region,
+  Trimestre
 } from '../entities/meta-venta.entity';
+
+/**
+ * Filtros opcionales para consultar metas de venta
+ */
+export interface MetaVentaFilters {
+  region?: Region;
+  trimestre?: Trimestre;
+  tipo?: 'unidades' | 'monetario';
+}
 
 /**
  * Contrato del repositorio de Metas de Venta
  */
 export abstract class MetaVentaRepository {
   /**
-   * Obtiene todas las metas
+   * Obtiene todas las metas con filtros opcionales
    */
-  abstract getAll(): Observable<MetaVentaEntity[]>;
+  abstract getAll(filters?: MetaVentaFilters): Observable<MetaVentaEntity[]>;
 
   /**
    * Obtiene una meta por ID
@@ -36,22 +46,12 @@ export abstract class MetaVentaRepository {
   abstract delete(id: number): Observable<boolean>;
 
   /**
-   * Filtra metas por producto
+   * Obtiene metas por vendedor con filtros opcionales
    */
-  abstract filterByProducto(producto: string): Observable<MetaVentaEntity[]>;
+  abstract getByVendedor(employeeId: string, filters?: MetaVentaFilters): Observable<MetaVentaEntity[]>;
 
   /**
-   * Filtra metas por región
+   * Obtiene metas por producto con filtros opcionales
    */
-  abstract filterByRegion(region: string): Observable<MetaVentaEntity[]>;
-
-  /**
-   * Filtra metas por trimestre
-   */
-  abstract filterByTrimestre(trimestre: string): Observable<MetaVentaEntity[]>;
-
-  /**
-   * Compara meta con resultado real
-   */
-  abstract compararResultados(metaId: number, resultado: number): Observable<ComparacionMetaResultado>;
+  abstract getByProducto(productSku: string, filters?: MetaVentaFilters): Observable<MetaVentaEntity[]>;
 }

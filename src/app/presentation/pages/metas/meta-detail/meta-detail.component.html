@@ -1,0 +1,142 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button mat-icon-button (click)="navigateBack()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <mat-card-title>Detalle de Meta de Venta</mat-card-title>
+        </div>
+        @if (!loading() && meta()) {
+          <button mat-raised-button color="primary" (click)="navigateToEdit()">
+            <mat-icon>edit</mat-icon>
+            Editar
+          </button>
+        }
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      @if (loading()) {
+        <div class="loading-container">
+          <mat-spinner></mat-spinner>
+          <p>Cargando meta...</p>
+        </div>
+      } @else if (meta(); as metaData) {
+        <div class="detail-grid">
+          <div class="detail-section">
+            <h3><mat-icon>info</mat-icon> Información General</h3>
+            <mat-divider></mat-divider>
+            
+            <div class="detail-row">
+              <span class="label">ID:</span>
+              <span class="value">{{ metaData.id }}</span>
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Región:</span>
+              <mat-chip class="region-chip">{{ metaData.region }}</mat-chip>
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Trimestre:</span>
+              <mat-chip>{{ metaData.trimestre }}</mat-chip>
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Tipo de Meta:</span>
+              <mat-chip [class]="metaData.tipo === TipoMeta.UNIDADES ? 'tipo-unidades' : 'tipo-monetario'">
+                {{ getTipoDisplay(metaData.tipo) }}
+              </mat-chip>
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Valor Objetivo:</span>
+              <span class="value highlight">{{ getValorDisplay(metaData) }}</span>
+            </div>
+          </div>
+
+          <div class="detail-section">
+            <h3><mat-icon>person</mat-icon> Vendedor</h3>
+            <mat-divider></mat-divider>
+            
+            <div class="detail-row">
+              <span class="label">ID Empleado:</span>
+              <span class="value">{{ metaData.idVendedor }}</span>
+            </div>
+
+            @if (metaData.vendedor) {
+              <div class="detail-row">
+                <span class="label">Nombre Completo:</span>
+                <span class="value">{{ metaData.vendedor.nombreCompleto }}</span>
+              </div>
+
+              <div class="detail-row">
+                <span class="label">Email:</span>
+                <span class="value">{{ metaData.vendedor.email }}</span>
+              </div>
+            }
+          </div>
+
+          <div class="detail-section">
+            <h3><mat-icon>inventory_2</mat-icon> Producto</h3>
+            <mat-divider></mat-divider>
+            
+            <div class="detail-row">
+              <span class="label">SKU:</span>
+              <span class="value">{{ metaData.idProducto }}</span>
+            </div>
+
+            @if (metaData.producto) {
+              @if (metaData.producto.name) {
+                <div class="detail-row">
+                  <span class="label">Nombre:</span>
+                  <span class="value">{{ metaData.producto.name }}</span>
+                </div>
+              }
+
+              @if (metaData.producto.description) {
+                <div class="detail-row">
+                  <span class="label">Descripción:</span>
+                  <span class="value">{{ metaData.producto.description }}</span>
+                </div>
+              }
+
+              @if (metaData.producto.unitPrice !== null) {
+                <div class="detail-row">
+                  <span class="label">Precio Unitario:</span>
+                  <span class="value">{{ metaData.producto.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
+                </div>
+              }
+
+              @if (metaData.producto.isActive !== null) {
+                <div class="detail-row">
+                  <span class="label">Estado:</span>
+                  <mat-chip [class]="metaData.producto.isActive ? 'status-active' : 'status-inactive'">
+                    {{ metaData.producto.isActive ? 'Activo' : 'Inactivo' }}
+                  </mat-chip>
+                </div>
+              }
+            }
+          </div>
+
+          <div class="detail-section">
+            <h3><mat-icon>schedule</mat-icon> Fechas</h3>
+            <mat-divider></mat-divider>
+            
+            <div class="detail-row">
+              <span class="label">Creación:</span>
+              <span class="value">{{ formatDate(metaData.fechaCreacion) }}</span>
+            </div>
+
+            <div class="detail-row">
+              <span class="label">Última Actualización:</span>
+              <span class="value">{{ formatDate(metaData.fechaActualizacion) }}</span>
+            </div>
+          </div>
+        </div>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>
