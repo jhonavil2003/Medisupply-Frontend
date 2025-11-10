@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
@@ -21,6 +21,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
   imports: [
     CommonModule,
     FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     MatTableModule,
     MatPaginatorModule,
@@ -38,6 +39,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class ProveedorListComponent implements OnInit, AfterViewInit {
   private proveedorService = inject(ProveedorService);
   private notify = inject(NotificationService);
+    private fb = inject(FormBuilder);
 
   proveedores: Proveedor[] = [];
   proveedorEditando: Proveedor | null = null;
@@ -51,14 +53,30 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   dataSource = new MatTableDataSource<Proveedor>();
   displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'certificacionesVigentes', 'acciones'];
 
+  proveedorForm!: FormGroup;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(): void {
-    this.proveedorService.getProveedores().subscribe(data => {
+    // subscribe to the live proveedores$ so UI updates after create/update/delete
+    this.proveedorService.proveedores$.subscribe(data => {
       this.proveedores = data;
       this.proveedoresFiltrados = [...data];
       this.dataSource.data = this.proveedoresFiltrados;
+    });
+
+    // trigger initial load
+    this.proveedorService.getProveedores().subscribe({ error: (err) => this.notify.error(`Error al cargar proveedores: ${err.message || err}`) });
+
+    this.proveedorForm = this.fb.group({
+      razonSocial: ['', [Validators.required, Validators.minLength(3)]],
+      ruc: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
+      telefono: ['', Validators.required],
+      correoContacto: ['', [Validators.required, Validators.email]],
+      country: ['Colombia', Validators.required],
+      estado: ['Activo', Validators.required],
+      certificacionesVigentes: ['']
     });
   }
 
@@ -107,6 +125,15 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
     this.proveedorEditIndex = null;
     this.mostrarModal = true;
     this.modoEdicion = false;
+    this.proveedorForm.reset({
+      razonSocial: nuevo.razonSocial,
+      ruc: nuevo.ruc,
+      telefono: nuevo.telefono,
+      correoContacto: nuevo.correoContacto,
+      country: nuevo.country || 'Colombia',
+      estado: nuevo.estado,
+      certificacionesVigentes: (nuevo.certificacionesVigentes || []).join(', ')
+    });
   }
 
   editarProveedor(index: number) {
@@ -114,29 +141,75 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
     this.proveedorEditIndex = index;
     this.mostrarModal = true;
     this.modoEdicion = true;
+    const item = this.proveedoresFiltrados[index];
+    this.proveedorForm.reset({
+      razonSocial: item.razonSocial,
+      ruc: item.ruc,
+      telefono: item.telefono,
+      correoContacto: item.correoContacto,
+      country: item.country || 'Colombia',
+      estado: item.estado,
+      certificacionesVigentes: (item.certificacionesVigentes || []).join(', ')
+    });
+    console.log('[ProveedorList] editarProveedor - index:', index, 'id:', item.id, 'modoEdicion:', this.modoEdicion);
   }
 
   guardarEdicionProveedor() {
-    if (this.proveedorEditando) {
-      if (this.proveedorEditIndex !== null) {
-        // Editar existente
-        const idxGlobal = this.proveedores.findIndex(p => p.ruc === this.proveedoresFiltrados[this.proveedorEditIndex!].ruc);
-        if (idxGlobal !== -1) {
-          this.proveedores[idxGlobal] = { ...this.proveedorEditando };
-        }
-        this.notify.success('Se guardaron los cambios del proveedor');
-      } else {
-        // Agregar nuevo
-        this.proveedorService.addProveedor(this.proveedorEditando);
-        this.proveedores = [...this.proveedorService['proveedores']];
-        this.notify.success('Se agrego el nuevo proveedor');
-      }
-      this.filtrarProveedores();
-      this.mostrarModal = false;
-      this.proveedorEditando = null;
-      this.proveedorEditIndex = null;
-      this.modoEdicion = false;
+    console.log('[ProveedorList] guardarEdicionProveedor called. modoEdicion:', this.modoEdicion, 'editIndex:', this.proveedorEditIndex);
+    if (this.proveedorForm.invalid) {
+      this.proveedorForm.markAllAsTouched();
+      console.log('[ProveedorList] Form invalid:', this.proveedorForm.errors, this.proveedorForm.value);
+      this.notify.warning('Por favor complete los campos requeridos correctamente');
+      return;
     }
+
+    const formValue = this.proveedorForm.value;
+    const proveedorPayload: Proveedor = {
+      razonSocial: formValue.razonSocial,
+      ruc: formValue.ruc,
+      telefono: formValue.telefono,
+      correoContacto: formValue.correoContacto,
+      estado: formValue.estado,
+      certificacionesVigentes: formValue.certificacionesVigentes ? formValue.certificacionesVigentes.split(',').map((s: string) => s.trim()) : []
+    };
+
+    if (this.modoEdicion && this.proveedorEditIndex !== null) {
+      const id = this.proveedoresFiltrados[this.proveedorEditIndex].id;
+      console.log('[ProveedorList] Updating proveedor id:', id, 'payload:', proveedorPayload);
+      if (id) {
+        this.proveedorService.updateProveedor(id, proveedorPayload).subscribe({
+          next: () => {
+            this.notify.success('Se guardaron los cambios del proveedor');
+            this.closeModalAfterSave();
+          },
+          error: (err) => {
+            console.error('[ProveedorList] update error', err);
+            this.notify.error(`Error al actualizar proveedor: ${err.message || err}`);
+          }
+        });
+      }
+    } else {
+      console.log('[ProveedorList] Creating proveedor payload:', proveedorPayload);
+      this.proveedorService.addProveedor(proveedorPayload).subscribe({
+        next: () => {
+          this.notify.success('Se agregó el nuevo proveedor');
+          this.closeModalAfterSave();
+        },
+        error: (err) => {
+          console.error('[ProveedorList] create error', err);
+          this.notify.error(`Error al crear proveedor: ${err.message || err}`);
+        }
+      });
+    }
+  }
+
+  private closeModalAfterSave() {
+    this.filtrarProveedores();
+    this.mostrarModal = false;
+    this.proveedorEditando = null;
+    this.proveedorEditIndex = null;
+    this.modoEdicion = false;
+    this.proveedorForm.reset();
   }
 
   cancelarEdicionProveedor() {
@@ -150,10 +223,18 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   eliminarProveedor(index: number) {
     if (confirm('¿Está seguro de eliminar este proveedor?')) {
       const data = this.dataSource.filteredData;
-      const ruc = data[index].ruc;
-      this.proveedores = this.proveedores.filter(p => p.ruc !== ruc);
-      this.filtrarProveedores();
-      this.notify.success('Registro eliminado');
+      const item = data[index];
+      if (item.id) {
+        this.proveedorService.deleteProveedor(item.id).subscribe({
+          next: () => this.notify.success('Registro eliminado'),
+          error: (err) => this.notify.error(`Error al eliminar proveedor: ${err.message || err}`)
+        });
+      } else {
+        const ruc = item.ruc;
+        this.proveedores = this.proveedores.filter(p => p.ruc !== ruc);
+        this.filtrarProveedores();
+        this.notify.success('Registro eliminado (local)');
+      }
     }
   }
   verProveedor(index: number) {

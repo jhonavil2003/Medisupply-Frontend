@@ -4,6 +4,7 @@ export interface ProveedorEntity {
   readonly ruc: string;
   readonly telefono: string;
   readonly correoContacto: string;
+  readonly country?: string;
   readonly estado: EstadoProveedor;
   readonly certificacionesVigentes: string[];
   readonly fechaRegistro?: Date;
@@ -21,6 +22,7 @@ export interface CreateProveedorDto {
   ruc: string;
   telefono: string;
   correoContacto: string;
+  country?: string;
   estado: EstadoProveedor;
   certificacionesVigentes: string[];
 }

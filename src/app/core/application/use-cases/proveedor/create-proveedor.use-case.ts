@@ -24,6 +24,10 @@ export class CreateProveedorUseCase {
     if (!this.isValidEmail(proveedor.correoContacto)) {
       throw new Error('El correo electrónico no es válido');
     }
+
+    if (!proveedor.country || proveedor.country.trim().length === 0) {
+      throw new Error('El país es requerido');
+    }
   }
 
   private isValidRUC(ruc: string): boolean {

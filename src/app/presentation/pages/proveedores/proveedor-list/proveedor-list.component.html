@@ -93,34 +93,53 @@
       <button mat-icon-button (click)="cancelarEdicionProveedor()" aria-label="Cerrar" class="close" type="button">
         <mat-icon>close</mat-icon>
       </button>
-      <h2>Editar Proveedor</h2>
-      <form (ngSubmit)="guardarEdicionProveedor()" class="form-container" #proveedorForm="ngForm">
+      <h2>{{ modoEdicion ? 'Editar Proveedor' : 'Crear Proveedor' }}</h2>
+      <form [formGroup]="proveedorForm" (ngSubmit)="guardarEdicionProveedor()" class="form-container">
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Razón Social</mat-label>
-          <input matInput type="text" [(ngModel)]="proveedorEditando.razonSocial" name="razonSocial" required>
+          <input matInput type="text" formControlName="razonSocial">
+          <mat-error *ngIf="proveedorForm.get('razonSocial')?.touched && proveedorForm.get('razonSocial')?.invalid">
+            Razón social es requerida (mínimo 3 caracteres).
+          </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>RUC</mat-label>
-          <input matInput type="text" [(ngModel)]="proveedorEditando.ruc" name="ruc" required>
+          <input matInput type="text" formControlName="ruc">
+          <mat-error *ngIf="proveedorForm.get('ruc')?.touched && proveedorForm.get('ruc')?.invalid">
+            RUC inválido (debe contener 11 dígitos).
+          </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Teléfono</mat-label>
-          <input matInput type="text" [(ngModel)]="proveedorEditando.telefono" name="telefono" required>
+          <input matInput type="text" formControlName="telefono">
+          <mat-error *ngIf="proveedorForm.get('telefono')?.touched && proveedorForm.get('telefono')?.invalid">
+            Teléfono es requerido.
+          </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Correo de contacto</mat-label>
-          <input matInput type="email" [(ngModel)]="proveedorEditando.correoContacto" name="correoContacto" required>
+          <input matInput type="email" formControlName="correoContacto">
+          <mat-error *ngIf="proveedorForm.get('correoContacto')?.touched && proveedorForm.get('correoContacto')?.invalid">
+            Correo inválido.
+          </mat-error>
+        </mat-form-field>
+        <mat-form-field appearance="outline" class="form-field">
+          <mat-label>País</mat-label>
+          <input matInput type="text" formControlName="country">
+          <mat-error *ngIf="proveedorForm.get('country')?.touched && proveedorForm.get('country')?.invalid">
+            País es requerido.
+          </mat-error>
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Estado</mat-label>
-          <mat-select [(ngModel)]="proveedorEditando.estado" name="estado">
+          <mat-select formControlName="estado">
             <mat-option value="Activo">Activo</mat-option>
             <mat-option value="Inactivo">Inactivo</mat-option>
           </mat-select>
         </mat-form-field>
         <mat-form-field appearance="outline" class="form-field">
           <mat-label>Certificaciones vigentes</mat-label>
-          <input matInput type="text" [(ngModel)]="proveedorEditando.certificacionesVigentes" name="certificacionesVigentes" placeholder="Separadas por coma">
+          <input matInput type="text" formControlName="certificacionesVigentes" placeholder="Separadas por coma">
         </mat-form-field>
         <div class="form-actions">
           <button mat-flat-button color="primary" type="submit">Guardar</button>
