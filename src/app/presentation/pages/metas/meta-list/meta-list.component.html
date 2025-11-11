@@ -13,40 +13,29 @@
   </div>
 
   <div class="search-bar">
-    <div class="search-wrap" style="width: 100%;">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar metas</mat-label>
-        <input matInput
-          placeholder="Producto, región, trimestre o responsable..."
-          [(ngModel)]="filtroBusqueda"
-          (keyup.enter)="filtrarMetas()" />
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar metas</mat-label>
+      <input matInput
+        placeholder="Producto, región, trimestre o responsable..."
+        [(ngModel)]="filtroBusqueda"
+        (keyup.enter)="filtrarMetas()" />
 
-        @if (filtroBusqueda) {
-          <button
-            matSuffix
-            mat-icon-button
-            aria-label="Limpiar"
-            (click)="filtroBusqueda=''">
-            <mat-icon>close</mat-icon>
-          </button>
-        }
-
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-      <!-- botón al costado (Opción 1) -->
-      <button mat-raised-button
-        color="primary"
-        class="search-btn"
-        (click)="filtrarMetas()">
-        <mat-icon>search</mat-icon>
-      </button>
-    </div>
+      @if (filtroBusqueda) {
+        <button
+          matSuffix
+          mat-icon-button
+          aria-label="Limpiar"
+          (click)="filtroBusqueda=''">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
   </div>
 
 
 
-  <div class="card">
-    <table class="modern-table">
+  <div class="table-container">
+    <table class="modern-table products-table">
       <thead>
         <tr>
           <th>Producto</th>
@@ -58,24 +47,20 @@
           <th>Acciones</th>
         </tr>
       </thead>
-      <tbody>
-        @for (meta of metasFiltradas; track meta) {
-          <tr>
-            <td>{{ meta.producto }}</td>
-            <td>{{ meta.region }}</td>
-            <td>{{ meta.trimestre }}</td>
-            <td>{{ meta.valorObjetivo }}</td>
-            <td>{{ meta.tipo }}</td>
-            <td>{{ meta.usuarioResponsable }}</td>
-            <td class="actions">
-              <button class="btn-icon" title="Ver" (click)="verMeta(meta)"><i class="fas fa-eye"></i></button>
-              <button class="btn-icon" title="Editar" [disabled]="!meta.editable" (click)="editarMeta(meta)"><i class="fas fa-edit"></i></button>
-              <button class="btn-icon danger" title="Eliminar" (click)="eliminarMeta(meta)"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        }
-      </tbody>
+                    <tbody>
+                <tr *ngFor="let meta of getPaginatedMetas()" class="table-row">
     </table>
+    
+    <!-- Paginación unificada -->
+    <mat-paginator 
+      class="unified-paginator"
+      [length]="totalElements"
+      [pageSize]="pageSize"
+      [pageIndex]="pageIndex"
+      [pageSizeOptions]="pageSizeOptions"
+      [showFirstLastButtons]="true"
+      (page)="onPageChange($event)">
+    </mat-paginator>
   </div>
 
   <!-- Modal Detalle -->

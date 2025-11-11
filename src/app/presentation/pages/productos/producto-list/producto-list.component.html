@@ -176,8 +176,9 @@
         </table>
       </div>
 
-      <!-- Paginación -->
+      <!-- Paginación unificada -->
       <mat-paginator 
+        class="unified-paginator"
         *ngIf="pagination()"
         [length]="pagination()?.total_items"
         [pageSize]="pagination()?.per_page"

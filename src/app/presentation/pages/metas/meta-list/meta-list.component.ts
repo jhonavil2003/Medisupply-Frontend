@@ -9,6 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MetaService } from '../meta.service';
 import { MetaVenta } from '../meta';
 import { ToastrService } from 'ngx-toastr';
@@ -26,7 +27,8 @@ import { ToastrService } from 'ngx-toastr';
     MatFormFieldModule,
     MatSelectModule,
     MatInputModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    MatPaginatorModule
   ],
   templateUrl: './meta-list.component.html',
   styleUrls: ['./meta-list.component.css']
@@ -43,6 +45,12 @@ export class MetaListComponent implements OnInit {
   metaEditando: MetaVenta | null = null;
   mostrarDetalle: boolean = false;
   metaDetalle: MetaVenta | null = null;
+
+  // Propiedades de paginación
+  pageSize: number = 10;
+  pageIndex: number = 0;
+  totalElements: number = 0;
+  pageSizeOptions: number[] = [5, 10, 20, 50];
 
   productos = ['Producto A', 'Producto B', 'Producto C'];
   regiones = ['Norte', 'Sur', 'Este', 'Oeste'];
@@ -67,6 +75,18 @@ export class MetaListComponent implements OnInit {
       meta.trimestre.toLowerCase().includes(filtro) ||
       meta.usuarioResponsable.toLowerCase().includes(filtro)
     );
+    this.totalElements = this.metasFiltradas.length;
+  }
+
+  onPageChange(event: any) {
+    this.pageIndex = event.pageIndex;
+    this.pageSize = event.pageSize;
+  }
+
+  getPaginatedMetas() {
+    const startIndex = this.pageIndex * this.pageSize;
+    const endIndex = startIndex + this.pageSize;
+    return this.metasFiltradas.slice(startIndex, endIndex);
   }
 
   agregarMeta() {

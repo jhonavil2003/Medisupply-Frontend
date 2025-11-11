@@ -1,3 +1,8 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS SOLO PARA PROVEEDORES
+   Los estilos de tabla están en styles.scss
+   ============================================ */
+
 /* Botón cerrar modal alineado arriba a la derecha */
 .detalle-modal {
   display: none;
@@ -25,88 +30,8 @@
   top: 12px;
   right: 12px;
 }
-/* contenedor flex que iguala alturas */
-.search-wrap {
-  display: flex;
-  gap: 8px;
-  align-items: stretch; /* clave: que los hijos estiren verticalmente */
-  width: 100%;
-}
 
-/* mat-form-field ocupa todo el espacio disponible */
-.search-field {
-  flex: 1;
-  margin: 0; /* evita márgenes inesperados */
-}
-
-/* botón se estira para igualar la altura del mat-form-field */
-.search-btn {
-  align-self: stretch;       /* hace que la altura coincida */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 14px;
-  min-width: 48px;
-  box-shadow: none;          /* opcional, para look más plano */
-}
-
-/* ajuste visual: que el botón no tenga mucho padding vertical */
-.search-btn .mat-button-wrapper {
-  padding: 0 10px; 
-}
-
-/* fallback si tu tema produce otra altura (opcional) */
-@media (min-width: 0px) {
-  .search-field .mat-form-field-wrapper,
-  .search-field .mat-form-field-flex {
-    min-height: 56px; /* keep consistent with Material default outline */
-  }
-  .search-btn { min-height: 56px; }
-}
-
-/* en pantallas pequeñas */
-@media (max-width: 600px) {
-  .search-wrap { flex-direction: column; }
-  .search-btn { width: 100%; }
-  .search-field { width: 100%; }
-}
-/* iguala la altura del botón al campo */
-
-.search-bar .search-btn {
-  height: 46px;              /* coincide con la altura típica de mat-form-field outline */
-  min-width: 48px;
-  padding: 0 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;          /* opcional: que no compita con la sombra del campo */
-}
-
-/* en pantallas pequeñas reducir un poco */
-@media (max-width: 600px) {
-  .search-bar .search-btn {
-    height: 48px;
-  }
-}
-
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  gap: 10px;
-}
-.search-bar input[type="text"] {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 1rem;
-  outline: none;
-  height: 44px;
-  box-sizing: border-box;
-}
-
+/* Formularios específicos para proveedores */
 .form-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -137,106 +62,14 @@
   margin-top: 1rem;
 }
 
-/* Style the framework's required marker inside the modal to be a single red asterisk */
-.detalle-content .mat-mdc-form-field-required-marker,
-.detalle-content .mat-form-field-required-marker {
-  color: #d32f2f !important; /* make the default marker red */
-  opacity: 1 !important;
-}
-
-/* Ensure floating labels render above inputs (use Material's default floating behavior) */
-.detalle-content .mat-form-field .mat-form-field-label,
-.detalle-content .mat-mdc-floating-label {
-  /* Ensure the floating label is visible and above the outline */
-  transform-origin: left top;
-}
-
 .actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 1.5rem;
 }
 
-/* Override Material Table styles para que se vea como modern-table */
-.products-table.mat-table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-  font-family: var(--font-base);
-  font-size: 0.97rem;
-  letter-spacing: 0.01em;
-  background: var(--color-white) !important; /* Fondo blanco unificado */
-}
-
-.products-table .mat-header-cell {
-  font-size: 1.05rem;
-  font-weight: 400;
-  color: var(--color-primary);
-  padding: 12px 8px;
-  border-bottom: 2px solid var(--color-border);
-  background: var(--color-table-header);
-  vertical-align: middle;
-  text-align: left !important; /* Todos los headers justificados a la izquierda */
-}
-
-/* Ajuste específico para el header de Acciones */
-.products-table .mat-header-cell:last-child {
-  padding-left: 8px !important; /* Mismo padding que las celdas de contenido */
-}
-
-.products-table .mat-header-row {
-  background: var(--color-table-header);
-}
-
-.products-table .mat-cell {
-  font-size: 0.97rem;
-  color: #444;
-  padding: 10px 8px;
-  border-bottom: 1px solid var(--color-table-row-alt);
-  vertical-align: middle;
-  line-height: 1.4;
-  background: inherit !important; /* Hereda el fondo de la fila */
-}
-
-/* Asegurar fondos alternados para todas las celdas */
-.products-table .mat-row:nth-child(odd) .mat-cell {
-  background: #f9f9f9 !important; /* Mismo fondo que la fila impar */
-}
-
-.products-table .mat-row:nth-child(even) .mat-cell {
-  background: var(--color-white) !important; /* Mismo fondo que la fila par */
-}
-
-.products-table .mat-row:hover .mat-cell {
-  background: var(--color-table-row-hover) !important; /* Fondo en hover */
-}
-
-.products-table .mat-row:nth-child(odd) {
-  background: #f9f9f9 !important; /* Fondo gris claro alternado */
-}
-
-.products-table .mat-row:nth-child(even) {
-  background: var(--color-white) !important; /* Fondo blanco */
-}
-
-.products-table .mat-row:hover {
-  background: var(--color-table-row-hover) !important;
-}
-
-/* Eliminar línea debajo de la celda de acciones */
-.products-table .actions {
-  border-bottom: none !important;
-}
-
-/* Centrado vertical FORZADO para botones de acción - EXACTO como productos */
-.products-table .mat-column-acciones {
-  display: table-cell !important;
-  vertical-align: middle !important;
-  text-align: left !important; /* Cambiado a left para consistencia */
-  height: 48px !important;
-  padding: 8px !important;
-  background: inherit !important; /* Hereda el fondo de la fila */
-}
+/* Responsive para mobile */
+@media (max-width: 768px) {
 
 /* Forzar alineación horizontal de botones con selectores múltiples */
 .products-table .mat-column-acciones,
