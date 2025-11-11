@@ -67,13 +67,27 @@
 
 .filters {
   display: flex;
-  gap: 1rem;
+  gap: 1.5rem; /* Aumentado de 1rem a 1.5rem */
   margin-bottom: 20px;
   flex-wrap: wrap;
 }
 
 .filters mat-form-field {
-  min-width: 150px;
+  min-width: 180px; /* Aumentado de 150px a 180px */
+  flex: 1;
+  margin-right: 8px; /* Añadido margen adicional */
+}
+
+.filters-row {
+  display: flex;
+  gap: 1.5rem; /* Espaciado amplio entre campos */
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.filters-row mat-form-field {
+  min-width: 200px; /* Ancho mínimo mayor para evitar apretamiento */
   flex: 1;
 }
 
@@ -85,6 +99,39 @@
 
 .filter-button {
   min-width: auto;
+}
+
+/* Estilos mejorados para la sección de acciones de filtro */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 12px;
+  gap: 12px;
+}
+
+.filter-actions button {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  text-transform: none !important;
+}
+
+.filter-actions button:hover {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.filter-actions button mat-icon {
+  margin-right: 6px !important;
+  font-size: 18px !important;
 }
 
 .results-info {
@@ -167,13 +214,13 @@
 }
 
 .status-active {
-  background: #e8f5e8;
-  color: #2e7d32;
+  color: inherit;
+  background: transparent;
 }
 
 .status-inactive {
-  background: #fce4ec;
-  color: #c2185b;
+  color: inherit;
+  background: transparent;
 }
 
 /* Específico para productos - Modal */

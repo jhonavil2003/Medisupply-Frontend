@@ -58,25 +58,12 @@
               <mat-option [value]="false">No</mat-option>
             </mat-select>
           </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Items por página</mat-label>
-            <mat-select formControlName="per_page" (selectionChange)="onFilterChange()">
-              <mat-option [value]="10">10</mat-option>
-              <mat-option [value]="20">20</mat-option>
-              <mat-option [value]="50">50</mat-option>
-              <mat-option [value]="100">100</mat-option>
-            </mat-select>
-          </mat-form-field>
         </div>
 
         <div class="filter-actions">
-          <mat-checkbox formControlName="is_active" (change)="onFilterChange()">
-            Solo productos activos
-          </mat-checkbox>
           <button mat-button type="button" (click)="resetFilters()">
-            <mat-icon>refresh</mat-icon>
-            Limpiar filtros
+            <mat-icon>clear_all</mat-icon>
+            Limpiar
           </button>
         </div>
       </form>
