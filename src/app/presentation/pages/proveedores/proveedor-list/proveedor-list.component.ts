@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { ProveedorService } from '../proveedor.service';
 import { Proveedor } from '../proveedor';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-proveedor-list',
@@ -38,7 +39,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
 })
 export class ProveedorListComponent implements OnInit, AfterViewInit {
   private proveedorService = inject(ProveedorService);
-  private notify = inject(NotificationService);
+  private notificationService = inject(NotificationService);
+  private confirmDialog = inject(ConfirmDialogService);
     private fb = inject(FormBuilder);
 
   proveedores: Proveedor[] = [];
@@ -61,13 +63,15 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     // subscribe to the live proveedores$ so UI updates after create/update/delete
     this.proveedorService.proveedores$.subscribe(data => {
-      this.proveedores = data;
-      this.proveedoresFiltrados = [...data];
+      // Filtrar solo proveedores activos para mostrar en la tabla
+      const proveedoresActivos = this.filtrarProveedoresActivos(data);
+      this.proveedores = proveedoresActivos;
+      this.proveedoresFiltrados = [...proveedoresActivos];
       this.dataSource.data = this.proveedoresFiltrados;
     });
 
     // trigger initial load
-    this.proveedorService.getProveedores().subscribe({ error: (err) => this.notify.error(`Error al cargar proveedores: ${err.message || err}`) });
+    this.proveedorService.getProveedores().subscribe({ error: (err) => this.notificationService.error(`Error al cargar proveedores: ${err.message || err}`) });
 
     this.proveedorForm = this.fb.group({
       razonSocial: ['', Validators.required],
@@ -85,6 +89,13 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       creditLimit: ['', [Validators.min(0)]],
       currency: ['', [Validators.maxLength(3), Validators.pattern(/^[A-Z]{3}$/)]]
     });
+  }
+  
+  /**
+   * Filtra solo proveedores activos para mostrar en la tabla principal
+   */
+  private filtrarProveedoresActivos(proveedores: Proveedor[]): Proveedor[] {
+    return proveedores.filter(p => p.estado === 'Activo');
   }
 
   ngAfterViewInit() {
@@ -189,7 +200,7 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
     if (this.proveedorForm.invalid) {
       this.proveedorForm.markAllAsTouched();
       console.log('[ProveedorList] Form invalid:', this.proveedorForm.errors, this.proveedorForm.value);
-      this.notify.warning('Por favor complete los campos requeridos correctamente');
+      this.notificationService.warning('Por favor complete los campos requeridos correctamente');
       return;
     }
 
@@ -217,12 +228,12 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       if (id) {
         this.proveedorService.updateProveedor(id, proveedorPayload).subscribe({
           next: () => {
-            this.notify.success('Se guardaron los cambios del proveedor');
+            this.notificationService.success('Se guardaron los cambios del proveedor');
             this.closeModalAfterSave();
           },
           error: (err) => {
             console.error('[ProveedorList] update error', err);
-            this.notify.error(`Error al actualizar proveedor: ${err.message || err}`);
+            this.notificationService.error(`Error al actualizar proveedor: ${err.message || err}`);
           }
         });
       }
@@ -230,12 +241,12 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       console.log('[ProveedorList] Creating proveedor payload:', proveedorPayload);
       this.proveedorService.addProveedor(proveedorPayload).subscribe({
         next: () => {
-          this.notify.success('Se agregó el nuevo proveedor');
+          this.notificationService.success('Se agregó el nuevo proveedor');
           this.closeModalAfterSave();
         },
         error: (err) => {
           console.error('[ProveedorList] create error', err);
-          this.notify.error(`Error al crear proveedor: ${err.message || err}`);
+          this.notificationService.error(`Error al crear proveedor: ${err.message || err}`);
         }
       });
     }
@@ -258,18 +269,35 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
 
 
-  eliminarProveedor(proveedor: Proveedor) {
-    if (confirm('¿Está seguro de eliminar este proveedor?')) {
+  async eliminarProveedor(proveedor: Proveedor): Promise<void> {
+    // Usar confirmAction en lugar de confirmDelete para personalizar el mensaje
+    const confirmed = await this.confirmDialog.confirmAction(
+      'Confirmar desactivación',
+      `¿Está seguro que desea desactivar el proveedor "${proveedor.razonSocial}"? El proveedor ya no aparecerá en la lista principal.`
+    ).toPromise();
+    
+    if (confirmed) {
       if (proveedor.id) {
-        this.proveedorService.deleteProveedor(proveedor.id).subscribe({
-          next: () => this.notify.success('Registro eliminado'),
-          error: (err) => this.notify.error(`Error al eliminar proveedor: ${err.message || err}`)
+        // Soft delete: cambiar estado a Inactivo en lugar de eliminar
+        const proveedorInactivo: Proveedor = {
+          ...proveedor,
+          estado: 'Inactivo'
+        };
+        
+        this.proveedorService.updateProveedor(proveedor.id, proveedorInactivo).subscribe({
+          next: () => {
+            this.notificationService.success('Proveedor desactivado correctamente');
+            // No necesitamos filtrar manualmente, la suscripción se encargará
+            // de actualizar automáticamente la vista con solo proveedores activos
+          },
+          error: (err) => this.notificationService.error(`Error al desactivar proveedor: ${err.message || err}`)
         });
       } else {
+        // Para proveedores locales sin ID, simplemente remover de la lista
         const ruc = proveedor.ruc;
         this.proveedores = this.proveedores.filter(p => p.ruc !== ruc);
         this.filtrarProveedores();
-        this.notify.success('Registro eliminado (local)');
+        this.notificationService.success('Proveedor removido (local)');
       }
     }
   }
