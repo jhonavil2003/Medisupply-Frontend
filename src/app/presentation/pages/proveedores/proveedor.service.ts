@@ -51,7 +51,9 @@ export class ProveedorService {
   getProveedores(): Observable<Proveedor[]> {
     return this.proveedorRepository.getAll().pipe(
       map((entities: ProveedorEntity[]) => {
+        console.log('[ProveedorService] Raw entities from repo:', JSON.stringify(entities, null, 2));
         const presentation = entities.map(e => this.mapToPresentation(e));
+        console.log('[ProveedorService] Mapped to presentation:', JSON.stringify(presentation, null, 2));
         this.proveedoresSubject.next(presentation);
         return presentation;
       }),
@@ -60,15 +62,38 @@ export class ProveedorService {
   }
 
   addProveedor(proveedor: Proveedor): Observable<Proveedor> {
+    console.log('[ProveedorService] addProveedor - input proveedor:', proveedor);
+    console.log('[ProveedorService] addProveedor - address fields:', {
+      addressLine1: proveedor.addressLine1,
+      city: proveedor.city,
+      state: proveedor.state,
+      country: proveedor.country
+    });
+    
     const dto: CreateProveedorDto = {
       razonSocial: proveedor.razonSocial,
       ruc: proveedor.ruc,
       telefono: proveedor.telefono,
       correoContacto: proveedor.correoContacto,
       country: proveedor.country,
+      website: proveedor.website,
+      addressLine1: proveedor.addressLine1,
+      city: proveedor.city,
+      state: proveedor.state,
+      paymentTerms: proveedor.paymentTerms,
+      creditLimit: proveedor.creditLimit,
+      currency: proveedor.currency,
       estado: proveedor.estado === 'Activo' ? EstadoProveedor.ACTIVO : EstadoProveedor.INACTIVO,
       certificacionesVigentes: proveedor.certificacionesVigentes || []
     };
+
+    console.log('[ProveedorService] addProveedor - DTO created:', dto);
+    console.log('[ProveedorService] addProveedor - DTO address fields:', {
+      addressLine1: dto.addressLine1,
+      city: dto.city,
+      state: dto.state,
+      country: dto.country
+    });
 
     return this.proveedorRepository.create(dto).pipe(
       map(created => this.mapToPresentation(created)),
@@ -81,6 +106,14 @@ export class ProveedorService {
   }
 
   updateProveedor(id: string, proveedor: Proveedor): Observable<Proveedor> {
+    console.log('[ProveedorService] updateProveedor - input proveedor:', proveedor);
+    console.log('[ProveedorService] updateProveedor - address fields:', {
+      addressLine1: proveedor.addressLine1,
+      city: proveedor.city,
+      state: proveedor.state,
+      country: proveedor.country
+    });
+    
     const dto: UpdateProveedorDto = {
       id,
       razonSocial: proveedor.razonSocial,
@@ -88,9 +121,24 @@ export class ProveedorService {
       telefono: proveedor.telefono,
       correoContacto: proveedor.correoContacto,
       country: proveedor.country,
+      website: proveedor.website,
+      addressLine1: proveedor.addressLine1,
+      city: proveedor.city,
+      state: proveedor.state,
+      paymentTerms: proveedor.paymentTerms,
+      creditLimit: proveedor.creditLimit,
+      currency: proveedor.currency,
       estado: proveedor.estado === 'Activo' ? EstadoProveedor.ACTIVO : EstadoProveedor.INACTIVO,
       certificacionesVigentes: proveedor.certificacionesVigentes || []
     };
+
+    console.log('[ProveedorService] updateProveedor - DTO created:', dto);
+    console.log('[ProveedorService] updateProveedor - DTO address fields:', {
+      addressLine1: dto.addressLine1,
+      city: dto.city,
+      state: dto.state,
+      country: dto.country
+    });
 
     return this.proveedorRepository.update(dto).pipe(
       map(updated => this.mapToPresentation(updated)),
@@ -119,22 +167,28 @@ export class ProveedorService {
   }
 
   private mapToPresentation(e: ProveedorEntity): Proveedor {
-    return {
+    console.log('[ProveedorService] mapToPresentation - input entity:', e);
+    console.log('[ProveedorService] mapToPresentation - entity addressLine1:', e.addressLine1);
+    
+    const presentation = {
       id: e.id,
       razonSocial: e.razonSocial,
       ruc: e.ruc,
       telefono: e.telefono,
       correoContacto: e.correoContacto,
-      country: (e as any).country,
-      website: (e as any).website,
-      addressLine1: (e as any).addressLine1,
-      city: (e as any).city,
-      state: (e as any).state,
-      paymentTerms: (e as any).paymentTerms,
-      creditLimit: (e as any).creditLimit,
-      currency: (e as any).currency,
-      estado: e.estado === EstadoProveedor.ACTIVO ? 'Activo' : 'Inactivo',
+      country: e.country || '',
+      website: e.website || '',
+      addressLine1: e.addressLine1 || '',
+      city: e.city || '',
+      state: e.state || '',
+      paymentTerms: e.paymentTerms || '',
+      creditLimit: e.creditLimit,
+      currency: e.currency || '',
+      estado: e.estado === EstadoProveedor.ACTIVO ? 'Activo' as const : 'Inactivo' as const,
       certificacionesVigentes: e.certificacionesVigentes || []
     };
+    
+    console.log('[ProveedorService] mapToPresentation - presentation addressLine1:', presentation.addressLine1);
+    return presentation;
   }
 }

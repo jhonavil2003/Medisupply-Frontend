@@ -70,20 +70,20 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
     this.proveedorService.getProveedores().subscribe({ error: (err) => this.notify.error(`Error al cargar proveedores: ${err.message || err}`) });
 
     this.proveedorForm = this.fb.group({
-      razonSocial: ['', [Validators.required, Validators.minLength(3)]],
-      ruc: ['', [Validators.required, Validators.pattern(/^\d{11}$/)]],
-      telefono: ['', Validators.required],
+      razonSocial: ['', Validators.required],
+      ruc: ['', [Validators.required, Validators.minLength(8), Validators.maxLength(15), Validators.pattern(/^\d+$/)]],
+      telefono: ['', [Validators.required, Validators.minLength(7), Validators.maxLength(20)]],
       correoContacto: ['', [Validators.required, Validators.email]],
-      country: ['Colombia', Validators.required],
+      country: ['', Validators.required],
       estado: ['Activo', Validators.required],
       certificacionesVigentes: [''],
-      website: [''],
-      addressLine1: [''],
-      city: [''],
-      state: [''],
-      paymentTerms: [''],
-      creditLimit: [''],
-      currency: ['']
+      website: ['', [Validators.pattern(/^(www\.)?[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/)]],
+      addressLine1: ['', [Validators.maxLength(100)]],
+      city: ['', [Validators.maxLength(50)]],
+      state: ['', [Validators.maxLength(50)]],
+      paymentTerms: ['', [Validators.maxLength(50)]],
+      creditLimit: ['', [Validators.min(0)]],
+      currency: ['', [Validators.maxLength(3), Validators.pattern(/^[A-Z]{3}$/)]]
     });
   }
 
@@ -127,30 +127,38 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
 
   agregarProveedorAleatorio() {
-    const nuevo = this.proveedorService.crearProveedorAleatorio();
-    this.proveedorEditando = { ...nuevo };
+    // Open create modal with EMPTY fields (do not prefill)
+    this.proveedorEditando = null;
     this.proveedorEditIndex = null;
     this.mostrarModal = true;
     this.modoEdicion = false;
     this.proveedorForm.reset({
-      razonSocial: nuevo.razonSocial,
-      ruc: nuevo.ruc,
-      telefono: nuevo.telefono,
-      correoContacto: nuevo.correoContacto,
-      country: nuevo.country || 'Colombia',
-      estado: nuevo.estado,
-      certificacionesVigentes: (nuevo.certificacionesVigentes || []).join(', '),
-      website: (nuevo as any).website || '',
-      addressLine1: (nuevo as any).addressLine1 || '',
-      city: (nuevo as any).city || '',
-      state: (nuevo as any).state || '',
-      paymentTerms: (nuevo as any).paymentTerms || '',
-      creditLimit: (nuevo as any).creditLimit ?? '',
-      currency: (nuevo as any).currency || ''
+      razonSocial: '',
+      ruc: '',
+      telefono: '',
+      correoContacto: '',
+      country: '',
+      estado: '',
+      certificacionesVigentes: '',
+      website: '',
+      addressLine1: '',
+      city: '',
+      state: '',
+      paymentTerms: '',
+      creditLimit: '',
+      currency: ''
     });
   }
 
-  editarProveedor(index: number) {
+  editarProveedor(proveedor: Proveedor) {
+    // Encontrar el índice real en el array filtrado usando el ID
+    const index = this.proveedoresFiltrados.findIndex(p => p.id === proveedor.id);
+    
+    if (index === -1) {
+      console.error('[ProveedorList] editarProveedor - Proveedor not found in filtered array');
+      return;
+    }
+
     this.proveedorEditando = { ...this.proveedoresFiltrados[index] };
     this.proveedorEditIndex = index;
     this.mostrarModal = true;
@@ -161,7 +169,7 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       ruc: item.ruc,
       telefono: item.telefono,
       correoContacto: item.correoContacto,
-      country: item.country || 'Colombia',
+      country: item.country ?? '',
       estado: item.estado,
       certificacionesVigentes: (item.certificacionesVigentes || []).join(', '),
       website: item.website || '',
@@ -172,7 +180,8 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
       creditLimit: item.creditLimit ?? '',
       currency: item.currency || ''
     });
-    console.log('[ProveedorList] editarProveedor - index:', index, 'id:', item.id, 'modoEdicion:', this.modoEdicion);
+    console.log('[ProveedorList] editarProveedor - found index:', index, 'id:', item.id, 'modoEdicion:', this.modoEdicion);
+    console.log('[ProveedorList] item data:', JSON.stringify(item, null, 2));
   }
 
   guardarEdicionProveedor() {
@@ -249,31 +258,74 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
 
 
-  eliminarProveedor(index: number) {
+  eliminarProveedor(proveedor: Proveedor) {
     if (confirm('¿Está seguro de eliminar este proveedor?')) {
-      const data = this.dataSource.filteredData;
-      const item = data[index];
-      if (item.id) {
-        this.proveedorService.deleteProveedor(item.id).subscribe({
+      if (proveedor.id) {
+        this.proveedorService.deleteProveedor(proveedor.id).subscribe({
           next: () => this.notify.success('Registro eliminado'),
           error: (err) => this.notify.error(`Error al eliminar proveedor: ${err.message || err}`)
         });
       } else {
-        const ruc = item.ruc;
+        const ruc = proveedor.ruc;
         this.proveedores = this.proveedores.filter(p => p.ruc !== ruc);
         this.filtrarProveedores();
         this.notify.success('Registro eliminado (local)');
       }
     }
   }
-  verProveedor(index: number) {
-    const data = this.dataSource.filteredData;
-    this.proveedorDetalle = data[index];
+  
+  verProveedor(proveedor: Proveedor) {
+    this.proveedorDetalle = proveedor;
     this.mostrarDetalle = true;
   }
 
   cerrarDetalleProveedor() {
     this.mostrarDetalle = false;
     this.proveedorDetalle = null;
+  }
+
+  // Método para permitir solo números en campos específicos
+  onlyNumbers(event: KeyboardEvent): boolean {
+    const charCode = event.which || event.keyCode;
+    // Permitir: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(charCode) !== -1 ||
+        // Permitir: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (charCode === 65 && event.ctrlKey) ||
+        (charCode === 67 && event.ctrlKey) ||
+        (charCode === 86 && event.ctrlKey) ||
+        (charCode === 88 && event.ctrlKey)) {
+      return true;
+    }
+    // Solo números (0-9)
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  // Método para permitir números y algunos caracteres especiales en teléfono
+  onlyPhoneChars(event: KeyboardEvent): boolean {
+    const charCode = event.which || event.keyCode;
+    // Permitir: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(charCode) !== -1 ||
+        // Permitir: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (charCode === 65 && event.ctrlKey) ||
+        (charCode === 67 && event.ctrlKey) ||
+        (charCode === 86 && event.ctrlKey) ||
+        (charCode === 88 && event.ctrlKey)) {
+      return true;
+    }
+    // Permitir: números (0-9), +, -, (), espacio
+    if ((charCode >= 48 && charCode <= 57) || // 0-9
+        charCode === 43 || // +
+        charCode === 45 || // -
+        charCode === 40 || // (
+        charCode === 41 || // )
+        charCode === 32) { // espacio
+      return true;
+    }
+    event.preventDefault();
+    return false;
   }
 }

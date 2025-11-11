@@ -32,7 +32,7 @@ import { NotificationService } from '../../presentation/shared/services/notifica
  * 4. El componente solo maneja presentación
  */
 @Component({
-  selector: 'app-proveedor-list',
+  selector: 'app-proveedor-list-clean-alt',
   standalone: true,
   imports: [
     CommonModule,

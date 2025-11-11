@@ -22,7 +22,7 @@ import { ProveedorEntity, EstadoProveedor } from '../../../../core/domain/entiti
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
-  selector: 'app-proveedor-list',
+  selector: 'app-proveedor-list-clean',
   standalone: true,
   imports: [
     CommonModule,
@@ -211,6 +211,56 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   cerrarDetalle(): void {
     this.mostrarDetalle = false;
     this.proveedorDetalle = null;
+  }
+
+  cerrarDetalleProveedor(): void {
+    this.mostrarDetalle = false;
+    this.proveedorDetalle = null;
+  }
+
+  // Método para permitir solo números en campos específicos
+  onlyNumbers(event: KeyboardEvent): boolean {
+    const charCode = event.which || event.keyCode;
+    // Permitir: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(charCode) !== -1 ||
+        // Permitir: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (charCode === 65 && event.ctrlKey) ||
+        (charCode === 67 && event.ctrlKey) ||
+        (charCode === 86 && event.ctrlKey) ||
+        (charCode === 88 && event.ctrlKey)) {
+      return true;
+    }
+    // Solo números (0-9)
+    if (charCode < 48 || charCode > 57) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  // Método para permitir números y algunos caracteres especiales en teléfono
+  onlyPhoneChars(event: KeyboardEvent): boolean {
+    const charCode = event.which || event.keyCode;
+    // Permitir: backspace, delete, tab, escape, enter
+    if ([8, 9, 27, 13, 46].indexOf(charCode) !== -1 ||
+        // Permitir: Ctrl+A, Ctrl+C, Ctrl+V, Ctrl+X
+        (charCode === 65 && event.ctrlKey) ||
+        (charCode === 67 && event.ctrlKey) ||
+        (charCode === 86 && event.ctrlKey) ||
+        (charCode === 88 && event.ctrlKey)) {
+      return true;
+    }
+    // Permitir: números (0-9), +, -, (), espacio
+    if ((charCode >= 48 && charCode <= 57) || // 0-9
+        charCode === 43 || // +
+        charCode === 45 || // -
+        charCode === 40 || // (
+        charCode === 41 || // )
+        charCode === 32) { // espacio
+      return true;
+    }
+    event.preventDefault();
+    return false;
   }
 
   private configurarFiltro(): void {

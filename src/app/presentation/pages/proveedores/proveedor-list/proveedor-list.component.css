@@ -137,6 +137,20 @@
   margin-top: 1rem;
 }
 
+/* Style the framework's required marker inside the modal to be a single red asterisk */
+.detalle-content .mat-mdc-form-field-required-marker,
+.detalle-content .mat-form-field-required-marker {
+  color: #d32f2f !important; /* make the default marker red */
+  opacity: 1 !important;
+}
+
+/* Ensure floating labels render above inputs (use Material's default floating behavior) */
+.detalle-content .mat-form-field .mat-form-field-label,
+.detalle-content .mat-mdc-floating-label {
+  /* Ensure the floating label is visible and above the outline */
+  transform-origin: left top;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
