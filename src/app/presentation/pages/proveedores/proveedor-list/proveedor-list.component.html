@@ -18,16 +18,14 @@
         <mat-label>Buscar proveedor</mat-label>
         <input matInput
           placeholder="Razón social, RUC, teléfono, correo, estado o certificación..."
-          [(ngModel)]="filtroBusqueda"
-          (ngModelChange)="filtrarProveedores()"
-          (keyup.enter)="filtrarProveedores()" />
+          [formControl]="searchControl" />
 
-        @if (filtroBusqueda) {
+        @if (searchControl.value) {
           <button
             matSuffix
             mat-icon-button
             aria-label="Limpiar"
-            (click)="filtroBusqueda=''; filtrarProveedores()">
+            (click)="searchControl.setValue(''); filtrarProveedores()">
             <mat-icon>close</mat-icon>
           </button>
         }

@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewChild, AfterViewInit, inject, signal } from '@angular/core';
+import { Component, OnInit, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { GetAllProveedoresUseCase } from '../../../../core/application/use-cases/proveedor/get-all-proveedores.use-case';
 import { CreateProveedorUseCase } from '../../../../core/application/use-cases/proveedor/create-proveedor.use-case';
@@ -20,13 +21,14 @@ import { SearchProveedoresUseCase } from '../../../../core/application/use-cases
 
 import { ProveedorEntity, EstadoProveedor } from '../../../../core/domain/entities/proveedor.entity';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-proveedor-list-clean',
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
+    ReactiveFormsModule,
     RouterModule,
     MatTableModule,
     MatPaginatorModule,
@@ -48,16 +50,30 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   private deleteProveedorUseCase = inject(DeleteProveedorUseCase);
   private searchProveedoresUseCase = inject(SearchProveedoresUseCase);
   private notify = inject(NotificationService);
+  private confirmDialog = inject(ConfirmDialogService);
+  private router = inject(Router);
 
-  isLoading = signal(false);
-  
-  proveedores: ProveedorEntity[] = [];
+  // Signals reactivos
+  proveedores = signal<ProveedorEntity[]>([]);
+  loading = signal(false);
+  errorMessage = signal<string | null>(null);
+
+  // Estados modales y edición (mantener compatibilidad)
   proveedorEditando: Partial<ProveedorEntity> | null = null;
   mostrarModal: boolean = false;
   modoEdicion: boolean = false;
   mostrarDetalle: boolean = false;
   proveedorDetalle: ProveedorEntity | null = null;
-  filtroBusqueda: string = '';
+
+  // Reactive Forms
+  searchControl = new FormControl('');
+  filterForm = new FormGroup({
+    estado: new FormControl<EstadoProveedor | ''>(''),
+    certificacion: new FormControl('')
+  });
+
+  // Computed para compatibilidad con template
+  isLoading = computed(() => this.loading());
   
   dataSource = new MatTableDataSource<ProveedorEntity>();
   displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'certificacionesVigentes', 'acciones'];
@@ -68,7 +84,19 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   ngOnInit(): void {
+    this.setupSearchSubscription();
     this.cargarProveedores();
+  }
+
+  private setupSearchSubscription(): void {
+    this.searchControl.valueChanges
+      .pipe(
+        debounceTime(300),
+        distinctUntilChanged()
+      )
+      .subscribe(() => {
+        this.filtrarProveedores();
+      });
   }
 
   ngAfterViewInit() {
@@ -78,39 +106,40 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   }
 
   cargarProveedores(): void {
-    this.isLoading.set(true);
+    this.loading.set(true);
     
     this.getAllProveedoresUseCase.execute().subscribe({
       next: (proveedores) => {
-        this.proveedores = proveedores;
+        this.proveedores.set(proveedores);
         this.dataSource.data = proveedores;
-        this.isLoading.set(false);
+        this.loading.set(false);
       },
       error: (error) => {
         this.notify.error('Error al cargar proveedores', 'Error');
         console.error(error);
-        this.isLoading.set(false);
+        this.loading.set(false);
       }
     });
   }
 
   filtrarProveedores(): void {
-    if (!this.filtroBusqueda || this.filtroBusqueda.trim() === '') {
+    const searchTerm = this.searchControl.value;
+    if (!searchTerm || searchTerm.trim() === '') {
       this.cargarProveedores();
       return;
     }
 
-    this.isLoading.set(true);
+    this.loading.set(true);
     
-    this.searchProveedoresUseCase.execute(this.filtroBusqueda).subscribe({
+    this.searchProveedoresUseCase.execute(searchTerm).subscribe({
       next: (proveedores) => {
         this.dataSource.data = proveedores;
-        this.isLoading.set(false);
+        this.loading.set(false);
       },
       error: (error) => {
         this.notify.error('Error al buscar proveedores', 'Error');
         console.error(error);
-        this.isLoading.set(false);
+        this.loading.set(false);
       }
     });
   }
@@ -128,6 +157,11 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     this.mostrarModal = true;
   }
 
+  // Método para compatibilidad con el template existente
+  agregarProveedorAleatorio(): void {
+    this.agregarProveedor();
+  }
+
   editarProveedor(proveedor: ProveedorEntity): void {
     this.proveedorEditando = { ...proveedor };
     this.modoEdicion = true;
@@ -137,7 +171,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   guardarProveedor(): void {
     if (!this.proveedorEditando) return;
 
-    this.isLoading.set(true);
+    this.loading.set(true);
 
     if (this.modoEdicion && this.proveedorEditando.id) {
       this.updateProveedorUseCase.execute({
@@ -151,7 +185,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         },
         error: (error) => {
           this.notify.error(error.message || 'Error al actualizar', 'Error');
-          this.isLoading.set(false);
+          this.loading.set(false);
         }
       });
     } else {
@@ -163,7 +197,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         },
         error: (error) => {
           this.notify.error(error.message || 'Error al crear', 'Error');
-          this.isLoading.set(false);
+          this.loading.set(false);
         }
       });
     }
@@ -172,27 +206,29 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   eliminarProveedor(proveedor: ProveedorEntity): void {
     if (!proveedor.id) return;
     
-    if (!confirm(`¿Está seguro de eliminar el proveedor "${proveedor.razonSocial}"?`)) {
-      return;
-    }
+    this.confirmDialog.confirmDelete(
+      `¿Está seguro de eliminar el proveedor "${proveedor.razonSocial}"?`
+    ).subscribe(confirmed => {
+      if (!confirmed) return;
 
-    this.isLoading.set(true);
+      this.loading.set(true);
 
-    this.deleteProveedorUseCase.execute(proveedor.id).subscribe({
-      next: (success) => {
-        if (success) {
-          this.notify.success('Proveedor eliminado correctamente');
-          this.cargarProveedores();
-        } else {
-          this.notify.error('No se pudo eliminar el proveedor', 'Error');
-          this.isLoading.set(false);
+      this.deleteProveedorUseCase.execute(proveedor.id!).subscribe({
+        next: (success) => {
+          if (success) {
+            this.notify.success('Proveedor eliminado correctamente');
+            this.cargarProveedores();
+          } else {
+            this.notify.error('No se pudo eliminar el proveedor', 'Error');
+            this.loading.set(false);
+          }
+        },
+        error: (error) => {
+          this.notify.error('Error al eliminar', 'Error');
+          console.error(error);
+          this.loading.set(false);
         }
-      },
-      error: (error) => {
-        this.notify.error('Error al eliminar', 'Error');
-        console.error(error);
-        this.isLoading.set(false);
-      }
+      });
     });
   }
 
@@ -205,7 +241,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     this.mostrarModal = false;
     this.proveedorEditando = null;
     this.modoEdicion = false;
-    this.isLoading.set(false);
+    this.loading.set(false);
   }
 
   cerrarDetalle(): void {
@@ -250,7 +286,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         (charCode === 88 && event.ctrlKey)) {
       return true;
     }
-    // Permitir: números (0-9), +, -, (), espacio
+    // Permitir: números (0-9), +, -, (, ), espacio
     if ((charCode >= 48 && charCode <= 57) || // 0-9
         charCode === 43 || // +
         charCode === 45 || // -
@@ -263,6 +299,20 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     return false;
   }
 
+  // Métodos para compatibilidad con template existente
+  cancelarEdicionProveedor(): void {
+    this.cerrarModal();
+  }
+
+  guardarEdicionProveedor(): void {
+    this.guardarProveedor();
+  }
+
+  // Computed property para formulario reactivo (compatibilidad)
+  get proveedorForm() {
+    return this.filterForm; // Temporal para compatibilidad
+  }
+
   private configurarFiltro(): void {
     this.dataSource.filterPredicate = (data: ProveedorEntity, filter: string) => {
       filter = filter.trim().toLowerCase();
@@ -272,7 +322,9 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         data.telefono.toLowerCase().includes(filter) ||
         data.correoContacto.toLowerCase().includes(filter) ||
         data.estado.toLowerCase().includes(filter) ||
-        (data.certificacionesVigentes && data.certificacionesVigentes.join(', ').toLowerCase().includes(filter))
+        (data.certificacionesVigentes && 
+         data.certificacionesVigentes.some(cert => 
+           cert.toLowerCase().includes(filter)))
       );
     };
   }
