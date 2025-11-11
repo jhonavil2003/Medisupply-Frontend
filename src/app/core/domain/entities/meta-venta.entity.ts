@@ -1,18 +1,40 @@
 /**
- * Entidad de dominio: Meta de Venta
- * Representa una meta de ventas asignada a productos, regiones o vendedores
+ * Entidad de dominio: Meta de Venta (Salesperson Goal)
+ * Representa una meta de ventas asignada a vendedores por producto
+ * Basado en la tabla salesperson_goals del backend
  */
 export interface MetaVentaEntity {
   readonly id?: number;
-  readonly producto: string;
-  readonly region: string;
+  readonly idVendedor: string;          // employee_id del vendedor
+  readonly idProducto: string;          // SKU del producto
+  readonly region: Region;
   readonly trimestre: Trimestre;
   readonly valorObjetivo: number;
   readonly tipo: TipoMeta;
-  readonly fechaCreacion?: Date;
-  readonly usuarioResponsable: string;
-  readonly editable: boolean;
-  readonly vendedorId?: string;
+  readonly fechaCreacion?: string;      // ISO 8601 string
+  readonly fechaActualizacion?: string; // ISO 8601 string
+  readonly vendedor?: VendedorInfo;     // Información del vendedor (eager loading)
+  readonly producto?: ProductoInfo;     // Información del producto (desde catalog-service)
+}
+
+/**
+ * Información del vendedor incluida en la meta
+ */
+export interface VendedorInfo {
+  readonly employeeId: string;
+  readonly nombreCompleto: string;
+  readonly email: string;
+}
+
+/**
+ * Información del producto incluida en la meta
+ */
+export interface ProductoInfo {
+  readonly sku: string;
+  readonly name: string | null;
+  readonly description: string | null;
+  readonly unitPrice: number | null;
+  readonly isActive: boolean | null;
 }
 
 export enum TipoMeta {
@@ -27,33 +49,34 @@ export enum Trimestre {
   Q4 = 'Q4'
 }
 
+export enum Region {
+  NORTE = 'Norte',
+  SUR = 'Sur',
+  OESTE = 'Oeste',
+  ESTE = 'Este'
+}
+
 /**
- * Objeto de valor para la creación de una meta
+ * DTO para creación de meta
  */
 export interface CreateMetaVentaDto {
-  producto: string;
-  region: string;
+  idVendedor: string;
+  idProducto: string;
+  region: Region;
   trimestre: Trimestre;
   valorObjetivo: number;
   tipo: TipoMeta;
-  usuarioResponsable: string;
-  editable?: boolean;
-  vendedorId?: string;
 }
 
 /**
- * Objeto de valor para la actualización de una meta
+ * DTO para actualización de meta
  */
-export interface UpdateMetaVentaDto extends Partial<CreateMetaVentaDto> {
+export interface UpdateMetaVentaDto {
   id: number;
-}
-
-/**
- * Resultado de comparación de meta vs resultado real
- */
-export interface ComparacionMetaResultado {
-  meta: number;
-  resultado: number;
-  cumplido: boolean;
-  porcentajeCumplimiento: number;
+  idVendedor?: string;
+  idProducto?: string;
+  region?: Region;
+  trimestre?: Trimestre;
+  valorObjetivo?: number;
+  tipo?: TipoMeta;
 }

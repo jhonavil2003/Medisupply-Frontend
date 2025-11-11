@@ -1,0 +1,116 @@
+<div class="container">
+  <mat-card>
+    <mat-card-header>
+      <div class="header-content">
+        <div class="header-left">
+          <button mat-icon-button (click)="cancel()">
+            <mat-icon>arrow_back</mat-icon>
+          </button>
+          <mat-card-title>Crear Nueva Meta de Venta</mat-card-title>
+        </div>
+      </div>
+    </mat-card-header>
+
+    <mat-card-content>
+      <form [formGroup]="metaForm" (ngSubmit)="onSubmit()">
+        <div class="form-grid">
+          <!-- ID Vendedor -->
+          <mat-form-field appearance="outline">
+            <mat-label>ID Vendedor (Employee ID)</mat-label>
+            <input matInput formControlName="idVendedor" required 
+              placeholder="Ej: V001">
+            <mat-icon matPrefix>person</mat-icon>
+            @if (metaForm.get('idVendedor')?.pending) {
+              <mat-spinner matSuffix diameter="20"></mat-spinner>
+            }
+            @if (metaForm.get('idVendedor')?.invalid && metaForm.get('idVendedor')?.touched) {
+              <mat-error>{{ getErrorMessage('idVendedor') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- ID Producto -->
+          <mat-form-field appearance="outline">
+            <mat-label>SKU del Producto</mat-label>
+            <input matInput formControlName="idProducto" required 
+              placeholder="Ej: SKU001">
+            <mat-icon matPrefix>inventory_2</mat-icon>
+            @if (metaForm.get('idProducto')?.pending) {
+              <mat-spinner matSuffix diameter="20"></mat-spinner>
+            }
+            @if (metaForm.get('idProducto')?.invalid && metaForm.get('idProducto')?.touched) {
+              <mat-error>{{ getErrorMessage('idProducto') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Región -->
+          <mat-form-field appearance="outline">
+            <mat-label>Región</mat-label>
+            <mat-select formControlName="region" required>
+              @for (region of regiones; track region) {
+                <mat-option [value]="region">{{ region }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>place</mat-icon>
+            @if (metaForm.get('region')?.invalid && metaForm.get('region')?.touched) {
+              <mat-error>{{ getErrorMessage('region') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Trimestre -->
+          <mat-form-field appearance="outline">
+            <mat-label>Trimestre</mat-label>
+            <mat-select formControlName="trimestre" required>
+              @for (trimestre of trimestres; track trimestre) {
+                <mat-option [value]="trimestre">{{ trimestre }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>calendar_today</mat-icon>
+            @if (metaForm.get('trimestre')?.invalid && metaForm.get('trimestre')?.touched) {
+              <mat-error>{{ getErrorMessage('trimestre') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Tipo -->
+          <mat-form-field appearance="outline">
+            <mat-label>Tipo de Meta</mat-label>
+            <mat-select formControlName="tipo" required>
+              @for (tipo of tipos; track tipo) {
+                <mat-option [value]="tipo">{{ getTipoDisplay(tipo) }}</mat-option>
+              }
+            </mat-select>
+            <mat-icon matPrefix>category</mat-icon>
+            @if (metaForm.get('tipo')?.invalid && metaForm.get('tipo')?.touched) {
+              <mat-error>{{ getErrorMessage('tipo') }}</mat-error>
+            }
+          </mat-form-field>
+
+          <!-- Valor Objetivo -->
+          <mat-form-field appearance="outline">
+            <mat-label>Valor Objetivo</mat-label>
+            <input matInput type="number" formControlName="valorObjetivo" required 
+              min="1" placeholder="Ingrese el valor objetivo">
+            <mat-icon matPrefix>trending_up</mat-icon>
+            @if (metaForm.get('valorObjetivo')?.invalid && metaForm.get('valorObjetivo')?.touched) {
+              <mat-error>{{ getErrorMessage('valorObjetivo') }}</mat-error>
+            }
+          </mat-form-field>
+        </div>
+
+        <div class="form-actions">
+          <button mat-stroked-button type="button" (click)="cancel()" [disabled]="loading()">
+            <mat-icon>close</mat-icon>
+            Cancelar
+          </button>
+          <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+            @if (loading()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              <mat-icon>save</mat-icon>
+            }
+            Crear Meta
+          </button>
+        </div>
+      </form>
+    </mat-card-content>
+  </mat-card>
+</div>
