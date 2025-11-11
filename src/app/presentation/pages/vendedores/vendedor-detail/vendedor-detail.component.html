@@ -31,7 +31,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>badge</mat-icon>
-              <span>ID Empleado</span>
+              <mat-label>ID Empleado</mat-label>
             </div>
             <div class="detail-value">{{ vendedor()!.employeeId }}</div>
           </div>
@@ -40,7 +40,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>person</mat-icon>
-              <span>Nombre Completo</span>
+              <mat-label>Nombre Completo</mat-label>
             </div>
             <div class="detail-value">
               {{ vendedor()!.firstName }} {{ vendedor()!.lastName }}
@@ -51,7 +51,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>email</mat-icon>
-              <span>Correo Electrónico</span>
+              <mat-label>Correo Electrónico</mat-label>
             </div>
             <div class="detail-value">{{ vendedor()!.email }}</div>
           </div>
@@ -60,7 +60,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>phone</mat-icon>
-              <span>Teléfono</span>
+              <mat-label>Teléfono</mat-label>
             </div>
             <div class="detail-value">{{ vendedor()!.phone || '-' }}</div>
           </div>
@@ -69,7 +69,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>place</mat-icon>
-              <span>Territorio</span>
+              <mat-label>Territorio</mat-label>
             </div>
             <div class="detail-value">{{ vendedor()!.territory || '-' }}</div>
           </div>
@@ -78,7 +78,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>event</mat-icon>
-              <span>Fecha de Contratación</span>
+              <mat-label>Fecha de Contratación</mat-label>
             </div>
             <div class="detail-value">{{ formatDate(vendedor()!.hireDate) }}</div>
           </div>
@@ -87,7 +87,7 @@
           <div class="detail-item">
             <div class="detail-label">
               <mat-icon>toggle_on</mat-icon>
-              <span>Estado</span>
+              <mat-label>Estado</mat-label>
             </div>
             <div class="detail-value">
               <mat-chip [class]="vendedor()!.isActive ? 'status-active' : 'status-inactive'">
@@ -101,7 +101,7 @@
             <div class="detail-item">
               <div class="detail-label">
                 <mat-icon>schedule</mat-icon>
-                <span>Fecha de Creación</span>
+                <mat-label>Fecha de Creación</mat-label>
               </div>
               <div class="detail-value">{{ formatDate(vendedor()!.createdAt) }}</div>
             </div>
@@ -112,7 +112,7 @@
             <div class="detail-item">
               <div class="detail-label">
                 <mat-icon>update</mat-icon>
-                <span>Última Actualización</span>
+                <mat-label>Última Actualización</mat-label>
               </div>
               <div class="detail-value">{{ formatDate(vendedor()!.updatedAt) }}</div>
             </div>

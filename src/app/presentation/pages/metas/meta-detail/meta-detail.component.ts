@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { GetMetaByIdUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { MetaVentaEntity, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { MatLabel } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-meta-detail',
@@ -21,8 +22,9 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatDividerModule
-  ],
+    MatDividerModule,
+    MatLabel
+],
   templateUrl: './meta-detail.component.html',
   styleUrls: ['./meta-detail.component.css']
 })
