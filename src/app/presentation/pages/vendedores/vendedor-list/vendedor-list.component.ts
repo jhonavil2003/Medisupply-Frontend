@@ -26,6 +26,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 import { VendedorCreateComponent } from '../vendedor-create/vendedor-create.component';
 import { VendedorEditComponent } from '../vendedor-edit/vendedor-edit.component';
+import { VendedorDetailComponent } from '../vendedor-detail/vendedor-detail.component';
 
 @Component({
   selector: 'app-vendedor-list',
@@ -162,7 +163,17 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
   }
 
   navigateToDetail(id: number): void {
-    this.router.navigate(['/vendedores', id]);
+    // Buscar el vendedor en el dataSource actual
+    const vendedor = this.dataSource.data.find(v => v.id === id);
+    if (vendedor) {
+      this.dialog.open(VendedorDetailComponent, {
+        width: '1000px',
+        maxHeight: '90vh',
+        disableClose: false,
+        autoFocus: false,
+        data: vendedor
+      });
+    }
   }
 
   navigateToEdit(id: number): void {

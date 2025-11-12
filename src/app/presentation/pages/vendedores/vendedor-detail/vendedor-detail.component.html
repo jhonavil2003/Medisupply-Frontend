@@ -1,124 +1,111 @@
-<div class="container">
-  <mat-card>
-    <mat-card-header>
-      <div class="header-content">
-        <div class="header-left">
-          <button mat-icon-button (click)="navigateBack()">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-          <mat-card-title>Detalle del Vendedor</mat-card-title>
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      Detalle del Vendedor
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="detail-grid">
+      <!-- Información Personal -->
+      <div class="detail-section">
+        <h3><mat-icon>person</mat-icon> Información Personal</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.id) {
+          <div class="detail-row">
+            <mat-label>ID:</mat-label>
+            <span class="value">{{ vendedor.id }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>ID Empleado:</mat-label>
+          <span class="value">{{ vendedor.employeeId }}</span>
         </div>
-        <div class="header-actions">
-          @if (vendedor()) {
-            <button mat-raised-button color="primary" (click)="navigateToEdit()">
-              <mat-icon>edit</mat-icon>
-              Editar
-            </button>
-          }
+
+        <div class="detail-row">
+          <mat-label>Nombre:</mat-label>
+          <span class="value">{{ vendedor.firstName }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>Apellido:</mat-label>
+          <span class="value">{{ vendedor.lastName }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>Estado:</mat-label>
+          <mat-chip [class]="vendedor.isActive ? 'status-active' : 'status-inactive'">
+            {{ vendedor.isActive ? 'Activo' : 'Inactivo' }}
+          </mat-chip>
         </div>
       </div>
-    </mat-card-header>
 
-    <mat-card-content>
-      @if (loading()) {
-        <div class="loading-container">
-          <mat-spinner></mat-spinner>
-          <p>Cargando detalles del vendedor...</p>
+      <!-- Información de Contacto -->
+      <div class="detail-section">
+        <h3><mat-icon>contact_phone</mat-icon> Información de Contacto</h3>
+        <mat-divider></mat-divider>
+        
+        <div class="detail-row">
+          <mat-label>Correo Electrónico:</mat-label>
+          <span class="value">{{ vendedor.email }}</span>
         </div>
-      } @else if (vendedor()) {
-        <div class="detail-grid">
-          <!-- Employee ID -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>badge</mat-icon>
-              <mat-label>ID Empleado</mat-label>
-            </div>
-            <div class="detail-value">{{ vendedor()!.employeeId }}</div>
+
+        @if (vendedor.phone) {
+          <div class="detail-row">
+            <mat-label>Teléfono:</mat-label>
+            <span class="value">{{ vendedor.phone }}</span>
           </div>
+        }
+      </div>
 
-          <!-- Full Name -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>person</mat-icon>
-              <mat-label>Nombre Completo</mat-label>
-            </div>
-            <div class="detail-value">
-              {{ vendedor()!.firstName }} {{ vendedor()!.lastName }}
-            </div>
+      <!-- Información Laboral -->
+      <div class="detail-section">
+        <h3><mat-icon>work</mat-icon> Información Laboral</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.territory) {
+          <div class="detail-row">
+            <mat-label>Territorio:</mat-label>
+            <span class="value">{{ vendedor.territory }}</span>
           </div>
+        }
 
-          <!-- Email -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>email</mat-icon>
-              <mat-label>Correo Electrónico</mat-label>
-            </div>
-            <div class="detail-value">{{ vendedor()!.email }}</div>
+        @if (vendedor.hireDate) {
+          <div class="detail-row">
+            <mat-label>Fecha de Contratación:</mat-label>
+            <span class="value">{{ formatDate(vendedor.hireDate) }}</span>
           </div>
+        }
+      </div>
 
-          <!-- Phone -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>phone</mat-icon>
-              <mat-label>Teléfono</mat-label>
-            </div>
-            <div class="detail-value">{{ vendedor()!.phone || '-' }}</div>
+      <!-- Metadatos -->
+      <div class="detail-section">
+        <h3><mat-icon>schedule</mat-icon> Metadatos</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.createdAt) {
+          <div class="detail-row">
+            <mat-label>Fecha de Creación:</mat-label>
+            <span class="value">{{ formatDate(vendedor.createdAt) }}</span>
           </div>
+        }
 
-          <!-- Territory -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>place</mat-icon>
-              <mat-label>Territorio</mat-label>
-            </div>
-            <div class="detail-value">{{ vendedor()!.territory || '-' }}</div>
+        @if (vendedor.updatedAt) {
+          <div class="detail-row">
+            <mat-label>Última Actualización:</mat-label>
+            <span class="value">{{ formatDate(vendedor.updatedAt) }}</span>
           </div>
+        }
+      </div>
+    </div>
 
-          <!-- Hire Date -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>event</mat-icon>
-              <mat-label>Fecha de Contratación</mat-label>
-            </div>
-            <div class="detail-value">{{ formatDate(vendedor()!.hireDate) }}</div>
-          </div>
-
-          <!-- Status -->
-          <div class="detail-item">
-            <div class="detail-label">
-              <mat-icon>toggle_on</mat-icon>
-              <mat-label>Estado</mat-label>
-            </div>
-            <div class="detail-value">
-              <mat-chip [class]="vendedor()!.isActive ? 'status-active' : 'status-inactive'">
-                {{ vendedor()!.isActive ? 'Activo' : 'Inactivo' }}
-              </mat-chip>
-            </div>
-          </div>
-
-          <!-- Created At -->
-          @if (vendedor()!.createdAt) {
-            <div class="detail-item">
-              <div class="detail-label">
-                <mat-icon>schedule</mat-icon>
-                <mat-label>Fecha de Creación</mat-label>
-              </div>
-              <div class="detail-value">{{ formatDate(vendedor()!.createdAt) }}</div>
-            </div>
-          }
-
-          <!-- Updated At -->
-          @if (vendedor()!.updatedAt) {
-            <div class="detail-item">
-              <div class="detail-label">
-                <mat-icon>update</mat-icon>
-                <mat-label>Última Actualización</mat-label>
-              </div>
-              <div class="detail-value">{{ formatDate(vendedor()!.updatedAt) }}</div>
-            </div>
-          }
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
-</div>
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="cerrar()">
+        Cerrar
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>
