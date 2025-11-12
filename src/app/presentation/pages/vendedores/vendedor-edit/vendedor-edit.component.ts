@@ -143,7 +143,11 @@ export class VendedorEditComponent implements OnInit {
     let hireDate: string | undefined = undefined;
     if (formValue.hireDate) {
       const date = new Date(formValue.hireDate);
-      hireDate = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      // Usar fecha local para evitar problemas con zona horaria
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      hireDate = `${year}-${month}-${day}`; // Formato YYYY-MM-DD
     }
 
     const vendedorDto: UpdateVendedorDto = {

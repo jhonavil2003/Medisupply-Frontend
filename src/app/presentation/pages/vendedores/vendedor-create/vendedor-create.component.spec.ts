@@ -192,7 +192,8 @@ describe('VendedorCreateComponent', () => {
     });
 
     it('should format hire date correctly', () => {
-      const testDate = new Date('2024-01-15');
+      // Usar fecha local explícitamente para evitar problemas de zona horaria
+      const testDate = new Date(2024, 0, 15); // año, mes (0-11), día
       component.vendedorForm.patchValue({
         hireDate: testDate
       });
