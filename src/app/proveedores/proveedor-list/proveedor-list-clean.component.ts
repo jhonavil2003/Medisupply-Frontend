@@ -11,6 +11,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 // Clean Architecture Imports
 import { GetAllProveedoresUseCase } from '../../core/application/use-cases/proveedor/get-all-proveedores.use-case';
@@ -46,10 +47,11 @@ import { NotificationService } from '../../presentation/shared/services/notifica
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatTooltipModule
   ],
-  templateUrl: './proveedor-list.component.html',
-  styleUrls: ['./proveedor-list.component.css']
+  templateUrl: './proveedor-list-clean.component.html',
+  styleUrls: ['./proveedor-list-clean.component.css']
 })
 export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   // Inyección de Use Cases (en lugar de servicios)
@@ -141,8 +143,16 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     this.proveedorEditando = {
       razonSocial: '',
       ruc: '',
+      country: '',
       telefono: '',
       correoContacto: '',
+      website: '',
+      currency: '',
+      addressLine1: '',
+      city: '',
+      state: '',
+      paymentTerms: '',
+      creditLimit: 0,
       estado: EstadoProveedor.ACTIVO,
       certificacionesVigentes: []
     };

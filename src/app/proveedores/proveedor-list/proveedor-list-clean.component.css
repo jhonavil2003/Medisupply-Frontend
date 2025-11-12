@@ -1,0 +1,162 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS SOLO PARA PROVEEDORES
+   Los estilos de tabla están en styles.scss
+   ============================================ */
+
+/* Contenedor principal */
+.container {
+  padding: 2rem;
+  background: var(--color-white);
+}
+
+/* Barra de búsqueda */
+.search-bar {
+  margin-bottom: 1.5rem;
+}
+
+.search-wrap {
+  width: 100%;
+}
+
+.search-field {
+  width: 100%;
+}
+
+/* Tabla */
+.table-container {
+  background: var(--color-white);
+  overflow-x: auto;
+  border-radius: 8px;
+}
+
+.modern-table {
+  width: 100%;
+}
+
+.products-table {
+  width: 100%;
+}
+
+/* Badges */
+.badge {
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.badge-success {
+  background-color: #d4edda;
+  color: #155724;
+}
+
+.badge-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 800px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+.modal-content h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #1f2937;
+}
+
+/* Formulario */
+.proveedor-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.form-row mat-form-field {
+  width: 100%;
+}
+
+/* Acciones del modal */
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1rem;
+  margin-top: 1.5rem;
+  padding-top: 1rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+/* Detalle del proveedor */
+.detalle-proveedor {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.detalle-row {
+  display: flex;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.detalle-row:last-child {
+  border-bottom: none;
+}
+
+.detalle-row strong {
+  min-width: 200px;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.detalle-row span {
+  flex: 1;
+  color: #1f2937;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: 1rem;
+  }
+
+  .detalle-row {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+
+  .detalle-row strong {
+    min-width: auto;
+  }
+}

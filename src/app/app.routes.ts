@@ -8,8 +8,8 @@ export const routes: Routes = [
   },
   { 
     path: 'proveedor-list', 
-    loadComponent: () => import('./presentation/pages/proveedores/proveedor-list/proveedor-list.component')
-      .then(m => m.ProveedorListComponent)
+    loadComponent: () => import('./proveedores/proveedor-list/proveedor-list-clean.component')
+      .then(m => m.ProveedorListComponentClean)
   },
   { 
     path: 'producto-list', 
