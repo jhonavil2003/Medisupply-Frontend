@@ -1,4 +1,4 @@
-/* Dialog/Modal styling */
+/* Dialog/Modal styling - Proveedor Detail */
 .form-card {
   padding: 0;
   box-shadow: none;
@@ -71,6 +71,13 @@
   border-bottom: none;
 }
 
+mat-label {
+  font-weight: 500 !important;
+  color: #666 !important;
+  min-width: 150px;
+  display: inline-block;
+}
+
 .label {
   font-weight: 500;
   color: #666;
@@ -130,6 +137,20 @@ mat-chip {
 
 .action-buttons button {
   min-width: 100px;
+}
+
+/* Forzar fondo blanco en todos los estados del botón */
+::ng-deep .action-buttons .mat-mdc-raised-button.mdc-button {
+  background-color: #ffffff !important;
+}
+
+::ng-deep .action-buttons .mat-mdc-raised-button:hover .mdc-button__ripple::before,
+::ng-deep .action-buttons .mat-mdc-raised-button:focus .mdc-button__ripple::before {
+  opacity: 0 !important;
+}
+
+::ng-deep .action-buttons .mat-mdc-raised-button .mdc-button__label {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 /* Responsive design */

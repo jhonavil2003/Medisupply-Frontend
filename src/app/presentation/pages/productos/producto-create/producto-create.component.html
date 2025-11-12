@@ -104,26 +104,30 @@
         </div>
 
         <div class="form-row">
+          <!-- Cold Chain -->
+          <mat-form-field appearance="outline" floatLabel="always" class="form-field">
+            <mat-label>Cadena de Frío</mat-label>
+            <mat-select formControlName="requires_cold_chain">
+              <mat-option [value]="false">No</mat-option>
+              <mat-option [value]="true">Sí</mat-option>
+            </mat-select>
+          </mat-form-field>
+
           <!-- Barcode -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field">
             <mat-label>Código de Barras</mat-label>
             <input matInput formControlName="barcode" maxlength="50">
             <mat-error>{{ getFieldError('barcode') }}</mat-error>
           </mat-form-field>
+        </div>
 
+        <div class="form-row">
           <!-- Image URL -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field">
             <mat-label>URL de Imagen</mat-label>
             <input matInput formControlName="image_url" maxlength="500">
             <mat-error>{{ getFieldError('image_url') }}</mat-error>
           </mat-form-field>
-        </div>
-
-        <!-- Cold Chain Checkbox -->
-        <div class="checkbox-container">
-          <mat-checkbox formControlName="requires_cold_chain">
-            Requiere Cadena de Frío
-          </mat-checkbox>
         </div>
 
         <!-- Action Buttons -->
