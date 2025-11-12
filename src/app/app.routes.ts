@@ -77,6 +77,16 @@ export const routes: Routes = [
       .then(m => m.ProveedorUploadComponent)
   },
   { 
+    path: 'proveedores/upload', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
+      .then(m => m.ProveedorUploadComponent)
+  },
+  { 
+    path: 'proveedores/upload/historial', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload-history/proveedor-upload-history.component')
+      .then(m => m.ProveedorUploadHistoryComponent)
+  },
+  { 
     path: 'producto-localizacion', 
     loadComponent: () => import('./presentation/pages/productos/producto-localizacion/producto-localizacion.component')
       .then(m => m.ProductoLocalizacionComponent)

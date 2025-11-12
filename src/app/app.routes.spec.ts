@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(24); // Actualizado: 4 vendedores + 5 metas + 1 historial bulk upload
+      expect(routes.length).toBe(26); // Actualizado: 4 vendedores + 5 metas + 1 historial productos + 2 proveedores upload (upload + historial)
     });
   });
 
@@ -144,6 +144,18 @@ describe('App Routes', () => {
       const proveedorUploadRoute = routes.find(route => route.path === 'proveedor-upload');
       expect(proveedorUploadRoute).toBeDefined();
       expect(proveedorUploadRoute?.loadComponent).toBeDefined();
+    });
+
+    it('should have proveedores/upload route', () => {
+      const proveedorUploadRoute = routes.find(route => route.path === 'proveedores/upload');
+      expect(proveedorUploadRoute).toBeDefined();
+      expect(proveedorUploadRoute?.loadComponent).toBeDefined();
+    });
+
+    it('should have proveedores/upload/historial route', () => {
+      const proveedorHistorialRoute = routes.find(route => route.path === 'proveedores/upload/historial');
+      expect(proveedorHistorialRoute).toBeDefined();
+      expect(proveedorHistorialRoute?.loadComponent).toBeDefined();
     });
 
     it('should have producto-localizacion route', () => {
