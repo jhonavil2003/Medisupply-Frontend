@@ -221,35 +221,3 @@
     </div>
   }
 </div>
-
-<!-- Modal Detalle -->
-<div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-  @if (proveedorDetalle) {
-    <div class="detalle-content">
-      <button mat-icon-button (click)="cerrarDetalleProveedor()" aria-label="Cerrar" class="close" type="button">
-        <mat-icon>close</mat-icon>
-      </button>
-      <h2>Detalle del Proveedor</h2>
-      <p><strong>Razón Social:</strong> {{ proveedorDetalle.razonSocial }}</p>
-      <p><strong>RUC:</strong> {{ proveedorDetalle.ruc }}</p>
-      <p><strong>Teléfono:</strong> {{ proveedorDetalle.telefono }}</p>
-      <p><strong>Correo de contacto:</strong> {{ proveedorDetalle.correoContacto }}</p>
-      <p><strong>Estado:</strong> {{ proveedorDetalle.estado }}</p>
-      <p><strong>Certificaciones vigentes:</strong>
-      @if (proveedorDetalle.certificacionesVigentes && proveedorDetalle.certificacionesVigentes.length) {
-        <span>
-          @for (cert of proveedorDetalle.certificacionesVigentes; track cert; let last = $last) {
-            <span>
-              {{ cert }}@if (!last) {
-              <span>, </span>
-            }
-          </span>
-        }
-      </span>
-    } @else {
-      Sin certificaciones
-    }
-  </p>
-</div>
-}
-</div>

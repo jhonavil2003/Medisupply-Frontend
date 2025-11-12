@@ -11,10 +11,12 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialog } from '@angular/material/dialog';
 import { ProveedorService } from '../proveedor.service';
 import { Proveedor } from '../proveedor';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
+import { ProveedorDetailComponent } from '../proveedor-detail/proveedor-detail.component';
 
 @Component({
   selector: 'app-proveedor-list',
@@ -41,15 +43,14 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   private proveedorService = inject(ProveedorService);
   private notificationService = inject(NotificationService);
   private confirmDialog = inject(ConfirmDialogService);
-    private fb = inject(FormBuilder);
+  private fb = inject(FormBuilder);
+  private dialog = inject(MatDialog);
 
   proveedores: Proveedor[] = [];
   proveedorEditando: Proveedor | null = null;
   proveedorEditIndex: number | null = null;
   mostrarModal: boolean = false;
   modoEdicion: boolean = false;
-  mostrarDetalle: boolean = false;
-  proveedorDetalle: Proveedor | null = null;
   filtroBusqueda: string = '';
   proveedoresFiltrados: Proveedor[] = [];
   dataSource = new MatTableDataSource<Proveedor>();
@@ -303,13 +304,13 @@ export class ProveedorListComponent implements OnInit, AfterViewInit {
   }
   
   verProveedor(proveedor: Proveedor) {
-    this.proveedorDetalle = proveedor;
-    this.mostrarDetalle = true;
-  }
-
-  cerrarDetalleProveedor() {
-    this.mostrarDetalle = false;
-    this.proveedorDetalle = null;
+    const dialogRef = this.dialog.open(ProveedorDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true,
+      data: { proveedor: proveedor }
+    });
   }
 
   // Método para permitir solo números en campos específicos

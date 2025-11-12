@@ -1,5 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, signal, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import {
   GetMetaByIdUseCase,
@@ -38,8 +38,7 @@ import { vendedorExistsValidator, productoExistsValidator } from '../validators/
 })
 export class MetaEditComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private dialogRef = inject(MatDialogRef<MetaEditComponent>);
   private getMetaByIdUseCase = inject(GetMetaByIdUseCase);
   private updateMetaUseCase = inject(UpdateMetaVentaUseCase);
   private notificationService = inject(NotificationService);
@@ -47,12 +46,16 @@ export class MetaEditComponent implements OnInit {
   private productoRepository = inject(ProductoRepository);
 
   loading = signal(false);
-  metaId: number | null = null;
+  metaId: number;
   metaForm!: FormGroup;
 
   readonly regiones = [Region.NORTE, Region.SUR, Region.ESTE, Region.OESTE];
   readonly trimestres = [Trimestre.Q1, Trimestre.Q2, Trimestre.Q3, Trimestre.Q4];
   readonly tipos = [TipoMeta.UNIDADES, TipoMeta.MONETARIO];
+
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { metaId: number }) {
+    this.metaId = data.metaId;
+  }
 
   ngOnInit(): void {
     this.metaForm = this.fb.group({
@@ -70,13 +73,11 @@ export class MetaEditComponent implements OnInit {
       tipo: ['', Validators.required]
     });
 
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.metaId = parseInt(id, 10);
+    if (this.metaId) {
       this.loadMeta(this.metaId);
     } else {
       this.notificationService.error('ID de meta no válido');
-      this.router.navigate(['/metas']);
+      this.dialogRef.close(false);
     }
   }
 
@@ -97,14 +98,14 @@ export class MetaEditComponent implements OnInit {
           this.loading.set(false);
         } else {
           this.notificationService.error('Meta no encontrada');
-          this.router.navigate(['/metas']);
+          this.dialogRef.close(false);
         }
       },
       error: (error) => {
         console.error('Error al cargar meta:', error);
         this.notificationService.error('Error al cargar meta');
         this.loading.set(false);
-        this.router.navigate(['/metas']);
+        this.dialogRef.close(false);
       }
     });
   }
@@ -138,7 +139,7 @@ export class MetaEditComponent implements OnInit {
       next: (meta) => {
         this.loading.set(false);
         this.notificationService.success('Meta actualizada exitosamente');
-        this.router.navigate(['/metas']);
+        this.dialogRef.close(true);
       },
       error: (error) => {
         this.loading.set(false);
@@ -175,7 +176,7 @@ export class MetaEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/metas']);
+    this.dialogRef.close(false);
   }
 
   getErrorMessage(field: string): string {

@@ -1,23 +1,11 @@
-<div class="container">
-  <mat-card>
-    <mat-card-header>
-      <div class="header-content">
-        <div class="header-left">
-          <button mat-icon-button (click)="navigateBack()">
-            <mat-icon>arrow_back</mat-icon>
-          </button>
-          <mat-card-title>Detalle de Meta de Venta</mat-card-title>
-        </div>
-        @if (!loading() && meta()) {
-          <button mat-raised-button color="primary" (click)="navigateToEdit()">
-            <mat-icon>edit</mat-icon>
-            Editar
-          </button>
-        }
-      </div>
-    </mat-card-header>
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      Detalle Meta de Venta
+    </mat-card-title>
+  </mat-card-header>
 
-    <mat-card-content>
+  <mat-card-content>
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner></mat-spinner>
@@ -136,7 +124,13 @@
             </div>
           </div>
         </div>
+
+        <!-- Action Buttons -->
+        <div class="action-buttons">
+          <button mat-raised-button type="button" (click)="navigateBack()">
+            Cerrar
+          </button>
+        </div>
       }
     </mat-card-content>
   </mat-card>
-</div>

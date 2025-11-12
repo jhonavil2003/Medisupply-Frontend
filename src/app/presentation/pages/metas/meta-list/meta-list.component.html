@@ -1,20 +1,16 @@
 <div class="container">
-  <div class="header-section">
-    <div class="header-left">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
       <button mat-icon-button (click)="navigateBack()">
         <mat-icon>arrow_back</mat-icon>
       </button>
-      <h2>Gestión de Metas de Venta</h2>
+      <h2 style="margin: 0;">Gestión de Metas de Venta</h2>
     </div>
     <button mat-raised-button color="primary" (click)="navigateToCreate()">
       <mat-icon>add</mat-icon>
-      Nueva Meta
+      Crear Meta
     </button>
   </div>
-
-  @if (loading()) {
-    <mat-progress-bar mode="indeterminate"></mat-progress-bar>
-  }
 
   <div class="filter-section">
     <mat-form-field appearance="outline" class="filter-field">
@@ -46,20 +42,28 @@
         }
       </mat-select>
     </mat-form-field>
-
-    <button mat-raised-button (click)="clearFilters()" class="clear-filters-btn">
-      <mat-icon>clear</mat-icon>
-      Limpiar Filtros
-    </button>
   </div>
 
-  @if (errorMessage()) {
-    <div class="error-message">
-      <mat-icon>error</mat-icon>
-      <span>{{ errorMessage() }}</span>
-    </div>
-  }
+  <div class="filter-actions">
+    <button mat-button type="button" (click)="clearFilters()">
+      <mat-icon>filter_list</mat-icon>
+      Limpiar filtros
+    </button>
+  </div>
+</div>
 
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+
+@if (errorMessage()) {
+  <div class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ errorMessage() }}</span>
+  </div>
+}
+
+<div class="container">
   <div class="table-container">
     @if (metas().length === 0 && !loading() && !errorMessage()) {
       <div class="empty-state">

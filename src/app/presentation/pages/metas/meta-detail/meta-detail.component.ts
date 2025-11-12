@@ -1,5 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, signal, OnInit, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import { GetMetaByIdUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { MetaVentaEntity, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
@@ -29,23 +29,26 @@ import { MatLabel } from '@angular/material/form-field';
   styleUrls: ['./meta-detail.component.css']
 })
 export class MetaDetailComponent implements OnInit {
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
+  private dialogRef = inject(MatDialogRef<MetaDetailComponent>);
   private getMetaByIdUseCase = inject(GetMetaByIdUseCase);
   private notificationService = inject(NotificationService);
 
   meta = signal<MetaVentaEntity | null>(null);
   loading = signal(false);
+  metaId: number;
 
   readonly TipoMeta = TipoMeta;
 
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { metaId: number }) {
+    this.metaId = data.metaId;
+  }
+
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.loadMeta(parseInt(id, 10));
+    if (this.metaId) {
+      this.loadMeta(this.metaId);
     } else {
       this.notificationService.error('ID de meta no válido');
-      this.router.navigate(['/metas']);
+      this.dialogRef.close();
     }
   }
 
@@ -58,7 +61,7 @@ export class MetaDetailComponent implements OnInit {
           this.meta.set(meta);
         } else {
           this.notificationService.error('Meta no encontrada');
-          this.router.navigate(['/metas']);
+          this.dialogRef.close();
         }
         this.loading.set(false);
       },
@@ -66,20 +69,13 @@ export class MetaDetailComponent implements OnInit {
         console.error('Error al cargar meta:', error);
         this.notificationService.error('Error al cargar meta');
         this.loading.set(false);
-        this.router.navigate(['/metas']);
+        this.dialogRef.close();
       }
     });
   }
 
-  navigateToEdit(): void {
-    const id = this.meta()?.id;
-    if (id) {
-      this.router.navigate(['/metas', id, 'edit']);
-    }
-  }
-
   navigateBack(): void {
-    this.router.navigate(['/metas']);
+    this.dialogRef.close();
   }
 
   getTipoDisplay(tipo: TipoMeta): string {
