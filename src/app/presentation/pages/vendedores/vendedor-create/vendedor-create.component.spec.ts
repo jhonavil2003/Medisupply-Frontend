@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { VendedorCreateComponent } from './vendedor-create.component';
 import { CreateVendedorUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
@@ -12,7 +12,7 @@ describe('VendedorCreateComponent', () => {
   let fixture: ComponentFixture<VendedorCreateComponent>;
   let mockCreateVendedorUseCase: jest.Mocked<CreateVendedorUseCase>;
   let mockNotificationService: jest.Mocked<NotificationService>;
-  let mockRouter: jest.Mocked<Router>;
+  let mockDialogRef: jest.Mocked<MatDialogRef<VendedorCreateComponent>>;
 
   const mockVendedor: VendedorEntity = {
     id: 1,
@@ -37,8 +37,8 @@ describe('VendedorCreateComponent', () => {
       warning: jest.fn()
     } as any;
     
-    mockRouter = {
-      navigate: jest.fn()
+    mockDialogRef = {
+      close: jest.fn()
     } as any;
 
     await TestBed.configureTestingModule({
@@ -46,7 +46,7 @@ describe('VendedorCreateComponent', () => {
       providers: [
         { provide: CreateVendedorUseCase, useValue: mockCreateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: Router, useValue: mockRouter }
+        { provide: MatDialogRef, useValue: mockDialogRef }
       ]
     }).compileComponents();
 
@@ -55,25 +55,39 @@ describe('VendedorCreateComponent', () => {
     fixture.detectChanges();
   });
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
-
-  it('should initialize form with default values', () => {
-    expect(component.vendedorForm).toBeDefined();
-    expect(component.vendedorForm.get('employeeId')?.value).toBe('');
-    expect(component.vendedorForm.get('firstName')?.value).toBe('');
-    expect(component.vendedorForm.get('lastName')?.value).toBe('');
-    expect(component.vendedorForm.get('email')?.value).toBe('');
-    expect(component.vendedorForm.get('isActive')?.value).toBe(true);
-  });
-
-  describe('form validation', () => {
-    it('should be invalid when empty', () => {
-      expect(component.vendedorForm.valid).toBeFalsy();
+  describe('Component Initialization', () => {
+    it('should create', () => {
+      expect(component).toBeTruthy();
     });
 
-    it('should be valid with required fields', () => {
+    it('should initialize form with default values', () => {
+      expect(component.vendedorForm).toBeDefined();
+      expect(component.vendedorForm.get('employeeId')?.value).toBe('');
+      expect(component.vendedorForm.get('firstName')?.value).toBe('');
+      expect(component.vendedorForm.get('lastName')?.value).toBe('');
+      expect(component.vendedorForm.get('email')?.value).toBe('');
+      expect(component.vendedorForm.get('isActive')?.value).toBe(true);
+    });
+
+    it('should initialize loading signal as false', () => {
+      expect(component.loading()).toBe(false);
+    });
+
+    it('should have form validators configured', () => {
+      const employeeIdControl = component.vendedorForm.get('employeeId');
+      const firstNameControl = component.vendedorForm.get('firstName');
+      const emailControl = component.vendedorForm.get('email');
+
+      expect(employeeIdControl?.hasError('required')).toBe(true);
+      expect(firstNameControl?.hasError('required')).toBe(true);
+      expect(emailControl?.hasError('required')).toBe(true);
+    });
+  });
+
+  describe('Form Submission', () => {
+    it('should create vendedor successfully', () => {
+      mockCreateVendedorUseCase.execute.mockReturnValue(of(mockVendedor));
+
       component.vendedorForm.patchValue({
         employeeId: 'EMP001',
         firstName: 'Juan',
@@ -137,7 +151,7 @@ describe('VendedorCreateComponent', () => {
 
       expect(mockCreateVendedorUseCase.execute).toHaveBeenCalled();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Vendedor creado exitosamente');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
       expect(component.loading()).toBe(false);
     });
 
@@ -190,12 +204,37 @@ describe('VendedorCreateComponent', () => {
       const callArg = mockCreateVendedorUseCase.execute.mock.calls[0][0];
       expect(callArg.hireDate).toBe('2024-01-15');
     });
+
+    it('should handle error with message', () => {
+      const error = { message: 'Error de validación específico' };
+      mockCreateVendedorUseCase.execute.mockReturnValue(throwError(() => error));
+
+      component.onSubmit();
+
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Error de validación específico');
+      expect(component.loading()).toBe(false);
+    });
+
+    it('should mark form as touched when invalid', () => {
+      component.vendedorForm.patchValue({
+        employeeId: '',
+        firstName: '',
+        lastName: '',
+        email: ''
+      });
+
+      const markAllAsTouchedSpy = jest.spyOn(component.vendedorForm, 'markAllAsTouched');
+
+      component.onSubmit();
+
+      expect(markAllAsTouchedSpy).toHaveBeenCalled();
+    });
   });
 
   describe('cancel', () => {
-    it('should navigate back to vendedores list', () => {
+    it('should close dialog when cancel is called', () => {
       component.cancel();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
@@ -215,11 +254,32 @@ describe('VendedorCreateComponent', () => {
       expect(component.getErrorMessage('firstName')).toBe('Mínimo 2 caracteres');
     });
 
+    it('should return maxlength error message', () => {
+      const control = component.vendedorForm.get('employeeId');
+      control?.setErrors({ maxlength: { requiredLength: 50, actualLength: 51 } });
+
+      expect(component.getErrorMessage('employeeId')).toBe('Máximo 50 caracteres');
+    });
+
     it('should return email error message', () => {
       const control = component.vendedorForm.get('email');
       control?.setErrors({ email: true });
 
-      expect(component.getErrorMessage('email')).toBe('Email inválido');
+      expect(component.getErrorMessage('email')).toBe('Correo electrónico inválido');
+    });
+
+    it('should return phone pattern error message', () => {
+      const control = component.vendedorForm.get('phone');
+      control?.setErrors({ pattern: true });
+
+      expect(component.getErrorMessage('phone')).toBe('Formato de teléfono inválido');
+    });
+
+    it('should return generic pattern error message', () => {
+      const control = component.vendedorForm.get('territory');
+      control?.setErrors({ pattern: true });
+
+      expect(component.getErrorMessage('territory')).toBe('Formato inválido');
     });
   });
 });

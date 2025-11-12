@@ -1,3 +1,8 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS SOLO PARA PROVEEDORES
+   Los estilos de tabla están en styles.scss
+   ============================================ */
+
 /* Botón cerrar modal alineado arriba a la derecha */
 .detalle-modal {
   display: none;
@@ -14,7 +19,7 @@
   background: var(--color-white);
   border-radius: 12px;
   padding: 2rem;
-  width: 420px;
+  width: 920px;
   max-height: 90vh;
   overflow-y: auto;
   position: relative;
@@ -25,102 +30,217 @@
   top: 12px;
   right: 12px;
 }
-/* contenedor flex que iguala alturas */
-.search-wrap {
-  display: flex;
-  gap: 8px;
-  align-items: stretch; /* clave: que los hijos estiren verticalmente */
-  width: 100%;
-}
 
-/* mat-form-field ocupa todo el espacio disponible */
-.search-field {
-  flex: 1;
-  margin: 0; /* evita márgenes inesperados */
-}
-
-/* botón se estira para igualar la altura del mat-form-field */
-.search-btn {
-  align-self: stretch;       /* hace que la altura coincida */
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0 14px;
-  min-width: 48px;
-  box-shadow: none;          /* opcional, para look más plano */
-}
-
-/* ajuste visual: que el botón no tenga mucho padding vertical */
-.search-btn .mat-button-wrapper {
-  padding: 0 10px; 
-}
-
-/* fallback si tu tema produce otra altura (opcional) */
-@media (min-width: 0px) {
-  .search-field .mat-form-field-wrapper,
-  .search-field .mat-form-field-flex {
-    min-height: 56px; /* keep consistent with Material default outline */
-  }
-  .search-btn { min-height: 56px; }
-}
-
-/* en pantallas pequeñas */
-@media (max-width: 600px) {
-  .search-wrap { flex-direction: column; }
-  .search-btn { width: 100%; }
-  .search-field { width: 100%; }
-}
-/* iguala la altura del botón al campo */
-
-.search-bar .search-btn {
-  height: 46px;              /* coincide con la altura típica de mat-form-field outline */
-  min-width: 48px;
-  padding: 0 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: none;          /* opcional: que no compita con la sombra del campo */
-}
-
-/* en pantallas pequeñas reducir un poco */
-@media (max-width: 600px) {
-  .search-bar .search-btn {
-    height: 48px;
-  }
-}
-
-
-.search-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1rem;
-  gap: 10px;
-}
-.search-bar input[type="text"] {
-  flex: 1;
-  padding: 12px 16px;
-  border: 1px solid var(--color-border);
-  border-radius: 8px;
-  font-size: 1rem;
-  outline: none;
-  height: 44px;
-  box-sizing: border-box;
-}
-
+/* Formularios específicos para proveedores */
 .form-container {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 16px;
   padding: 0;
+  align-items: start;
 }
 
 .form-field {
   width: 100%;
 }
 
+.form-field.full {
+  grid-column: 1 / -1; /* ocupa ambas columnas */
+}
+
+.required-asterisk {
+  color: #d32f2f; /* rojo Material */
+  margin-left: 4px;
+  font-weight: 600;
+}
+
+/* ensure actions row spans full width */
+.form-actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 1rem;
+}
+
 .actions {
   display: flex;
   justify-content: flex-end;
   margin-top: 1.5rem;
+}
+
+/* Responsive para mobile */
+@media (max-width: 768px) {
+
+/* Forzar alineación horizontal de botones con selectores múltiples */
+.products-table .mat-column-acciones,
+.products-table .mat-cell.actions,
+.products-table td.actions,
+:host ::ng-deep .mat-column-acciones {
+  display: table-cell !important;
+  vertical-align: middle !important;
+  text-align: left !important;
+  padding: 8px !important;
+  height: 48px !important;
+}
+
+/* Asegurar que las celdas de acciones mantengan el fondo alternado */
+.products-table .mat-row:nth-child(odd) .mat-column-acciones {
+  background: #f9f9f9 !important; /* Mismo fondo que la fila impar */
+}
+
+.products-table .mat-row:nth-child(even) .mat-column-acciones {
+  background: var(--color-white) !important; /* Mismo fondo que la fila par */
+}
+
+.products-table .mat-row:hover .mat-column-acciones {
+  background: var(--color-table-row-hover) !important; /* Fondo en hover */
+}
+
+/* Estilos para botones individuales - MUY ESPECÍFICO */
+.products-table .mat-column-acciones .btn-icon,
+.products-table .mat-cell.actions .btn-icon,
+.products-table td.actions .btn-icon,
+:host ::ng-deep .mat-column-acciones .btn-icon {
+  background: none !important;
+  border: none !important;
+  padding: 6px 8px !important;
+  margin: 0 2px !important;
+  cursor: pointer !important;
+  font-size: 1.25rem !important;
+  color: #6B7280 !important;
+  transition: color 0.2s !important;
+  min-width: 24px !important;
+  min-height: 24px !important;
+  display: inline-block !important;
+  vertical-align: middle !important;
+  float: none !important;
+  clear: none !important;
+}
+
+/* Hover y danger states para botones específicos */
+.products-table .mat-column-acciones .btn-icon:hover,
+.products-table .mat-cell.actions .btn-icon:hover,
+.products-table td.actions .btn-icon:hover,
+:host ::ng-deep .mat-column-acciones .btn-icon:hover {
+  color: var(--color-primary) !important;
+}
+
+.products-table .mat-column-acciones .btn-icon.danger,
+.products-table .mat-cell.actions .btn-icon.danger,
+.products-table td.actions .btn-icon.danger,
+:host ::ng-deep .mat-column-acciones .btn-icon.danger {
+  color: #dc2626 !important;
+}
+
+.products-table .mat-column-acciones .btn-icon.danger:hover,
+.products-table .mat-cell.actions .btn-icon.danger:hover,
+.products-table td.actions .btn-icon.danger:hover,
+:host ::ng-deep .mat-column-acciones .btn-icon.danger:hover {
+  color: #b91c1c !important;
+}
+
+/* Alineación específica para diferentes tipos de datos - TODAS A LA IZQUIERDA */
+.mat-column-razonSocial,
+.mat-column-correoContacto,
+.mat-column-ruc,
+.mat-column-telefono,
+.mat-column-estado,
+.mat-column-certificacionesVigentes,
+.mat-column-acciones {
+  text-align: left !important; /* Todas las columnas justificadas a la izquierda */
+}
+
+.mat-column-acciones {
+  width: 140px; /* Ancho fijo para columna de acciones */
+}
+
+/* Unificar fondos para que todo se vea integrado */
+.container {
+  background: var(--color-white) !important;
+}
+
+.table-container {
+  background: var(--color-white) !important;
+  overflow-x: auto;
+}
+
+/* Eliminar cualquier sombra o borde que cause diferencias visuales */
+.products-table,
+.container,
+.table-container {
+  box-shadow: none !important;
+  border: none !important;
+}
+
+/* ELIMINAR BORDES DE LA TABLA - ENFOQUE SUPER AGRESIVO */
+:host ::ng-deep .modern-table,
+:host ::ng-deep table.modern-table,
+:host ::ng-deep .mat-table.modern-table,
+:host ::ng-deep mat-table.modern-table {
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  border-collapse: separate !important;
+  border-spacing: 0 !important;
+  outline: none !important;
+  background: transparent !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Eliminar bordes de TODOS los elementos de la tabla */
+:host ::ng-deep .modern-table *,
+:host ::ng-deep .modern-table th,
+:host ::ng-deep .modern-table td,
+:host ::ng-deep .modern-table tr,
+:host ::ng-deep .modern-table thead,
+:host ::ng-deep .modern-table tbody {
+  border: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+  border-bottom: none !important;
+  box-shadow: none !important;
+  outline: none !important;
+  -webkit-box-shadow: none !important;
+  -moz-box-shadow: none !important;
+}
+
+/* Solo líneas horizontales entre filas */
+:host ::ng-deep .modern-table td {
+  border-bottom: 1px solid #f3f6fa !important;
+}
+
+:host ::ng-deep .modern-table th {
+  border-bottom: 2px solid #cbd5e1 !important;
+}
+
+/* Sin borde en la última fila */
+:host ::ng-deep .modern-table tbody tr:last-child td {
+  border-bottom: none !important;
+}
+
+/* FORZAR ALINEACIÓN HORIZONTAL DE BOTONES - ÚLTIMA PALABRA */
+:host ::ng-deep .products-table .mat-column-acciones,
+:host ::ng-deep .mat-column-acciones,
+:host ::ng-deep td.actions {
+  white-space: nowrap !important;
+}
+
+:host ::ng-deep .products-table .mat-column-acciones .btn-icon,
+:host ::ng-deep .mat-column-acciones .btn-icon,
+:host ::ng-deep td.actions .btn-icon {
+  display: inline-block !important;
+  float: none !important;
+  vertical-align: middle !important; /* Cambiado de top a middle para centrado vertical */
+  margin-right: 8px !important;
+}
+
+:host ::ng-deep .products-table .mat-column-acciones .btn-icon:last-child,
+:host ::ng-deep .mat-column-acciones .btn-icon:last-child,
+:host ::ng-deep td.actions .btn-icon:last-child {
+  margin-right: 0 !important;
+}
+
 }
 
