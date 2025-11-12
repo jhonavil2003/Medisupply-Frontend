@@ -118,7 +118,6 @@ describe('VendedorEditComponent', () => {
       expect(component.vendedorForm.get('email')?.value).toBe('juan.perez@test.com');
       expect(component.vendedorForm.get('phone')?.value).toBe('+51987654321');
       expect(component.vendedorForm.get('territory')?.value).toBe('Lima Norte');
-      expect(component.vendedorForm.get('isActive')?.value).toBe(true);
       expect(component.loading()).toBe(false);
     });
 
@@ -227,7 +226,8 @@ describe('VendedorEditComponent', () => {
     });
 
     it('should format hire date correctly', () => {
-      const testDate = new Date('2024-01-15');
+      // Usar fecha local explícitamente para evitar problemas de zona horaria
+      const testDate = new Date(2024, 0, 15); // año, mes (0-11), día
       component.vendedorForm.patchValue({
         hireDate: testDate
       });

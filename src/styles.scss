@@ -112,6 +112,7 @@ $my-theme: mat.m2-define-light-theme((
 .unified-paginator {
   background: var(--color-white) !important;
   border-top: 1px solid var(--color-border);
+  border-bottom: none !important;
   margin-top: 0;
   font-family: var(--font-base);
 }

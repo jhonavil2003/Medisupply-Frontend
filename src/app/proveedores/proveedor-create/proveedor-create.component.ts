@@ -38,7 +38,6 @@ export class ProveedorCreateComponent {
   loading = signal(false);
   proveedorForm: FormGroup;
 
-  estadosDisponibles = ['Activo', 'Inactivo', 'Pendiente'];
   monedasDisponibles = ['USD', 'COP', 'EUR'];
 
   constructor() {
@@ -93,8 +92,7 @@ export class ProveedorCreateComponent {
       creditLimit: [null, [
         Validators.min(0),
         Validators.max(999999999.99)
-      ]],
-      estado: ['Activo', Validators.required]
+      ]]
     });
   }
 
@@ -102,7 +100,11 @@ export class ProveedorCreateComponent {
     if (this.proveedorForm.valid) {
       this.loading.set(true);
       
-      const proveedorData = this.proveedorForm.value;
+      // Siempre crear como activo
+      const proveedorData = {
+        ...this.proveedorForm.value,
+        estado: 'Activo'
+      };
       
       this.createProveedorUseCase.execute(proveedorData).subscribe({
         next: (proveedor) => {

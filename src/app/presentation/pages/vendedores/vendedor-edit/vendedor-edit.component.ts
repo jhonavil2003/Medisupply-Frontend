@@ -80,8 +80,7 @@ export class VendedorEditComponent implements OnInit {
         Validators.pattern(/^[0-9+\-\s()]+$/)
       ]],
       territory: ['', Validators.maxLength(100)],
-      hireDate: [''],
-      isActive: [true]
+      hireDate: ['']
     });
   }
 
@@ -110,8 +109,7 @@ export class VendedorEditComponent implements OnInit {
             email: vendedor.email,
             phone: vendedor.phone || '',
             territory: vendedor.territory || '',
-            hireDate: hireDate,
-            isActive: vendedor.isActive ?? true
+            hireDate: hireDate
           });
         }
         this.loading.set(false);
@@ -143,7 +141,11 @@ export class VendedorEditComponent implements OnInit {
     let hireDate: string | undefined = undefined;
     if (formValue.hireDate) {
       const date = new Date(formValue.hireDate);
-      hireDate = date.toISOString().split('T')[0]; // Formato YYYY-MM-DD
+      // Usar fecha local para evitar problemas con zona horaria
+      const year = date.getFullYear();
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const day = String(date.getDate()).padStart(2, '0');
+      hireDate = `${year}-${month}-${day}`; // Formato YYYY-MM-DD
     }
 
     const vendedorDto: UpdateVendedorDto = {
@@ -154,8 +156,7 @@ export class VendedorEditComponent implements OnInit {
       email: formValue.email,
       phone: formValue.phone || undefined,
       territory: formValue.territory || undefined,
-      hireDate: hireDate,
-      isActive: formValue.isActive
+      hireDate: hireDate
     };
 
     this.updateVendedorUseCase.execute(vendedorDto).subscribe({

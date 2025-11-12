@@ -1,4 +1,4 @@
-/* Dialog/Modal styling - Vendedor Detail */
+/* Dialog/Modal styling - Producto Detail */
 .form-card {
   padding: 0;
   box-shadow: none;
@@ -83,6 +83,12 @@ mat-label {
   text-align: right;
 }
 
+.value.price-highlight {
+  color: #2e7d32;
+  font-weight: 600;
+  font-size: 1.1rem;
+}
+
 .no-data {
   color: #999;
   font-style: italic;
@@ -102,6 +108,26 @@ mat-chip {
 
 .status-inactive {
   background-color: #f44336 !important;
+  color: white !important;
+}
+
+.requires-cold-chain {
+  background-color: #2196f3 !important;
+  color: white !important;
+}
+
+.no-cold-chain {
+  background-color: #9e9e9e !important;
+  color: white !important;
+}
+
+.requires-prescription {
+  background-color: #ff9800 !important;
+  color: white !important;
+}
+
+.no-prescription {
+  background-color: #9e9e9e !important;
   color: white !important;
 }
 

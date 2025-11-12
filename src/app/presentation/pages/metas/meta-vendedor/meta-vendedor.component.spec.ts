@@ -5,6 +5,7 @@ import { GetMetasByVendedorUseCase } from '../../../../core/application/use-case
 import { Region, Trimestre, TipoMeta, MetaVentaEntity } from '../../../../core/domain/entities/meta-venta.entity';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ReactiveFormsModule } from '@angular/forms';
+import { provideRouter } from '@angular/router';
 
 describe('MetaVendedorComponent', () => {
   let component: MetaVendedorComponent;
@@ -47,7 +48,8 @@ describe('MetaVendedorComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MetaVendedorComponent, ReactiveFormsModule, NoopAnimationsModule],
       providers: [
-        { provide: GetMetasByVendedorUseCase, useValue: mockGetMetasUseCase }
+        { provide: GetMetasByVendedorUseCase, useValue: mockGetMetasUseCase },
+        provideRouter([])
       ]
     }).compileComponents();
 

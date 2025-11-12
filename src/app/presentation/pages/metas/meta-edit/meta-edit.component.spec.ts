@@ -11,7 +11,9 @@ import {
 import { NotificationService } from '../../../shared/services/notification.service';
 import { VendedorRepository } from '../../../../core/domain/repositories/vendedor.repository';
 import { ProductoRepository } from '../../../../core/domain/repositories/producto.repository';
+import { MetaVentaRepository } from '../../../../core/domain/repositories/meta-venta.repository';
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('MetaEditComponent', () => {
   let component: MetaEditComponent;
@@ -23,6 +25,8 @@ describe('MetaEditComponent', () => {
   let mockActivatedRoute: any;
   let mockVendedorRepository: jest.Mocked<VendedorRepository>;
   let mockProductoRepository: jest.Mocked<ProductoRepository>;
+  let mockMetaVentaRepository: any;
+  let mockDialogRef: any;
 
   const mockMeta: MetaVentaEntity = {
     id: 1,
@@ -84,6 +88,16 @@ describe('MetaEditComponent', () => {
       getBySku: jest.fn().mockReturnValue(of({ id: 1, sku: 'SKU-001' }))
     } as any;
 
+    mockMetaVentaRepository = { 
+      create: jest.fn(), 
+      getAll: jest.fn(), 
+      getById: jest.fn(), 
+      update: jest.fn(), 
+      delete: jest.fn() 
+    };
+    
+    mockDialogRef = { close: jest.fn() };
+
     await TestBed.configureTestingModule({
       imports: [MetaEditComponent, NoopAnimationsModule],
       providers: [
@@ -93,7 +107,10 @@ describe('MetaEditComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: VendedorRepository, useValue: mockVendedorRepository },
-        { provide: ProductoRepository, useValue: mockProductoRepository }
+        { provide: ProductoRepository, useValue: mockProductoRepository },
+        { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: { metaId: 1 } }
       ]
     }).compileComponents();
 
@@ -116,13 +133,14 @@ describe('MetaEditComponent', () => {
       expect(mockGetMetaByIdUseCase.execute).toHaveBeenCalledWith(1);
     });
 
-    it('should show error and navigate if ID is missing', () => {
-      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
-
-      fixture.detectChanges(); // triggers ngOnInit
+    it('should show error and close dialog if ID is 0', () => {
+      // Simular que metaId es 0 (inválido)
+      component.metaId = 0;
+      
+      component.ngOnInit();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('ID de meta no válido');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
 
     it('should populate form with meta data', () => {
@@ -157,7 +175,7 @@ describe('MetaEditComponent', () => {
       fixture.detectChanges();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('Meta no encontrada');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
 
     it('should handle error loading meta', () => {
@@ -168,7 +186,7 @@ describe('MetaEditComponent', () => {
       fixture.detectChanges();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar meta');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
@@ -238,7 +256,7 @@ describe('MetaEditComponent', () => {
     });
 
     it('should not submit if metaId is missing', () => {
-      component.metaId = null;
+      component.metaId = 0;
 
       component.onSubmit();
 
@@ -278,7 +296,7 @@ describe('MetaEditComponent', () => {
         })
       );
       expect(mockNotificationService.success).toHaveBeenCalledWith('Meta actualizada exitosamente');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     }));
 
     it('should handle error with userMessage', () => {
@@ -349,10 +367,10 @@ describe('MetaEditComponent', () => {
   });
 
   describe('cancel', () => {
-    it('should navigate back to metas list', () => {
+    it('should close dialog', () => {
       component.cancel();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 

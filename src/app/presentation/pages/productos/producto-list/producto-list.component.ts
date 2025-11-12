@@ -26,6 +26,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 import { ProductoCreateComponent } from '../producto-create/producto-create.component';
 import { ProductoEditComponent } from '../producto-edit/producto-edit.component';
+import { ProductoDetailComponent } from '../producto-detail/producto-detail.component';
 
 @Component({
   selector: 'app-producto-list',
@@ -194,7 +195,13 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   }
 
   verDetalle(product: ProductoEntity): void {
-    this.router.navigate(['/producto-detail', product.id]);
+    this.dialog.open(ProductoDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: product
+    });
   }
 
   editarProducto(product: ProductoEntity): void {

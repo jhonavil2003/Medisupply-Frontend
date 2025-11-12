@@ -1,4 +1,4 @@
-/* Dialog/Modal styling - Vendedor Detail */
+/* Dialog/Modal styling - Proveedor Detail */
 .form-card {
   padding: 0;
   box-shadow: none;
@@ -78,6 +78,17 @@ mat-label {
   display: inline-block;
 }
 
+.label {
+  font-weight: 500;
+  color: #666;
+  min-width: 150px;
+}
+
+.value {
+  color: #333;
+  text-align: right;
+}
+
 .value {
   color: #333;
   text-align: right;
@@ -88,7 +99,6 @@ mat-label {
   font-style: italic;
 }
 
-/* Chip Styling */
 mat-chip {
   font-size: 12px !important;
   min-height: 24px !important;
@@ -105,7 +115,18 @@ mat-chip {
   color: white !important;
 }
 
-/* Action Buttons */
+.certificaciones-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  justify-content: flex-end;
+}
+
+.cert-chip {
+  background-color: #e3f2fd !important;
+  color: #1976d2 !important;
+}
+
 .action-buttons {
   display: flex;
   justify-content: flex-end;

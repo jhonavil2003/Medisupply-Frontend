@@ -1,5 +1,4 @@
 import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -9,6 +8,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { CreateMetaVentaUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { CreateMetaVentaDto, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
@@ -35,7 +35,7 @@ import { vendedorExistsValidator, productoExistsValidator } from '../validators/
 })
 export class MetaCreateComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private router = inject(Router);
+  private dialogRef = inject(MatDialogRef<MetaCreateComponent>);
   private createMetaUseCase = inject(CreateMetaVentaUseCase);
   private notificationService = inject(NotificationService);
   private vendedorRepository = inject(VendedorRepository);
@@ -91,7 +91,7 @@ export class MetaCreateComponent implements OnInit {
       next: (meta) => {
         this.loading.set(false);
         this.notificationService.success('Meta creada exitosamente');
-        this.router.navigate(['/metas']);
+        this.dialogRef.close(true);
       },
       error: (error) => {
         this.loading.set(false);
@@ -128,7 +128,7 @@ export class MetaCreateComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/metas']);
+    this.dialogRef.close(false);
   }
 
   getErrorMessage(field: string): string {

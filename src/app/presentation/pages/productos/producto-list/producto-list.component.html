@@ -36,7 +36,7 @@
   <!-- Filtros -->
   <form [formGroup]="filterForm">
     <div class="filters-row">
-      <mat-form-field appearance="outline">
+      <mat-form-field appearance="outline" floatLabel="always">
         <mat-label>Categoría</mat-label>
             <mat-select formControlName="category" (selectionChange)="onFilterChange()">
               <mat-option value="">Todas</mat-option>
@@ -46,12 +46,12 @@
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>Subcategoría</mat-label>
             <input matInput formControlName="subcategory" (change)="onFilterChange()">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
+          <mat-form-field appearance="outline" floatLabel="always">
             <mat-label>Cadena de Frío</mat-label>
             <mat-select formControlName="requires_cold_chain" (selectionChange)="onFilterChange()">
               <mat-option [value]="null">Todos</mat-option>
@@ -63,8 +63,8 @@
 
         <div class="filter-actions">
           <button mat-button type="button" (click)="resetFilters()">
-            <mat-icon>clear_all</mat-icon>
-            Limpiar
+            <mat-icon>filter_list</mat-icon>
+            Limpiar filtros
           </button>
         </div>
       </form>

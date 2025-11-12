@@ -1,4 +1,4 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,10 +8,10 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
 
-import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
+import { Proveedor } from '../proveedor';
 
 @Component({
-  selector: 'app-vendedor-detail',
+  selector: 'app-proveedor-detail',
   standalone: true,
   imports: [
     CommonModule,
@@ -21,22 +21,16 @@ import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity
     MatChipsModule,
     MatDividerModule,
     MatLabel
-],
-  templateUrl: './vendedor-detail.component.html',
-  styleUrls: ['./vendedor-detail.component.css']
+  ],
+  templateUrl: './proveedor-detail.component.html',
+  styleUrls: ['./proveedor-detail.component.css']
 })
-export class VendedorDetailComponent {
-  private dialogRef = inject(MatDialogRef<VendedorDetailComponent>);
-  vendedor = inject<VendedorEntity>(MAT_DIALOG_DATA);
+export class ProveedorDetailComponent {
+  private dialogRef = inject(MatDialogRef<ProveedorDetailComponent>);
+  proveedor: Proveedor;
 
-  formatDate(dateString?: string): string {
-    if (!dateString) return '-';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('es-ES', {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { proveedor: Proveedor }) {
+    this.proveedor = data.proveedor;
   }
 
   cerrar(): void {

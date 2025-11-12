@@ -108,9 +108,6 @@ describe('ProveedorEditComponent', () => {
     });
 
     it('should initialize arrays with correct values', () => {
-      expect(component.estadosDisponibles).toContain('Activo');
-      expect(component.estadosDisponibles).toContain('Inactivo');
-      expect(component.estadosDisponibles).toContain('Pendiente');
       expect(component.monedasDisponibles).toContain('USD');
       expect(component.monedasDisponibles).toContain('COP');
       expect(component.monedasDisponibles).toContain('EUR');
@@ -315,12 +312,6 @@ describe('ProveedorEditComponent', () => {
   });
 
   describe('Data Arrays', () => {
-    it('should have all required estados', () => {
-      const expectedEstados = ['Activo', 'Inactivo', 'Pendiente'];
-
-      expect(component.estadosDisponibles).toEqual(expectedEstados);
-    });
-
     it('should have all required currencies', () => {
       const expectedCurrencies = ['USD', 'COP', 'EUR'];
 

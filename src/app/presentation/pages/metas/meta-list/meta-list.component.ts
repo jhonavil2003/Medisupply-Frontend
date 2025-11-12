@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialog } from '@angular/material/dialog';
 
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
 import { MetaVentaFilters } from '../../../../core/domain/repositories/meta-venta.repository';
@@ -23,6 +24,9 @@ import {
 } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
+import { MetaCreateComponent } from '../meta-create/meta-create.component';
+import { MetaEditComponent } from '../meta-edit/meta-edit.component';
+import { MetaDetailComponent } from '../meta-detail/meta-detail.component';
 
 @Component({
   selector: 'app-meta-list',
@@ -52,6 +56,7 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   private notify = inject(NotificationService);
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   metas = signal<MetaVentaEntity[]>([]);
   loading = signal(false);
@@ -154,15 +159,46 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   }
 
   navigateToCreate(): void {
-    this.router.navigate(['/metas/create']);
+    const dialogRef = this.dialog.open(MetaCreateComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Recargar la lista después de crear
+        this.loadMetas();
+      }
+    });
   }
 
   navigateToDetail(id: number): void {
-    this.router.navigate(['/metas', id]);
+    const dialogRef = this.dialog.open(MetaDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true,
+      data: { metaId: id }
+    });
   }
 
   navigateToEdit(id: number): void {
-    this.router.navigate(['/metas', id, 'edit']);
+    const dialogRef = this.dialog.open(MetaEditComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true,
+      data: { metaId: id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Recargar la lista después de editar
+        this.loadMetas();
+      }
+    });
   }
 
   deleteMeta(meta: MetaVentaEntity): void {

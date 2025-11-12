@@ -14,12 +14,12 @@
   <div class="search-bar" style="flex: 1;">
     <div class="search-wrap">
       <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar proveedor</mat-label>
-        <input matInput
-          placeholder="Razón social, RUC, teléfono, correo, estado o certificación..."
+        <mat-label>Buscar proveedores</mat-label>
+        <input matInput 
           [(ngModel)]="filtroBusqueda"
-          (ngModelChange)="filtrarProveedores()" />
-
+          (input)="filtrarProveedores()"
+          placeholder="Buscar por razón social, NIT, teléfono, correo..."
+          class="search-input">
         @if (filtroBusqueda) {
           <button
             matSuffix
@@ -41,7 +41,7 @@
         <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
       </ng-container>
       <ng-container matColumnDef="ruc">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>RUC</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>NIT</th>
         <td mat-cell *matCellDef="let row">{{ row.ruc }}</td>
       </ng-container>
       <ng-container matColumnDef="telefono">
@@ -84,52 +84,3 @@
   </div>
 </div>
 
-<!-- Modal de detalle -->
-@if (mostrarDetalle && proveedorDetalle) {
-  <div class="modal-overlay" (click)="cerrarDetalle()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <h2>Detalle del Proveedor</h2>
-      
-      <div class="detalle-proveedor">
-        <div class="detalle-row">
-          <strong>Razón Social:</strong>
-          <span>{{ proveedorDetalle.razonSocial }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>RUC/NIT:</strong>
-          <span>{{ proveedorDetalle.ruc }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>País:</strong>
-          <span>{{ proveedorDetalle.country || '-' }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>Teléfono:</strong>
-          <span>{{ proveedorDetalle.telefono }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>Correo:</strong>
-          <span>{{ proveedorDetalle.correoContacto }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>Sitio web:</strong>
-          <span>{{ proveedorDetalle.website || '-' }}</span>
-        </div>
-        <div class="detalle-row">
-          <strong>Estado:</strong>
-          <span [class]="'badge ' + (proveedorDetalle.estado === 'Activo' ? 'badge-success' : 'badge-danger')">
-            {{ proveedorDetalle.estado }}
-          </span>
-        </div>
-        <div class="detalle-row">
-          <strong>Certificaciones:</strong>
-          <span>{{ proveedorDetalle.certificacionesVigentes ? proveedorDetalle.certificacionesVigentes.join(', ') : '-' }}</span>
-        </div>
-      </div>
-
-      <div class="modal-actions">
-        <button mat-raised-button color="primary" (click)="cerrarDetalle()">Cerrar</button>
-      </div>
-    </div>
-  </div>
-}

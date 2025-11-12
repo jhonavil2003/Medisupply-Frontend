@@ -130,7 +130,6 @@ export class ProductoEditComponent implements OnInit {
         Validators.maxLength(500),
         Validators.pattern(/^https?:\/\/.+/)
       ]],
-      is_active: [true],
       is_discontinued: [false]
     });
   }
@@ -173,7 +172,6 @@ export class ProductoEditComponent implements OnInit {
       country_of_origin: product.country_of_origin,
       barcode: product.barcode,
       image_url: product.image_url,
-      is_active: product.is_active,
       is_discontinued: product.is_discontinued
     });
   }

@@ -154,7 +154,6 @@ describe('ProductoEditComponent', () => {
     it('should initialize with default form values', () => {
       expect(component.productForm).toBeDefined();
       expect(component.productForm.get('currency')?.value).toBe('USD');
-      expect(component.productForm.get('is_active')?.value).toBe(true);
       expect(component.productForm.get('is_discontinued')?.value).toBe(false);
     });
 
@@ -246,7 +245,6 @@ describe('ProductoEditComponent', () => {
       expect(component.productForm.get('unit_price')?.value).toBe(mockProduct.unit_price);
       expect(component.productForm.get('currency')?.value).toBe(mockProduct.currency);
       expect(component.productForm.get('requires_cold_chain')?.value).toBe(mockProduct.requires_cold_chain);
-      expect(component.productForm.get('is_active')?.value).toBe(mockProduct.is_active);
     });
   });
 
@@ -355,12 +353,12 @@ describe('ProductoEditComponent', () => {
 
     it('should detect boolean field changes correctly', () => {
       component.productForm.get('requires_cold_chain')?.setValue(true);
-      component.productForm.get('is_active')?.setValue(false);
+      component.productForm.get('is_discontinued')?.setValue(true);
       
       const changedFields = component.getChangedFields();
       
       expect(changedFields.requires_cold_chain).toBe(true);
-      expect(changedFields.is_active).toBe(false);
+      expect(changedFields.is_discontinued).toBe(true);
     });
   });
 

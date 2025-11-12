@@ -1,65 +1,48 @@
+/* ============================================
+   Container principal - mismo estilo que productos
+   ============================================ */
 .container {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-mat-card {
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-mat-card-header {
-  margin-bottom: 24px;
-}
-
-mat-card-title {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  font-size: 24px;
-  font-weight: 500;
-  color: #1a1a1a;
-}
-
-mat-card-title mat-icon {
-  color: #1976d2;
-  font-size: 28px;
-  width: 28px;
-  height: 28px;
-}
-
-.filter-section {
-  display: flex;
-  gap: 16px;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  align-items: flex-start;
-  padding: 16px;
-  background-color: #f5f5f5;
+  padding: 24px !important;
+  margin: 24px 0 !important;
+  background-color: #fff;
   border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-.filter-field {
+/* ============================================
+   Filtros Row - mismo estilo que productos
+   ============================================ */
+.filters-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.filters-row mat-form-field {
   flex: 1;
   min-width: 200px;
-  max-width: 300px;
 }
 
 .clear-filters-btn {
-  margin-top: 8px;
-  height: 40px;
+  height: 56px;
 }
 
+/* Contador de resultados */
 .results-count {
-  padding: 12px 16px;
-  background-color: #e3f2fd;
+  text-align: right;
+  color: #666;
+  font-size: 0.9rem;
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background-color: #f5f5f5;
   border-radius: 4px;
-  margin-bottom: 16px;
-  color: #1976d2;
-  font-weight: 500;
-  text-align: center;
 }
 
+/* ============================================
+   Estados de Loading, Error, Empty
+   ============================================ */
 .loading-container {
   display: flex;
   flex-direction: column;
@@ -102,6 +85,9 @@ mat-card-title mat-icon {
   font-size: 16px;
 }
 
+/* ============================================
+   Grid de Metas (Cards)
+   ============================================ */
 .metas-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -160,6 +146,9 @@ mat-card-title mat-icon {
   font-weight: 500;
 }
 
+/* ============================================
+   Progress Section
+   ============================================ */
 .progress-section {
   margin-top: 16px;
   padding-top: 16px;
@@ -180,6 +169,9 @@ mat-card-title mat-icon {
   color: #1976d2;
 }
 
+/* ============================================
+   Chips de Tipo
+   ============================================ */
 mat-chip {
   font-size: 12px !important;
   min-height: 24px !important;
@@ -196,25 +188,63 @@ mat-chip {
   color: #e65100 !important;
 }
 
+/* ============================================
+   Responsive
+   ============================================ */
 @media (max-width: 768px) {
-  .metas-grid {
-    grid-template-columns: 1fr;
-  }
-  
   .container {
-    padding: 16px;
+    padding: 16px !important;
+    margin: 16px 0 !important;
   }
 
-  .filter-section {
+  .filters-row {
     flex-direction: column;
   }
 
-  .filter-field {
+  .filters-row mat-form-field {
     width: 100%;
-    max-width: none;
+    min-width: 100%;
   }
 
   .clear-filters-btn {
     width: 100%;
   }
+
+  .metas-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* ============================================
+   Filter Actions - mismo estilo que productos
+   ============================================ */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.filter-actions button {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  text-transform: none !important;
+}
+
+.filter-actions button:hover {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
+}
+
+.filter-actions button mat-icon {
+  margin-right: 6px !important;
+  font-size: 18px !important;
 }

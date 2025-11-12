@@ -21,8 +21,10 @@ import { SearchProveedoresUseCase } from '../../core/application/use-cases/prove
 
 import { ProveedorEntity, EstadoProveedor } from '../../core/domain/entities/proveedor.entity';
 import { NotificationService } from '../../presentation/shared/services/notification.service';
+import { ConfirmDialogService } from '../../presentation/shared/services/confirm-dialog.service';
 import { ProveedorCreateComponent } from '../proveedor-create/proveedor-create.component';
 import { ProveedorEditComponent } from '../proveedor-edit/proveedor-edit.component';
+import { ProveedorDetailComponent } from '../../presentation/pages/proveedores/proveedor-detail/proveedor-detail.component';
 
 /**
  * Componente de lista de proveedores usando Clean Architecture
@@ -61,13 +63,12 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   private searchProveedoresUseCase = inject(SearchProveedoresUseCase);
   private notify = inject(NotificationService);
   private dialog = inject(MatDialog);
+  private confirmDialog = inject(ConfirmDialogService);
 
   // Signals para estado reactivo (opcional)
   isLoading = signal(false);
   
   proveedores: ProveedorEntity[] = [];
-  mostrarDetalle: boolean = false;
-  proveedorDetalle: ProveedorEntity | null = null;
   filtroBusqueda: string = '';
   
   dataSource = new MatTableDataSource<ProveedorEntity>();
@@ -97,8 +98,10 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     
     this.getAllProveedoresUseCase.execute().subscribe({
       next: (proveedores) => {
-        this.proveedores = proveedores;
-        this.dataSource.data = proveedores;
+        // Filtrar solo proveedores activos
+        const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
+        this.proveedores = proveedoresActivos;
+        this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -122,7 +125,9 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     
     this.searchProveedoresUseCase.execute(this.filtroBusqueda).subscribe({
       next: (proveedores) => {
-        this.dataSource.data = proveedores;
+        // Filtrar solo proveedores activos
+        const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
+        this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -173,44 +178,45 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   /**
    * Elimina un proveedor usando el caso de uso
    */
-  eliminarProveedor(proveedor: ProveedorEntity): void {
+  async eliminarProveedor(proveedor: ProveedorEntity): Promise<void> {
     if (!proveedor.id) return;
     
-    if (!confirm(`¿Está seguro de eliminar el proveedor "${proveedor.razonSocial}"?`)) {
-      return;
-    }
+    const confirmed = await this.confirmDialog.confirmDelete(proveedor.razonSocial).toPromise();
+    
+    if (confirmed) {
+      this.isLoading.set(true);
 
-    this.isLoading.set(true);
-
-    this.deleteProveedorUseCase.execute(proveedor.id).subscribe({
-      next: (success) => {
-        if (success) {
-          this.notify.success('Proveedor eliminado correctamente');
-          this.cargarProveedores();
-        } else {
-          this.notify.error('No se pudo eliminar el proveedor', 'Error');
+      this.deleteProveedorUseCase.execute(proveedor.id).subscribe({
+        next: (success) => {
+          if (success) {
+            this.isLoading.set(false);
+            this.notify.success(`Proveedor "${proveedor.razonSocial}" eliminado correctamente`);
+            this.cargarProveedores();
+          } else {
+            this.notify.error('No se pudo eliminar el proveedor', 'Error');
+            this.isLoading.set(false);
+          }
+        },
+        error: (error) => {
           this.isLoading.set(false);
+          this.notify.error('Error al eliminar', 'Error');
+          console.error(error);
         }
-      },
-      error: (error) => {
-        this.notify.error('Error al eliminar', 'Error');
-        console.error(error);
-        this.isLoading.set(false);
-      }
-    });
+      });
+    }
   }
 
   /**
    * Muestra el detalle de un proveedor
    */
   verProveedor(proveedor: ProveedorEntity): void {
-    this.proveedorDetalle = proveedor;
-    this.mostrarDetalle = true;
-  }
-
-  cerrarDetalle(): void {
-    this.mostrarDetalle = false;
-    this.proveedorDetalle = null;
+    this.dialog.open(ProveedorDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { proveedor: proveedor }
+    });
   }
 
   private configurarFiltro(): void {

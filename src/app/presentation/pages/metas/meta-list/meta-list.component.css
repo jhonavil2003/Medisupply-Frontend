@@ -3,54 +3,36 @@
    Los estilos de tabla están en styles.scss
    ============================================ */
 
-/* Header Section */
-.header-section {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1.5rem;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-}
-
-.header-left h2 {
-  margin: 0;
-}
-
-/* Barra de búsqueda */
-.search-bar {
-  display: flex;
-  align-items: center;
-  margin-bottom: 1.5rem;
-  width: 100%;
-}
-
-.search-field {
-  width: 100%;
-  margin: 0;
-}
-
 /* Filtros */
 .filter-section {
-  display: flex;
-  gap: 1rem;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .filter-field {
-  min-width: 200px;
-  flex: 1;
-  max-width: 300px;
+  width: 100%;
 }
 
-.clear-filters-btn {
-  height: 56px;
+/* Acciones de filtro (botón limpiar) */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-actions button {
+  background-color: #f3f3fe !important;
+  color: var(--color-primary) !important;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.filter-actions button:hover {
+  background-color: #e3f2fd !important;
 }
 
 /* Mensajes */
@@ -93,32 +75,9 @@
   color: #757575;
 }
 
-/* Chips personalizados (se usan sin estilos de color ahora) */
-.region-chip,
-.tipo-unidades,
-.tipo-monetario {
-  font-size: 0.875rem;
-  padding: 4px 12px;
-}
-
 /* Responsive */
 @media (max-width: 768px) {
-  .header-section {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 1rem;
-  }
-
   .filter-section {
-    flex-direction: column;
-  }
-
-  .filter-field {
-    width: 100%;
-    max-width: none;
-  }
-
-  .clear-filters-btn {
-    width: 100%;
+    grid-template-columns: 1fr;
   }
 }
