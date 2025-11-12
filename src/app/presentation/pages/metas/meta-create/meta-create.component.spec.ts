@@ -150,9 +150,9 @@ describe('MetaCreateComponent', () => {
     expect(component.loading()).toBe(false);
   }));
 
-  it('should navigate to list on cancel', () => {
+  it('should close dialog on cancel', () => {
     component.cancel();
-    expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+    expect(mockDialogRef.close).toHaveBeenCalledWith(false);
   });
 
   it('should have correct enum values', () => {

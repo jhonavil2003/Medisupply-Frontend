@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialog } from '@angular/material/dialog';
 
 import { MetaListComponent } from './meta-list.component';
 import {
@@ -26,6 +27,7 @@ describe('MetaListComponent', () => {
   let mockMetaVentaRepository: any;
   let mockVendedorRepository: any;
   let mockProductoRepository: any;
+  let mockDialog: jest.Mocked<MatDialog>;
 
   const mockMetas: MetaVentaEntity[] = [
     {
@@ -136,6 +138,12 @@ describe('MetaListComponent', () => {
       getBySku: jest.fn() 
     };
 
+    mockDialog = {
+      open: jest.fn().mockReturnValue({
+        afterClosed: jest.fn().mockReturnValue(of(false))
+      })
+    } as any;
+
     await TestBed.configureTestingModule({
       imports: [MetaListComponent, NoopAnimationsModule],
       providers: [
@@ -146,7 +154,8 @@ describe('MetaListComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
         { provide: VendedorRepository, useValue: mockVendedorRepository },
-        { provide: ProductoRepository, useValue: mockProductoRepository }
+        { provide: ProductoRepository, useValue: mockProductoRepository },
+        { provide: MatDialog, useValue: mockDialog }
       ]
     }).compileComponents();
 
@@ -324,22 +333,48 @@ describe('MetaListComponent', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to create', () => {
+    it('should open create dialog', () => {
       component.navigateToCreate();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas/create']);
+      expect(mockDialog.open).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          width: '900px',
+          maxHeight: '90vh',
+          disableClose: false,
+          autoFocus: true
+        })
+      );
     });
 
-    it('should navigate to detail', () => {
+    it('should open detail dialog with meta ID', () => {
       component.navigateToDetail(1);
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas', 1]);
+      expect(mockDialog.open).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          width: '1000px',
+          maxHeight: '90vh',
+          disableClose: false,
+          autoFocus: true,
+          data: { metaId: 1 }
+        })
+      );
     });
 
-    it('should navigate to edit', () => {
+    it('should open edit dialog with meta ID', () => {
       component.navigateToEdit(1);
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas', 1, 'edit']);
+      expect(mockDialog.open).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          width: '900px',
+          maxHeight: '90vh',
+          disableClose: false,
+          autoFocus: true,
+          data: { metaId: 1 }
+        })
+      );
     });
 
     it('should navigate back to dashboard', () => {
