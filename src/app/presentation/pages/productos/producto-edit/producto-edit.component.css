@@ -105,18 +105,17 @@
 .action-buttons {
   display: flex;
   justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2rem;
-  padding-top: 1rem;
-  border-top: 1px solid #e0e0e0;
+  gap: 12px;
+  margin-top: 24px;
 }
 
 .action-buttons button {
-  min-width: 120px;
+  min-width: 100px;
 }
 
 .action-buttons mat-spinner {
-  margin-right: 0.5rem;
+  display: inline-block;
+  margin-right: 8px;
 }
 
 /* Responsive design */
