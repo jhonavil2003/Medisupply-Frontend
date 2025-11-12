@@ -16,7 +16,8 @@
               <mat-form-field appearance="outline" floatLabel="always">
           <mat-label>Buscar</mat-label>
           <input matInput 
-          [formControl]="searchControl" 
+          [(ngModel)]="filtroBusqueda"
+          (input)="filtrarProveedores()"
           placeholder="Razón social, NIT, teléfono, correo, estado o certificación..."
           class="search-input">
 
