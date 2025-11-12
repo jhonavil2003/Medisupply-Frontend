@@ -3,10 +3,11 @@
    Los estilos de container y tabla están en styles.scss
    ============================================ */
 
-/* Asegurar que el container use el mismo padding que otros módulos */
-.container {
-  padding: 24px !important;
-  margin: 24px 0 !important;
+/* Contenedor principal */
+.informe-ventas-container {
+  padding: 0;
+  max-width: none;
+  margin: 0;
 }
 
 /* Barra de encabezado */
@@ -19,15 +20,34 @@
 
 /* Filtros */
 .filtros {
-  display: flex;
-  gap: 18px;
-  margin-bottom: 1.5rem;
-  flex-wrap: wrap;
-  align-items: center;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
 }
 
 .filtros mat-form-field {
-  min-width: 200px;
+  width: 100%;
+}
+
+/* Acciones de filtro (botón limpiar) */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.filter-actions button {
+  background-color: #f3f3fe !important;
+  color: var(--color-primary) !important;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.filter-actions button:hover {
+  background-color: #e3f2fd !important;
 }
 
 /* Contenedor de la tabla */

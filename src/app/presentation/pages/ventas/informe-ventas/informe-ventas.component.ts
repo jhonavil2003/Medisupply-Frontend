@@ -82,6 +82,13 @@ export class InformeVentasComponent implements OnInit {
     this.dataSource.data = filtradas;
   }
 
+  limpiarFiltros() {
+    this.filtroVendedor = '';
+    this.filtroProducto = '';
+    this.filtroZona = '';
+    this.filtrar();
+  }
+
   exportar(tipo: 'pdf' | 'excel') {
     this.toastr.info('Funcionalidad de exportación simulada', tipo === 'pdf' ? 'PDF' : 'Excel');
     // Aquí iría la lógica real de exportación

@@ -1,112 +1,120 @@
-<div class="container">
-  <!-- Header -->
-  <div class="header-bar">
-    <a mat-icon-button [routerLink]="['/dashboard-admin']">
-      <mat-icon>arrow_back</mat-icon>
-    </a>
-    <h2 style="margin: 0;">Consulta de informes de desempeño de ventas</h2>
+<div class="informe-ventas-container">
+  <!-- Header y Filtros -->
+  <div class="container">
+    <!-- Header -->
+    <div class="header-bar">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">Consulta de informes de desempeño de ventas</h2>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros">
+      <mat-form-field appearance="outline">
+        <mat-label>Vendedor</mat-label>
+        <mat-select [(ngModel)]="filtroVendedor" (selectionChange)="filtrar()">
+          <mat-option value="">Todos</mat-option>
+          @for (v of vendedores; track v) {
+            <mat-option [value]="v">{{ v }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Producto</mat-label>
+        <mat-select [(ngModel)]="filtroProducto" (selectionChange)="filtrar()">
+          <mat-option value="">Todos</mat-option>
+          @for (p of productos; track p) {
+            <mat-option [value]="p">{{ p }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+      
+      <mat-form-field appearance="outline">
+        <mat-label>Zona</mat-label>
+        <mat-select [(ngModel)]="filtroZona" (selectionChange)="filtrar()">
+          <mat-option value="">Todas</mat-option>
+          @for (z of zonas; track z) {
+            <mat-option [value]="z">{{ z }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+
+    <!-- Acciones de filtro -->
+    <div class="filter-actions">
+      <button mat-button type="button" (click)="limpiarFiltros()">
+        <mat-icon>filter_list</mat-icon>
+        Limpiar filtros
+      </button>
+    </div>
   </div>
 
-  <!-- Filtros -->
-  <div class="filtros">
-    <mat-form-field appearance="outline">
-      <mat-label>Vendedor</mat-label>
-      <mat-select [(ngModel)]="filtroVendedor">
-        <mat-option value="">Todos</mat-option>
-        @for (v of vendedores; track v) {
-          <mat-option [value]="v">{{ v }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    
-    <mat-form-field appearance="outline">
-      <mat-label>Producto</mat-label>
-      <mat-select [(ngModel)]="filtroProducto">
-        <mat-option value="">Todos</mat-option>
-        @for (p of productos; track p) {
-          <mat-option [value]="p">{{ p }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    
-    <mat-form-field appearance="outline">
-      <mat-label>Zona</mat-label>
-      <mat-select [(ngModel)]="filtroZona">
-        <mat-option value="">Todas</mat-option>
-        @for (z of zonas; track z) {
-          <mat-option [value]="z">{{ z }}</mat-option>
-        }
-      </mat-select>
-    </mat-form-field>
-    
-    <button mat-raised-button color="primary" (click)="filtrar()">
-      <mat-icon>search</mat-icon>
-      Filtrar
-    </button>
-  </div>
-
-  <!-- Tabla -->
-  <div class="card">
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort class="modern-table">
-        <ng-container matColumnDef="vendedor">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendedor</th>
-          <td mat-cell *matCellDef="let row">{{ row.vendedor }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="producto">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
-          <td mat-cell *matCellDef="let row">{{ row.producto }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="zona">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Zona</th>
-          <td mat-cell *matCellDef="let row">{{ row.zona }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="volumen">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Volumen</th>
-          <td mat-cell *matCellDef="let row">{{ row.volumen }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="valorTotal">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor total</th>
-          <td mat-cell *matCellDef="let row">{{ row.valorTotal | currency }}</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="cumplimiento">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header>Cumplimiento</th>
-          <td mat-cell *matCellDef="let row">{{ row.cumplimiento }}%</td>
-        </ng-container>
-        
-        <ng-container matColumnDef="tendencia">
-          <th mat-header-cell *matHeaderCellDef>Tendencia</th>
-          <td mat-cell *matCellDef="let row">{{ row.tendencia }}</td>
-        </ng-container>
-        
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-      </table>
+  <!-- Tabla en contenedor separado -->
+  <div class="container">
+    <div class="card">
+      <div class="table-container">
+        <table mat-table [dataSource]="dataSource" matSort class="modern-table">
+          <ng-container matColumnDef="vendedor">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendedor</th>
+            <td mat-cell *matCellDef="let row">{{ row.vendedor }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="producto">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+            <td mat-cell *matCellDef="let row">{{ row.producto }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="zona">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Zona</th>
+            <td mat-cell *matCellDef="let row">{{ row.zona }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="volumen">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Volumen</th>
+            <td mat-cell *matCellDef="let row">{{ row.volumen }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="valorTotal">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor total</th>
+            <td mat-cell *matCellDef="let row">{{ row.valorTotal | currency }}</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="cumplimiento">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Cumplimiento</th>
+            <td mat-cell *matCellDef="let row">{{ row.cumplimiento }}%</td>
+          </ng-container>
+          
+          <ng-container matColumnDef="tendencia">
+            <th mat-header-cell *matHeaderCellDef>Tendencia</th>
+            <td mat-cell *matCellDef="let row">{{ row.tendencia }}</td>
+          </ng-container>
+          
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        </table>
+      </div>
+      
+      <!-- Paginación -->
+      <mat-paginator 
+        class="unified-paginator"
+        [pageSize]="10" 
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
     </div>
     
-    <!-- Paginación -->
-    <mat-paginator 
-      class="unified-paginator"
-      [pageSize]="10" 
-      [pageSizeOptions]="[5, 10, 20, 50]"
-      showFirstLastButtons>
-    </mat-paginator>
-  </div>
-  
-  <!-- Acciones fuera de la card -->
-  <div class="acciones">
-    <button mat-raised-button color="accent" (click)="exportar('pdf')">
-      <mat-icon>picture_as_pdf</mat-icon> 
-      <span>Exportar PDF</span>
-    </button>
-    <button mat-raised-button color="accent" (click)="exportar('excel')">
-      <mat-icon>table_view</mat-icon> 
-      <span>Exportar Excel</span>
-    </button>
+    <!-- Acciones fuera de la card -->
+    <div class="acciones">
+      <button mat-raised-button color="accent" (click)="exportar('pdf')">
+        <mat-icon>picture_as_pdf</mat-icon> 
+        <span>Exportar PDF</span>
+      </button>
+      <button mat-raised-button color="accent" (click)="exportar('excel')">
+        <mat-icon>table_view</mat-icon> 
+        <span>Exportar Excel</span>
+      </button>
+    </div>
   </div>
 </div>
