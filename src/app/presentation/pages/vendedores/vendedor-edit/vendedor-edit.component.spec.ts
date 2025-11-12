@@ -1,5 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { VendedorEditComponent } from './vendedor-edit.component';
 import {
@@ -16,8 +16,7 @@ describe('VendedorEditComponent', () => {
   let mockGetVendedorByIdUseCase: jest.Mocked<GetVendedorByIdUseCase>;
   let mockUpdateVendedorUseCase: jest.Mocked<UpdateVendedorUseCase>;
   let mockNotificationService: jest.Mocked<NotificationService>;
-  let mockRouter: jest.Mocked<Router>;
-  let mockActivatedRoute: any;
+  let mockDialogRef: jest.Mocked<MatDialogRef<VendedorEditComponent>>;
 
   const mockVendedor: VendedorEntity = {
     id: 1,
@@ -46,17 +45,9 @@ describe('VendedorEditComponent', () => {
       warning: jest.fn()
     } as any;
     
-    mockRouter = {
-      navigate: jest.fn()
+    mockDialogRef = {
+      close: jest.fn()
     } as any;
-
-    mockActivatedRoute = {
-      snapshot: {
-        paramMap: {
-          get: jest.fn().mockReturnValue('1')
-        }
-      }
-    };
 
     await TestBed.configureTestingModule({
       imports: [VendedorEditComponent, NoopAnimationsModule],
@@ -64,74 +55,94 @@ describe('VendedorEditComponent', () => {
         { provide: GetVendedorByIdUseCase, useValue: mockGetVendedorByIdUseCase },
         { provide: UpdateVendedorUseCase, useValue: mockUpdateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: { vendedorId: 1 } }
       ]
     }).compileComponents();
   });
 
-  it('should create', () => {
-    mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
-    fixture = TestBed.createComponent(VendedorEditComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    
-    expect(component).toBeTruthy();
+  describe('Component Initialization', () => {
+    it('should create', () => {
+      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
+      fixture = TestBed.createComponent(VendedorEditComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      
+      expect(component).toBeTruthy();
+    });
+
+    it('should initialize with vendedorId from dialog data', () => {
+      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
+      fixture = TestBed.createComponent(VendedorEditComponent);
+      component = fixture.componentInstance;
+      
+      expect(component.vendedorId).toBe(1);
+    });
+
+    it('should initialize loading signal as false after loading', () => {
+      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
+      fixture = TestBed.createComponent(VendedorEditComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      
+      expect(component.loading()).toBe(false);
+    });
   });
 
   describe('ngOnInit', () => {
-    it('should load vendedor and populate form', () => {
+    it('should load vendedor on initialization', () => {
       mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
       
       fixture = TestBed.createComponent(VendedorEditComponent);
       component = fixture.componentInstance;
-      fixture.detectChanges();
-
+      component.ngOnInit();
+      
       expect(mockGetVendedorByIdUseCase.execute).toHaveBeenCalledWith(1);
-      expect(component.vendedorId).toBe(1);
+    });
+  });
+
+  describe('loadVendedor', () => {
+    beforeEach(() => {
+      fixture = TestBed.createComponent(VendedorEditComponent);
+      component = fixture.componentInstance;
+    });
+
+    it('should load vendedor successfully and populate form', () => {
+      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
+      
+      component.loadVendedor(1);
+      
       expect(component.vendedorForm.get('employeeId')?.value).toBe('EMP001');
       expect(component.vendedorForm.get('firstName')?.value).toBe('Juan');
       expect(component.vendedorForm.get('lastName')?.value).toBe('Pérez');
       expect(component.vendedorForm.get('email')?.value).toBe('juan.perez@test.com');
+      expect(component.vendedorForm.get('phone')?.value).toBe('+51987654321');
+      expect(component.vendedorForm.get('territory')?.value).toBe('Lima Norte');
+      expect(component.vendedorForm.get('isActive')?.value).toBe(true);
       expect(component.loading()).toBe(false);
     });
 
-    it('should navigate to vendedores if no ID in route', () => {
-      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
-      
-      fixture = TestBed.createComponent(VendedorEditComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de vendedor no válido');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
-    });
-
-    it('should handle vendedor not found', () => {
-      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(null));
-      
-      fixture = TestBed.createComponent(VendedorEditComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Vendedor no encontrado');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
-    });
-
-    it('should handle error loading vendedor', () => {
-      const error = new Error('Load error');
+    it('should handle error when loading vendedor', () => {
+      const error = new Error('Error al cargar');
       mockGetVendedorByIdUseCase.execute.mockReturnValue(throwError(() => error));
       
-      fixture = TestBed.createComponent(VendedorEditComponent);
-      component = fixture.componentInstance;
-      fixture.detectChanges();
-
+      component.loadVendedor(1);
+      
       expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar vendedor');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
+      expect(component.loading()).toBe(false);
+    });
+
+    it('should convert hireDate string to Date object', () => {
+      mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
+      
+      component.loadVendedor(1);
+      
+      const hireDate = component.vendedorForm.get('hireDate')?.value;
+      expect(hireDate).toBeInstanceOf(Date);
     });
   });
 
-  describe('onSubmit', () => {
+  describe('Form Submission', () => {
     beforeEach(() => {
       mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
       fixture = TestBed.createComponent(VendedorEditComponent);
@@ -140,79 +151,112 @@ describe('VendedorEditComponent', () => {
     });
 
     it('should update vendedor successfully', () => {
-      component.vendedorForm.patchValue({
-        firstName: 'Juan Carlos'
-      });
-
-      const updatedVendedor = { ...mockVendedor, firstName: 'Juan Carlos' };
-      mockUpdateVendedorUseCase.execute.mockReturnValue(of(updatedVendedor));
-
+      mockUpdateVendedorUseCase.execute.mockReturnValue(of(mockVendedor));
+      
       component.onSubmit();
-
+      
       expect(mockUpdateVendedorUseCase.execute).toHaveBeenCalled();
       expect(mockNotificationService.success).toHaveBeenCalledWith('Vendedor actualizado exitosamente');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
       expect(component.loading()).toBe(false);
     });
 
     it('should not submit invalid form', () => {
       component.vendedorForm.patchValue({
-        email: 'invalid-email'
+        employeeId: '',
+        firstName: '',
+        lastName: '',
+        email: ''
       });
-
+      
       component.onSubmit();
-
+      
       expect(mockUpdateVendedorUseCase.execute).not.toHaveBeenCalled();
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
         'Por favor complete los campos requeridos correctamente'
       );
     });
 
+    it('should handle invalid vendedorId', () => {
+      component.vendedorId = 0;
+      
+      component.onSubmit();
+      
+      expect(mockUpdateVendedorUseCase.execute).not.toHaveBeenCalled();
+      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de vendedor no válido');
+    });
+
+    it('should handle error with message', () => {
+      const error = { message: 'Error de validación específico' };
+      mockUpdateVendedorUseCase.execute.mockReturnValue(throwError(() => error));
+      
+      component.onSubmit();
+      
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Error de validación específico');
+      expect(component.loading()).toBe(false);
+    });
+
     it('should handle 400 error (duplicate email/ID)', () => {
       const error = { status: 400 };
       mockUpdateVendedorUseCase.execute.mockReturnValue(throwError(() => error));
-
+      
       component.onSubmit();
-
+      
       expect(mockNotificationService.error).toHaveBeenCalledWith('El ID de empleado o email ya existe');
       expect(component.loading()).toBe(false);
     });
 
-    it('should handle generic error', () => {
+    it('should handle HTTP error with status text', () => {
       const error = { status: 500, statusText: 'Internal Server Error' };
       mockUpdateVendedorUseCase.execute.mockReturnValue(throwError(() => error));
-
+      
       component.onSubmit();
-
+      
       expect(mockNotificationService.error).toHaveBeenCalledWith('Error del servidor: Internal Server Error');
       expect(component.loading()).toBe(false);
     });
 
-    it('should include vendedor ID in update', () => {
-      mockUpdateVendedorUseCase.execute.mockReturnValue(of(mockVendedor));
-
+    it('should handle generic error', () => {
+      const error = {};
+      mockUpdateVendedorUseCase.execute.mockReturnValue(throwError(() => error));
+      
       component.onSubmit();
-
-      const callArg = mockUpdateVendedorUseCase.execute.mock.calls[0][0];
-      expect(callArg.id).toBe(1);
+      
+      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al actualizar vendedor');
+      expect(component.loading()).toBe(false);
     });
 
-    it('should format hire date correctly when updating', () => {
-      const testDate = new Date('2024-02-20');
+    it('should format hire date correctly', () => {
+      const testDate = new Date('2024-01-15');
       component.vendedorForm.patchValue({
         hireDate: testDate
       });
 
       mockUpdateVendedorUseCase.execute.mockReturnValue(of(mockVendedor));
-
+      
       component.onSubmit();
-
+      
       const callArg = mockUpdateVendedorUseCase.execute.mock.calls[0][0];
-      expect(callArg.hireDate).toBe('2024-02-20');
+      expect(callArg.hireDate).toBe('2024-01-15');
+    });
+
+    it('should mark form as touched when invalid', () => {
+      component.vendedorForm.patchValue({
+        employeeId: '',
+        firstName: '',
+        lastName: '',
+        email: ''
+      });
+
+      const markAllAsTouchedSpy = jest.spyOn(component.vendedorForm, 'markAllAsTouched');
+      
+      component.onSubmit();
+      
+      expect(markAllAsTouchedSpy).toHaveBeenCalled();
     });
   });
 
-  describe('cancel', () => {
+  describe('Navigation', () => {
     beforeEach(() => {
       mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
       fixture = TestBed.createComponent(VendedorEditComponent);
@@ -220,13 +264,13 @@ describe('VendedorEditComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should navigate back to vendedores list', () => {
+    it('should close dialog when cancel is called', () => {
       component.cancel();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
-  describe('getErrorMessage', () => {
+  describe('Form Validation', () => {
     beforeEach(() => {
       mockGetVendedorByIdUseCase.execute.mockReturnValue(of(mockVendedor));
       fixture = TestBed.createComponent(VendedorEditComponent);
@@ -234,26 +278,55 @@ describe('VendedorEditComponent', () => {
       fixture.detectChanges();
     });
 
-    it('should return required error message', () => {
+    it('should validate employeeId required', () => {
       const control = component.vendedorForm.get('employeeId');
       control?.setValue('');
       control?.markAsTouched();
-
+      
+      expect(control?.hasError('required')).toBeTruthy();
       expect(component.getErrorMessage('employeeId')).toBe('Este campo es requerido');
     });
 
-    it('should return minlength error message', () => {
-      const control = component.vendedorForm.get('firstName');
-      control?.setValue('J');
-
-      expect(component.getErrorMessage('firstName')).toBe('Mínimo 2 caracteres');
+    it('should validate employeeId minlength', () => {
+      const control = component.vendedorForm.get('employeeId');
+      control?.setValue('E');
+      control?.markAsTouched();
+      
+      expect(control?.hasError('minlength')).toBeTruthy();
+      expect(component.getErrorMessage('employeeId')).toBe('Mínimo 2 caracteres');
     });
 
-    it('should return email error message', () => {
+    it('should validate email format', () => {
       const control = component.vendedorForm.get('email');
-      control?.setValue('invalid');
+      control?.setValue('invalid-email');
+      control?.markAsTouched();
+      
+      expect(control?.hasError('email')).toBeTruthy();
+      expect(component.getErrorMessage('email')).toBe('Correo electrónico inválido');
+    });
 
-      expect(component.getErrorMessage('email')).toBe('Email inválido');
+    it('should validate phone pattern', () => {
+      const control = component.vendedorForm.get('phone');
+      control?.setValue('invalid-phone');
+      control?.markAsTouched();
+      
+      expect(control?.hasError('pattern')).toBeTruthy();
+      expect(component.getErrorMessage('phone')).toBe('Formato de teléfono inválido');
+    });
+
+    it('should accept valid phone format', () => {
+      const control = component.vendedorForm.get('phone');
+      control?.setValue('+51987654321');
+      
+      expect(control?.valid).toBeTruthy();
+    });
+
+    it('should validate maxlength', () => {
+      const control = component.vendedorForm.get('employeeId');
+      control?.setValue('a'.repeat(51));
+      
+      expect(control?.hasError('maxlength')).toBeTruthy();
+      expect(component.getErrorMessage('employeeId')).toBe('Máximo 50 caracteres');
     });
   });
 });

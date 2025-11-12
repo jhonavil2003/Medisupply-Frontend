@@ -73,7 +73,15 @@
     <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
     <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
   </table>
-  <mat-paginator [pageSize]="5" [pageSizeOptions]="[5, 10, 20]"></mat-paginator>
+  
+  <!-- Paginación unificada -->
+  <mat-paginator 
+    class="unified-paginator"
+    [pageSize]="10" 
+    [pageSizeOptions]="[5, 10, 20, 50]"
+    showFirstLastButtons>
+  </mat-paginator>
+  
   <div class="acciones">
     <button mat-raised-button color="accent" (click)="exportar('pdf')">
       <mat-icon>picture_as_pdf</mat-icon> Exportar PDF

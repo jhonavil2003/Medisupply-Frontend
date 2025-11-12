@@ -11,16 +11,18 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 
 // Clean Architecture Imports
 import { GetAllProveedoresUseCase } from '../../core/application/use-cases/proveedor/get-all-proveedores.use-case';
-import { CreateProveedorUseCase } from '../../core/application/use-cases/proveedor/create-proveedor.use-case';
-import { UpdateProveedorUseCase } from '../../core/application/use-cases/proveedor/update-proveedor.use-case';
 import { DeleteProveedorUseCase } from '../../core/application/use-cases/proveedor/delete-proveedor.use-case';
 import { SearchProveedoresUseCase } from '../../core/application/use-cases/proveedor/search-proveedores.use-case';
 
 import { ProveedorEntity, EstadoProveedor } from '../../core/domain/entities/proveedor.entity';
 import { NotificationService } from '../../presentation/shared/services/notification.service';
+import { ProveedorCreateComponent } from '../proveedor-create/proveedor-create.component';
+import { ProveedorEditComponent } from '../proveedor-edit/proveedor-edit.component';
 
 /**
  * Componente de lista de proveedores usando Clean Architecture
@@ -32,7 +34,7 @@ import { NotificationService } from '../../presentation/shared/services/notifica
  * 4. El componente solo maneja presentación
  */
 @Component({
-  selector: 'app-proveedor-list',
+  selector: 'app-proveedor-list-clean-alt',
   standalone: true,
   imports: [
     CommonModule,
@@ -46,27 +48,24 @@ import { NotificationService } from '../../presentation/shared/services/notifica
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatTooltipModule
   ],
-  templateUrl: './proveedor-list.component.html',
-  styleUrls: ['./proveedor-list.component.css']
+  templateUrl: './proveedor-list-clean.component.html',
+  styleUrls: ['./proveedor-list-clean.component.css']
 })
 export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   // Inyección de Use Cases (en lugar de servicios)
   private getAllProveedoresUseCase = inject(GetAllProveedoresUseCase);
-  private createProveedorUseCase = inject(CreateProveedorUseCase);
-  private updateProveedorUseCase = inject(UpdateProveedorUseCase);
   private deleteProveedorUseCase = inject(DeleteProveedorUseCase);
   private searchProveedoresUseCase = inject(SearchProveedoresUseCase);
   private notify = inject(NotificationService);
+  private dialog = inject(MatDialog);
 
   // Signals para estado reactivo (opcional)
   isLoading = signal(false);
   
   proveedores: ProveedorEntity[] = [];
-  proveedorEditando: Partial<ProveedorEntity> | null = null;
-  mostrarModal: boolean = false;
-  modoEdicion: boolean = false;
   mostrarDetalle: boolean = false;
   proveedorDetalle: ProveedorEntity | null = null;
   filtroBusqueda: string = '';
@@ -138,65 +137,37 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
    * Abre el modal para agregar un nuevo proveedor
    */
   agregarProveedor(): void {
-    this.proveedorEditando = {
-      razonSocial: '',
-      ruc: '',
-      telefono: '',
-      correoContacto: '',
-      estado: EstadoProveedor.ACTIVO,
-      certificacionesVigentes: []
-    };
-    this.modoEdicion = false;
-    this.mostrarModal = true;
+    const dialogRef = this.dialog.open(ProveedorCreateComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cargarProveedores();
+      }
+    });
   }
 
   /**
    * Abre el modal para editar un proveedor existente
    */
   editarProveedor(proveedor: ProveedorEntity): void {
-    this.proveedorEditando = { ...proveedor };
-    this.modoEdicion = true;
-    this.mostrarModal = true;
-  }
+    if (!proveedor.id) return;
 
-  /**
-   * Guarda (crea o actualiza) un proveedor usando los casos de uso
-   */
-  guardarProveedor(): void {
-    if (!this.proveedorEditando) return;
+    const dialogRef = this.dialog.open(ProveedorEditComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      data: { proveedorId: parseInt(proveedor.id) }
+    });
 
-    this.isLoading.set(true);
-
-    if (this.modoEdicion && this.proveedorEditando.id) {
-      // Actualizar
-      this.updateProveedorUseCase.execute({
-        id: this.proveedorEditando.id,
-        ...this.proveedorEditando
-      } as any).subscribe({
-        next: () => {
-          this.notify.success('Proveedor actualizado correctamente');
-          this.cerrarModal();
-          this.cargarProveedores();
-        },
-        error: (error) => {
-          this.notify.error(error.message || 'Error al actualizar', 'Error');
-          this.isLoading.set(false);
-        }
-      });
-    } else {
-      // Crear
-      this.createProveedorUseCase.execute(this.proveedorEditando as any).subscribe({
-        next: () => {
-          this.notify.success('Proveedor creado correctamente');
-          this.cerrarModal();
-          this.cargarProveedores();
-        },
-        error: (error) => {
-          this.notify.error(error.message || 'Error al crear', 'Error');
-          this.isLoading.set(false);
-        }
-      });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cargarProveedores();
+      }
+    });
   }
 
   /**
@@ -235,13 +206,6 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   verProveedor(proveedor: ProveedorEntity): void {
     this.proveedorDetalle = proveedor;
     this.mostrarDetalle = true;
-  }
-
-  cerrarModal(): void {
-    this.mostrarModal = false;
-    this.proveedorEditando = null;
-    this.modoEdicion = false;
-    this.isLoading.set(false);
   }
 
   cerrarDetalle(): void {

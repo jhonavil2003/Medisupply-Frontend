@@ -6,7 +6,7 @@ import { VendedorRepository } from './domain/repositories/vendedor.repository';
 import { MetaVentaRepository } from './domain/repositories/meta-venta.repository';
 import { RutaEntregaRepository } from './domain/repositories/ruta-entrega.repository';
 import { ProductLocationRepository } from './domain/repositories/product-location.repository';
-import { MockProveedorRepository } from './infrastructure/repositories/mock/mock-proveedor.repository';
+import { HttpProveedorRepository } from './infrastructure/repositories/http/http-proveedor.repository';
 import { HttpProductoRepository } from './infrastructure/repositories/http/http-producto.repository';
 import { HttpVendedorRepository } from './infrastructure/repositories/http/http-vendedor.repository';
 import { HttpMetaVentaRepository } from './infrastructure/repositories/http/http-meta-venta.repository';
@@ -45,7 +45,7 @@ describe('CORE_PROVIDERS', () => {
     it('should inject ProveedorRepository correctly', () => {
       const repository = TestBed.inject(ProveedorRepository);
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(MockProveedorRepository);
+      expect(repository).toBeInstanceOf(HttpProveedorRepository);
     });
 
     it('should inject ProductoRepository correctly', () => {

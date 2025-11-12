@@ -13,6 +13,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
@@ -23,6 +24,8 @@ import {
 } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
+import { VendedorCreateComponent } from '../vendedor-create/vendedor-create.component';
+import { VendedorEditComponent } from '../vendedor-edit/vendedor-edit.component';
 
 @Component({
   selector: 'app-vendedor-list',
@@ -53,6 +56,7 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
   private notify = inject(NotificationService);
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
 
   vendedores = signal<VendedorEntity[]>([]);
   loading = signal(false);
@@ -144,7 +148,17 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
   }
 
   navigateToCreate(): void {
-    this.router.navigate(['/vendedores/create']);
+    const dialogRef = this.dialog.open(VendedorCreateComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadVendedores();
+      }
+    });
   }
 
   navigateToDetail(id: number): void {
@@ -152,7 +166,18 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
   }
 
   navigateToEdit(id: number): void {
-    this.router.navigate(['/vendedores', id, 'edit']);
+    const dialogRef = this.dialog.open(VendedorEditComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      data: { vendedorId: id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.loadVendedores();
+      }
+    });
   }
 
   deleteVendedor(vendedor: VendedorEntity): void {

@@ -1,7 +1,12 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS SOLO PARA VENDEDORES
+   Los estilos de container y tabla están en styles.scss
+   ============================================ */
+
+/* Asegurar que el container use el mismo padding que otros módulos */
 .container {
-  padding: 2rem;
-  max-width: 1400px;
-  margin: 0 auto;
+  padding: 24px !important;
+  margin: 24px 0 !important;
 }
 
 .header-section {
@@ -30,7 +35,6 @@
 
 .search-field {
   width: 100%;
-  max-width: 600px;
 }
 
 .error-message {
