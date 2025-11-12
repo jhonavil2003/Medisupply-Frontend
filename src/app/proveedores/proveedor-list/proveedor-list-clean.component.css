@@ -1,12 +1,12 @@
 /* ============================================
    ESTILOS ESPECÍFICOS SOLO PARA PROVEEDORES
-   Los estilos de tabla están en styles.scss
+   Los estilos de container y tabla están en styles.scss
    ============================================ */
 
-/* Contenedor principal */
+/* Asegurar que el container use el mismo padding que otros módulos */
 .container {
-  padding: 2rem;
-  background: var(--color-white);
+  padding: 24px !important;
+  margin: 24px 0 !important;
 }
 
 /* Barra de búsqueda */
