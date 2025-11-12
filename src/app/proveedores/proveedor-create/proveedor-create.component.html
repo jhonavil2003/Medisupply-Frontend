@@ -93,17 +93,6 @@
         <mat-error>{{ getFieldError('creditLimit') }}</mat-error>
       </mat-form-field>
 
-      <!-- Estado -->
-      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
-        <mat-label>Estado</mat-label>
-        <mat-select formControlName="estado">
-          @for (estado of estadosDisponibles; track estado) {
-            <mat-option [value]="estado">{{ estado }}</mat-option>
-          }
-        </mat-select>
-        <mat-error>{{ getFieldError('estado') }}</mat-error>
-      </mat-form-field>
-
       <!-- Botones de acción -->
       <div class="button-container">
         <button mat-raised-button color="primary" type="submit" [disabled]="loading()">

@@ -42,7 +42,6 @@ export class ProveedorEditComponent implements OnInit {
   proveedorId: number;
   originalProveedor: ProveedorEntity | null = null;
 
-  estadosDisponibles = ['Activo', 'Inactivo', 'Pendiente'];
   monedasDisponibles = ['USD', 'COP', 'EUR'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { proveedorId: number }) {
@@ -99,8 +98,7 @@ export class ProveedorEditComponent implements OnInit {
       creditLimit: [null, [
         Validators.min(0),
         Validators.max(999999999.99)
-      ]],
-      estado: ['Activo', Validators.required]
+      ]]
     });
   }
 
@@ -130,8 +128,7 @@ export class ProveedorEditComponent implements OnInit {
           city: proveedor.city,
           state: proveedor.state || '',
           paymentTerms: proveedor.paymentTerms || '',
-          creditLimit: proveedor.creditLimit,
-          estado: proveedor.estado
+          creditLimit: proveedor.creditLimit
         });
         this.loading.set(false);
       },

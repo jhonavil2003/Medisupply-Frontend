@@ -66,7 +66,6 @@ describe('ProveedorCreateComponent', () => {
       expect(component.proveedorForm).toBeDefined();
       expect(component.proveedorForm.get('razonSocial')?.value).toBe('');
       expect(component.proveedorForm.get('ruc')?.value).toBe('');
-      expect(component.proveedorForm.get('estado')?.value).toBe('Activo');
       expect(component.loading()).toBe(false);
     });
 
@@ -80,13 +79,9 @@ describe('ProveedorCreateComponent', () => {
       expect(form.get('correoContacto')?.hasError('required')).toBe(true);
       expect(form.get('addressLine1')?.hasError('required')).toBe(true);
       expect(form.get('city')?.hasError('required')).toBe(true);
-      expect(form.get('estado')?.hasError('required')).toBe(false); // has default value
     });
 
     it('should initialize arrays with correct values', () => {
-      expect(component.estadosDisponibles).toContain('Activo');
-      expect(component.estadosDisponibles).toContain('Inactivo');
-      expect(component.estadosDisponibles).toContain('Pendiente');
       expect(component.monedasDisponibles).toContain('USD');
       expect(component.monedasDisponibles).toContain('COP');
       expect(component.monedasDisponibles).toContain('EUR');
@@ -116,14 +111,48 @@ describe('ProveedorCreateComponent', () => {
         telefono: '1234567890',
         correoContacto: 'test@test.com',
         addressLine1: 'Test Address',
-        city: 'Bogotá',
-        estado: 'Activo'
+        city: 'Bogotá'
       });
 
       component.onSubmit();
 
       expect(component.loading()).toBe(false);
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
+    });
+
+    it('should always send estado as Activo when creating', () => {
+      const mockProveedor = {
+        id: 1,
+        razonSocial: 'Test Proveedor',
+        ruc: '12345678901',
+        country: 'Colombia',
+        telefono: '1234567890',
+        correoContacto: 'test@test.com',
+        addressLine1: 'Test Address',
+        city: 'Bogotá',
+        estado: 'Activo'
+      };
+
+      mockCreateProveedorUseCase.execute.mockReturnValue(of(mockProveedor));
+
+      component.proveedorForm.patchValue({
+        razonSocial: 'Test Proveedor',
+        ruc: '12345678901',
+        country: 'Colombia',
+        telefono: '1234567890',
+        correoContacto: 'test@test.com',
+        addressLine1: 'Test Address',
+        city: 'Bogotá'
+      });
+
+      component.onSubmit();
+
+      // Verificar que se envió con estado: 'Activo'
+      expect(mockCreateProveedorUseCase.execute).toHaveBeenCalledWith(
+        expect.objectContaining({
+          estado: 'Activo'
+        })
+      );
     });
 
     it('should handle submission error', () => {
@@ -136,8 +165,7 @@ describe('ProveedorCreateComponent', () => {
         telefono: '1234567890',
         correoContacto: 'test@test.com',
         addressLine1: 'Test Address',
-        city: 'Bogotá',
-        estado: 'Activo'
+        city: 'Bogotá'
       });
 
       component.onSubmit();
