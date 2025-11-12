@@ -1,50 +1,208 @@
 <div class="container">
   <!-- Header -->
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
-    <div style="display: flex; align-items: center; gap: 16px;">
+  <div class="header">
+    <div class="header-left">
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Carga másiva de Productos</h2>
+      <h2>Carga Masiva de Productos</h2>
+    </div>
+    <div class="header-actions">
+      <button mat-raised-button color="accent" (click)="descargarPlantilla()">
+        <mat-icon>download</mat-icon>
+        Descargar Plantilla CSV
+      </button>
+      <a mat-raised-button [routerLink]="['/productos/upload/historial']">
+        <mat-icon>history</mat-icon>
+        Ver Historial
+      </a>
     </div>
   </div>
 
-  <!-- Subtítulo -->
-  <h3 class="subtitle">Cargar archivo CSV</h3>
+  <!-- Instrucciones -->
+  @if (!jobActual()) {
+    <mat-card class="info-card">
+      <mat-card-content>
+        <div class="info-content">
+          <mat-icon class="info-icon">info</mat-icon>
+          <div>
+            <h3>Instrucciones para la carga masiva</h3>
+            <ol>
+              <li>Descargue la plantilla CSV haciendo clic en el botón "Descargar Plantilla CSV"</li>
+              <li>Complete los datos de los productos en el archivo CSV (7 columnas requeridas, 19 opcionales)</li>
+              <li>Asegúrese de que los proveedores (supplier_id) existan en el sistema</li>
+              <li>Suba el archivo completado arrastrándolo o seleccionándolo</li>
+              <li>Monitoree el progreso y descargue el reporte de errores si es necesario</li>
+            </ol>
+            <p><strong>Límites:</strong> Máximo 20 MB y 10,000 filas por archivo</p>
+          </div>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
 
-  <!-- Caja de carga -->
-  <div class="upload-box"
-    (dragover)="onDragOver($event)"
-    (drop)="onFileDrop($event)">
-    <i class="fas fa-file-csv upload-icon"></i>
-    <p>Arrastra y suelta tu archivo aquí o</p>
-    <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".csv" hidden />
-    <label for="fileInput" class="btn-outline">Seleccionar archivo</label>
+  <!-- Área de carga -->
+  @if (!jobActual() && !cargando()) {
+    <mat-card class="upload-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>cloud_upload</mat-icon>
+          Seleccionar Archivo CSV
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="upload-box"
+          (dragover)="onDragOver($event)"
+          (drop)="onFileDrop($event)">
+          <mat-icon class="upload-icon">description</mat-icon>
+          <p>Arrastra y suelta tu archivo aquí o</p>
+          <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".csv" hidden />
+          <label for="fileInput" class="btn-outline">
+            <mat-icon>folder_open</mat-icon>
+            Seleccionar Archivo
+          </label>
 
-    @if (archivoSeleccionado) {
-      <div class="file-info">
-        <span><i class="fas fa-check-circle"></i> {{ archivoSeleccionado.name }}</span>
-      </div>
-    }
-  </div>
+          @if (archivoSeleccionado()) {
+            <div class="file-info">
+              <mat-icon class="success-icon">check_circle</mat-icon>
+              <span>{{ archivoSeleccionado()!.name }}</span>
+              <span class="file-size">({{ (archivoSeleccionado()!.size / 1024 / 1024).toFixed(2) }} MB)</span>
+            </div>
+          }
+        </div>
 
-  <!-- Botón procesar -->
-  <div class="actions">
-    <button class="btn-primary" (click)="procesarArchivo()" [disabled]="!archivoValido">
-      <i class="fas fa-upload"></i> Cargar el archivo a la Base de Datos
-    </button>
-  </div>
+        @if (archivoValido()) {
+          <div class="actions">
+            <button mat-raised-button color="primary" (click)="procesarArchivo()">
+              <mat-icon>upload</mat-icon>
+              Cargar Archivo a la Base de Datos
+            </button>
+          </div>
+        }
+      </mat-card-content>
+    </mat-card>
+  }
 
-  <!-- Nota -->
-  <div class="note-box">
-    <i class="fas fa-info-circle"></i>
-    <span>Recuerde que el archivo debe llamarse <strong>Producto.csv</strong></span>
-  </div>
+  <!-- Progreso del Job -->
+  @if (jobActual(); as job) {
+    <mat-card class="progress-card">
+      <mat-card-header>
+        <mat-card-title>
+          <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
+          Estado de la Carga
+        </mat-card-title>
+        <mat-chip [class]="getStatusColor(job.status)">
+          {{ getStatusText(job.status) }}
+        </mat-chip>
+      </mat-card-header>
 
-  <!-- Barra de progreso -->
-  @if (cargando) {
-    <div class="progress-bar">
-      <span class="spinner"></span> Cargando...
-    </div>
+      <mat-card-content>
+        <!-- Información del archivo -->
+        <div class="job-info">
+          <div class="info-item">
+            <mat-icon>description</mat-icon>
+            <div>
+              <span class="label">Archivo:</span>
+              <span class="value">{{ job.filename }}</span>
+            </div>
+          </div>
+          <div class="info-item">
+            <mat-icon>event</mat-icon>
+            <div>
+              <span class="label">Iniciado:</span>
+              <span class="value">{{ job.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Barra de progreso -->
+        <div class="progress-section">
+          <div class="progress-header">
+            <span>Progreso: {{ job.progress_percentage.toFixed(1) }}%</span>
+            <span>{{ job.processed_rows }} / {{ job.total_rows }} filas</span>
+          </div>
+          <mat-progress-bar 
+            mode="determinate" 
+            [value]="job.progress_percentage"
+            [color]="job.status === 'failed' ? 'warn' : 'primary'">
+          </mat-progress-bar>
+        </div>
+
+        <!-- Métricas -->
+        <div class="metrics-grid">
+          <div class="metric-card success">
+            <mat-icon>check_circle</mat-icon>
+            <div>
+              <div class="metric-value">{{ job.successful_rows }}</div>
+              <div class="metric-label">Exitosos</div>
+            </div>
+          </div>
+
+          <div class="metric-card error">
+            <mat-icon>error</mat-icon>
+            <div>
+              <div class="metric-value">{{ job.failed_rows }}</div>
+              <div class="metric-label">Fallidos</div>
+            </div>
+          </div>
+
+          <div class="metric-card total">
+            <mat-icon>inventory</mat-icon>
+            <div>
+              <div class="metric-value">{{ job.total_rows }}</div>
+              <div class="metric-label">Total</div>
+            </div>
+          </div>
+
+          <div class="metric-card rate">
+            <mat-icon>trending_up</mat-icon>
+            <div>
+              <div class="metric-value">{{ job.success_rate.toFixed(1) }}%</div>
+              <div class="metric-label">Tasa de Éxito</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Tiempo estimado -->
+        @if (job.estimated_time_remaining && job.status === 'processing') {
+          <div class="time-remaining">
+            <mat-icon>timer</mat-icon>
+            <span>Tiempo estimado restante: {{ job.estimated_time_remaining.toFixed(0) }} segundos</span>
+          </div>
+        }
+
+        <!-- Mensaje de error -->
+        @if (job.error_message) {
+          <div class="error-message">
+            <mat-icon>warning</mat-icon>
+            <span>{{ job.error_message }}</span>
+          </div>
+        }
+
+        <!-- Acciones -->
+        <div class="job-actions">
+          @if (job.status === 'completed' && job.failed_rows > 0) {
+            <button mat-raised-button color="warn" (click)="descargarErrores()">
+              <mat-icon>download</mat-icon>
+              Descargar Reporte de Errores
+            </button>
+          }
+
+          @if (job.status === 'pending' || job.status === 'validating') {
+            <button mat-raised-button color="warn" (click)="cancelarJob()">
+              <mat-icon>cancel</mat-icon>
+              Cancelar Proceso
+            </button>
+          }
+
+          @if (job.status === 'completed' || job.status === 'failed' || job.status === 'cancelled') {
+            <button mat-raised-button color="primary" (click)="reiniciar()">
+              <mat-icon>refresh</mat-icon>
+              Cargar Otro Archivo
+            </button>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
   }
 </div>
