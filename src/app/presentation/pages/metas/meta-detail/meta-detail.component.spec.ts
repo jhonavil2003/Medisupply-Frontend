@@ -7,6 +7,8 @@ import { MetaDetailComponent } from './meta-detail.component';
 import { GetMetaByIdUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
+import { MetaVentaRepository } from '../../../../core/domain/repositories/meta-venta.repository';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('MetaDetailComponent', () => {
   let component: MetaDetailComponent;
@@ -15,6 +17,8 @@ describe('MetaDetailComponent', () => {
   let mockNotificationService: jest.Mocked<NotificationService>;
   let mockRouter: jest.Mocked<Router>;
   let mockActivatedRoute: any;
+  let mockMetaVentaRepository: any;
+  let mockDialogRef: any;
 
   const mockMeta: MetaVentaEntity = {
     id: 1,
@@ -63,13 +67,26 @@ describe('MetaDetailComponent', () => {
       }
     };
 
+    mockMetaVentaRepository = { 
+      create: jest.fn(), 
+      getAll: jest.fn(), 
+      getById: jest.fn(), 
+      update: jest.fn(), 
+      delete: jest.fn() 
+    };
+    
+    mockDialogRef = { close: jest.fn() };
+
     await TestBed.configureTestingModule({
       imports: [MetaDetailComponent, NoopAnimationsModule],
       providers: [
         { provide: GetMetaByIdUseCase, useValue: mockGetMetaByIdUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: Router, useValue: mockRouter },
-        { provide: ActivatedRoute, useValue: mockActivatedRoute }
+        { provide: ActivatedRoute, useValue: mockActivatedRoute },
+        { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: { id: 1 } }
       ]
     }).compileComponents();
 
@@ -84,40 +101,43 @@ describe('MetaDetailComponent', () => {
   describe('ngOnInit', () => {
     it('should load meta on init with valid ID', () => {
       mockGetMetaByIdUseCase.execute.mockReturnValue(of(mockMeta));
+      component.metaId = 1;
 
-      fixture.detectChanges(); // triggers ngOnInit
+      component.ngOnInit();
 
       expect(mockGetMetaByIdUseCase.execute).toHaveBeenCalledWith(1);
       expect(component.meta()).toEqual(mockMeta);
       expect(component.loading()).toBe(false);
     });
 
-    it('should show error and navigate if ID is missing', () => {
-      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
+    it('should show error and close dialog if ID is missing', () => {
+      component.metaId = 0;
 
-      fixture.detectChanges(); // triggers ngOnInit
+      component.ngOnInit();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('ID de meta no válido');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
-    it('should show error and navigate if meta not found', () => {
+    it('should show error and close dialog if meta not found', () => {
       mockGetMetaByIdUseCase.execute.mockReturnValue(of(null));
+      component.metaId = 1;
 
-      fixture.detectChanges(); // triggers ngOnInit
+      component.ngOnInit();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('Meta no encontrada');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
     it('should handle error loading meta', () => {
       const error = { status: 404, message: 'Not found' };
       mockGetMetaByIdUseCase.execute.mockReturnValue(throwError(() => error));
+      component.metaId = 1;
 
-      fixture.detectChanges(); // triggers ngOnInit
+      component.ngOnInit();
 
       expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar meta');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
   });
@@ -141,30 +161,11 @@ describe('MetaDetailComponent', () => {
     });
   });
 
-  describe('navigateToEdit', () => {
-    it('should navigate to edit page with meta ID', () => {
-      component.meta.set(mockMeta);
-
-      component.navigateToEdit();
-
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas', 1, 'edit']);
-    });
-
-    it('should not navigate if meta has no ID', () => {
-      const metaWithoutId = { ...mockMeta, id: undefined };
-      component.meta.set(metaWithoutId as MetaVentaEntity);
-
-      component.navigateToEdit();
-
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
-    });
-  });
-
   describe('navigateBack', () => {
-    it('should navigate to metas list', () => {
+    it('should close dialog', () => {
       component.navigateBack();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/metas']);
+      expect(mockDialogRef.close).toHaveBeenCalled();
     });
   });
 

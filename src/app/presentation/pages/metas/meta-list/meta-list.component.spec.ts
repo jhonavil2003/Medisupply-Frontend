@@ -11,6 +11,9 @@ import {
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
+import { MetaVentaRepository } from '../../../../core/domain/repositories/meta-venta.repository';
+import { VendedorRepository } from '../../../../core/domain/repositories/vendedor.repository';
+import { ProductoRepository } from '../../../../core/domain/repositories/producto.repository';
 
 describe('MetaListComponent', () => {
   let component: MetaListComponent;
@@ -20,6 +23,9 @@ describe('MetaListComponent', () => {
   let mockNotificationService: jest.Mocked<NotificationService>;
   let mockConfirmDialog: jest.Mocked<ConfirmDialogService>;
   let mockRouter: jest.Mocked<Router>;
+  let mockMetaVentaRepository: any;
+  let mockVendedorRepository: any;
+  let mockProductoRepository: any;
 
   const mockMetas: MetaVentaEntity[] = [
     {
@@ -114,6 +120,22 @@ describe('MetaListComponent', () => {
       navigate: jest.fn()
     } as any;
 
+    mockMetaVentaRepository = { 
+      create: jest.fn(), 
+      getAll: jest.fn(), 
+      getById: jest.fn(), 
+      update: jest.fn(), 
+      delete: jest.fn() 
+    };
+
+    mockVendedorRepository = { 
+      getByEmployeeId: jest.fn() 
+    };
+
+    mockProductoRepository = { 
+      getBySku: jest.fn() 
+    };
+
     await TestBed.configureTestingModule({
       imports: [MetaListComponent, NoopAnimationsModule],
       providers: [
@@ -121,7 +143,10 @@ describe('MetaListComponent', () => {
         { provide: DeleteMetaVentaUseCase, useValue: mockDeleteMetaUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ConfirmDialogService, useValue: mockConfirmDialog },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
+        { provide: VendedorRepository, useValue: mockVendedorRepository },
+        { provide: ProductoRepository, useValue: mockProductoRepository }
       ]
     }).compileComponents();
 

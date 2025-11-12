@@ -7,8 +7,10 @@ import { CreateMetaVentaUseCase } from '../../../../core/application/use-cases/m
 import { NotificationService } from '../../../shared/services/notification.service';
 import { VendedorRepository } from '../../../../core/domain/repositories/vendedor.repository';
 import { ProductoRepository } from '../../../../core/domain/repositories/producto.repository';
+import { MetaVentaRepository } from '../../../../core/domain/repositories/meta-venta.repository';
 import { Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 
 describe('MetaCreateComponent', () => {
   let component: MetaCreateComponent;
@@ -18,6 +20,8 @@ describe('MetaCreateComponent', () => {
   let mockNotificationService: any;
   let mockVendedorRepository: any;
   let mockProductoRepository: any;
+  let mockMetaVentaRepository: any;
+  let mockDialogRef: any;
 
   beforeEach(async () => {
     mockCreateUseCase = { execute: jest.fn() };
@@ -25,6 +29,8 @@ describe('MetaCreateComponent', () => {
     mockNotificationService = { success: jest.fn(), warning: jest.fn(), error: jest.fn() };
     mockVendedorRepository = { getByEmployeeId: jest.fn() };
     mockProductoRepository = { getBySku: jest.fn() };
+    mockMetaVentaRepository = { create: jest.fn(), getAll: jest.fn(), getById: jest.fn(), update: jest.fn(), delete: jest.fn() };
+    mockDialogRef = { close: jest.fn() };
 
     await TestBed.configureTestingModule({
       imports: [MetaCreateComponent, ReactiveFormsModule, NoopAnimationsModule],
@@ -33,7 +39,10 @@ describe('MetaCreateComponent', () => {
         { provide: Router, useValue: mockRouter },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: VendedorRepository, useValue: mockVendedorRepository },
-        { provide: ProductoRepository, useValue: mockProductoRepository }
+        { provide: ProductoRepository, useValue: mockProductoRepository },
+        { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: MAT_DIALOG_DATA, useValue: {} }
       ]
     }).compileComponents();
 
