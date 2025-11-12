@@ -1,30 +1,99 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA INFORMES DE VENTAS
+   Los estilos de container y tabla están en styles.scss
+   ============================================ */
 
+/* Asegurar que el container use el mismo padding que otros módulos */
+.container {
+  padding: 24px !important;
+  margin: 24px 0 !important;
+}
+
+/* Barra de encabezado */
 .header-bar {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 1.5rem;
 }
+
+/* Filtros */
 .filtros {
   display: flex;
   gap: 18px;
-  margin-bottom: 18px;
+  margin-bottom: 1.5rem;
   flex-wrap: wrap;
+  align-items: center;
 }
+
+.filtros mat-form-field {
+  min-width: 200px;
+}
+
+/* Contenedor de la tabla */
 .card {
   background: var(--color-white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px 18px;
-  margin-bottom: 18px;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin-bottom: 24px;
+  overflow: visible !important;
+  border: none !important;
 }
+
+.card .unified-paginator {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Tabla - Los estilos principales vienen de styles.scss */
+.table-container {
+  background: var(--color-white);
+  overflow-x: auto;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .modern-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 18px;
 }
+
+/* Acciones (botones de exportar) - Ahora fuera de la tabla */
 .acciones {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.acciones button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros mat-form-field {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
 }
