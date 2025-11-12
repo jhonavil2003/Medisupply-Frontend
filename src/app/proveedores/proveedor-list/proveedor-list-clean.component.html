@@ -13,12 +13,12 @@
   
   <div class="search-bar" style="flex: 1;">
     <div class="search-wrap">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar proveedor</mat-label>
-        <input matInput
-          placeholder="Razón social, RUC, teléfono, correo, estado o certificación..."
-          [(ngModel)]="filtroBusqueda"
-          (ngModelChange)="filtrarProveedores()" />
+              <mat-form-field appearance="outline" floatLabel="always">
+          <mat-label>Buscar</mat-label>
+          <input matInput 
+          [formControl]="searchControl" 
+          placeholder="Razón social, NIT, teléfono, correo, estado o certificación..."
+          class="search-input">
 
         @if (filtroBusqueda) {
           <button
@@ -41,7 +41,7 @@
         <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
       </ng-container>
       <ng-container matColumnDef="ruc">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header>RUC</th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>NIT</th>
         <td mat-cell *matCellDef="let row">{{ row.ruc }}</td>
       </ng-container>
       <ng-container matColumnDef="telefono">
@@ -96,7 +96,7 @@
           <span>{{ proveedorDetalle.razonSocial }}</span>
         </div>
         <div class="detalle-row">
-          <strong>RUC/NIT:</strong>
+          <strong>NIT:</strong>
           <span>{{ proveedorDetalle.ruc }}</span>
         </div>
         <div class="detalle-row">
