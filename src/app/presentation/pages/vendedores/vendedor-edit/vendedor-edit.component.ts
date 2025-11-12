@@ -1,5 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
-import { Router, ActivatedRoute } from '@angular/router';
+import { Component, inject, signal, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatCardModule } from '@angular/material/card';
@@ -11,12 +10,13 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 
 import {
   GetVendedorByIdUseCase,
   UpdateVendedorUseCase
 } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
-import { UpdateVendedorDto } from '../../../../core/domain/entities/vendedor.entity';
+import { UpdateVendedorDto, VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 import { NotificationService } from '../../../shared/services/notification.service';
 
 @Component({
@@ -40,38 +40,53 @@ import { NotificationService } from '../../../shared/services/notification.servi
 })
 export class VendedorEditComponent implements OnInit {
   private fb = inject(FormBuilder);
-  private router = inject(Router);
-  private route = inject(ActivatedRoute);
   private getVendedorByIdUseCase = inject(GetVendedorByIdUseCase);
   private updateVendedorUseCase = inject(UpdateVendedorUseCase);
   private notificationService = inject(NotificationService);
+  private dialogRef = inject(MatDialogRef<VendedorEditComponent>);
 
   loading = signal(false);
-  vendedorId: number | null = null;
+  vendedorId: number;
+  originalVendedor: VendedorEntity | null = null;
   vendedorForm: FormGroup;
 
-  constructor() {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { vendedorId: number }) {
+    this.vendedorId = data.vendedorId;
+    
     this.vendedorForm = this.fb.group({
-      employeeId: ['', [Validators.required, Validators.minLength(2)]],
-      firstName: ['', [Validators.required, Validators.minLength(2)]],
-      lastName: ['', [Validators.required, Validators.minLength(2)]],
-      email: ['', [Validators.required, Validators.email]],
-      phone: [''],
-      territory: [''],
+      employeeId: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(50)
+      ]],
+      firstName: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(100)
+      ]],
+      lastName: ['', [
+        Validators.required,
+        Validators.minLength(2),
+        Validators.maxLength(100)
+      ]],
+      email: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(150)
+      ]],
+      phone: ['', [
+        Validators.minLength(7),
+        Validators.maxLength(20),
+        Validators.pattern(/^[0-9+\-\s()]+$/)
+      ]],
+      territory: ['', Validators.maxLength(100)],
       hireDate: [''],
       isActive: [true]
     });
   }
 
   ngOnInit(): void {
-    const id = this.route.snapshot.paramMap.get('id');
-    if (id) {
-      this.vendedorId = parseInt(id, 10);
-      this.loadVendedor(this.vendedorId);
-    } else {
-      this.notificationService.error('ID de vendedor no válido');
-      this.router.navigate(['/vendedores']);
-    }
+    this.loadVendedor(this.vendedorId);
   }
 
   loadVendedor(id: number): void {
@@ -80,6 +95,8 @@ export class VendedorEditComponent implements OnInit {
     this.getVendedorByIdUseCase.execute(id).subscribe({
       next: (vendedor) => {
         if (vendedor) {
+          this.originalVendedor = vendedor;
+          
           // Convertir la fecha string a Date si existe
           let hireDate = null;
           if (vendedor.hireDate) {
@@ -96,9 +113,6 @@ export class VendedorEditComponent implements OnInit {
             hireDate: hireDate,
             isActive: vendedor.isActive ?? true
           });
-        } else {
-          this.notificationService.error('Vendedor no encontrado');
-          this.router.navigate(['/vendedores']);
         }
         this.loading.set(false);
       },
@@ -106,7 +120,6 @@ export class VendedorEditComponent implements OnInit {
         console.error('Error al cargar vendedor:', error);
         this.notificationService.error('Error al cargar vendedor');
         this.loading.set(false);
-        this.router.navigate(['/vendedores']);
       }
     });
   }
@@ -149,7 +162,7 @@ export class VendedorEditComponent implements OnInit {
       next: (vendedor) => {
         this.loading.set(false);
         this.notificationService.success('Vendedor actualizado exitosamente');
-        this.router.navigate(['/vendedores']);
+        this.dialogRef.close(true);
       },
       error: (error) => {
         this.loading.set(false);
@@ -176,7 +189,7 @@ export class VendedorEditComponent implements OnInit {
   }
 
   cancel(): void {
-    this.router.navigate(['/vendedores']);
+    this.dialogRef.close(false);
   }
 
   getErrorMessage(field: string): string {
@@ -188,8 +201,17 @@ export class VendedorEditComponent implements OnInit {
     if (control?.hasError('minlength')) {
       return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
     }
+    if (control?.hasError('maxlength')) {
+      return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
+    }
     if (control?.hasError('email')) {
-      return 'Email inválido';
+      return 'Correo electrónico inválido';
+    }
+    if (control?.hasError('pattern')) {
+      if (field === 'phone') {
+        return 'Formato de teléfono inválido';
+      }
+      return 'Formato inválido';
     }
     
     return '';

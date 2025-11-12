@@ -39,6 +39,7 @@ export class ProveedorCreateComponent {
   proveedorForm: FormGroup;
 
   estadosDisponibles = ['Activo', 'Inactivo', 'Pendiente'];
+  monedasDisponibles = ['USD', 'COP', 'EUR'];
 
   constructor() {
     this.proveedorForm = this.fb.group({

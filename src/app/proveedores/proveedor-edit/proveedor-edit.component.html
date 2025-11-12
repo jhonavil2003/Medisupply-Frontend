@@ -55,7 +55,11 @@
         <!-- Moneda -->
         <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
           <mat-label>Moneda</mat-label>
-          <input matInput formControlName="currency" maxlength="10">
+          <mat-select formControlName="currency">
+            @for (moneda of monedasDisponibles; track moneda) {
+              <mat-option [value]="moneda">{{ moneda }}</mat-option>
+            }
+          </mat-select>
           <mat-error>{{ getFieldError('currency') }}</mat-error>
         </mat-form-field>
 

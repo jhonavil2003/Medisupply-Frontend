@@ -43,6 +43,7 @@ export class ProveedorEditComponent implements OnInit {
   originalProveedor: ProveedorEntity | null = null;
 
   estadosDisponibles = ['Activo', 'Inactivo', 'Pendiente'];
+  monedasDisponibles = ['USD', 'COP', 'EUR'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { proveedorId: number }) {
     this.proveedorId = data.proveedorId;
