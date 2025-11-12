@@ -172,14 +172,46 @@ describe('VendedorListComponent', () => {
   });
 
   describe('navigation', () => {
+    beforeEach(() => {
+      mockGetAllVendedoresUseCase.execute.mockReturnValue(of(mockVendedores));
+      fixture.detectChanges();
+    });
+
     it('should navigate to create page', () => {
       component.navigateToCreate();
       expect(mockDialog.open).toHaveBeenCalled();
     });
 
-    it('should navigate to detail page', () => {
-      component.navigateToDetail(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores', 1]);
+    it('should open detail dialog when navigateToDetail is called', () => {
+      // Arrange: Asegurar que el vendedor existe en el dataSource
+      component.dataSource.data = mockVendedores;
+      const mockVendedor = mockVendedores[0];
+
+      // Act
+      component.navigateToDetail(mockVendedor.id!);
+
+      // Assert
+      expect(mockDialog.open).toHaveBeenCalledWith(
+        expect.anything(),
+        expect.objectContaining({
+          width: '1000px',
+          maxHeight: '90vh',
+          disableClose: false,
+          autoFocus: false,
+          data: mockVendedor
+        })
+      );
+    });
+
+    it('should not open dialog if vendedor not found', () => {
+      // Arrange: dataSource vacío
+      component.dataSource.data = [];
+
+      // Act
+      component.navigateToDetail(999);
+
+      // Assert: No debería abrir el dialog
+      expect(mockDialog.open).not.toHaveBeenCalled();
     });
 
     it('should navigate to edit page', () => {
