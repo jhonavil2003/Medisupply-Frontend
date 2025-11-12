@@ -5,29 +5,7 @@
   padding: 24px;
 }
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header-left h2 {
-  margin: 0;
-  font-size: 1.75rem;
-  font-weight: 600;
-  color: #1976d2;
-}
-
+/* Header Actions */
 .header-actions {
   display: flex;
   gap: 12px;
@@ -391,11 +369,6 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .header-actions {
     width: 100%;
     flex-direction: column;

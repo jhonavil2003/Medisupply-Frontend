@@ -1,11 +1,11 @@
 <div class="container">
   <!-- Header -->
-  <div class="header">
-    <div class="header-left">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Carga Masiva de Productos</h2>
+      <h2 style="margin: 0;">Carga Masiva de Productos</h2>
     </div>
     <div class="header-actions">
       <button mat-raised-button color="accent" (click)="descargarPlantilla()">
