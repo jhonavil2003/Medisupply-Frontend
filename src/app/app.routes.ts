@@ -67,6 +67,11 @@ export const routes: Routes = [
       .then(m => m.ProductoUploadComponent)
   },
   { 
+    path: 'productos/upload/historial', 
+    loadComponent: () => import('./presentation/pages/productos/producto-upload/producto-upload-history/producto-upload-history.component')
+      .then(m => m.ProductoUploadHistoryComponent)
+  },
+  { 
     path: 'proveedor-upload', 
     loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
       .then(m => m.ProveedorUploadComponent)

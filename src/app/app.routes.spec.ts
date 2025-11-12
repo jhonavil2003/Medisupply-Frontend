@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(23); // Actualizado: 4 vendedores + 5 metas (list, create, detail, edit, mis-metas)
+      expect(routes.length).toBe(24); // Actualizado: 4 vendedores + 5 metas + 1 historial bulk upload
     });
   });
 
