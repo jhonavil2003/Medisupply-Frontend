@@ -16,26 +16,6 @@
     <mat-progress-bar mode="indeterminate"></mat-progress-bar>
   }
 
-  <div class="search-bar">
-    <mat-form-field appearance="outline" class="search-field">
-      <mat-label>Buscar metas</mat-label>
-      <input matInput
-        placeholder="Producto, región, trimestre o responsable..."
-        [(ngModel)]="filtroBusqueda"
-        (keyup.enter)="filtrarMetas()" />
-
-      @if (filtroBusqueda) {
-        <button
-          matSuffix
-          mat-icon-button
-          aria-label="Limpiar"
-          (click)="filtroBusqueda=''; filtrarMetas()">
-          <mat-icon>close</mat-icon>
-        </button>
-      }
-    </mat-form-field>
-  </div>
-
   <div class="filter-section">
     <mat-form-field appearance="outline" class="filter-field">
       <mat-label>Región</mat-label>
