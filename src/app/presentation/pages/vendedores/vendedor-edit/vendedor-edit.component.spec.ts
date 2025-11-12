@@ -118,7 +118,6 @@ describe('VendedorEditComponent', () => {
       expect(component.vendedorForm.get('email')?.value).toBe('juan.perez@test.com');
       expect(component.vendedorForm.get('phone')?.value).toBe('+51987654321');
       expect(component.vendedorForm.get('territory')?.value).toBe('Lima Norte');
-      expect(component.vendedorForm.get('isActive')?.value).toBe(true);
       expect(component.loading()).toBe(false);
     });
 

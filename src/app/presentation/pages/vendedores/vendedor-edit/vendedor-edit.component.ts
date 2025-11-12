@@ -80,8 +80,7 @@ export class VendedorEditComponent implements OnInit {
         Validators.pattern(/^[0-9+\-\s()]+$/)
       ]],
       territory: ['', Validators.maxLength(100)],
-      hireDate: [''],
-      isActive: [true]
+      hireDate: ['']
     });
   }
 
@@ -110,8 +109,7 @@ export class VendedorEditComponent implements OnInit {
             email: vendedor.email,
             phone: vendedor.phone || '',
             territory: vendedor.territory || '',
-            hireDate: hireDate,
-            isActive: vendedor.isActive ?? true
+            hireDate: hireDate
           });
         }
         this.loading.set(false);
@@ -158,8 +156,7 @@ export class VendedorEditComponent implements OnInit {
       email: formValue.email,
       phone: formValue.phone || undefined,
       territory: formValue.territory || undefined,
-      hireDate: hireDate,
-      isActive: formValue.isActive
+      hireDate: hireDate
     };
 
     this.updateVendedorUseCase.execute(vendedorDto).subscribe({
