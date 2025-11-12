@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
-import { of, throwError } from 'rxjs';
+import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialog } from '@angular/material/dialog';
+import { of, throwError, Subject } from 'rxjs';
 import { VendedorListComponent } from './vendedor-list.component';
 import {
   GetAllVendedoresUseCase,
@@ -21,6 +22,7 @@ describe('VendedorListComponent', () => {
   let mockNotificationService: jest.Mocked<NotificationService>;
   let mockConfirmDialogService: jest.Mocked<ConfirmDialogService>;
   let mockRouter: jest.Mocked<Router>;
+  let mockDialog: jest.Mocked<MatDialog>;
 
   const mockVendedores: VendedorEntity[] = [
     {
@@ -71,7 +73,16 @@ describe('VendedorListComponent', () => {
     } as any;
     
     mockRouter = {
-      navigate: jest.fn()
+      navigate: jest.fn(),
+      createUrlTree: jest.fn().mockReturnValue({}),
+      serializeUrl: jest.fn().mockReturnValue(''),
+      events: new Subject()
+    } as any;
+
+    mockDialog = {
+      open: jest.fn().mockReturnValue({
+        afterClosed: jest.fn().mockReturnValue(of(false))
+      })
     } as any;
 
     await TestBed.configureTestingModule({
@@ -82,7 +93,9 @@ describe('VendedorListComponent', () => {
         { provide: DeleteVendedorUseCase, useValue: mockDeleteVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: ConfirmDialogService, useValue: mockConfirmDialogService },
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: MatDialog, useValue: mockDialog },
+        { provide: ActivatedRoute, useValue: { params: of({}), queryParams: of({}), snapshot: { params: {} } } }
       ]
     }).compileComponents();
 
@@ -161,7 +174,7 @@ describe('VendedorListComponent', () => {
   describe('navigation', () => {
     it('should navigate to create page', () => {
       component.navigateToCreate();
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores/create']);
+      expect(mockDialog.open).toHaveBeenCalled();
     });
 
     it('should navigate to detail page', () => {
@@ -171,7 +184,7 @@ describe('VendedorListComponent', () => {
 
     it('should navigate to edit page', () => {
       component.navigateToEdit(1);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/vendedores', 1, 'edit']);
+      expect(mockDialog.open).toHaveBeenCalled();
     });
 
     it('should navigate back to dashboard', () => {
