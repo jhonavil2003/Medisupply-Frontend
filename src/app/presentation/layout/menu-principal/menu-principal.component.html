@@ -16,7 +16,6 @@
   <li class="menuitem" (click)="navigateTo('proveedor-list')">Proveedores</li>
   <li class="menuitem" (click)="navigateTo('producto-list')">Productos</li>
   <li class="menuitem" (click)="navigateTo('vendedores')">Vendedores</li>
-  <li class="menuitem" (click)="navigateTo('metas-list')">Metas de venta</li>
     </ul>
     <li (click)="toggleSubmenu('ventas')" [ngClass]="{ 'active': ventasOpen }">
       <i class="fas fa-chart-line"></i>
@@ -24,7 +23,8 @@
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': ventasOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('metas-list')">Planes de venta</li>
+  <li class="menuitem" (click)="navigateTo('mis-metas')">Mis Metas</li>
+  <li class="menuitem" (click)="navigateTo('metas')">Planes de venta</li>
   <li class="menuitem" (click)="navigateTo('informe-ventas')">Reportes e informes</li>
     </ul>
     <li (click)="toggleSubmenu('logistica')" [ngClass]="{ 'active': logisticaOpen }">

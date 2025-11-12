@@ -9,7 +9,7 @@ import { ProductLocationRepository } from './domain/repositories/product-locatio
 import { MockProveedorRepository } from './infrastructure/repositories/mock/mock-proveedor.repository';
 import { HttpProductoRepository } from './infrastructure/repositories/http/http-producto.repository';
 import { HttpVendedorRepository } from './infrastructure/repositories/http/http-vendedor.repository';
-import { MockMetaVentaRepository } from './infrastructure/repositories/mock/mock-meta-venta.repository';
+import { HttpMetaVentaRepository } from './infrastructure/repositories/http/http-meta-venta.repository';
 import { MockRutaEntregaRepository } from './infrastructure/repositories/mock/mock-ruta-entrega.repository';
 import { HttpProductLocationRepository } from './infrastructure/repositories/http/http-product-location.repository';
 import { provideHttpClient } from '@angular/common/http';
@@ -63,7 +63,7 @@ describe('CORE_PROVIDERS', () => {
     it('should inject MetaVentaRepository correctly', () => {
       const repository = TestBed.inject(MetaVentaRepository);
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(MockMetaVentaRepository);
+      expect(repository).toBeInstanceOf(HttpMetaVentaRepository); // Cambiado de Mock a Http
     });
 
     it('should inject RutaEntregaRepository correctly', () => {

@@ -11,7 +11,7 @@ import { MockProveedorRepository } from './infrastructure/repositories/mock/mock
 import { HttpProveedorRepository } from './infrastructure/repositories/http/http-proveedor.repository';
 import { HttpProductoRepository } from './infrastructure/repositories/http/http-producto.repository';
 import { HttpVendedorRepository } from './infrastructure/repositories/http/http-vendedor.repository';
-import { MockMetaVentaRepository } from './infrastructure/repositories/mock/mock-meta-venta.repository';
+import { HttpMetaVentaRepository } from './infrastructure/repositories/http/http-meta-venta.repository';
 import { MockRutaEntregaRepository } from './infrastructure/repositories/mock/mock-ruta-entrega.repository';
 import { HttpProductLocationRepository } from './infrastructure/repositories/http/http-product-location.repository';
 
@@ -19,7 +19,7 @@ export const CORE_PROVIDERS: Provider[] = [
   { provide: ProveedorRepository, useClass: HttpProveedorRepository },
   { provide: ProductoRepository, useClass: HttpProductoRepository },
   { provide: VendedorRepository, useClass: HttpVendedorRepository },
-  { provide: MetaVentaRepository, useClass: MockMetaVentaRepository },
+  { provide: MetaVentaRepository, useClass: HttpMetaVentaRepository },
   { provide: RutaEntregaRepository, useClass: MockRutaEntregaRepository },
   { provide: ProductLocationRepository, useClass: HttpProductLocationRepository }
 ];

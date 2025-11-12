@@ -11,6 +11,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { GetVendedorByIdUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { MatLabel } from '@angular/material/form-field';
 
 @Component({
   selector: 'app-vendedor-detail',
@@ -22,8 +23,9 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatIconModule,
     MatChipsModule,
     MatProgressSpinnerModule,
-    MatDividerModule
-  ],
+    MatDividerModule,
+    MatLabel
+],
   templateUrl: './vendedor-detail.component.html',
   styleUrls: ['./vendedor-detail.component.css']
 })
