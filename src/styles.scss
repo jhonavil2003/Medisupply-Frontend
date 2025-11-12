@@ -151,6 +151,9 @@ $my-theme: mat.m2-define-light-theme((
   height: 40px;
   color: #6B7280 !important;
   --mdc-icon-button-state-layer-size: 40px;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 .unified-paginator .mat-mdc-icon-button:hover:not([disabled]) {
@@ -171,11 +174,22 @@ $my-theme: mat.m2-define-light-theme((
   color: #6B7280;
 }
 
-/* Flechas de navegación más visibles */
+/* Flechas de navegación más visibles y centradas */
 .unified-paginator .mat-mdc-icon-button mat-icon {
   font-size: 20px;
   width: 20px;
   height: 20px;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+}
+
+/* Centrar el contenido interno del botón */
+.unified-paginator .mat-mdc-icon-button .mat-mdc-button-persistent-ripple,
+.unified-paginator .mat-mdc-icon-button .mat-mdc-button-touch-target {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
 }
 
 /* Responsive para paginador */

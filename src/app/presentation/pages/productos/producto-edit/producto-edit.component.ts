@@ -152,7 +152,7 @@ export class ProductoEditComponent implements OnInit {
       error: (error) => {
         this.loadingProduct.set(false);
         this.notificationService.error(`Error al cargar producto: ${error.message}`);
-        this.router.navigate(['/producto-list']);
+        this.dialogRef.close(false);
       }
     });
   }

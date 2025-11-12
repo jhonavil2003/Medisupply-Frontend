@@ -71,7 +71,7 @@ export class ProveedorCreateComponent {
       ]],
       website: ['', [
         Validators.maxLength(200),
-        Validators.pattern(/^https?:\/\/.+/)
+        Validators.pattern(/^[a-zA-Z0-9][a-zA-Z0-9-_.]+\.[a-zA-Z]{2,}/)
       ]],
       currency: ['', [
         Validators.maxLength(10)
@@ -159,7 +159,7 @@ export class ProveedorCreateComponent {
           return 'Formato de teléfono inválido';
         }
         if (fieldName === 'website') {
-          return 'Debe ser una URL válida (http:// o https://)';
+          return 'Debe ser un sitio web válido (ej: www.ejemplo.com)';
         }
         return 'Formato inválido';
       }
