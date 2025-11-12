@@ -10,6 +10,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogRef } from '@angular/material/dialog';
 
 import { CreateProductUseCase } from '../../../../core/application/use-cases/producto/create-product.use-case';
 import { CreateProductRequest } from '../../../../core/domain/repositories/producto.repository';
@@ -38,6 +39,7 @@ export class ProductoCreateComponent {
   private router = inject(Router);
   private createProductUseCase = inject(CreateProductUseCase);
   private notificationService = inject(NotificationService);
+  private dialogRef = inject(MatDialogRef<ProductoCreateComponent>);
 
   loading = signal(false);
   productForm: FormGroup;
@@ -74,20 +76,52 @@ export class ProductoCreateComponent {
 
   constructor() {
     this.productForm = this.fb.group({
-      sku: ['', [Validators.required, Validators.minLength(3)]],
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      description: [''],
+      sku: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.maxLength(50),
+        Validators.pattern(/^[A-Za-z0-9\-_]+$/)
+      ]],
+      name: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.maxLength(200)
+      ]],
+      description: ['', [
+        Validators.maxLength(1000)
+      ]],
       category: ['', Validators.required],
-      subcategory: [''],
-      unit_price: [0, [Validators.required, Validators.min(0.01)]],
+      subcategory: ['', [
+        Validators.maxLength(100)
+      ]],
+      unit_price: [null, [
+        Validators.required, 
+        Validators.min(0.01),
+        Validators.max(999999999.99)
+      ]],
       currency: ['USD', Validators.required],
       unit_of_measure: ['', Validators.required],
-      supplier_id: [1, [Validators.required, Validators.min(1)]],
+      supplier_id: [null, [
+        Validators.required, 
+        Validators.min(1),
+        Validators.pattern(/^[0-9]+$/)
+      ]],
       requires_cold_chain: [false],
-      manufacturer: [''],
-      country_of_origin: [''],
-      barcode: [''],
-      image_url: ['']
+      manufacturer: ['', [
+        Validators.maxLength(200)
+      ]],
+      country_of_origin: ['', [
+        Validators.maxLength(100)
+      ]],
+      barcode: ['', [
+        Validators.minLength(8),
+        Validators.maxLength(50),
+        Validators.pattern(/^[0-9]+$/)
+      ]],
+      image_url: ['', [
+        Validators.maxLength(500),
+        Validators.pattern(/^https?:\/\/.+/)
+      ]]
     });
   }
 
@@ -101,7 +135,7 @@ export class ProductoCreateComponent {
         next: (product) => {
           this.loading.set(false);
           this.notificationService.success('Producto creado exitosamente');
-          this.router.navigate(['/producto-list']);
+          this.dialogRef.close(true); // Cerrar modal y retornar true
         },
         error: (error) => {
           this.loading.set(false);
@@ -115,7 +149,7 @@ export class ProductoCreateComponent {
   }
 
   onCancel(): void {
-    this.router.navigate(['/producto-list']);
+    this.dialogRef.close(false); // Cerrar modal sin guardar
   }
 
   private markFormGroupTouched(): void {
@@ -129,13 +163,34 @@ export class ProductoCreateComponent {
     const field = this.productForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return `${fieldName} es requerido`;
+        return 'Este campo es requerido';
       }
       if (field.errors['minlength']) {
-        return `${fieldName} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
+        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+      }
+      if (field.errors['maxlength']) {
+        return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
       }
       if (field.errors['min']) {
-        return `${fieldName} debe ser mayor a ${field.errors['min'].min}`;
+        return `El valor mínimo es ${field.errors['min'].min}`;
+      }
+      if (field.errors['max']) {
+        return `El valor máximo es ${field.errors['max'].max}`;
+      }
+      if (field.errors['pattern']) {
+        if (fieldName === 'sku') {
+          return 'Solo letras, números, guiones y guiones bajos';
+        }
+        if (fieldName === 'barcode') {
+          return 'Solo números permitidos';
+        }
+        if (fieldName === 'supplier_id') {
+          return 'Solo números enteros';
+        }
+        if (fieldName === 'image_url') {
+          return 'Debe ser una URL válida (http:// o https://)';
+        }
+        return 'Formato inválido';
       }
     }
     return '';
