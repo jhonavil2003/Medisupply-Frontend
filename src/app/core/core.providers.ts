@@ -7,6 +7,7 @@ import { MetaVentaRepository } from './domain/repositories/meta-venta.repository
 import { RutaEntregaRepository } from './domain/repositories/ruta-entrega.repository';
 import { ProductLocationRepository } from './domain/repositories/product-location.repository';
 import { OrderRepository } from './domain/repositories/order.repository';
+import { RouteViewRepository } from './domain/repositories/route-view.repository';
 
 import { MockProveedorRepository } from './infrastructure/repositories/mock/mock-proveedor.repository';
 import { HttpProductoRepository } from './infrastructure/repositories/http/http-producto.repository';
@@ -15,6 +16,7 @@ import { MockMetaVentaRepository } from './infrastructure/repositories/mock/mock
 import { MockRutaEntregaRepository } from './infrastructure/repositories/mock/mock-ruta-entrega.repository';
 import { HttpProductLocationRepository } from './infrastructure/repositories/http/http-product-location.repository';
 import { HttpOrderRepository } from './infrastructure/repositories/http/http-order.repository';
+import { RouteViewHttpRepository } from './infrastructure/repositories/route-view-http.repository';
 
 export const CORE_PROVIDERS: Provider[] = [
   { provide: ProveedorRepository, useClass: MockProveedorRepository },
@@ -23,5 +25,6 @@ export const CORE_PROVIDERS: Provider[] = [
   { provide: MetaVentaRepository, useClass: MockMetaVentaRepository },
   { provide: RutaEntregaRepository, useClass: MockRutaEntregaRepository },
   { provide: ProductLocationRepository, useClass: HttpProductLocationRepository },
-  { provide: OrderRepository, useClass: HttpOrderRepository }
+  { provide: OrderRepository, useClass: HttpOrderRepository },
+  { provide: RouteViewRepository, useClass: RouteViewHttpRepository }
 ];

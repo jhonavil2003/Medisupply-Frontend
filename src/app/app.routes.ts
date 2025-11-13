@@ -101,6 +101,11 @@ export const routes: Routes = [
     loadComponent: () => import('./presentation/pages/logistica/route-generation/route-generation.component')
       .then(m => m.RouteGenerationComponent)
   },
+  {
+    path: 'rutas',
+    loadComponent: () => import('./presentation/pages/logistica/route-list/route-list.component')
+      .then(m => m.RouteListComponent)
+  },
   { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
