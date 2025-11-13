@@ -185,3 +185,31 @@
     flex: 1;
   }
 }
+
+/* Botón de activación */
+.activate-button {
+  transition: all 0.2s ease;
+}
+
+.activate-button:hover {
+  transform: scale(1.1);
+}
+
+.activate-button mat-icon {
+  color: #4caf50;
+}
+
+.activate-button:hover mat-icon {
+  color: #2e7d32;
+}
+
+/* Snackbar personalizado */
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}

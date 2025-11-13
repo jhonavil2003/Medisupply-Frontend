@@ -161,6 +161,15 @@
                           matTooltip="Ver en Mapa">
                     <mat-icon>map</mat-icon>
                   </button>
+                  @if (canActivateRoute(route)) {
+                    <button mat-icon-button 
+                            color="primary" 
+                            (click)="activateRoute(route, $event)"
+                            matTooltip="Activar Ruta"
+                            class="activate-button">
+                      <mat-icon>check_circle</mat-icon>
+                    </button>
+                  }
                 </div>
               </td>
             </ng-container>

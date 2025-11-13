@@ -2,7 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
-import { RouteViewRepository } from '../../domain/repositories/route-view.repository';
+import { RouteViewRepository, UpdateRouteStatusRequest, UpdateRouteStatusResponse } from '../../domain/repositories/route-view.repository';
 import { 
   ListRoutesFilters, 
   ListRoutesResponse, 
@@ -310,5 +310,12 @@ export class RouteViewHttpRepository extends RouteViewRepository {
       createdAt: backendRoute.created_at,
       createdBy: backendRoute.created_by
     };
+  }
+
+  updateRouteStatus(routeId: number, request: UpdateRouteStatusRequest): Observable<UpdateRouteStatusResponse> {
+    return this.http.put<UpdateRouteStatusResponse>(
+      `${this.baseUrl}/${routeId}/status`,
+      request
+    );
   }
 }

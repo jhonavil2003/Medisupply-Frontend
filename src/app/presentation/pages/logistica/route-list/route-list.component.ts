@@ -14,9 +14,13 @@ import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { FormsModule } from '@angular/forms';
 import { GetRoutesUseCase } from '../../../../core/application/use-cases/get-routes.usecase';
+import { UpdateRouteStatusUseCase } from '../../../../core/application/use-cases/update-route-status.usecase';
 import { ListRoutesFilters, RouteListItem, RouteStatus } from '../../../../core/domain/entities/route.entity';
+import { ActivateRouteDialogComponent } from './activate-route-dialog.component';
 
 @Component({
   selector: 'app-route-list',
@@ -36,7 +40,9 @@ import { ListRoutesFilters, RouteListItem, RouteStatus } from '../../../../core/
     MatDatepickerModule,
     MatNativeDateModule,
     MatPaginatorModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSnackBarModule,
+    MatDialogModule
   ],
   templateUrl: './route-list.component.html',
   styleUrl: './route-list.component.css',
@@ -44,7 +50,10 @@ import { ListRoutesFilters, RouteListItem, RouteStatus } from '../../../../core/
 })
 export class RouteListComponent implements OnInit {
   private readonly getRoutesUseCase = inject(GetRoutesUseCase);
+  private readonly updateRouteStatusUseCase = inject(UpdateRouteStatusUseCase);
   private readonly router = inject(Router);
+  private readonly snackBar = inject(MatSnackBar);
+  private readonly dialog = inject(MatDialog);
 
   // Estado
   routes = signal<RouteListItem[]>([]);
@@ -147,6 +156,78 @@ export class RouteListComponent implements OnInit {
 
   viewOnMap(route: RouteListItem): void {
     this.router.navigate(['/rutas', route.id, 'mapa']);
+  }
+
+  activateRoute(route: RouteListItem, event: Event): void {
+    event.stopPropagation();
+
+    // Validar que la ruta esté en estado draft
+    if (route.status !== 'draft') {
+      this.snackBar.open('Solo se pueden activar rutas en estado borrador', 'Cerrar', {
+        duration: 3000,
+        panelClass: ['error-snackbar']
+      });
+      return;
+    }
+
+    // Abrir diálogo de confirmación profesional
+    const dialogRef = this.dialog.open(ActivateRouteDialogComponent, {
+      width: '600px',
+      data: {
+        routeCode: route.routeCode,
+        driverName: route.driver.name,
+        vehiclePlate: route.vehicle.plate,
+        totalStops: route.metrics.totalStops,
+        totalOrders: route.metrics.totalOrders
+      },
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe((confirmed: boolean) => {
+      if (!confirmed) {
+        return;
+      }
+
+      // Activar ruta
+      this.loading.set(true);
+      
+      this.updateRouteStatusUseCase.activateRoute(route.id, 'supervisor@medisupply.com').subscribe({
+        next: (response) => {
+          if (response.status === 'success') {
+            this.snackBar.open('✅ Ruta activada exitosamente', 'Cerrar', {
+              duration: 3000,
+              panelClass: ['success-snackbar']
+            });
+            
+            // Recargar la lista de rutas
+            this.loadRoutes();
+          } else {
+            this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            });
+            this.loading.set(false);
+          }
+        },
+        error: (err) => {
+          console.error('Error activating route:', err);
+          this.snackBar.open(
+            `Error al activar la ruta: ${err.message || 'Error desconocido'}`, 
+            'Cerrar', 
+            {
+              duration: 5000,
+              panelClass: ['error-snackbar']
+            }
+          );
+          this.loading.set(false);
+        }
+      });
+    });
+  }
+
+  canActivateRoute(route: RouteListItem): boolean {
+    return route.status === 'draft';
   }
 
   getStatusColor(status: RouteStatus): string {
