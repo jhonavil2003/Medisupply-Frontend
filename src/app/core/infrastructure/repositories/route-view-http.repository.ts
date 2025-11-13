@@ -78,6 +78,59 @@ interface BackendListRoutesResponse {
   has_more: boolean;
 }
 
+// Interfaces para el detalle de ruta (modo resumido)
+interface BackendRouteSummaryResponse {
+  status: string;
+  route: {
+    id: number;
+    route_code: string;
+    status: string;
+    planned_date: string;
+    distribution_center_id: number;
+    vehicle: {
+      id: number;
+      plate: string;
+      type: string;
+      driver: string;
+    };
+    metrics: {
+      total_stops: number;
+      total_orders: number;
+      total_distance_km: number;
+      estimated_duration_minutes: number;
+      total_weight_kg: number;
+      total_volume_m3: number;
+      completion_percentage: number;
+    };
+    stops: Array<{
+      sequence: number;
+      customer_name: string;
+      address: string;
+      city: string;
+      coordinates: {
+        lat: number;
+        lng: number;
+      };
+      estimated_arrival: string | null;
+      orders: Array<{
+        order_id: number;
+        order_number: string;
+        customer_name: string;
+        clinical_priority: string;
+        requires_cold_chain: boolean;
+      }>;
+      status: string;
+    }>;
+    schedule: {
+      start_time: string | null;
+      end_time: string | null;
+    };
+    optimization_score: number | null;
+    created_at: string;
+    created_by: string;
+  };
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -116,7 +169,12 @@ export class RouteViewHttpRepository extends RouteViewRepository {
   }
 
   override getRouteById(routeId: number): Observable<RouteSummary> {
-    return this.http.get<RouteSummary>(`${this.baseUrl}/${routeId}`);
+    const params = new HttpParams().set('summary', 'true');
+    
+    return this.http.get<BackendRouteSummaryResponse>(`${this.baseUrl}/${routeId}`, { params })
+      .pipe(
+        map(response => this.mapBackendRouteSummaryToDomain(response.route))
+      );
   }
 
   override getRoutesByDate(date: string, distributionCenterId: number): Observable<RoutesByDateResponse> {
@@ -199,6 +257,58 @@ export class RouteViewHttpRepository extends RouteViewRepository {
         driverName: backendRoute.vehicle.driver_name,
         driverPhone: backendRoute.vehicle.driver_phone
       }
+    };
+  }
+
+  private mapBackendRouteSummaryToDomain(backendRoute: BackendRouteSummaryResponse['route']): RouteSummary {
+    return {
+      id: backendRoute.id,
+      routeCode: backendRoute.route_code,
+      status: backendRoute.status as any,
+      plannedDate: backendRoute.planned_date,
+      distributionCenterId: backendRoute.distribution_center_id,
+      vehicle: {
+        id: backendRoute.vehicle.id,
+        plate: backendRoute.vehicle.plate,
+        type: backendRoute.vehicle.type,
+        driver: backendRoute.vehicle.driver
+      },
+      metrics: {
+        totalDistanceKm: backendRoute.metrics.total_distance_km,
+        estimatedDurationMinutes: backendRoute.metrics.estimated_duration_minutes,
+        actualDurationMinutes: null,
+        totalOrders: backendRoute.metrics.total_orders,
+        totalStops: backendRoute.metrics.total_stops,
+        totalWeightKg: backendRoute.metrics.total_weight_kg,
+        totalVolumeM3: backendRoute.metrics.total_volume_m3,
+        completionPercentage: backendRoute.metrics.completion_percentage
+      },
+      stops: backendRoute.stops.map(stop => ({
+        sequence: stop.sequence,
+        customerName: stop.customer_name,
+        address: stop.address,
+        city: stop.city,
+        coordinates: {
+          lat: stop.coordinates.lat,
+          lng: stop.coordinates.lng
+        },
+        estimatedArrival: stop.estimated_arrival,
+        orders: stop.orders.map(order => ({
+          orderId: order.order_id,
+          orderNumber: order.order_number,
+          customerName: order.customer_name,
+          clinicalPriority: order.clinical_priority,
+          requiresColdChain: order.requires_cold_chain
+        })),
+        status: stop.status as any
+      })),
+      schedule: {
+        startTime: backendRoute.schedule.start_time,
+        endTime: backendRoute.schedule.end_time
+      },
+      optimizationScore: backendRoute.optimization_score,
+      createdAt: backendRoute.created_at,
+      createdBy: backendRoute.created_by
     };
   }
 }

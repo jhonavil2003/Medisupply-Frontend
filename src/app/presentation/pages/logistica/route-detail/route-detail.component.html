@@ -1,0 +1,233 @@
+<div class="route-detail-container">
+  <!-- Loading Spinner -->
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>Cargando detalle de ruta...</p>
+    </div>
+  }
+
+  <!-- Error -->
+  @if (error() && !loading()) {
+    <mat-card class="error-card">
+      <mat-card-content>
+        <div class="error-content">
+          <mat-icon color="warn">error</mat-icon>
+          <h3>Error al cargar la ruta</h3>
+          <p>{{ error() }}</p>
+          <button mat-raised-button color="primary" (click)="goBack()">
+            Volver a la lista
+          </button>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+
+  <!-- Detalle de la Ruta -->
+  @if (routeDetail() && !loading()) {
+    @let route = routeDetail()!;
+    
+    <!-- Header Compacto -->
+    <div class="route-header">
+      <div class="header-content">
+        <button mat-icon-button (click)="goBack()" class="back-button">
+          <mat-icon>arrow_back</mat-icon>
+        </button>
+        <div class="route-info">
+          <div class="route-code-section">
+            <mat-icon class="route-icon">route</mat-icon>
+            <div>
+              <h1>{{ route.routeCode }}</h1>
+              <p class="route-meta">
+                <mat-icon class="small-icon">event</mat-icon>
+                {{ formatDate(route.plannedDate) }}
+                <span class="separator">•</span>
+                <mat-icon class="small-icon">local_shipping</mat-icon>
+                {{ route.vehicle.plate }} - {{ route.vehicle.type }}
+              </p>
+            </div>
+          </div>
+          <div class="header-actions">
+            <mat-chip [color]="getStatusColor(route.status)" class="status-chip">
+              {{ getStatusLabel(route.status) }}
+            </mat-chip>
+            <button mat-raised-button color="accent" (click)="viewOnMap()">
+              <mat-icon>map</mat-icon>
+              Ver en Mapa
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Estadísticas Rápidas -->
+    <div class="stats-bar">
+      <div class="stat-item">
+        <mat-icon>inventory_2</mat-icon>
+        <div class="stat-content">
+          <span class="stat-value">{{ route.metrics.totalOrders }}</span>
+          <span class="stat-label">Pedidos</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <mat-icon>place</mat-icon>
+        <div class="stat-content">
+          <span class="stat-value">{{ route.metrics.totalStops }}</span>
+          <span class="stat-label">Paradas</span>
+        </div>
+      </div>
+      <div class="stat-item">
+        <mat-icon>straighten</mat-icon>
+        <div class="stat-content">
+          <span class="stat-value">{{ route.metrics.totalDistanceKm }} km</span>
+          <span class="stat-label">Distancia</span>
+        </div>
+      </div>
+      @if (route.optimizationScore !== null) {
+        <div class="stat-item highlight">
+          <mat-icon>star</mat-icon>
+          <div class="stat-content">
+            <span class="stat-value">{{ route.optimizationScore }}%</span>
+            <span class="stat-label">Optimización</span>
+          </div>
+        </div>
+      }
+      @if (route.status === 'in_progress') {
+        <div class="stat-item highlight">
+          <mat-icon>analytics</mat-icon>
+          <div class="stat-content">
+            <span class="stat-value">{{ route.metrics.completionPercentage }}%</span>
+            <span class="stat-label">Completado</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Información del Conductor y Horario -->
+    <div class="info-cards-row">
+      <mat-card class="info-card">
+        <mat-card-content>
+          <div class="card-header-inline">
+            <mat-icon color="primary">person</mat-icon>
+            <h3>Conductor</h3>
+          </div>
+          <div class="driver-info">
+            <p class="driver-name">{{ route.vehicle.driver }}</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      @if (route.schedule.startTime || route.schedule.endTime) {
+        <mat-card class="info-card">
+          <mat-card-content>
+            <div class="card-header-inline">
+              <mat-icon color="primary">access_time</mat-icon>
+              <h3>Horario</h3>
+            </div>
+            <div class="schedule-times-compact">
+              @if (route.schedule.startTime) {
+                <div class="time-compact">
+                  <mat-icon class="tiny-icon">play_circle</mat-icon>
+                  <span>{{ formatTime(route.schedule.startTime) }}</span>
+                </div>
+              }
+              @if (route.schedule.endTime) {
+                <div class="time-compact">
+                  <mat-icon class="tiny-icon">stop_circle</mat-icon>
+                  <span>{{ formatTime(route.schedule.endTime) }}</span>
+                </div>
+              }
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+
+    <!-- Lista de Paradas Optimizada -->
+    <mat-card class="stops-card-optimized">
+      <mat-card-header>
+        <mat-card-title class="title-with-icon">
+          <mat-icon>route</mat-icon>
+          <span>Ruta de Entrega</span>
+          <mat-chip class="count-chip">{{ route.stops.length }} paradas</mat-chip>
+        </mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <div class="stops-timeline">
+          @for (stop of route.stops; track stop.sequence) {
+            <div class="stop-timeline-item">
+              <!-- Timeline connector -->
+              <div class="timeline-line">
+                <div class="timeline-dot" [class.first]="stop.sequence === 1" 
+                     [class.last]="stop.sequence === route.stops.length">
+                  <span class="sequence-number">{{ stop.sequence }}</span>
+                </div>
+                @if (stop.sequence < route.stops.length) {
+                  <div class="connector"></div>
+                }
+              </div>
+
+              <!-- Stop content -->
+              <div class="stop-content">
+                <div class="stop-main-info">
+                  <div class="stop-header-compact">
+                    <h3>{{ stop.customerName }}</h3>
+                    <mat-chip [color]="getStopStatusColor(stop.status)" class="stop-status-chip">
+                      <mat-icon>{{ getStopStatusIcon(stop.status) }}</mat-icon>
+                      {{ stop.status }}
+                    </mat-chip>
+                  </div>
+                  
+                  <div class="stop-details-compact">
+                    <div class="detail-row">
+                      <mat-icon class="detail-icon">place</mat-icon>
+                      <span>{{ stop.address }}, {{ stop.city }}</span>
+                    </div>
+                    @if (stop.estimatedArrival) {
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">schedule</mat-icon>
+                        <span>{{ formatTime(stop.estimatedArrival) }}</span>
+                      </div>
+                    }
+                    @if (stop.coordinates.lat && stop.coordinates.lng) {
+                      <div class="detail-row">
+                        <mat-icon class="detail-icon">gps_fixed</mat-icon>
+                        <span class="coordinates-text">{{ stop.coordinates.lat.toFixed(6) }}, {{ stop.coordinates.lng.toFixed(6) }}</span>
+                      </div>
+                    }
+                  </div>
+
+                  <!-- Orders compact list -->
+                  <div class="orders-compact">
+                    <div class="orders-header">
+                      <mat-icon class="orders-icon">inventory_2</mat-icon>
+                      <span class="orders-count">{{ stop.orders.length }} pedido{{ stop.orders.length !== 1 ? 's' : '' }}</span>
+                    </div>
+                    <div class="orders-grid">
+                      @for (order of stop.orders; track order.orderId) {
+                        <div class="order-compact">
+                          <span class="order-number">{{ order.orderNumber }}</span>
+                          <div class="order-badges-compact">
+                            @if (order.clinicalPriority === 'high') {
+                              <mat-icon class="priority-icon high" matTooltip="Prioridad Alta">priority_high</mat-icon>
+                            }
+                            @if (order.clinicalPriority === 'medium') {
+                              <mat-icon class="priority-icon medium" matTooltip="Prioridad Media">remove</mat-icon>
+                            }
+                            @if (order.requiresColdChain) {
+                              <mat-icon class="cold-icon" matTooltip="Cadena de Frío">ac_unit</mat-icon>
+                            }
+                  </div>
+                        </div>
+                      }
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+      </mat-card-content>
+    </mat-card>
+  }
+</div>

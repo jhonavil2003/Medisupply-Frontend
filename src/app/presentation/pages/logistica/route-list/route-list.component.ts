@@ -142,11 +142,11 @@ export class RouteListComponent implements OnInit {
   }
 
   viewRoute(route: RouteListItem): void {
-    this.router.navigate(['/logistica/rutas', route.id]);
+    this.router.navigate(['/rutas', route.id]);
   }
 
   viewOnMap(route: RouteListItem): void {
-    this.router.navigate(['/logistica/rutas', route.id, 'mapa']);
+    this.router.navigate(['/rutas', route.id, 'mapa']);
   }
 
   getStatusColor(status: RouteStatus): string {
