@@ -92,11 +92,6 @@ export const routes: Routes = [
       .then(m => m.ProductoLocalizacionComponent)
   },
   { 
-    path: 'rutas-entrega', 
-    loadComponent: () => import('./presentation/pages/logistica/ruta-entrega-list/ruta-entrega-list.component')
-      .then(m => m.RutaEntregaListaComponent)
-  },
-  { 
     path: 'ordenes', 
     loadComponent: () => import('./presentation/pages/logistica/order-list/order-list.component')
       .then(m => m.OrderListComponent)

@@ -164,12 +164,6 @@ describe('App Routes', () => {
       expect(localizacionRoute?.loadComponent).toBeDefined();
     });
 
-    it('should have rutas-entrega route', () => {
-      const rutasRoute = routes.find(route => route.path === 'rutas-entrega');
-      expect(rutasRoute).toBeDefined();
-      expect(rutasRoute?.loadComponent).toBeDefined();
-    });
-
     it('should have metas-list route', () => {
       const metasRoute = routes.find(route => route.path === 'metas-list');
       expect(metasRoute).toBeDefined();
@@ -228,7 +222,6 @@ describe('App Routes', () => {
         'producto-upload',
         'proveedor-upload',
         'producto-localizacion',
-        'rutas-entrega',
         'metas-list',
         'informe-ventas'
       ];
