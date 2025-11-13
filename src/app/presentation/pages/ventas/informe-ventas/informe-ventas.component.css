@@ -1,30 +1,289 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA INFORMES DE VENTAS
+   Los estilos de container y tabla están en styles.scss
+   ============================================ */
 
+/* Contenedor principal */
+.informe-ventas-container {
+  padding: 0;
+  max-width: none;
+  margin: 0;
+}
+
+/* Barra de encabezado */
 .header-bar {
   display: flex;
   align-items: center;
   gap: 16px;
   margin-bottom: 1.5rem;
 }
+
+/* Filtros */
 .filtros {
-  display: flex;
-  gap: 18px;
-  margin-bottom: 18px;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
 }
+
+.filtros mat-form-field {
+  width: 100%;
+}
+
+/* Acciones de filtro (botón limpiar) */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0;
+}
+
+.filter-actions button {
+  background-color: #f3f3fe !important;
+  color: var(--color-primary) !important;
+  border-radius: 4px;
+  padding: 8px 16px;
+  font-weight: 500;
+}
+
+.filter-actions button:hover {
+  background-color: #e3f2fd !important;
+}
+
+/* Resumen de totales */
+.totales-resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.total-item {
+  color: #FFFFFF;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+/* KPI 1 - Vendedores (azul brillante) */
+.total-item:nth-child(1) {
+  background: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
+}
+
+.total-item:nth-child(1):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+
+/* KPI 2 - Productos (violeta suave) */
+.total-item:nth-child(2) {
+  background: #6366F1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.total-item:nth-child(2):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* KPI 3 - Volumen Total (turquesa) */
+.total-item:nth-child(3) {
+  background: #06B6D4;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+}
+
+.total-item:nth-child(3):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+}
+
+/* KPI 4 - Valor Total (verde-azulado) */
+.total-item:nth-child(4) {
+  background: #14B8A6;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+}
+
+.total-item:nth-child(4):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+}
+
+.total-item mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+.total-item > div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.total-label {
+  font-size: 0.875rem;
+  color: #E0E7FF;
+  font-weight: 500;
+}
+
+.total-value {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+/* Contenedor de la tabla */
 .card {
   background: var(--color-white);
-  border-radius: var(--radius);
-  box-shadow: var(--shadow);
-  padding: 24px 18px;
-  margin-bottom: 18px;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
+  margin-bottom: 24px;
+  overflow: visible !important;
+  border: none !important;
 }
+
+.card .unified-paginator {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+}
+
+/* Tabla - Los estilos principales vienen de styles.scss */
+.table-container {
+  background: var(--color-white);
+  overflow-x: auto;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  box-shadow: none !important;
+}
+
 .modern-table {
   width: 100%;
-  border-collapse: collapse;
-  margin-bottom: 18px;
 }
+
+/* Clases de cumplimiento */
+.cumplimiento-alto {
+  background-color: #d4edda !important;
+  color: #155724 !important;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.cumplimiento-medio {
+  background-color: #fff3cd !important;
+  color: #856404 !important;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.cumplimiento-bajo {
+  background-color: #f8d7da !important;
+  color: #721c24 !important;
+  font-weight: 600;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+/* Badges de tipo de objetivo */
+.badge-objetivo {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-transform: capitalize;
+}
+
+.badge-unidades {
+  background-color: #e3f2fd;
+  color: #1565c0;
+  border: 1px solid #90caf9;
+}
+
+.badge-monetario {
+  background-color: #f3e5f5;
+  color: #6a1b9a;
+  border: 1px solid #ce93d8;
+}
+
+/* Texto para sin objetivo */
+.sin-objetivo {
+  color: #999;
+  font-style: italic;
+  font-size: 0.875rem;
+}
+
+/* Mensaje sin datos */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-data mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.no-data p {
+  margin: 0;
+  font-size: 1rem;
+  color: #999;
+}
+
+/* Acciones (botones de exportar) - Ahora fuera de la tabla */
 .acciones {
   display: flex;
   gap: 12px;
-  margin-top: 12px;
+  margin-top: 16px;
+  padding: 0;
+  background: transparent;
+  border: none;
+}
+
+.acciones button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .filtros {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .filtros mat-form-field {
+    width: 100%;
+    min-width: auto;
+  }
+
+  .totales-resumen {
+    grid-template-columns: 1fr;
+  }
+
+  .acciones {
+    flex-direction: column;
+  }
+
+  .acciones button {
+    width: 100%;
+  }
 }

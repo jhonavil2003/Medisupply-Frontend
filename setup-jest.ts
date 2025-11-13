@@ -46,7 +46,8 @@ beforeAll(() => {
 
   console.error = jest.fn((message) => {
     // Filtrar errores específicos que queramos ignorar
-    if (message.includes('Navigation')) return;
+    const messageStr = typeof message === 'string' ? message : String(message);
+    if (messageStr.includes('Navigation')) return;
     originalError(message);
   });
 });

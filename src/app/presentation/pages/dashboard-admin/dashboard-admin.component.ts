@@ -46,7 +46,7 @@ export class DashboardAdminComponent {
       vendedores: 'Vendedores',
       ventasReportes: 'Ventas y Reportes',
       planesVenta: 'Planes de venta',
-      reportesInformes: 'Reportes e informes',
+      reportesInformes: 'Reportes',
       logistica: 'Logística',
       inventarioMenu: 'Inventario / Localización de productos',
       rutasMenu: 'Rutas de entrega',

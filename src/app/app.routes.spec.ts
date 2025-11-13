@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(18); // Actualizado para incluir las 4 nuevas rutas de vendedores
+      expect(routes.length).toBe(26); // Actualizado: 4 vendedores + 5 metas + 1 historial productos + 2 proveedores upload (upload + historial)
     });
   });
 
@@ -144,6 +144,18 @@ describe('App Routes', () => {
       const proveedorUploadRoute = routes.find(route => route.path === 'proveedor-upload');
       expect(proveedorUploadRoute).toBeDefined();
       expect(proveedorUploadRoute?.loadComponent).toBeDefined();
+    });
+
+    it('should have proveedores/upload route', () => {
+      const proveedorUploadRoute = routes.find(route => route.path === 'proveedores/upload');
+      expect(proveedorUploadRoute).toBeDefined();
+      expect(proveedorUploadRoute?.loadComponent).toBeDefined();
+    });
+
+    it('should have proveedores/upload/historial route', () => {
+      const proveedorHistorialRoute = routes.find(route => route.path === 'proveedores/upload/historial');
+      expect(proveedorHistorialRoute).toBeDefined();
+      expect(proveedorHistorialRoute?.loadComponent).toBeDefined();
     });
 
     it('should have producto-localizacion route', () => {
@@ -298,7 +310,7 @@ describe('App Routes', () => {
       // Test array methods
       expect(routes.length).toBeGreaterThan(0);
       expect(routes.map(r => r.path)).toContain('');
-      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(4); // producto/:id, vendedor/:id/detail, vendedor/:id/edit
+      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(6); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit
       expect(routes.some(r => r.path === 'dashboard-admin')).toBe(true);
       // Excluir redirect routes de la validación de loadComponent
       expect(routes.filter(r => !r.redirectTo).every(r => r.loadComponent !== undefined)).toBe(true);
@@ -311,7 +323,7 @@ describe('App Routes', () => {
 
       // Test parameterized paths
       const paramRoutes = routes.filter(r => r.path && r.path.includes(':'));
-      expect(paramRoutes.length).toBe(4); // producto/:id, vendedor/:id/detail, vendedor/:id/edit
+      expect(paramRoutes.length).toBe(6); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit
 
       // Test loadComponent functions
       routes.forEach(route => {

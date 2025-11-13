@@ -3,7 +3,7 @@
     <i class="fas fa-bars"></i>
   </button>
   <ul>
-    <li (click)="navigateTo('')" class="menuitem">
+    <li (click)="navigateTo('')" class="menuitem" [ngClass]="{ 'active-route': isActive('') }">
       <i class="fas fa-home"></i>
       <span class="menu-text">Inicio</span>
     </li>
@@ -13,10 +13,9 @@
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': gestionOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: gestionOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('proveedor-list')">Proveedores</li>
-  <li class="menuitem" (click)="navigateTo('producto-list')">Productos</li>
-  <li class="menuitem" (click)="navigateTo('vendedores')">Vendedores</li>
-  <li class="menuitem" (click)="navigateTo('metas-list')">Metas de venta</li>
+  <li class="menuitem" (click)="navigateTo('proveedor-list')" [ngClass]="{ 'active-route': isActive('proveedor') }">Proveedores</li>
+  <li class="menuitem" (click)="navigateTo('producto-list')" [ngClass]="{ 'active-route': isActive('producto') }">Productos</li>
+  <li class="menuitem" (click)="navigateTo('vendedores')" [ngClass]="{ 'active-route': isActive('vendedor') }">Vendedores</li>
     </ul>
     <li (click)="toggleSubmenu('ventas')" [ngClass]="{ 'active': ventasOpen }">
       <i class="fas fa-chart-line"></i>
@@ -24,8 +23,9 @@
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': ventasOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('metas-list')">Planes de venta</li>
-  <li class="menuitem" (click)="navigateTo('informe-ventas')">Reportes e informes</li>
+  <li class="menuitem" (click)="navigateTo('mis-metas')" [ngClass]="{ 'active-route': isActive('mis-metas') }">Mis Metas</li>
+  <li class="menuitem" (click)="navigateTo('metas')" [ngClass]="{ 'active-route': isActive('metas') }">Planes de venta</li>
+  <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">Reportes</li>
     </ul>
     <li (click)="toggleSubmenu('logistica')" [ngClass]="{ 'active': logisticaOpen }">
       <i class="fas fa-truck"></i>
@@ -33,12 +33,12 @@
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': logisticaOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: logisticaOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('producto-localizacion')">Inventario / Localización</li>
-  <li class="menuitem" (click)="navigateTo('ordenes')">Órdenes</li>
-  <li class="menuitem" (click)="navigateTo('confirmar-ordenes')">Confirmar Órdenes</li>
-  <li class="menuitem" (click)="navigateTo('generar-rutas')">Generar Rutas</li>
-  <li class="menuitem" (click)="navigateTo('rutas')">Ver Rutas</li>
-  <li class="menuitem" (click)="navigateTo('rutas-entrega')">Rutas de entrega</li>
+  <li class="menuitem" (click)="navigateTo('producto-localizacion')" [ngClass]="{ 'active-route': isActive('producto-localizacion') }">Inventario / Localización</li>
+  <li class="menuitem" (click)="navigateTo('ordenes')" [ngClass]="{ 'active-route': isActive('ordenes') }">Órdenes</li>
+  <li class="menuitem" (click)="navigateTo('confirmar-ordenes')" [ngClass]="{ 'active-route': isActive('confirmar-ordenes') }">Confirmar Órdenes</li>
+  <li class="menuitem" (click)="navigateTo('generar-rutas')" [ngClass]="{ 'active-route': isActive('generar-rutas') }">Generar Rutas</li>
+  <li class="menuitem" (click)="navigateTo('rutas')" [ngClass]="{ 'active-route': isActive('rutas') }">Ver Rutas</li>
+  <li class="menuitem" (click)="navigateTo('rutas-entrega')" [ngClass]="{ 'active-route': isActive('rutas-entrega') }">Rutas de entrega</li>
     </ul>
     <li>
       <i class="fas fa-question-circle"></i>

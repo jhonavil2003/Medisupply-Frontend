@@ -1,6 +1,7 @@
 import { Component, inject } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-menu-principal',
@@ -16,6 +17,52 @@ export class MenuPrincipalComponent {
   gestionOpen = false;
   ventasOpen = false;
   logisticaOpen = false;
+  currentRoute = '';
+
+  constructor() {
+    // Detectar cambios de ruta
+    this.router.events
+      .pipe(filter(event => event instanceof NavigationEnd))
+      .subscribe((event: any) => {
+        this.currentRoute = event.urlAfterRedirects || event.url;
+        // Abrir automáticamente el submenú correspondiente
+        this.openSubmenuForCurrentRoute();
+      });
+    
+    // Establecer ruta inicial
+    this.currentRoute = this.router.url;
+    this.openSubmenuForCurrentRoute();
+  }
+
+  isActive(route: string): boolean {
+    if (route === '') {
+      return this.currentRoute === '/' || this.currentRoute === '';
+    }
+    // Comparación exacta o con slash para evitar coincidencias parciales
+    // Por ejemplo: 'mis-metas' no debe activar 'metas'
+    return this.currentRoute === `/${route}` || 
+           this.currentRoute.startsWith(`/${route}/`) ||
+           this.currentRoute.startsWith(`/${route}?`);
+  }
+
+  openSubmenuForCurrentRoute(): void {
+    const route = this.currentRoute;
+    
+    // Gestión
+    if (route.includes('proveedor') || route.includes('producto') || route.includes('vendedor')) {
+      this.gestionOpen = true;
+    }
+    
+    // Ventas y Reportes
+    if (route.includes('meta') || route.includes('informe-ventas')) {
+      this.ventasOpen = true;
+    }
+    
+    // Logística
+    if (route.includes('localizacion') || route.includes('rutas-entrega')) {
+      this.logisticaOpen = true;
+    }
+  }
 
   navigateTo(route: string) {
     console.log('Navigating to route:', route);

@@ -1,0 +1,90 @@
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      Crear Meta de Venta
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="metaForm" (ngSubmit)="onSubmit()">
+      <div class="form-row">
+        <!-- ID Vendedor -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>ID Vendedor (Employee ID)</mat-label>
+          <input matInput formControlName="idVendedor" placeholder="Ej: V001">
+          @if (metaForm.get('idVendedor')?.pending) {
+            <mat-spinner matSuffix diameter="20"></mat-spinner>
+          }
+          <mat-error>{{ getErrorMessage('idVendedor') }}</mat-error>
+        </mat-form-field>
+
+        <!-- ID Producto -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>SKU del Producto</mat-label>
+          <input matInput formControlName="idProducto" placeholder="Ej: SKU001">
+          @if (metaForm.get('idProducto')?.pending) {
+            <mat-spinner matSuffix diameter="20"></mat-spinner>
+          }
+          <mat-error>{{ getErrorMessage('idProducto') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Región -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>Región</mat-label>
+          <mat-select formControlName="region">
+            @for (region of regiones; track region) {
+              <mat-option [value]="region">{{ region }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>{{ getErrorMessage('region') }}</mat-error>
+        </mat-form-field>
+
+        <!-- Trimestre -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>Trimestre</mat-label>
+          <mat-select formControlName="trimestre">
+            @for (trimestre of trimestres; track trimestre) {
+              <mat-option [value]="trimestre">{{ trimestre }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>{{ getErrorMessage('trimestre') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <div class="form-row">
+        <!-- Tipo -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>Tipo de Meta</mat-label>
+          <mat-select formControlName="tipo">
+            @for (tipo of tipos; track tipo) {
+              <mat-option [value]="tipo">{{ getTipoDisplay(tipo) }}</mat-option>
+            }
+          </mat-select>
+          <mat-error>{{ getErrorMessage('tipo') }}</mat-error>
+        </mat-form-field>
+
+        <!-- Valor Objetivo -->
+        <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
+          <mat-label>Valor Objetivo</mat-label>
+          <input matInput type="number" formControlName="valorObjetivo" min="1" placeholder="Ingrese el valor objetivo">
+          <mat-error>{{ getErrorMessage('valorObjetivo') }}</mat-error>
+        </mat-form-field>
+      </div>
+
+      <!-- Action Buttons -->
+      <div class="action-buttons">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+          @if (loading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          Guardar
+        </button>
+        <button mat-raised-button type="button" (click)="cancel()" [disabled]="loading()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

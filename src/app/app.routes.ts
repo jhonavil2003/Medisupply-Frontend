@@ -8,8 +8,8 @@ export const routes: Routes = [
   },
   { 
     path: 'proveedor-list', 
-    loadComponent: () => import('./presentation/pages/proveedores/proveedor-list/proveedor-list.component')
-      .then(m => m.ProveedorListComponent)
+    loadComponent: () => import('./proveedores/proveedor-list/proveedor-list-clean.component')
+      .then(m => m.ProveedorListComponentClean)
   },
   { 
     path: 'producto-list', 
@@ -67,9 +67,24 @@ export const routes: Routes = [
       .then(m => m.ProductoUploadComponent)
   },
   { 
+    path: 'productos/upload/historial', 
+    loadComponent: () => import('./presentation/pages/productos/producto-upload/producto-upload-history/producto-upload-history.component')
+      .then(m => m.ProductoUploadHistoryComponent)
+  },
+  { 
     path: 'proveedor-upload', 
     loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
       .then(m => m.ProveedorUploadComponent)
+  },
+  { 
+    path: 'proveedores/upload', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
+      .then(m => m.ProveedorUploadComponent)
+  },
+  { 
+    path: 'proveedores/upload/historial', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload-history/proveedor-upload-history.component')
+      .then(m => m.ProveedorUploadHistoryComponent)
   },
   { 
     path: 'producto-localizacion', 
@@ -110,6 +125,31 @@ export const routes: Routes = [
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
       .then(m => m.MetaListComponent)
+  },
+  { 
+    path: 'metas', 
+    loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
+      .then(m => m.MetaListComponent)
+  },
+  { 
+    path: 'metas/create', 
+    loadComponent: () => import('./presentation/pages/metas/meta-create/meta-create.component')
+      .then(m => m.MetaCreateComponent)
+  },
+  { 
+    path: 'metas/:id', 
+    loadComponent: () => import('./presentation/pages/metas/meta-detail/meta-detail.component')
+      .then(m => m.MetaDetailComponent)
+  },
+  { 
+    path: 'metas/:id/edit', 
+    loadComponent: () => import('./presentation/pages/metas/meta-edit/meta-edit.component')
+      .then(m => m.MetaEditComponent)
+  },
+  { 
+    path: 'mis-metas', 
+    loadComponent: () => import('./presentation/pages/metas/meta-vendedor/meta-vendedor.component')
+      .then(m => m.MetaVendedorComponent)
   },
   { 
     path: 'informe-ventas', 

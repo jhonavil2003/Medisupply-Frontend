@@ -19,6 +19,8 @@ const logisticsBaseUrl = ''
 // Servicio de ventas (puerto 3003)
 // Usar ruta vacía para aprovechar el proxy configurado en proxy.conf.json
 // El proxy redirigirá /orders/** a http://localhost:3003/orders/**
+// El proxy redirigirá /salesperson-goals/** a http://localhost:3003/salesperson-goals/**
+// El proxy redirigirá /reports/** a http://localhost:3003/reports/**
 const salesBaseUrl = ''
 
 // Google Maps API Key - Lee desde variable de entorno

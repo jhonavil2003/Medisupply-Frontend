@@ -1,0 +1,110 @@
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">Crear Proveedor</mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <form [formGroup]="proveedorForm" (ngSubmit)="onSubmit()">
+      <!-- Razón Social -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>Razón Social</mat-label>
+        <input matInput formControlName="razonSocial" maxlength="200">
+        <mat-error>{{ getFieldError('razonSocial') }}</mat-error>
+      </mat-form-field>
+
+      <!-- NIT -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>NIT</mat-label>
+        <input matInput formControlName="ruc" maxlength="20">
+        <mat-error>{{ getFieldError('ruc') }}</mat-error>
+      </mat-form-field>
+
+      <!-- País -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>País</mat-label>
+        <input matInput formControlName="country" maxlength="100">
+        <mat-error>{{ getFieldError('country') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Teléfono -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>Teléfono</mat-label>
+        <input matInput formControlName="telefono" maxlength="20">
+        <mat-error>{{ getFieldError('telefono') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Correo Contacto -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>Correo Contacto</mat-label>
+        <input matInput type="email" formControlName="correoContacto" maxlength="150">
+        <mat-error>{{ getFieldError('correoContacto') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Website -->
+      <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
+        <mat-label>Sitio Web</mat-label>
+        <input matInput formControlName="website" maxlength="200">
+        <mat-error>{{ getFieldError('website') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Moneda -->
+      <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
+        <mat-label>Moneda</mat-label>
+        <mat-select formControlName="currency">
+          @for (moneda of monedasDisponibles; track moneda) {
+            <mat-option [value]="moneda">{{ moneda }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ getFieldError('currency') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Dirección -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>Dirección</mat-label>
+        <input matInput formControlName="addressLine1" maxlength="300">
+        <mat-error>{{ getFieldError('addressLine1') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Ciudad -->
+      <mat-form-field appearance="outline" class="full-width form-field required" floatLabel="always">
+        <mat-label>Ciudad</mat-label>
+        <input matInput formControlName="city" maxlength="100">
+        <mat-error>{{ getFieldError('city') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Estado/Región -->
+      <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
+        <mat-label>Estado/Región</mat-label>
+        <input matInput formControlName="state" maxlength="100">
+        <mat-error>{{ getFieldError('state') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Términos de Pago -->
+      <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
+        <mat-label>Términos de Pago</mat-label>
+        <input matInput formControlName="paymentTerms" maxlength="200">
+        <mat-error>{{ getFieldError('paymentTerms') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Límite de Crédito -->
+      <mat-form-field appearance="outline" class="full-width form-field" floatLabel="always">
+        <mat-label>Límite de Crédito</mat-label>
+        <input matInput type="number" formControlName="creditLimit" min="0" max="999999999.99" step="0.01">
+        <mat-error>{{ getFieldError('creditLimit') }}</mat-error>
+      </mat-form-field>
+
+      <!-- Botones de acción -->
+      <div class="button-container">
+        <button mat-raised-button color="primary" type="submit" [disabled]="loading()">
+          @if (loading()) {
+            <mat-spinner diameter="20"></mat-spinner>
+          }
+          Guardar
+        </button>
+        <button mat-raised-button type="button" (click)="onCancel()" [disabled]="loading()">
+          Cancelar
+        </button>
+      </div>
+    </form>
+  </mat-card-content>
+</mat-card>

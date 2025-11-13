@@ -11,6 +11,12 @@
     "changeOrigin": true,
     "logLevel": "debug"
   },
+  "/salesperson-goals": {
+    "target": "http://localhost:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
   "/orders": {
     "target": "http://localhost:3003",
     "secure": false,
@@ -25,6 +31,12 @@
   },
   "/vehicles": {
     "target": "http://localhost:3002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/reports": {
+    "target": "http://localhost:3003",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

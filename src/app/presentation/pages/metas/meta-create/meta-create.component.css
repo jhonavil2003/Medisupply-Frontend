@@ -1,0 +1,125 @@
+/* Dialog/Modal styling */
+.form-card {
+  padding: 0;
+  box-shadow: none;
+  margin: 0;
+}
+
+/* Card Header Styling */
+.card-header {
+  background-color: #f5f5f5;
+  padding: 1.5rem 2rem !important;
+  margin: 0 !important;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #1976d2 !important;
+  margin: 0;
+}
+
+.card-title mat-icon {
+  color: #1976d2;
+  font-size: 1.75rem;
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
+/* Card Content */
+.form-card mat-card-content {
+  padding: 2rem !important;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.form-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.form-field {
+  flex: 1;
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+/* Required field asterisk */
+/* Hide default Material asterisk */
+::ng-deep .mat-mdc-form-field-required-marker,
+::ng-deep .mat-form-field-required-marker {
+  display: none !important;
+}
+
+/* Add custom red asterisk only to required fields */
+.form-field.required ::ng-deep .mdc-floating-label::after,
+.form-field.required ::ng-deep .mat-mdc-floating-label::after {
+  content: ' *';
+  color: #f44336 !important;
+  font-weight: bold;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.action-buttons button {
+  min-width: 100px;
+}
+
+.action-buttons mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+  .form-card mat-card-content {
+    padding: 1rem !important;
+  }
+  
+  .form-row {
+    flex-direction: column;
+    gap: 0;
+  }
+  
+  .action-buttons {
+    flex-direction: column;
+  }
+  
+  .action-buttons button {
+    width: 100%;
+  }
+}
+
+/* Form validation styles */
+.mat-mdc-form-field.mat-form-field-invalid .mat-mdc-text-field-wrapper {
+  border-color: #f44336;
+}
+
+.mat-mdc-form-field .mat-mdc-form-field-error {
+  color: #f44336;
+  font-size: 0.75rem;
+}
+
+/* Loading button styles */
+.action-buttons button[disabled] {
+  opacity: 0.6;
+}
+
+.action-buttons mat-spinner {
+  width: 20px !important;
+  height: 20px !important;
+}

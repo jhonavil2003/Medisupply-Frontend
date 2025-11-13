@@ -1,15 +1,21 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { Router } from '@angular/router';
+import { Router, NavigationEnd } from '@angular/router';
 import { MenuPrincipalComponent } from './menu-principal.component';
+import { Subject } from 'rxjs';
 
 describe('MenuPrincipalComponent', () => {
   let component: MenuPrincipalComponent;
   let fixture: ComponentFixture<MenuPrincipalComponent>;
   let mockRouter: jest.Mocked<Router>;
+  let routerEventsSubject: Subject<any>;
 
   beforeEach(async () => {
+    routerEventsSubject = new Subject();
+    
     mockRouter = {
-      navigate: jest.fn()
+      navigate: jest.fn(),
+      events: routerEventsSubject.asObservable(),
+      url: '/dashboard-admin'
     } as any;
 
     await TestBed.configureTestingModule({

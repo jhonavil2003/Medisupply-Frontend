@@ -93,7 +93,7 @@ describe('DashboardAdminComponent', () => {
       expect(esTexts.vendedores).toBe('Vendedores');
       expect(esTexts.ventasReportes).toBe('Ventas y Reportes');
       expect(esTexts.planesVenta).toBe('Planes de venta');
-      expect(esTexts.reportesInformes).toBe('Reportes e informes');
+      expect(esTexts.reportesInformes).toBe('Reportes');
       expect(esTexts.logistica).toBe('Logística');
       expect(esTexts.inventarioMenu).toBe('Inventario / Localización de productos');
       expect(esTexts.rutasMenu).toBe('Rutas de entrega');
