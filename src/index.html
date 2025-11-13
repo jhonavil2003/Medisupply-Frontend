@@ -11,6 +11,20 @@
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
   <!-- Cargar variables de entorno antes de la aplicación -->
   <script src="assets/env.js"></script>
+  <!-- Google Maps API -->
+  <script>
+    // Cargar Google Maps API con la API key del environment
+    (function() {
+      const apiKey = window['env']?.['GOOGLE_MAPS_API_KEY'] || '';
+      if (apiKey) {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    })();
+  </script>
 </head>
 <body class="mat-typography">
   <app-root></app-root>

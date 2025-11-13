@@ -126,6 +126,11 @@ export const routes: Routes = [
     loadComponent: () => import('./presentation/pages/logistica/route-detail/route-detail.component')
       .then(m => m.RouteDetailComponent)
   },
+  {
+    path: 'rutas/:id/mapa',
+    loadComponent: () => import('./presentation/pages/logistica/route-map/route-map.component')
+      .then(m => m.RouteMapComponent)
+  },
   { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')

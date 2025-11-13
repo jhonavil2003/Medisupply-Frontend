@@ -122,19 +122,25 @@
           <mat-card-content>
             <div class="card-header-inline">
               <mat-icon color="primary">access_time</mat-icon>
-              <h3>Horario</h3>
+              <h3>Horario de Ruta</h3>
             </div>
             <div class="schedule-times-compact">
               @if (route.schedule.startTime) {
                 <div class="time-compact">
                   <mat-icon class="tiny-icon">play_circle</mat-icon>
-                  <span>{{ formatTime(route.schedule.startTime) }}</span>
+                  <div class="time-detail">
+                    <span class="time-label">Inicio:</span>
+                    <span class="time-value">{{ formatTime(route.schedule.startTime) }}</span>
+                  </div>
                 </div>
               }
               @if (route.schedule.endTime) {
                 <div class="time-compact">
                   <mat-icon class="tiny-icon">stop_circle</mat-icon>
-                  <span>{{ formatTime(route.schedule.endTime) }}</span>
+                  <div class="time-detail">
+                    <span class="time-label">Fin estimado:</span>
+                    <span class="time-value">{{ formatTime(route.schedule.endTime) }}</span>
+                  </div>
                 </div>
               }
             </div>
