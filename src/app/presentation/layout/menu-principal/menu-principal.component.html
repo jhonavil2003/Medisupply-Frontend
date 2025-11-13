@@ -25,7 +25,7 @@
     <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
   <li class="menuitem" (click)="navigateTo('mis-metas')" [ngClass]="{ 'active-route': isActive('mis-metas') }">Mis Metas</li>
   <li class="menuitem" (click)="navigateTo('metas')" [ngClass]="{ 'active-route': isActive('metas') }">Planes de venta</li>
-  <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">Reportes e informes</li>
+  <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">Reportes</li>
     </ul>
     <li (click)="toggleSubmenu('logistica')" [ngClass]="{ 'active': logisticaOpen }">
       <i class="fas fa-truck"></i>
