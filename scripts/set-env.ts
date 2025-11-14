@@ -21,7 +21,7 @@ const environment = {
     ? 'http://lb-logistics-service-1435144637.us-east-1.elb.amazonaws.com'
     : (process.env['LOGISTICS_BASE_URL'] || ''),
   salesApiUrl: isProd
-    ? 'http://localhost:3003' // TODO: Actualizar con load balancer de producción
+    ? 'http://lb-sales-service-570996197.us-east-1.elb.amazonaws.com/'
     : (process.env['SALES_BASE_URL'] || ''),
   googleMapsApiKey: process.env['GOOGLE_MAPS_API_KEY'] || ''
 };
