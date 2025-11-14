@@ -176,7 +176,6 @@ describe('ProductoEditComponent', () => {
       expect(component.categories).toContain('Instrumental');
       expect(component.unitsOfMeasure).toContain('unidad');
       expect(component.unitsOfMeasure).toContain('caja');
-      expect(component.currencies).toContain('USD');
       expect(component.currencies).toContain('COP');
     });
   });
@@ -496,7 +495,7 @@ describe('ProductoEditComponent', () => {
     });
 
     it('should have all required currencies', () => {
-      const expectedCurrencies = ['USD', 'COP', 'EUR'];
+      const expectedCurrencies = ['COP'];
       
       expect(component.currencies).toEqual(expectedCurrencies);
     });

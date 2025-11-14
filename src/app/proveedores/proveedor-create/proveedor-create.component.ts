@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { CreateProveedorUseCase } from '../../core/application/use-cases/proveedor/create-proveedor.use-case';
 import { ProveedorEntity } from '../../core/domain/entities/proveedor.entity';
@@ -25,7 +26,8 @@ import { ProveedorEntity } from '../../core/domain/entities/proveedor.entity';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './proveedor-create.component.html',
   styleUrls: ['./proveedor-create.component.css']
@@ -34,11 +36,12 @@ export class ProveedorCreateComponent {
   private fb = inject(FormBuilder);
   private createProveedorUseCase = inject(CreateProveedorUseCase);
   private dialogRef = inject(MatDialogRef<ProveedorCreateComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   proveedorForm: FormGroup;
 
-  monedasDisponibles = ['USD', 'COP', 'EUR'];
+  monedasDisponibles = ['COP'];
 
   constructor() {
     this.proveedorForm = this.fb.group({
@@ -136,34 +139,34 @@ export class ProveedorCreateComponent {
     const field = this.proveedorForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return 'Este campo es requerido';
+        return this.translate.instant('VALIDATION.REQUIRED');
       }
       if (field.errors['minlength']) {
-        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MIN_LENGTH', { min: field.errors['minlength'].requiredLength });
       }
       if (field.errors['maxlength']) {
-        return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MAX_LENGTH', { max: field.errors['maxlength'].requiredLength });
       }
       if (field.errors['min']) {
-        return `El valor mínimo es ${field.errors['min'].min}`;
+        return this.translate.instant('VALIDATION.MIN_VALUE', { min: field.errors['min'].min });
       }
       if (field.errors['max']) {
-        return `El valor máximo es ${field.errors['max'].max}`;
+        return this.translate.instant('VALIDATION.MAX_VALUE', { max: field.errors['max'].max });
       }
       if (field.errors['email']) {
-        return 'Correo electrónico inválido';
+        return this.translate.instant('VALIDATION.INVALID_EMAIL');
       }
       if (field.errors['pattern']) {
         if (fieldName === 'ruc') {
-          return 'Solo números permitidos';
+          return this.translate.instant('VALIDATION.NUMBERS_ONLY');
         }
         if (fieldName === 'telefono') {
-          return 'Formato de teléfono inválido';
+          return this.translate.instant('VALIDATION.INVALID_PHONE');
         }
         if (fieldName === 'website') {
-          return 'Debe ser un sitio web válido (ej: www.ejemplo.com)';
+          return this.translate.instant('VALIDATION.INVALID_WEBSITE');
         }
-        return 'Formato inválido';
+        return this.translate.instant('VALIDATION.INVALID_FORMAT');
       }
     }
     return '';

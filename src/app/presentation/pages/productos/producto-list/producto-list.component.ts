@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ProductoEntity, ProductQueryParams, Pagination } from '../../../../core/domain/entities/producto.entity';
@@ -47,7 +48,8 @@ import { ProductoDetailComponent } from '../producto-detail/producto-detail.comp
     MatProgressBarModule,
     MatChipsModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']

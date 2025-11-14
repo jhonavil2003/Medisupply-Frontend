@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReportsService, SalesSummaryFilters, SalesSummaryItem } from './reports.service';
 
@@ -31,7 +32,8 @@ import { ReportsService, SalesSummaryFilters, SalesSummaryItem } from './reports
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './informe-ventas.component.html',
   styleUrls: ['./informe-ventas.component.css']
