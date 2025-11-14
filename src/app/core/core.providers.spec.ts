@@ -22,7 +22,7 @@ describe('CORE_PROVIDERS', () => {
     });
 
     it('should have correct number of providers', () => {
-      expect(CORE_PROVIDERS.length).toBe(6);
+      expect(CORE_PROVIDERS.length).toBe(8);
     });
 
     it('should be exportable and importable', () => {
@@ -131,7 +131,7 @@ describe('CORE_PROVIDERS', () => {
 
     it('should be importable in other modules', () => {
       const providers = [...CORE_PROVIDERS];
-      expect(providers.length).toBe(6);
+      expect(providers.length).toBe(8);
       expect(providers).toEqual(CORE_PROVIDERS);
     });
 
@@ -183,7 +183,7 @@ describe('CORE_PROVIDERS', () => {
 
   describe('Coverage Tests', () => {
     it('should access all provider array methods', () => {
-      expect(CORE_PROVIDERS.length).toBe(6);
+      expect(CORE_PROVIDERS.length).toBe(8);
       expect(CORE_PROVIDERS.slice(0, 3)).toHaveLength(3);
       expect(CORE_PROVIDERS.indexOf(CORE_PROVIDERS[0])).toBe(0);
       expect(CORE_PROVIDERS.includes(CORE_PROVIDERS[0])).toBe(true);
@@ -210,7 +210,7 @@ describe('CORE_PROVIDERS', () => {
       expect(filtered.length).toBe(CORE_PROVIDERS.length);
       
       const mapped = CORE_PROVIDERS.map((p, index) => index);
-      expect(mapped).toEqual([0, 1, 2, 3, 4, 5]);
+      expect(mapped).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
       
       const some = CORE_PROVIDERS.some(p => p !== null);
       expect(some).toBe(true);
@@ -243,7 +243,7 @@ describe('CORE_PROVIDERS', () => {
       
       expect(first).toBeDefined();
       expect(second).toBeDefined();
-      expect(rest).toHaveLength(4);
+      expect(rest).toHaveLength(6);
       expect([first, second, ...rest]).toEqual(CORE_PROVIDERS);
     });
   });

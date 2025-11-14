@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(26); // Actualizado: 4 vendedores + 5 metas + 1 historial productos + 2 proveedores upload (upload + historial)
+      expect(routes.length).toBe(32); // Actualizado: incluye rutas de logística (ordenes, confirmar-ordenes, generar-rutas, rutas, rutas/:id, rutas/:id/mapa)
     });
   });
 
@@ -303,7 +303,7 @@ describe('App Routes', () => {
       // Test array methods
       expect(routes.length).toBeGreaterThan(0);
       expect(routes.map(r => r.path)).toContain('');
-      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(6); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit
+      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(9); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit, ordenes/:id, rutas/:id, rutas/:id/mapa
       expect(routes.some(r => r.path === 'dashboard-admin')).toBe(true);
       // Excluir redirect routes de la validación de loadComponent
       expect(routes.filter(r => !r.redirectTo).every(r => r.loadComponent !== undefined)).toBe(true);
@@ -316,7 +316,7 @@ describe('App Routes', () => {
 
       // Test parameterized paths
       const paramRoutes = routes.filter(r => r.path && r.path.includes(':'));
-      expect(paramRoutes.length).toBe(6); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit
+      expect(paramRoutes.length).toBe(9); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit, ordenes/:id, rutas/:id, rutas/:id/mapa
 
       // Test loadComponent functions
       routes.forEach(route => {
