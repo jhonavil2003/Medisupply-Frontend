@@ -15,6 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 import {
@@ -45,7 +46,8 @@ import { VendedorDetailComponent } from '../vendedor-detail/vendedor-detail.comp
     MatCardModule,
     MatChipsModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    TranslateModule
   ],
   templateUrl: './vendedor-list.component.html',
   styleUrls: ['./vendedor-list.component.css']

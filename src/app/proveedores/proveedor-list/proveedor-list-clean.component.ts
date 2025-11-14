@@ -74,7 +74,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   filtroBusqueda: string = '';
   
   dataSource = new MatTableDataSource<ProveedorEntity>();
-  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'certificacionesVigentes', 'acciones'];
+  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'acciones'];
 
   // Estados disponibles
   estadosDisponibles = Object.values(EstadoProveedor);

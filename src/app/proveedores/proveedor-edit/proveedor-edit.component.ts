@@ -14,6 +14,7 @@ import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GetProveedorByIdUseCase } from '../../core/application/use-cases/proveedor/get-proveedor-by-id.use-case';
 import { UpdateProveedorUseCase } from '../../core/application/use-cases/proveedor/update-proveedor.use-case';
 import { ProveedorEntity } from '../../core/domain/entities/proveedor.entity';
+import { NotificationService } from '../../presentation/shared/services/notification.service';
 
 @Component({
   selector: 'app-proveedor-edit',
@@ -39,6 +40,7 @@ export class ProveedorEditComponent implements OnInit {
   private updateProveedorUseCase = inject(UpdateProveedorUseCase);
   private dialogRef = inject(MatDialogRef<ProveedorEditComponent>);
   private translate = inject(TranslateService);
+  private notificationService = inject(NotificationService);
 
   loading = signal(false);
   proveedorForm: FormGroup;
@@ -158,6 +160,7 @@ export class ProveedorEditComponent implements OnInit {
       this.updateProveedorUseCase.execute(updateDto).subscribe({
         next: () => {
           this.loading.set(false);
+          this.notificationService.success(this.translate.instant('SUPPLIERS.UPDATE_SUCCESS'));
           this.dialogRef.close(true);
         },
         error: (error: any) => {
@@ -166,6 +169,7 @@ export class ProveedorEditComponent implements OnInit {
         }
       });
     } else {
+      this.notificationService.warning(this.translate.instant('SUPPLIERS.COMPLETE_REQUIRED_FIELDS'));
       this.markFormGroupTouched();
     }
   }

@@ -7,6 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 
@@ -20,7 +21,8 @@ import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
-    MatLabel
+    MatLabel,
+    TranslateModule
 ],
   templateUrl: './vendedor-detail.component.html',
   styleUrls: ['./vendedor-detail.component.css']

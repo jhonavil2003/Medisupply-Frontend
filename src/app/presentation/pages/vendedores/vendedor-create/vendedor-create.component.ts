@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { CreateVendedorUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { CreateVendedorDto } from '../../../../core/domain/entities/vendedor.entity';
@@ -30,7 +31,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslateModule
   ],
   templateUrl: './vendedor-create.component.html',
   styleUrls: ['./vendedor-create.component.css']
@@ -40,6 +42,7 @@ export class VendedorCreateComponent {
   private createVendedorUseCase = inject(CreateVendedorUseCase);
   private notificationService = inject(NotificationService);
   private dialogRef = inject(MatDialogRef<VendedorCreateComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   vendedorForm: FormGroup;
@@ -80,7 +83,7 @@ export class VendedorCreateComponent {
   onSubmit(): void {
     if (this.vendedorForm.invalid) {
       this.vendedorForm.markAllAsTouched();
-      this.notificationService.warning('Por favor complete los campos requeridos correctamente');
+      this.notificationService.warning(this.translate.instant('SALESPERSONS.COMPLETE_REQUIRED_FIELDS'));
       return;
     }
 
@@ -115,7 +118,7 @@ export class VendedorCreateComponent {
     this.createVendedorUseCase.execute(vendedorDto).subscribe({
       next: (vendedor) => {
         this.loading.set(false);
-        this.notificationService.success('Vendedor creado exitosamente');
+        this.notificationService.success(this.translate.instant('SALESPERSONS.CREATE_SUCCESS'));
         this.dialogRef.close(true);
       },
       error: (error) => {
@@ -150,22 +153,22 @@ export class VendedorCreateComponent {
     const control = this.vendedorForm.get(field);
     
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translate.instant('VALIDATION.REQUIRED');
     }
     if (control?.hasError('minlength')) {
-      return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
+      return this.translate.instant('VALIDATION.MIN_LENGTH', { min: control.errors?.['minlength'].requiredLength });
     }
     if (control?.hasError('maxlength')) {
-      return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
+      return this.translate.instant('VALIDATION.MAX_LENGTH', { max: control.errors?.['maxlength'].requiredLength });
     }
     if (control?.hasError('email')) {
-      return 'Correo electrónico inválido';
+      return this.translate.instant('VALIDATION.INVALID_EMAIL');
     }
     if (control?.hasError('pattern')) {
       if (field === 'phone') {
-        return 'Formato de teléfono inválido';
+        return this.translate.instant('VALIDATION.INVALID_PHONE');
       }
-      return 'Formato inválido';
+      return this.translate.instant('VALIDATION.INVALID_FORMAT');
     }
     
     return '';
