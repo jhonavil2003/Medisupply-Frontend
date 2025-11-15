@@ -60,7 +60,7 @@ export class MenuPrincipalComponent {
     }
     
     // Logística
-    if (route.includes('localizacion') || route.includes('rutas-entrega')) {
+    if (route.includes('localizacion') || route.includes('ordenes') || route.includes('rutas')) {
       this.logisticaOpen = true;
     }
   }

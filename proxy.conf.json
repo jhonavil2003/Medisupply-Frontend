@@ -1,6 +1,6 @@
 {
   "/inventory": {
-    "target": "http://localhost:3002",
+    "target": "http://lb-logistics-service-1435144637.us-east-1.elb.amazonaws.com/",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
@@ -13,6 +13,24 @@
   },
   "/salesperson-goals": {
     "target": "http://localhost:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/orders": {
+    "target": "http://localhost:3003",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/routes": {
+    "target": "http://localhost:3002",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+  "/vehicles": {
+    "target": "http://localhost:3002",
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"

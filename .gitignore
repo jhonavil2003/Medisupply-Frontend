@@ -47,9 +47,10 @@ testem.log
 .DS_Store
 Thumbs.db
 
-# Ignorar documentación que no se debe versionar
-ARCHITECTURE_DOCUMENTATION.md
-CATALOG_SERVICE_DOCUMENTATION.md
-LOGISTICS_SERVICE_DOCUMENTATION.md
-SALES_SERVICE_DOCUMENTATION.md
-SUPPLIERS_API_DOCUMENTATION.md
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Generated environment files
+src/assets/env.json

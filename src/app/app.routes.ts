@@ -92,9 +92,39 @@ export const routes: Routes = [
       .then(m => m.ProductoLocalizacionComponent)
   },
   { 
-    path: 'rutas-entrega', 
-    loadComponent: () => import('./presentation/pages/logistica/ruta-entrega-list/ruta-entrega-list.component')
-      .then(m => m.RutaEntregaListaComponent)
+    path: 'ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-list/order-list.component')
+      .then(m => m.OrderListComponent)
+  },
+  { 
+    path: 'ordenes/:id', 
+    loadComponent: () => import('./presentation/pages/logistica/order-detail/order-detail.component')
+      .then(m => m.OrderDetailComponent)
+  },
+  { 
+    path: 'confirmar-ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-confirmation/order-confirmation.component')
+      .then(m => m.OrderConfirmationComponent)
+  },
+  { 
+    path: 'generar-rutas', 
+    loadComponent: () => import('./presentation/pages/logistica/route-generation/route-generation.component')
+      .then(m => m.RouteGenerationComponent)
+  },
+  {
+    path: 'rutas',
+    loadComponent: () => import('./presentation/pages/logistica/route-list/route-list.component')
+      .then(m => m.RouteListComponent)
+  },
+  {
+    path: 'rutas/:id',
+    loadComponent: () => import('./presentation/pages/logistica/route-detail/route-detail.component')
+      .then(m => m.RouteDetailComponent)
+  },
+  {
+    path: 'rutas/:id/mapa',
+    loadComponent: () => import('./presentation/pages/logistica/route-map/route-map.component')
+      .then(m => m.RouteMapComponent)
   },
   { 
     path: 'metas-list', 

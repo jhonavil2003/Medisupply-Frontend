@@ -1,50 +1,134 @@
 <div class="sidebar" [ngClass]="{ 'collapsed': !sidebarVisible }">
-  <button class="toggle-btn" (click)="toggleSidebar()">
-    <i class="fas fa-bars"></i>
+  <button class="toggle-btn" (click)="toggleSidebar()" aria-label="Toggle sidebar">
+    <i class="fas" [ngClass]="sidebarVisible ? 'fa-times' : 'fa-bars'"></i>
   </button>
+  
   <ul>
-    <li (click)="navigateTo('')" class="menuitem" [ngClass]="{ 'active-route': isActive('') }">
+    <!-- Inicio -->
+    <li (click)="navigateTo('')" 
+        class="menuitem" 
+        [ngClass]="{ 'active-route': isActive('') }"
+        data-tooltip="Inicio"
+        tabindex="0">
       <i class="fas fa-home"></i>
       <span class="menu-text">{{ 'SIDEBAR.HOME' | translate }}</span>
     </li>
-    <li (click)="toggleSubmenu('gestion')" class="menuitem" [ngClass]="{ 'active': gestionOpen }">
+
+    <!-- Gestión -->
+    <li (click)="toggleSubmenu('gestion')" 
+        class="menuitem"
+        [ngClass]="{ 'active': gestionOpen }"
+        data-tooltip="Gestión"
+        tabindex="0">
       <i class="fas fa-clipboard-list"></i>
       <span class="menu-text">{{ 'SIDEBAR.MANAGEMENT' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': gestionOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: gestionOpen ? 'flex' : 'none' }">
-      <li class="menuitem" (click)="navigateTo('proveedor-list')" [ngClass]="{ 'active-route': isActive('proveedor-list') }">{{ 'SIDEBAR.SUPPLIERS' | translate }}</li>
-      <li class="menuitem" (click)="navigateTo('producto-list')" [ngClass]="{ 'active-route': isActive('producto-list') }">{{ 'SIDEBAR.PRODUCTS' | translate }}</li>
-      <li class="menuitem" (click)="navigateTo('vendedores')" [ngClass]="{ 'active-route': isActive('vendedores') }">{{ 'SIDEBAR.SALESPERSONS' | translate }}</li>
+      <li class="menuitem" 
+          (click)="navigateTo('proveedor-list')" 
+          [ngClass]="{ 'active-route': isActive('proveedor') }"
+          tabindex="0">
+        {{ 'SIDEBAR.SUPPLIERS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('producto-list')" 
+          [ngClass]="{ 'active-route': isActive('producto') }"
+          tabindex="0">
+        {{ 'SIDEBAR.PRODUCTS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('vendedores')" 
+          [ngClass]="{ 'active-route': isActive('vendedor') }"
+          tabindex="0">
+        {{ 'SIDEBAR.SALESPERSONS' | translate }}
+      </li>
     </ul>
-    <li (click)="toggleSubmenu('ventas')" class="menuitem" [ngClass]="{ 'active': ventasOpen }">
+
+    <!-- Ventas y Reportes -->
+    <li (click)="toggleSubmenu('ventas')" 
+        class="menuitem"
+        [ngClass]="{ 'active': ventasOpen }"
+        data-tooltip="Ventas y Reportes"
+        tabindex="0">
       <i class="fas fa-chart-line"></i>
       <span class="menu-text">{{ 'SIDEBAR.SALES_AND_REPORTS' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': ventasOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
-      <li class="menuitem" (click)="navigateTo('mis-metas')" [ngClass]="{ 'active-route': isActive('mis-metas') }">{{ 'SIDEBAR.MY_GOALS' | translate }}</li>
-      <li class="menuitem" (click)="navigateTo('metas')" [ngClass]="{ 'active-route': isActive('metas') }">{{ 'SIDEBAR.SALES_PLANS' | translate }}</li>
-      <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">{{ 'SIDEBAR.REPORTS' | translate }}</li>
+      <li class="menuitem" 
+          (click)="navigateTo('mis-metas')" 
+          [ngClass]="{ 'active-route': isActive('mis-metas') }"
+          tabindex="0">
+        {{ 'SIDEBAR.MY_GOALS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('metas')" 
+          [ngClass]="{ 'active-route': isActive('metas') }"
+          tabindex="0">
+        {{ 'SIDEBAR.SALES_PLANS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('informe-ventas')" 
+          [ngClass]="{ 'active-route': isActive('informe-ventas') }"
+          tabindex="0">
+        {{ 'SIDEBAR.REPORTS' | translate }}
+      </li>
     </ul>
-    <li (click)="toggleSubmenu('logistica')" class="menuitem" [ngClass]="{ 'active': logisticaOpen }">
+
+    <!-- Logística -->
+    <li (click)="toggleSubmenu('logistica')" 
+        class="menuitem"
+        [ngClass]="{ 'active': logisticaOpen }"
+        data-tooltip="Logística"
+        tabindex="0">
       <i class="fas fa-truck"></i>
       <span class="menu-text">{{ 'SIDEBAR.LOGISTICS' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': logisticaOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: logisticaOpen ? 'flex' : 'none' }">
-      <li class="menuitem" (click)="navigateTo('producto-localizacion')" [ngClass]="{ 'active-route': isActive('producto-localizacion') }">{{ 'SIDEBAR.INVENTORY_LOCATION' | translate }}</li>
-      <li class="menuitem" (click)="navigateTo('rutas-entrega')" [ngClass]="{ 'active-route': isActive('rutas-entrega') }">{{ 'SIDEBAR.DELIVERY_ROUTES' | translate }}</li>
+      <li class="menuitem" 
+          (click)="navigateTo('producto-localizacion')" 
+          [ngClass]="{ 'active-route': isActive('producto-localizacion') }"
+          tabindex="0">
+        {{ 'SIDEBAR.INVENTORY_LOCATION' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('ordenes')" 
+          [ngClass]="{ 'active-route': isActive('ordenes') }"
+          tabindex="0">
+        {{ 'SIDEBAR.ORDERS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('confirmar-ordenes')" 
+          [ngClass]="{ 'active-route': isActive('confirmar-ordenes') }"
+          tabindex="0">
+        {{ 'SIDEBAR.CONFIRM_ORDERS' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('generar-rutas')" 
+          [ngClass]="{ 'active-route': isActive('generar-rutas') }"
+          tabindex="0">
+        {{ 'SIDEBAR.GENERATE_ROUTES' | translate }}
+      </li>
+      <li class="menuitem" 
+          (click)="navigateTo('rutas')" 
+          [ngClass]="{ 'active-route': isActive('rutas') }"
+          tabindex="0">
+        {{ 'SIDEBAR.VIEW_ROUTES' | translate }}
+      </li>
     </ul>
-    <li class="menuitem">
+
+    <!-- Footer items -->
+    <li class="menuitem" data-tooltip="Ayuda" tabindex="0">
       <i class="fas fa-question-circle"></i>
       <span class="menu-text">{{ 'SIDEBAR.HELP' | translate }}</span>
     </li>
-    <li class="menuitem">
+    <li class="menuitem" data-tooltip="Soporte" tabindex="0">
       <i class="fas fa-life-ring"></i>
       <span class="menu-text">{{ 'SIDEBAR.SUPPORT' | translate }}</span>
     </li>
-    <li class="menuitem">
+    <li class="menuitem" data-tooltip="Política de privacidad" tabindex="0">
       <i class="fas fa-file-alt"></i>
       <span class="menu-text">{{ 'SIDEBAR.PRIVACY_POLICY' | translate }}</span>
     </li>

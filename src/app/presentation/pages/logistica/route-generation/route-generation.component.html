@@ -1,0 +1,465 @@
+<div class="route-generation-container">
+  <div class="header">
+    <h1 class="title">
+      <mat-icon>route</mat-icon>
+      Generación de Rutas de Entrega
+    </h1>
+    <p class="subtitle">Selecciona órdenes confirmadas y genera rutas optimizadas automáticamente</p>
+  </div>
+
+  @if (!showResults()) {
+    <div class="configuration-section">
+      <mat-card class="config-card">
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>settings</mat-icon>
+            Configuración de Generación
+          </mat-card-title>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="config-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Centro de Distribución</mat-label>
+              <mat-select [(ngModel)]="distributionCenterId" (selectionChange)="loadAvailableVehicles()">
+                @for (center of distributionCenters; track center.id) {
+                  <mat-option [value]="center.id">
+                    {{ center.code }} - {{ center.name }}
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-icon matPrefix>warehouse</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Fecha de Entrega</mat-label>
+              <input matInput [matDatepicker]="picker" [(ngModel)]="selectedDate" 
+                     [min]="minDate" (dateChange)="onDateChange($event.value)">
+              <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+              <mat-datepicker #picker></mat-datepicker>
+              <mat-icon matPrefix>calendar_today</mat-icon>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline">
+              <mat-label>Estrategia de Optimización</mat-label>
+              <mat-select [(ngModel)]="optimizationStrategy">
+                @for (strategy of optimizationStrategies; track strategy.value) {
+                  <mat-option [value]="strategy.value">
+                    <div class="strategy-option">
+                      <span class="strategy-label">{{ strategy.label }}</span>
+                      <span class="strategy-description">{{ strategy.description }}</span>
+                    </div>
+                  </mat-option>
+                }
+              </mat-select>
+              <mat-icon matPrefix>tune</mat-icon>
+            </mat-form-field>
+          </div>
+        </mat-card-content>
+      </mat-card>
+
+      <mat-expansion-panel class="vehicles-panel">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            <mat-icon>local_shipping</mat-icon>
+            Vehículos Disponibles ({{ availableVehicles().length }})
+          </mat-panel-title>
+          <mat-panel-description>
+            @if (loadingVehicles()) {
+              <mat-spinner diameter="20"></mat-spinner>
+            } @else {
+              Clic para ver detalles
+            }
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+
+        @if (availableVehicles().length > 0) {
+          <div class="vehicles-grid">
+            @for (vehicle of availableVehicles(); track vehicle.id) {
+              <mat-card class="vehicle-card">
+                <mat-card-header>
+                  <div class="vehicle-header">
+                    <div class="vehicle-plate">
+                      <mat-icon>directions_car</mat-icon>
+                      {{ vehicle.plate }}
+                    </div>
+                    <mat-chip [style.background-color]="getStatusColor(vehicle.status)">
+                      <mat-icon [fontIcon]="getStatusIcon(vehicle.status)"></mat-icon>
+                      {{ vehicle.status }}
+                    </mat-chip>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="vehicle-details">
+                    <div class="detail-row">
+                      <span class="detail-label">Tipo:</span>
+                      <span class="detail-value">{{ getVehicleTypeLabel(vehicle.type) }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Capacidad:</span>
+                      <span class="detail-value">{{ vehicle.capacityKg }} kg</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Conductor:</span>
+                      <span class="detail-value">{{ vehicle.driver.name }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Teléfono:</span>
+                      <span class="detail-value">{{ vehicle.driver.phone }}</span>
+                    </div>
+                    <div class="detail-row">
+                      <span class="detail-label">Combustible:</span>
+                      <span class="detail-value">{{ vehicle.fuelType }}</span>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+        } @else if (!loadingVehicles()) {
+          <div class="empty-state">
+            <mat-icon>warning</mat-icon>
+            <p>No hay vehículos disponibles para la fecha seleccionada</p>
+          </div>
+        }
+      </mat-expansion-panel>
+    </div>
+
+    <div class="orders-section">
+      <mat-card>
+        <mat-card-header>
+          <mat-card-title>
+            <mat-icon>inventory_2</mat-icon>
+            Órdenes Confirmadas Disponibles
+          </mat-card-title>
+          <mat-card-subtitle>
+            Selecciona las órdenes que deseas incluir en las rutas
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          @if (selectedOrdersCount() > 0) {
+            <div class="selection-banner">
+              <div class="selection-info">
+                <mat-icon>check_circle</mat-icon>
+                <span>{{ selectedOrdersCount() }} órdenes seleccionadas</span>
+                <span class="divider">|</span>
+                <span>Peso estimado: {{ formatWeight(totalWeight()) }}</span>
+                <span class="divider">|</span>
+                <span>Total: {{ formatCurrency(totalAmount()) }}</span>
+              </div>
+              <div class="selection-actions">
+                <button mat-button (click)="selection.clear(); selectionCount.set(0)">
+                  <mat-icon>clear</mat-icon>
+                  Limpiar selección
+                </button>
+                <button mat-raised-button color="primary" [disabled]="!canGenerate()" (click)="generateRoutes()">
+                  <mat-icon>auto_awesome</mat-icon>
+                  Generar Rutas
+                </button>
+              </div>
+            </div>
+          }
+
+          @if (loadingOrders()) {
+            <div class="loading-state">
+              <mat-spinner></mat-spinner>
+              <p>Cargando órdenes confirmadas...</p>
+            </div>
+          } @else if (confirmedOrders().length > 0) {
+            <div class="table-container">
+              <table mat-table [dataSource]="confirmedOrders()" class="orders-table">
+                <ng-container matColumnDef="select">
+                  <th mat-header-cell *matHeaderCellDef>
+                    <mat-checkbox
+                      (change)="$event ? toggleAll() : null"
+                      [checked]="selection.hasValue() && isAllSelected()"
+                      [indeterminate]="selection.hasValue() && !isAllSelected()">
+                    </mat-checkbox>
+                  </th>
+                  <td mat-cell *matCellDef="let order">
+                    <mat-checkbox
+                      (click)="$event.stopPropagation()"
+                      (change)="toggleSelection(order)"
+                      [checked]="selection.isSelected(order)">
+                    </mat-checkbox>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="orderNumber">
+                  <th mat-header-cell *matHeaderCellDef>Número de Orden</th>
+                  <td mat-cell *matCellDef="let order">
+                    <div class="order-number">{{ order.orderNumber }}</div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="customerName">
+                  <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                  <td mat-cell *matCellDef="let order">
+                    <div class="customer-info">
+                      <div class="customer-name">{{ order.customerName }}</div>
+                      @if (order.customerAddress) {
+                        <div class="customer-address">{{ order.customerAddress }}, {{ order.customerCity }}</div>
+                      }
+                    </div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                  <td mat-cell *matCellDef="let order">
+                    {{ order.orderDate | date:'dd/MM/yyyy' }}
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="totalAmount">
+                  <th mat-header-cell *matHeaderCellDef>Total</th>
+                  <td mat-cell *matCellDef="let order">
+                    <div class="amount">{{ formatCurrency(order.totalAmount) }}</div>
+                  </td>
+                </ng-container>
+
+                <ng-container matColumnDef="actions">
+                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <td mat-cell *matCellDef="let order">
+                    <button mat-icon-button color="primary" 
+                            (click)="viewOrderDetail(order)"
+                            matTooltip="Ver detalle">
+                      <mat-icon>visibility</mat-icon>
+                    </button>
+                  </td>
+                </ng-container>
+
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+                    [class.selected-row]="selection.isSelected(row)"
+                    (click)="selection.toggle(row)"></tr>
+              </table>
+            </div>
+          } @else {
+            <div class="empty-state">
+              <mat-icon>inbox</mat-icon>
+              <p>No hay órdenes confirmadas disponibles</p>
+              <button mat-raised-button color="primary" (click)="loadConfirmedOrders()">
+                <mat-icon>refresh</mat-icon>
+                Recargar
+              </button>
+            </div>
+          }
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (generating()) {
+    <div class="generation-overlay">
+      <mat-card class="generation-card">
+        <mat-card-content>
+          <div class="generation-content">
+            <mat-spinner diameter="60"></mat-spinner>
+            <h2>{{ generationMessage() }}</h2>
+            <mat-progress-bar mode="determinate" [value]="generationProgress()"></mat-progress-bar>
+            <p class="progress-text">{{ generationProgress() }}% completado</p>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+
+  @if (showResults() && generationResult()) {
+    <div class="results-section">
+      <mat-card class="results-card">
+        <mat-card-header>
+          <mat-card-title>
+            @if (generationResult()!.status === 'success') {
+              <mat-icon class="success-icon">check_circle</mat-icon>
+              ¡Rutas Generadas Exitosamente!
+            } @else if (generationResult()!.status === 'partial') {
+              <mat-icon class="warning-icon">warning</mat-icon>
+              Rutas Generadas con Advertencias
+            }
+          </mat-card-title>
+          <mat-card-subtitle>
+            {{ generationResult()!.message }}
+          </mat-card-subtitle>
+        </mat-card-header>
+        <mat-card-content>
+          <div class="summary-grid">
+            <div class="summary-card">
+              <div class="summary-icon">
+                <mat-icon>route</mat-icon>
+              </div>
+              <div class="summary-details">
+                <div class="summary-value">{{ generationResult()!.summary.routesGenerated }}</div>
+                <div class="summary-label">Rutas Generadas</div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-icon">
+                <mat-icon>inventory_2</mat-icon>
+              </div>
+              <div class="summary-details">
+                <div class="summary-value">{{ generationResult()!.summary.ordersAssigned }}</div>
+                <div class="summary-label">Órdenes Asignadas</div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-icon">
+                <mat-icon>straighten</mat-icon>
+              </div>
+              <div class="summary-details">
+                <div class="summary-value">{{ formatDistance(generationResult()!.summary.totalDistanceKm) }}</div>
+                <div class="summary-label">Distancia Total</div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-icon">
+                <mat-icon>schedule</mat-icon>
+              </div>
+              <div class="summary-details">
+                <div class="summary-value">{{ generationResult()!.summary.estimatedDurationHours.toFixed(1) }}h</div>
+                <div class="summary-label">Duración Estimada</div>
+              </div>
+            </div>
+
+            <div class="summary-card">
+              <div class="summary-icon">
+                <mat-icon>speed</mat-icon>
+              </div>
+              <div class="summary-details">
+                <div class="summary-value">{{ generationResult()!.summary.optimizationScore.toFixed(1) }}%</div>
+                <div class="summary-label">Score de Optimización</div>
+              </div>
+            </div>
+
+            @if (generationResult()!.summary.fuelCostEstimate) {
+              <div class="summary-card">
+                <div class="summary-icon">
+                  <mat-icon>local_gas_station</mat-icon>
+                </div>
+                <div class="summary-details">
+                  <div class="summary-value">{{ formatCurrency(generationResult()!.summary.fuelCostEstimate!) }}</div>
+                  <div class="summary-label">Costo Combustible</div>
+                </div>
+              </div>
+            }
+          </div>
+
+          @if (generationResult()!.warnings && generationResult()!.warnings!.length > 0) {
+            <mat-card class="warnings-card">
+              <mat-card-header>
+                <mat-icon>warning</mat-icon>
+                Advertencias
+              </mat-card-header>
+              <mat-card-content>
+                @for (warning of generationResult()!.warnings; track $index) {
+                  <div class="warning-item">
+                    <mat-icon>info</mat-icon>
+                    {{ warning }}
+                  </div>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+
+          @if (generationResult()!.unassignedOrders && generationResult()!.unassignedOrders!.length > 0) {
+            <mat-card class="unassigned-card">
+              <mat-card-header>
+                <mat-icon>error</mat-icon>
+                Órdenes No Asignadas ({{ generationResult()!.unassignedOrders!.length }})
+              </mat-card-header>
+              <mat-card-content>
+                @for (unassigned of generationResult()!.unassignedOrders; track unassigned.orderId) {
+                  <div class="unassigned-item">
+                    <span class="order-id">Orden #{{ unassigned.orderId }}</span>
+                    <span class="reason">{{ unassigned.reason }}</span>
+                  </div>
+                }
+              </mat-card-content>
+            </mat-card>
+          }
+
+          <div class="routes-list">
+            <h3>Rutas Creadas</h3>
+            @for (route of generationResult()!.routes; track route.id) {
+              <mat-card class="route-card">
+                <mat-card-header>
+                  <div class="route-header">
+                    <div class="route-code">
+                      <mat-icon>route</mat-icon>
+                      {{ route.routeCode }}
+                    </div>
+                    <mat-chip class="status-chip">{{ route.status }}</mat-chip>
+                  </div>
+                </mat-card-header>
+                <mat-card-content>
+                  <div class="route-info-grid">
+                    <div class="route-info-item">
+                      <mat-icon>local_shipping</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Vehículo</div>
+                        <div class="info-value">{{ route.vehicle.plate }} - {{ getVehicleTypeLabel(route.vehicle.type) }}</div>
+                      </div>
+                    </div>
+
+                    <div class="route-info-item">
+                      <mat-icon>person</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Conductor</div>
+                        <div class="info-value">{{ route.vehicle.driverName }}</div>
+                      </div>
+                    </div>
+
+                    <div class="route-info-item">
+                      <mat-icon>inventory_2</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Órdenes / Paradas</div>
+                        <div class="info-value">{{ route.ordersCount }} órdenes / {{ route.stopsCount }} paradas</div>
+                      </div>
+                    </div>
+
+                    <div class="route-info-item">
+                      <mat-icon>straighten</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Distancia</div>
+                        <div class="info-value">{{ formatDistance(route.distanceKm) }}</div>
+                      </div>
+                    </div>
+
+                    <div class="route-info-item">
+                      <mat-icon>schedule</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Duración</div>
+                        <div class="info-value">{{ formatDuration(route.durationMinutes) }}</div>
+                      </div>
+                    </div>
+
+                    <div class="route-info-item">
+                      <mat-icon>local_gas_station</mat-icon>
+                      <div class="info-content">
+                        <div class="info-label">Costo Combustible</div>
+                        <div class="info-value">{{ formatCurrency(route.fuelCostEstimate) }}</div>
+                      </div>
+                    </div>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            }
+          </div>
+
+          <div class="results-actions">
+            <button mat-stroked-button (click)="resetGeneration()">
+              <mat-icon>refresh</mat-icon>
+              Generar Nuevas Rutas
+            </button>
+            <button mat-raised-button color="primary" (click)="viewGeneratedRoutes()">
+              <mat-icon>visibility</mat-icon>
+              Ver Rutas Generadas
+            </button>
+          </div>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  }
+</div>

@@ -3,11 +3,12 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { ProductoBulkUploadService } from './producto-bulk-upload.service';
 import { BulkUploadJob, BulkUploadHistoryResponse, BulkUploadStats } from './models/bulk-upload.models';
+import { environment } from '../../../../../environments/environment';
 
 describe('ProductoBulkUploadService', () => {
   let service: ProductoBulkUploadService;
   let httpMock: HttpTestingController;
-  const API_URL = 'http://localhost:3001/api/products/bulk-upload';
+  const API_URL = `${environment.catalogApiUrl}/api/products/bulk-upload`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
