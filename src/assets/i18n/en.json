@@ -26,6 +26,11 @@
     "CREATED_AT": "Created At",
     "UPDATED_AT": "Last Updated"
   },
+  "DIALOG": {
+    "CONFIRM_DELETE_TITLE": "Confirm Deletion",
+    "CONFIRM_DELETE_MESSAGE": "Are you sure you want to delete \"{{item}}\"? This action cannot be undone.",
+    "DELETE": "Delete"
+  },
   "MENU": {
     "DASHBOARD": "Dashboard",
     "PRODUCTS": "Products",
@@ -114,7 +119,8 @@
     "REQUIRES_PRESCRIPTION": "Requires Prescription",
     "SANITARY_REGISTRATION": "Sanitary Registration",
     "DELETE_CONFIRM": "Are you sure you want to delete the product",
-    "DELETE_SUCCESS": "Product deleted successfully",
+    "DELETE_SUCCESS": "Product \"{{name}}\" deleted successfully",
+    "DELETE_ERROR": "Error deleting product: {{error}}",
     "CREATE_SUCCESS": "Product created successfully",
     "UPDATE_SUCCESS": "Product updated successfully",
     "NO_RESULTS": "No products found",
@@ -170,7 +176,8 @@
     "STATUS": "Status",
     "COMPLETE_REQUIRED_FIELDS": "Please complete all required fields",
     "DELETE_CONFIRM": "Are you sure you want to delete the supplier",
-    "DELETE_SUCCESS": "Supplier deleted successfully",
+    "DELETE_SUCCESS": "Supplier \"{{name}}\" deleted successfully",
+    "DELETE_ERROR_GENERIC": "Error deleting supplier",
     "CREATE_SUCCESS": "Supplier created successfully",
     "UPDATE_SUCCESS": "Supplier updated successfully"
   },
@@ -202,6 +209,7 @@
     "COMPLETE_REQUIRED_FIELDS": "Please complete all required fields",
     "DELETE_CONFIRM": "Are you sure you want to delete the salesperson",
     "DELETE_SUCCESS": "Salesperson deleted successfully",
+    "DELETE_ERROR_HAS_VISITS": "Could not delete salesperson. They may have associated visits.",
     "CREATE_SUCCESS": "Salesperson created successfully",
     "UPDATE_SUCCESS": "Salesperson updated successfully"
   },
@@ -261,6 +269,8 @@
     "LOAD_ERROR": "Error loading goal",
     "DELETE_CONFIRM": "Are you sure you want to delete the goal",
     "DELETE_SUCCESS": "Goal deleted successfully",
+    "DELETE_ERROR_NO_ID": "Cannot delete: goal without ID",
+    "DELETE_ERROR_GENERIC": "Error deleting goal",
     "CREATE_SUCCESS": "Goal created successfully",
     "UPDATE_SUCCESS": "Goal updated successfully",
     "COMPLETE_REQUIRED_FIELDS": "Please complete required fields correctly"
@@ -268,7 +278,7 @@
   "MY_GOALS": {
     "TITLE": "My Sales Goals",
     "LOADING": "Loading goals...",
-    "NO_GOALS_ASSIGNED": "You have no sales goals assigned",
+    "NO_GOALS_ASSIGNED": "You have no assigned sales goals",
     "NO_MATCHING_FILTERS": "No goals match the selected filters",
     "SHOWING_RESULTS": "Showing {{shown}} of {{total}} goals",
     "REGION": "Region",
@@ -277,10 +287,112 @@
     "PROGRESS": "Progress",
     "UNITS_LABEL": "units"
   },
+  "LOGISTICS": {
+    "TITLE": "Generated Routes",
+    "FILTER_BY_STATUS": "Filter by status:",
+    "ALL": "All",
+    "VIEW": "View",
+    "CLOSE_DETAIL": "Close detail",
+    "STATUS": {
+      "PENDING": "Pending",
+      "IN_PROGRESS": "In Progress",
+      "COMPLETED": "Completed"
+    },
+    "TABLE": {
+      "ID": "ID",
+      "DATE": "Date",
+      "VEHICLES": "Vehicles",
+      "DRIVER": "Driver",
+      "ORDERS": "# Orders",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
+    "DETAIL": {
+      "TITLE": "Route Detail",
+      "DATE": "Date",
+      "VEHICLES": "Vehicles",
+      "DRIVER": "Driver",
+      "STATUS": "Status",
+      "INCLUDED_ORDERS": "Included Orders"
+    }
+  },
+  "PRODUCT_LOCATION": {
+    "TITLE": "Warehouse Product Location",
+    "BACK_TO_DASHBOARD": "Back to dashboard",
+    "SEARCH_PRODUCT": "Search product",
+    "SEARCH_PLACEHOLDER": "SKU, barcode, QR or product name",
+    "SEARCH_HINT": "Minimum 3 characters. Automatic search.",
+    "CLEAR_SEARCH": "Clear search",
+    "SEARCH": "Search",
+    "MIN_SEARCH_LENGTH": "Enter at least 3 characters to search",
+    "NO_LOCATIONS_FOUND": "No locations found for this product",
+    "LOCATIONS_FOUND": "Found {{count}} locations",
+    "DAYS": "days",
+    "STATS": {
+      "TOTAL_LOCATIONS": "Total Locations",
+      "TOTAL_QUANTITY": "Total Quantity",
+      "REFRIGERATED_ZONES": "Refrigerated Zones"
+    },
+    "LOCATIONS_FOUND_TITLE": "Locations Found",
+    "TABLE": {
+      "BATCH": "Batch",
+      "LOCATION": "Location",
+      "QUANTITY": "Quantity",
+      "EXPIRY_DATE": "Expiry Date",
+      "ZONE": "Zone",
+      "TEMPERATURE": "Temperature",
+      "CENTER": "Center",
+      "STATUS": "Status",
+      "ACTIONS": "Actions"
+    },
+    "ZONE": {
+      "REFRIGERATED": "Refrigerated",
+      "AMBIENT": "Ambient"
+    },
+    "STATUS": {
+      "EXPIRED": "Expired",
+      "UNAVAILABLE": "Unavailable",
+      "AVAILABLE": "Available"
+    },
+    "COPY_LOCATION": "Copy location",
+    "VIEW_DETAIL": "View full detail",
+    "LOCATION_COPIED": "Location {{code}} copied to clipboard",
+    "NO_RESULTS_TITLE": "No results found",
+    "NO_RESULTS_MESSAGE": "No locations found for the specified search criteria.",
+    "NEW_SEARCH": "New Search",
+    "DETAIL": {
+      "TITLE": "Location Detail",
+      "PRODUCT_INFO": "Product Information",
+      "BATCH": "Batch",
+      "QUANTITY": "Quantity",
+      "UNITS": "units",
+      "BARCODE": "Barcode",
+      "PHYSICAL_LOCATION": "Physical Location",
+      "LOCATION_CODE": "Location Code",
+      "AISLE": "Aisle",
+      "SHELF": "Shelf",
+      "LEVEL": "Level",
+      "ZONE_TYPE": "Zone Type",
+      "BATCH_INFO": "Batch Information",
+      "EXPIRY_DATE": "Expiry Date",
+      "STATUS": "Status",
+      "TEMPERATURE_CONDITIONS": "Temperature Conditions",
+      "REQUIRED_RANGE": "Required Range",
+      "MIN_TEMP": "Minimum",
+      "MAX_TEMP": "Maximum",
+      "DISTRIBUTION_CENTER": "Distribution Center",
+      "CODE": "Code",
+      "NAME": "Name",
+      "CITY": "City",
+      "COLD_CHAIN_SUPPORT": "Cold Chain Support"
+    }
+  },
   "REPORTS": {
     "TITLE": "Sales Performance Report",
     "CLEAR_FILTERS": "Clear filters",
     "NO_DATA": "No data available",
+    "DATA_LOADED_SUCCESS": "Data loaded successfully",
+    "DATA_LOAD_ERROR": "Error loading report data",
     "EXPORT_PDF": "Export to PDF",
     "EXPORT_EXCEL": "Export to Excel",
     "FILTERS": {
@@ -327,6 +439,23 @@
       "UNITS": "Units",
       "MONETARY": "Monetary"
     }
+  },
+  "SIDEBAR": {
+    "HOME": "Home",
+    "MANAGEMENT": "Management",
+    "SUPPLIERS": "Suppliers",
+    "PRODUCTS": "Products",
+    "SALESPERSONS": "Salespersons",
+    "SALES_AND_REPORTS": "Sales and Reports",
+    "MY_GOALS": "My Goals",
+    "SALES_PLANS": "Sales Plans",
+    "REPORTS": "Reports",
+    "LOGISTICS": "Logistics",
+    "INVENTORY_LOCATION": "Inventory / Location",
+    "DELIVERY_ROUTES": "Delivery Routes",
+    "HELP": "Help",
+    "SUPPORT": "Support",
+    "PRIVACY_POLICY": "Privacy Policy"
   },
   "VALIDATION": {
     "REQUIRED": "This field is required",

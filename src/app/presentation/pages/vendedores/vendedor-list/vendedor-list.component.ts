@@ -15,7 +15,7 @@ import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 import {
@@ -60,6 +60,7 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
 
   vendedores = signal<VendedorEntity[]>([]);
   loading = signal(false);
@@ -193,40 +194,34 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  deleteVendedor(vendedor: VendedorEntity): void {
+  async deleteVendedor(vendedor: VendedorEntity): Promise<void> {
     if (!vendedor.id) {
       this.notify.error('No se puede eliminar: vendedor sin ID');
       return;
     }
 
-    this.confirmDialog.confirm({
-      title: '¿Está seguro?',
-      message: `¿Desea eliminar al vendedor ${vendedor.firstName} ${vendedor.lastName}?`,
-      confirmText: 'Eliminar',
-      cancelText: 'Cancelar',
-      type: 'danger'
-    }).subscribe(confirmed => {
-      if (confirmed && vendedor.id) {
-        this.loading.set(true);
-        
-        this.deleteVendedorUseCase.execute(vendedor.id).subscribe({
-          next: (success) => {
-            if (success) {
-              this.notify.success('Vendedor eliminado correctamente');
-              this.loadVendedores();
-            } else {
-              this.notify.error('No se pudo eliminar el vendedor. Puede tener visitas asociadas.');
-              this.loading.set(false);
-            }
-          },
-          error: (error) => {
-            console.error('Error al eliminar vendedor:', error);
-            this.notify.error('Error al eliminar vendedor. Puede tener visitas asociadas.');
+    const confirmed = await this.confirmDialog.confirmDelete(`${vendedor.firstName} ${vendedor.lastName}`).toPromise();
+    
+    if (confirmed) {
+      this.loading.set(true);
+      
+      this.deleteVendedorUseCase.execute(vendedor.id).subscribe({
+        next: (success) => {
+          if (success) {
+            this.notify.success(this.translate.instant('SALESPERSONS.DELETE_SUCCESS'));
+            this.loadVendedores();
+          } else {
+            this.notify.error(this.translate.instant('SALESPERSONS.DELETE_ERROR_HAS_VISITS'));
             this.loading.set(false);
           }
-        });
-      }
-    });
+        },
+        error: (error) => {
+          console.error('Error al eliminar vendedor:', error);
+          this.notify.error(this.translate.instant('SALESPERSONS.DELETE_ERROR_HAS_VISITS'));
+          this.loading.set(false);
+        }
+      });
+    }
   }
 
   navigateBack(): void {

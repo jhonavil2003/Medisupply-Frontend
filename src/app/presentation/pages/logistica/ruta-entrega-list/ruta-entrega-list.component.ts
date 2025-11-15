@@ -2,6 +2,7 @@ import { Component, ViewChild, AfterViewInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -31,13 +32,15 @@ import { RutaEntrega } from '../ruta-entrega.model';
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatListModule
+    MatListModule,
+    TranslateModule
   ],
   templateUrl: './ruta-entrega-list.component.html',
   styleUrls: ['./ruta-entrega-list.component.css']
 })
 export class RutaEntregaListaComponent implements AfterViewInit {
   private rutaService = inject(RutaEntregaService);
+  private translate: TranslateService = inject(TranslateService);
 
   rutas: RutaEntrega[] = [];
   filtroEstado: '' | 'pendiente' | 'en_curso' | 'completada' = '';

@@ -2,12 +2,12 @@
   <!-- Header -->
   <div class="header">
     <div class="header-title">
-      <a mat-icon-button [routerLink]="['/dashboard-admin']" matTooltip="Volver al dashboard">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']" [matTooltip]="'PRODUCT_LOCATION.BACK_TO_DASHBOARD' | translate">
         <mat-icon>arrow_back</mat-icon>
       </a>
       <h2>
         <mat-icon class="header-icon">location_on</mat-icon>
-        Localización de Productos en Bodega
+        {{ 'PRODUCT_LOCATION.TITLE' | translate }}
       </h2>
     </div>
   </div>
@@ -19,17 +19,17 @@
         <mat-form-field appearance="outline" class="search-field">
           <mat-label>
             <mat-icon>search</mat-icon>
-            Buscar producto
+            {{ 'PRODUCT_LOCATION.SEARCH_PRODUCT' | translate }}
           </mat-label>
           <input 
             matInput 
             [formControl]="searchControl"
-            placeholder="SKU, código de barras, QR o nombre del producto"
+            [placeholder]="'PRODUCT_LOCATION.SEARCH_PLACEHOLDER' | translate"
             autofocus
           />
-          <mat-hint>Mínimo 3 caracteres. Búsqueda automática.</mat-hint>
+          <mat-hint>{{ 'PRODUCT_LOCATION.SEARCH_HINT' | translate }}</mat-hint>
           @if (searchControl.value) {
-            <button mat-icon-button matSuffix (click)="resetSearch()" matTooltip="Limpiar búsqueda">
+            <button mat-icon-button matSuffix (click)="resetSearch()" [matTooltip]="'PRODUCT_LOCATION.CLEAR_SEARCH' | translate">
               <mat-icon>close</mat-icon>
             </button>
           }
@@ -43,7 +43,7 @@
           class="search-button"
         >
           <mat-icon>search</mat-icon>
-          Buscar
+          {{ 'PRODUCT_LOCATION.SEARCH' | translate }}
         </button>
       </div>
 
@@ -69,7 +69,7 @@
             <mat-icon>inventory_2</mat-icon>
           </div>
           <div class="stat-info">
-            <span class="stat-label">Total Ubicaciones</span>
+            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_LOCATIONS' | translate }}</span>
             <span class="stat-value">{{ totalLocations() }}</span>
           </div>
         </mat-card-content>
@@ -81,7 +81,7 @@
             <mat-icon>inventory</mat-icon>
           </div>
           <div class="stat-info">
-            <span class="stat-label">Cantidad Total</span>
+            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_QUANTITY' | translate }}</span>
             <span class="stat-value">{{ totalQuantity() }}</span>
           </div>
         </mat-card-content>
@@ -93,7 +93,7 @@
             <mat-icon>ac_unit</mat-icon>
           </div>
           <div class="stat-info">
-            <span class="stat-label">Zonas Refrigeradas</span>
+            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.REFRIGERATED_ZONES' | translate }}</span>
             <span class="stat-value">{{ refrigeratedZones() }}</span>
           </div>
         </mat-card-content>
@@ -107,7 +107,7 @@
       <mat-card-header>
         <mat-card-title>
           <mat-icon>list</mat-icon>
-          Ubicaciones Encontradas
+          {{ 'PRODUCT_LOCATION.LOCATIONS_FOUND_TITLE' | translate }}
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -126,13 +126,13 @@
 
             <!-- Batch Number Column -->
             <ng-container matColumnDef="batch_number">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Lote</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.BATCH' | translate }}</th>
               <td mat-cell *matCellDef="let location">{{ location.batch.batch_info.batch_number }}</td>
             </ng-container>
 
             <!-- Location Column -->
             <ng-container matColumnDef="location">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Ubicación</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.LOCATION' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <div class="location-cell">
                   <mat-icon class="location-icon">place</mat-icon>
@@ -144,7 +144,7 @@
 
             <!-- Quantity Column -->
             <ng-container matColumnDef="quantity">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Cantidad</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.QUANTITY' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <mat-chip [class.low-stock]="location.batch.batch_info.quantity < 10">
                   {{ location.batch.batch_info.quantity }}
@@ -154,20 +154,20 @@
 
             <!-- Expiry Date Column -->
             <ng-container matColumnDef="expiry_date">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Vencimiento</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.EXPIRY_DATE' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <div class="expiry-cell">
                   <span [class]="'expiry-' + getExpiryColor(location.batch.dates.expiry_date)">
                     {{ location.batch.dates.expiry_date | date:'dd/MM/yyyy' }}
                   </span>
-                  <small class="days-until">{{ location.batch.dates.days_until_expiry }} días</small>
+                  <small class="days-until">{{ location.batch.dates.days_until_expiry }} {{ 'PRODUCT_LOCATION.DAYS' | translate }}</small>
                 </div>
               </td>
             </ng-container>
 
             <!-- Zone Type Column -->
             <ng-container matColumnDef="zone_type">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Zona</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.ZONE' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <mat-chip [class.zone-refrigerated]="location.physical_location.is_refrigerated">
                   <span class="zone-icon">{{ getZoneIcon(location) }}</span>
@@ -178,7 +178,7 @@
 
             <!-- Temperature Column -->
             <ng-container matColumnDef="temperature">
-              <th mat-header-cell *matHeaderCellDef>Temperatura</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCT_LOCATION.TABLE.TEMPERATURE' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 @if (location.batch.temperature_requirements.range) {
                   <div class="temperature-cell">
@@ -186,14 +186,14 @@
                     <span>{{ getTemperatureStatus(location) }}</span>
                   </div>
                 } @else {
-                  <span class="text-muted">N/A</span>
+                  <span class="text-muted">{{ 'COMMON.NA' | translate }}</span>
                 }
               </td>
             </ng-container>
 
             <!-- Distribution Center Column -->
             <ng-container matColumnDef="distribution_center">
-              <th mat-header-cell *matHeaderCellDef>Centro</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCT_LOCATION.TABLE.CENTER' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <div class="dc-cell">
                   <strong>{{ location.distribution_center.code }}</strong>
@@ -204,7 +204,7 @@
 
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCT_LOCATION.TABLE.STATUS' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <mat-chip [color]="getStatusChipColor(location)">
                   {{ getStatusLabel(location) }}
@@ -214,12 +214,12 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="acciones">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCT_LOCATION.TABLE.ACTIONS' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <button 
                   mat-icon-button 
                   (click)="copiarUbicacion(location.physical_location.location_code)"
-                  matTooltip="Copiar ubicación"
+                  [matTooltip]="'PRODUCT_LOCATION.COPY_LOCATION' | translate"
                   color="primary"
                 >
                   <mat-icon>content_copy</mat-icon>
@@ -227,7 +227,7 @@
                 <button 
                   mat-icon-button 
                   (click)="verDetalle(location)"
-                  matTooltip="Ver detalle completo"
+                  [matTooltip]="'PRODUCT_LOCATION.VIEW_DETAIL' | translate"
                   color="accent"
                 >
                   <mat-icon>info</mat-icon>
@@ -253,11 +253,11 @@
     <mat-card class="empty-state">
       <mat-card-content>
         <mat-icon class="empty-icon">search_off</mat-icon>
-        <h3>No se encontraron resultados</h3>
-        <p>No se encontraron ubicaciones para el criterio de búsqueda especificado.</p>
+        <h3>{{ 'PRODUCT_LOCATION.NO_RESULTS_TITLE' | translate }}</h3>
+        <p>{{ 'PRODUCT_LOCATION.NO_RESULTS_MESSAGE' | translate }}</p>
         <button mat-raised-button color="primary" (click)="resetSearch()">
           <mat-icon>refresh</mat-icon>
-          Nueva Búsqueda
+          {{ 'PRODUCT_LOCATION.NEW_SEARCH' | translate }}
         </button>
       </mat-card-content>
     </mat-card>
@@ -270,7 +270,7 @@
         <mat-card-header>
           <mat-card-title>
             <mat-icon>info</mat-icon>
-            Detalle de Ubicación
+            {{ 'PRODUCT_LOCATION.DETAIL.TITLE' | translate }}
           </mat-card-title>
           <button mat-icon-button (click)="cerrarDetalle()" class="close-button">
             <mat-icon>close</mat-icon>
@@ -282,7 +282,7 @@
             <div class="detail-section">
               <h3>
                 <mat-icon>inventory_2</mat-icon>
-                Información del Producto
+                {{ 'PRODUCT_LOCATION.DETAIL.PRODUCT_INFO' | translate }}
               </h3>
               <div class="detail-grid">
                 <div class="detail-item">
@@ -290,16 +290,16 @@
                   <span>{{ location.batch.product_sku }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Lote:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.BATCH' | translate }}:</label>
                   <span>{{ location.batch.batch_info.batch_number }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Cantidad:</label>
-                  <span class="highlight">{{ location.batch.batch_info.quantity }} unidades</span>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.QUANTITY' | translate }}:</label>
+                  <span class="highlight">{{ location.batch.batch_info.quantity }} {{ 'PRODUCT_LOCATION.DETAIL.UNITS' | translate }}</span>
                 </div>
                 @if (location.batch.batch_info.barcode) {
                   <div class="detail-item">
-                    <label>Código de Barras:</label>
+                    <label>{{ 'PRODUCT_LOCATION.DETAIL.BARCODE' | translate }}:</label>
                     <span>{{ location.batch.batch_info.barcode }}</span>
                   </div>
                 }
@@ -310,27 +310,27 @@
             <div class="detail-section">
               <h3>
                 <mat-icon>place</mat-icon>
-                Ubicación Física
+                {{ 'PRODUCT_LOCATION.DETAIL.PHYSICAL_LOCATION' | translate }}
               </h3>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <label>Código de Ubicación:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.LOCATION_CODE' | translate }}:</label>
                   <span class="location-code-large">{{ location.physical_location.location_code }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Pasillo:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.AISLE' | translate }}:</label>
                   <span>{{ location.physical_location.aisle }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Estante:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.SHELF' | translate }}:</label>
                   <span>{{ location.physical_location.shelf }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Nivel:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.LEVEL' | translate }}:</label>
                   <span>{{ location.physical_location.level_position }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Tipo de Zona:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.ZONE_TYPE' | translate }}:</label>
                   <mat-chip [class.zone-refrigerated]="location.physical_location.is_refrigerated">
                     {{ getZoneIcon(location) }} {{ getZoneLabel(location) }}
                   </mat-chip>
@@ -342,18 +342,18 @@
             <div class="detail-section">
               <h3>
                 <mat-icon>calendar_today</mat-icon>
-                Información del Lote
+                {{ 'PRODUCT_LOCATION.DETAIL.BATCH_INFO' | translate }}
               </h3>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <label>Fecha de Vencimiento:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.EXPIRY_DATE' | translate }}:</label>
                   <span [class]="'expiry-' + getExpiryColor(location.batch.dates.expiry_date)">
                     {{ location.batch.dates.expiry_date | date:'dd/MM/yyyy' }}
-                    ({{ location.batch.dates.days_until_expiry }} días)
+                    ({{ location.batch.dates.days_until_expiry }} {{ 'PRODUCT_LOCATION.DAYS' | translate }})
                   </span>
                 </div>
                 <div class="detail-item">
-                  <label>Estado:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.STATUS' | translate }}:</label>
                   <mat-chip [color]="getStatusChipColor(location)">
                     {{ getStatusLabel(location) }}
                   </mat-chip>
@@ -366,22 +366,22 @@
               <div class="detail-section">
                 <h3>
                   <mat-icon>thermostat</mat-icon>
-                  Condiciones de Temperatura
+                  {{ 'PRODUCT_LOCATION.DETAIL.TEMPERATURE_CONDITIONS' | translate }}
                 </h3>
                 <div class="detail-grid">
                   <div class="detail-item">
-                    <label>Rango Requerido:</label>
+                    <label>{{ 'PRODUCT_LOCATION.DETAIL.REQUIRED_RANGE' | translate }}:</label>
                     <span>{{ location.batch.temperature_requirements.range }}</span>
                   </div>
                   @if (location.batch.temperature_requirements.min !== null) {
                     <div class="detail-item">
-                      <label>Mínima:</label>
+                      <label>{{ 'PRODUCT_LOCATION.DETAIL.MIN_TEMP' | translate }}:</label>
                       <span>{{ location.batch.temperature_requirements.min }}°C</span>
                     </div>
                   }
                   @if (location.batch.temperature_requirements.max !== null) {
                     <div class="detail-item">
-                      <label>Máxima:</label>
+                      <label>{{ 'PRODUCT_LOCATION.DETAIL.MAX_TEMP' | translate }}:</label>
                       <span>{{ location.batch.temperature_requirements.max }}°C</span>
                     </div>
                   }
@@ -393,28 +393,28 @@
             <div class="detail-section">
               <h3>
                 <mat-icon>business</mat-icon>
-                Centro de Distribución
+                {{ 'PRODUCT_LOCATION.DETAIL.DISTRIBUTION_CENTER' | translate }}
               </h3>
               <div class="detail-grid">
                 <div class="detail-item">
-                  <label>Código:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.CODE' | translate }}:</label>
                   <span>{{ location.distribution_center.code }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Nombre:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.NAME' | translate }}:</label>
                   <span>{{ location.distribution_center.name }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Ciudad:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.CITY' | translate }}:</label>
                   <span>{{ location.distribution_center.city }}</span>
                 </div>
                 <div class="detail-item">
-                  <label>Soporta Cadena de Frío:</label>
+                  <label>{{ 'PRODUCT_LOCATION.DETAIL.COLD_CHAIN_SUPPORT' | translate }}:</label>
                   <span>
                     @if (location.distribution_center.supports_cold_chain) {
-                      <mat-icon class="status-icon success">check_circle</mat-icon> Sí
+                      <mat-icon class="status-icon success">check_circle</mat-icon> {{ 'COMMON.YES' | translate }}
                     } @else {
-                      <mat-icon class="status-icon">cancel</mat-icon> No
+                      <mat-icon class="status-icon">cancel</mat-icon> {{ 'COMMON.NO' | translate }}
                     }
                   </span>
                 </div>
@@ -423,11 +423,11 @@
           }
         </mat-card-content>
         <mat-card-actions align="end">
-          <button mat-button (click)="cerrarDetalle()">Cerrar</button>
+          <button mat-button (click)="cerrarDetalle()">{{ 'COMMON.CLOSE' | translate }}</button>
           @if (selectedLocation()) {
             <button mat-raised-button color="primary" (click)="copiarUbicacion(selectedLocation()!.physical_location.location_code)">
               <mat-icon>content_copy</mat-icon>
-              Copiar Ubicación
+              {{ 'PRODUCT_LOCATION.COPY_LOCATION' | translate }}
             </button>
           }
         </mat-card-actions>

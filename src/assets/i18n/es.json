@@ -26,6 +26,11 @@
     "CREATED_AT": "Fecha de Creación",
     "UPDATED_AT": "Última Actualización"
   },
+  "DIALOG": {
+    "CONFIRM_DELETE_TITLE": "Confirmar eliminación",
+    "CONFIRM_DELETE_MESSAGE": "¿Está seguro que desea eliminar \"{{item}}\"? Esta acción no se puede deshacer.",
+    "DELETE": "Eliminar"
+  },
   "MENU": {
     "DASHBOARD": "Panel Principal",
     "PRODUCTS": "Productos",
@@ -114,7 +119,8 @@
     "REQUIRES_PRESCRIPTION": "Requiere Prescripción",
     "SANITARY_REGISTRATION": "Registro Sanitario",
     "DELETE_CONFIRM": "¿Está seguro que desea eliminar el producto",
-    "DELETE_SUCCESS": "Producto eliminado correctamente",
+    "DELETE_SUCCESS": "Producto \"{{name}}\" eliminado correctamente",
+    "DELETE_ERROR": "Error al eliminar el producto: {{error}}",
     "CREATE_SUCCESS": "Producto creado correctamente",
     "UPDATE_SUCCESS": "Producto actualizado correctamente",
     "NO_RESULTS": "No se encontraron productos",
@@ -170,7 +176,8 @@
     "STATUS": "Estado",
     "COMPLETE_REQUIRED_FIELDS": "Por favor, complete todos los campos requeridos",
     "DELETE_CONFIRM": "¿Está seguro que desea eliminar el proveedor",
-    "DELETE_SUCCESS": "Proveedor eliminado correctamente",
+    "DELETE_SUCCESS": "Proveedor \"{{name}}\" eliminado correctamente",
+    "DELETE_ERROR_GENERIC": "Error al eliminar el proveedor",
     "CREATE_SUCCESS": "Proveedor creado correctamente",
     "UPDATE_SUCCESS": "Proveedor actualizado correctamente"
   },
@@ -202,6 +209,7 @@
     "COMPLETE_REQUIRED_FIELDS": "Por favor, complete todos los campos requeridos",
     "DELETE_CONFIRM": "¿Está seguro que desea eliminar el vendedor",
     "DELETE_SUCCESS": "Vendedor eliminado correctamente",
+    "DELETE_ERROR_HAS_VISITS": "No se pudo eliminar el vendedor. Puede tener visitas asociadas.",
     "CREATE_SUCCESS": "Vendedor creado correctamente",
     "UPDATE_SUCCESS": "Vendedor actualizado correctamente"
   },
@@ -261,6 +269,8 @@
     "LOAD_ERROR": "Error al cargar meta",
     "DELETE_CONFIRM": "¿Está seguro que desea eliminar la meta",
     "DELETE_SUCCESS": "Meta eliminada correctamente",
+    "DELETE_ERROR_NO_ID": "No se puede eliminar: meta sin ID",
+    "DELETE_ERROR_GENERIC": "Error al eliminar meta",
     "CREATE_SUCCESS": "Meta creada correctamente",
     "UPDATE_SUCCESS": "Meta actualizada correctamente",
     "COMPLETE_REQUIRED_FIELDS": "Por favor complete los campos requeridos correctamente"
@@ -277,10 +287,112 @@
     "PROGRESS": "Progreso",
     "UNITS_LABEL": "unidades"
   },
+  "LOGISTICS": {
+    "TITLE": "Rutas generadas",
+    "FILTER_BY_STATUS": "Filtrar por estado:",
+    "ALL": "Todas",
+    "VIEW": "Ver",
+    "CLOSE_DETAIL": "Cerrar detalle",
+    "STATUS": {
+      "PENDING": "Pendiente",
+      "IN_PROGRESS": "En curso",
+      "COMPLETED": "Completada"
+    },
+    "TABLE": {
+      "ID": "Identificador",
+      "DATE": "Fecha",
+      "VEHICLES": "Vehículos",
+      "DRIVER": "Conductor",
+      "ORDERS": "N° Pedidos",
+      "STATUS": "Estado",
+      "ACTIONS": "Acciones"
+    },
+    "DETAIL": {
+      "TITLE": "Detalle de ruta",
+      "DATE": "Fecha",
+      "VEHICLES": "Vehículos",
+      "DRIVER": "Conductor",
+      "STATUS": "Estado",
+      "INCLUDED_ORDERS": "Pedidos incluidos"
+    }
+  },
+  "PRODUCT_LOCATION": {
+    "TITLE": "Localización de Productos en Bodega",
+    "BACK_TO_DASHBOARD": "Volver al dashboard",
+    "SEARCH_PRODUCT": "Buscar producto",
+    "SEARCH_PLACEHOLDER": "SKU, código de barras, QR o nombre del producto",
+    "SEARCH_HINT": "Mínimo 3 caracteres. Búsqueda automática.",
+    "CLEAR_SEARCH": "Limpiar búsqueda",
+    "SEARCH": "Buscar",
+    "MIN_SEARCH_LENGTH": "Ingrese al menos 3 caracteres para buscar",
+    "NO_LOCATIONS_FOUND": "No se encontraron ubicaciones para este producto",
+    "LOCATIONS_FOUND": "Se encontraron {{count}} ubicaciones",
+    "DAYS": "días",
+    "STATS": {
+      "TOTAL_LOCATIONS": "Total Ubicaciones",
+      "TOTAL_QUANTITY": "Cantidad Total",
+      "REFRIGERATED_ZONES": "Zonas Refrigeradas"
+    },
+    "LOCATIONS_FOUND_TITLE": "Ubicaciones Encontradas",
+    "TABLE": {
+      "BATCH": "Lote",
+      "LOCATION": "Ubicación",
+      "QUANTITY": "Cantidad",
+      "EXPIRY_DATE": "Vencimiento",
+      "ZONE": "Zona",
+      "TEMPERATURE": "Temperatura",
+      "CENTER": "Centro",
+      "STATUS": "Estado",
+      "ACTIONS": "Acciones"
+    },
+    "ZONE": {
+      "REFRIGERATED": "Refrigerado",
+      "AMBIENT": "Ambiente"
+    },
+    "STATUS": {
+      "EXPIRED": "Vencido",
+      "UNAVAILABLE": "No Disponible",
+      "AVAILABLE": "Disponible"
+    },
+    "COPY_LOCATION": "Copiar ubicación",
+    "VIEW_DETAIL": "Ver detalle completo",
+    "LOCATION_COPIED": "Ubicación {{code}} copiada al portapapeles",
+    "NO_RESULTS_TITLE": "No se encontraron resultados",
+    "NO_RESULTS_MESSAGE": "No se encontraron ubicaciones para el criterio de búsqueda especificado.",
+    "NEW_SEARCH": "Nueva Búsqueda",
+    "DETAIL": {
+      "TITLE": "Detalle de Ubicación",
+      "PRODUCT_INFO": "Información del Producto",
+      "BATCH": "Lote",
+      "QUANTITY": "Cantidad",
+      "UNITS": "unidades",
+      "BARCODE": "Código de Barras",
+      "PHYSICAL_LOCATION": "Ubicación Física",
+      "LOCATION_CODE": "Código de Ubicación",
+      "AISLE": "Pasillo",
+      "SHELF": "Estante",
+      "LEVEL": "Nivel",
+      "ZONE_TYPE": "Tipo de Zona",
+      "BATCH_INFO": "Información del Lote",
+      "EXPIRY_DATE": "Fecha de Vencimiento",
+      "STATUS": "Estado",
+      "TEMPERATURE_CONDITIONS": "Condiciones de Temperatura",
+      "REQUIRED_RANGE": "Rango Requerido",
+      "MIN_TEMP": "Mínima",
+      "MAX_TEMP": "Máxima",
+      "DISTRIBUTION_CENTER": "Centro de Distribución",
+      "CODE": "Código",
+      "NAME": "Nombre",
+      "CITY": "Ciudad",
+      "COLD_CHAIN_SUPPORT": "Soporta Cadena de Frío"
+    }
+  },
   "REPORTS": {
     "TITLE": "Reporte de desempeño de ventas",
     "CLEAR_FILTERS": "Limpiar filtros",
     "NO_DATA": "No hay datos disponibles",
+    "DATA_LOADED_SUCCESS": "Datos cargados correctamente",
+    "DATA_LOAD_ERROR": "Error al cargar los datos de reportes",
     "EXPORT_PDF": "Exportar a PDF",
     "EXPORT_EXCEL": "Exportar a Excel",
     "FILTERS": {
@@ -327,6 +439,23 @@
       "UNITS": "Unidades",
       "MONETARY": "Monetario"
     }
+  },
+  "SIDEBAR": {
+    "HOME": "Inicio",
+    "MANAGEMENT": "Gestión",
+    "SUPPLIERS": "Proveedores",
+    "PRODUCTS": "Productos",
+    "SALESPERSONS": "Vendedores",
+    "SALES_AND_REPORTS": "Ventas y Reportes",
+    "MY_GOALS": "Mis Metas",
+    "SALES_PLANS": "Planes de venta",
+    "REPORTS": "Reportes",
+    "LOGISTICS": "Logística",
+    "INVENTORY_LOCATION": "Inventario / Localización",
+    "DELIVERY_ROUTES": "Rutas de entrega",
+    "HELP": "Ayuda",
+    "SUPPORT": "Soporte",
+    "PRIVACY_POLICY": "Política de privacidad"
   },
   "VALIDATION": {
     "REQUIRED": "Este campo es requerido",
