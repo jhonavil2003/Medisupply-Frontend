@@ -1,14 +1,10 @@
 <div class="container">
-  <!-- Header -->
-  <div class="header">
-    <div class="header-title">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
       <a mat-icon-button [routerLink]="['/dashboard-admin']" [matTooltip]="'PRODUCT_LOCATION.BACK_TO_DASHBOARD' | translate">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>
-        <mat-icon class="header-icon">location_on</mat-icon>
-        {{ 'PRODUCT_LOCATION.TITLE' | translate }}
-      </h2>
+      <h2 style="margin: 0;">{{ 'PRODUCT_LOCATION.TITLE' | translate }}</h2>
     </div>
   </div>
 

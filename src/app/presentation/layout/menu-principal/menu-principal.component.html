@@ -7,44 +7,44 @@
       <i class="fas fa-home"></i>
       <span class="menu-text">{{ 'SIDEBAR.HOME' | translate }}</span>
     </li>
-    <li (click)="toggleSubmenu('gestion')" [ngClass]="{ 'active': gestionOpen }">
+    <li (click)="toggleSubmenu('gestion')" class="menuitem" [ngClass]="{ 'active': gestionOpen }">
       <i class="fas fa-clipboard-list"></i>
       <span class="menu-text">{{ 'SIDEBAR.MANAGEMENT' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': gestionOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: gestionOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('proveedor-list')" [ngClass]="{ 'active-route': isActive('proveedor') }">{{ 'SIDEBAR.SUPPLIERS' | translate }}</li>
-  <li class="menuitem" (click)="navigateTo('producto-list')" [ngClass]="{ 'active-route': isActive('producto') }">{{ 'SIDEBAR.PRODUCTS' | translate }}</li>
-  <li class="menuitem" (click)="navigateTo('vendedores')" [ngClass]="{ 'active-route': isActive('vendedor') }">{{ 'SIDEBAR.SALESPERSONS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('proveedor-list')" [ngClass]="{ 'active-route': isActive('proveedor-list') }">{{ 'SIDEBAR.SUPPLIERS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('producto-list')" [ngClass]="{ 'active-route': isActive('producto-list') }">{{ 'SIDEBAR.PRODUCTS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('vendedores')" [ngClass]="{ 'active-route': isActive('vendedores') }">{{ 'SIDEBAR.SALESPERSONS' | translate }}</li>
     </ul>
-    <li (click)="toggleSubmenu('ventas')" [ngClass]="{ 'active': ventasOpen }">
+    <li (click)="toggleSubmenu('ventas')" class="menuitem" [ngClass]="{ 'active': ventasOpen }">
       <i class="fas fa-chart-line"></i>
       <span class="menu-text">{{ 'SIDEBAR.SALES_AND_REPORTS' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': ventasOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: ventasOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('mis-metas')" [ngClass]="{ 'active-route': isActive('mis-metas') }">{{ 'SIDEBAR.MY_GOALS' | translate }}</li>
-  <li class="menuitem" (click)="navigateTo('metas')" [ngClass]="{ 'active-route': isActive('metas') }">{{ 'SIDEBAR.SALES_PLANS' | translate }}</li>
-  <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">{{ 'SIDEBAR.REPORTS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('mis-metas')" [ngClass]="{ 'active-route': isActive('mis-metas') }">{{ 'SIDEBAR.MY_GOALS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('metas')" [ngClass]="{ 'active-route': isActive('metas') }">{{ 'SIDEBAR.SALES_PLANS' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('informe-ventas')" [ngClass]="{ 'active-route': isActive('informe-ventas') }">{{ 'SIDEBAR.REPORTS' | translate }}</li>
     </ul>
-    <li (click)="toggleSubmenu('logistica')" [ngClass]="{ 'active': logisticaOpen }">
+    <li (click)="toggleSubmenu('logistica')" class="menuitem" [ngClass]="{ 'active': logisticaOpen }">
       <i class="fas fa-truck"></i>
       <span class="menu-text">{{ 'SIDEBAR.LOGISTICS' | translate }}</span>
       <i class="fas fa-chevron-right arrow" [ngClass]="{ 'open': logisticaOpen }"></i>
     </li>
     <ul class="submenu" [ngStyle]="{ display: logisticaOpen ? 'flex' : 'none' }">
-  <li class="menuitem" (click)="navigateTo('producto-localizacion')" [ngClass]="{ 'active-route': isActive('localizacion') }">{{ 'SIDEBAR.INVENTORY_LOCATION' | translate }}</li>
-  <li class="menuitem" (click)="navigateTo('rutas-entrega')" [ngClass]="{ 'active-route': isActive('rutas-entrega') }">{{ 'SIDEBAR.DELIVERY_ROUTES' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('producto-localizacion')" [ngClass]="{ 'active-route': isActive('producto-localizacion') }">{{ 'SIDEBAR.INVENTORY_LOCATION' | translate }}</li>
+      <li class="menuitem" (click)="navigateTo('rutas-entrega')" [ngClass]="{ 'active-route': isActive('rutas-entrega') }">{{ 'SIDEBAR.DELIVERY_ROUTES' | translate }}</li>
     </ul>
-    <li>
+    <li class="menuitem">
       <i class="fas fa-question-circle"></i>
       <span class="menu-text">{{ 'SIDEBAR.HELP' | translate }}</span>
     </li>
-    <li>
+    <li class="menuitem">
       <i class="fas fa-life-ring"></i>
       <span class="menu-text">{{ 'SIDEBAR.SUPPORT' | translate }}</span>
     </li>
-    <li>
+    <li class="menuitem">
       <i class="fas fa-file-alt"></i>
       <span class="menu-text">{{ 'SIDEBAR.PRIVACY_POLICY' | translate }}</span>
     </li>
