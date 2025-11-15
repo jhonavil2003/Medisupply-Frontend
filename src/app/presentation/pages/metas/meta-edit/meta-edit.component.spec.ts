@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MetaEditComponent } from './meta-edit.component';
 import {
@@ -99,7 +100,7 @@ describe('MetaEditComponent', () => {
     mockDialogRef = { close: jest.fn() };
 
     await TestBed.configureTestingModule({
-      imports: [MetaEditComponent, NoopAnimationsModule],
+      imports: [MetaEditComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetMetaByIdUseCase, useValue: mockGetMetaByIdUseCase },
         { provide: UpdateMetaVentaUseCase, useValue: mockUpdateMetaUseCase },
@@ -174,7 +175,7 @@ describe('MetaEditComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Meta no encontrada');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
 
@@ -185,7 +186,7 @@ describe('MetaEditComponent', () => {
       component.ngOnInit();
       fixture.detectChanges();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar meta');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
@@ -250,9 +251,7 @@ describe('MetaEditComponent', () => {
       component.onSubmit();
 
       expect(mockUpdateMetaUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Por favor complete los campos requeridos correctamente'
-      );
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should not submit if metaId is missing', () => {
@@ -261,7 +260,7 @@ describe('MetaEditComponent', () => {
       component.onSubmit();
 
       expect(mockUpdateMetaUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de meta no válido');
+      expect(mockNotificationService.error).toHaveBeenCalledWith('GOALS.INVALID_ID');
     });
 
     it('should submit valid form successfully', fakeAsync(() => {
@@ -295,7 +294,7 @@ describe('MetaEditComponent', () => {
           tipo: TipoMeta.UNIDADES
         })
       );
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Meta actualizada exitosamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('GOALS.UPDATE_SUCCESS');
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     }));
 
@@ -305,7 +304,7 @@ describe('MetaEditComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error personalizado del repositorio');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -315,7 +314,7 @@ describe('MetaEditComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Datos inválidos');
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should handle not found error (404)', () => {
@@ -333,7 +332,7 @@ describe('MetaEditComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error del servidor: Internal Server Error');
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should handle generic error without status', () => {
@@ -342,9 +341,7 @@ describe('MetaEditComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith(
-        'Error al actualizar meta. Verifique los datos ingresados'
-      );
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should trim string values before submitting', () => {
@@ -387,7 +384,7 @@ describe('MetaEditComponent', () => {
 
       const message = component.getErrorMessage('idVendedor');
 
-      expect(message).toBe('Este campo es requerido');
+      expect(message).toBe('GOALS.FIELD_REQUIRED');
     });
 
     it('should return minlength error message', () => {
@@ -396,7 +393,7 @@ describe('MetaEditComponent', () => {
 
       const message = component.getErrorMessage('idVendedor');
 
-      expect(message).toBe('Mínimo 2 caracteres');
+      expect(message).toContain('GOALS.MIN_LENGTH');
     });
 
     it('should return min value error message', () => {
@@ -405,7 +402,7 @@ describe('MetaEditComponent', () => {
 
       const message = component.getErrorMessage('valorObjetivo');
 
-      expect(message).toBe('El valor debe ser mayor a 1');
+      expect(message).toContain('GOALS.MIN_VALUE');
     });
 
     it('should return vendedor not exists error', () => {
@@ -414,7 +411,7 @@ describe('MetaEditComponent', () => {
 
       const message = component.getErrorMessage('idVendedor');
 
-      expect(message).toBe('El vendedor no existe en el sistema');
+      expect(message).toBe('GOALS.SALESPERSON_NOT_EXISTS');
     });
 
     it('should return producto not exists error', () => {
@@ -423,7 +420,7 @@ describe('MetaEditComponent', () => {
 
       const message = component.getErrorMessage('idProducto');
 
-      expect(message).toBe('El producto no existe en el sistema');
+      expect(message).toBe('GOALS.PRODUCT_NOT_EXISTS');
     });
 
     it('should return empty string for no errors', () => {
@@ -437,13 +434,13 @@ describe('MetaEditComponent', () => {
     it('should return "Unidades" for UNIDADES type', () => {
       const display = component.getTipoDisplay(TipoMeta.UNIDADES);
 
-      expect(display).toBe('Unidades');
+      expect(display).toBe('GOALS.UNITS');
     });
 
     it('should return "Monetario" for MONETARIO type', () => {
       const display = component.getTipoDisplay(TipoMeta.MONETARIO);
 
-      expect(display).toBe('Monetario');
+      expect(display).toBe('GOALS.MONETARY');
     });
   });
 

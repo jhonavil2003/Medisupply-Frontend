@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
 import { MetaVentaFilters } from '../../../../core/domain/repositories/meta-venta.repository';
@@ -45,7 +46,8 @@ import { MetaDetailComponent } from '../meta-detail/meta-detail.component';
     MatCardModule,
     MatChipsModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    TranslateModule
   ],
   templateUrl: './meta-list.component.html',
   styleUrls: ['./meta-list.component.css']
@@ -57,6 +59,7 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private translate: TranslateService = inject(TranslateService);
 
   metas = signal<MetaVentaEntity[]>([]);
   loading = signal(false);
@@ -201,43 +204,38 @@ export class MetaListComponent implements OnInit, AfterViewInit {
     });
   }
 
-  deleteMeta(meta: MetaVentaEntity): void {
+  async deleteMeta(meta: MetaVentaEntity): Promise<void> {
     if (!meta.id) {
-      this.notify.error('No se puede eliminar: meta sin ID');
+      this.notify.error(this.translate.instant('GOALS.DELETE_ERROR_NO_ID'));
       return;
     }
 
     const vendedorNombre = meta.vendedor?.nombreCompleto || meta.idVendedor;
     const productoNombre = meta.producto?.name || meta.idProducto;
+    const metaDescription = `${vendedorNombre} - ${productoNombre} (${meta.region} - ${meta.trimestre})`;
 
-    this.confirmDialog.confirm({
-      title: '¿Está seguro?',
-      message: `¿Desea eliminar la meta de ${vendedorNombre} para el producto ${productoNombre} en ${meta.region} - ${meta.trimestre}?`,
-      confirmText: 'Eliminar',
-      cancelText: 'Cancelar',
-      type: 'danger'
-    }).subscribe(confirmed => {
-      if (confirmed && meta.id) {
-        this.loading.set(true);
-        
-        this.deleteMetaUseCase.execute(meta.id).subscribe({
-          next: (success) => {
-            if (success) {
-              this.notify.success('Meta eliminada correctamente');
-              this.loadMetas();
-            } else {
-              this.notify.error('No se pudo eliminar la meta');
-              this.loading.set(false);
-            }
-          },
-          error: (error) => {
-            console.error('Error al eliminar meta:', error);
-            this.notify.error('Error al eliminar meta');
+    const confirmed = await this.confirmDialog.confirmDelete(metaDescription).toPromise();
+    
+    if (confirmed && meta.id) {
+      this.loading.set(true);
+      
+      this.deleteMetaUseCase.execute(meta.id).subscribe({
+        next: (success) => {
+          if (success) {
+            this.notify.success(this.translate.instant('GOALS.DELETE_SUCCESS'));
+            this.loadMetas();
+          } else {
+            this.notify.error(this.translate.instant('GOALS.DELETE_ERROR_GENERIC'));
             this.loading.set(false);
           }
-        });
-      }
-    });
+        },
+        error: (error) => {
+          console.error('Error al eliminar meta:', error);
+          this.notify.error(this.translate.instant('GOALS.DELETE_ERROR_GENERIC'));
+          this.loading.set(false);
+        }
+      });
+    }
   }
 
   navigateBack(): void {
@@ -254,7 +252,9 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   }
 
   getTipoDisplay(tipo: TipoMeta): string {
-    return tipo === TipoMeta.UNIDADES ? 'Unidades' : 'Monetario';
+    return tipo === TipoMeta.UNIDADES 
+      ? this.translate.instant('GOALS.UNITS') 
+      : this.translate.instant('GOALS.MONETARY');
   }
 
   getValorDisplay(meta: MetaVentaEntity): string {

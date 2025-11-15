@@ -8,6 +8,7 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { ProductoDetailedEntity } from '../../../../core/domain/entities/producto.entity';
 
@@ -22,7 +23,8 @@ import { ProductoDetailedEntity } from '../../../../core/domain/entities/product
     MatChipsModule,
     MatDividerModule,
     MatProgressBarModule,
-    MatLabel
+    MatLabel,
+    TranslateModule
   ],
   templateUrl: './producto-detail.component.html',
   styleUrl: './producto-detail.component.css'

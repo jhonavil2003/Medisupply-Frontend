@@ -10,6 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatSelectModule } from '@angular/material/select';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { GetMetasByVendedorUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { MetaVentaEntity, TipoMeta, Region, Trimestre } from '../../../../core/domain/entities/meta-venta.entity';
@@ -27,13 +28,15 @@ import { MetaVentaEntity, TipoMeta, Region, Trimestre } from '../../../../core/d
     MatIconModule,
     MatButtonModule,
     MatFormFieldModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule
   ],
   templateUrl: './meta-vendedor.component.html',
   styleUrls: ['./meta-vendedor.component.css']
 })
 export class MetaVendedorComponent implements OnInit {
   private getMetasByVendedorUseCase = inject(GetMetasByVendedorUseCase);
+  private translate: TranslateService = inject(TranslateService);
 
   metas = signal<MetaVentaEntity[]>([]);
   metasFiltradas = signal<MetaVentaEntity[]>([]);
@@ -129,7 +132,9 @@ export class MetaVendedorComponent implements OnInit {
   }
 
   getTipoDisplay(tipo: TipoMeta): string {
-    return tipo === TipoMeta.UNIDADES ? 'Unidades' : 'Monetario';
+    return tipo === TipoMeta.UNIDADES 
+      ? this.translate.instant('GOALS.UNITS') 
+      : this.translate.instant('GOALS.MONETARY');
   }
 
   getValorDisplay(meta: MetaVentaEntity): string {
@@ -140,7 +145,7 @@ export class MetaVendedorComponent implements OnInit {
         minimumFractionDigits: 0
       }).format(meta.valorObjetivo);
     }
-    return `${meta.valorObjetivo} unidades`;
+    return `${meta.valorObjetivo} ${this.translate.instant('MY_GOALS.UNITS_LABEL')}`;
   }
 
   getProductoDisplay(meta: MetaVentaEntity): string {

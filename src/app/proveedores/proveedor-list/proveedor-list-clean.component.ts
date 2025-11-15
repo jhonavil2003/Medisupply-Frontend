@@ -13,6 +13,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Clean Architecture Imports
 import { GetAllProveedoresUseCase } from '../../core/application/use-cases/proveedor/get-all-proveedores.use-case';
@@ -51,7 +52,8 @@ import { ProveedorDetailComponent } from '../../presentation/pages/proveedores/p
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './proveedor-list-clean.component.html',
   styleUrls: ['./proveedor-list-clean.component.css']
@@ -64,6 +66,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   private notify = inject(NotificationService);
   private dialog = inject(MatDialog);
   private confirmDialog = inject(ConfirmDialogService);
+  private translate = inject(TranslateService);
 
   // Signals para estado reactivo (opcional)
   isLoading = signal(false);
@@ -72,7 +75,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   filtroBusqueda: string = '';
   
   dataSource = new MatTableDataSource<ProveedorEntity>();
-  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'certificacionesVigentes', 'acciones'];
+  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'acciones'];
 
   // Estados disponibles
   estadosDisponibles = Object.values(EstadoProveedor);
@@ -190,16 +193,16 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         next: (success) => {
           if (success) {
             this.isLoading.set(false);
-            this.notify.success(`Proveedor "${proveedor.razonSocial}" eliminado correctamente`);
+            this.notify.success(this.translate.instant('SUPPLIERS.DELETE_SUCCESS', { name: proveedor.razonSocial }));
             this.cargarProveedores();
           } else {
-            this.notify.error('No se pudo eliminar el proveedor', 'Error');
+            this.notify.error(this.translate.instant('SUPPLIERS.DELETE_ERROR_GENERIC'));
             this.isLoading.set(false);
           }
         },
         error: (error) => {
           this.isLoading.set(false);
-          this.notify.error('Error al eliminar', 'Error');
+          this.notify.error(this.translate.instant('SUPPLIERS.DELETE_ERROR_GENERIC'));
           console.error(error);
         }
       });

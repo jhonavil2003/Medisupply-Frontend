@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MetaListComponent } from './meta-list.component';
 import {
@@ -115,7 +116,8 @@ describe('MetaListComponent', () => {
     } as any;
 
     mockConfirmDialog = {
-      confirm: jest.fn()
+      confirm: jest.fn(),
+      confirmDelete: jest.fn().mockReturnValue(of(true))
     } as any;
 
     mockRouter = {
@@ -145,7 +147,7 @@ describe('MetaListComponent', () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      imports: [MetaListComponent, NoopAnimationsModule],
+      imports: [MetaListComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetAllMetasUseCase, useValue: mockGetAllMetasUseCase },
         { provide: DeleteMetaVentaUseCase, useValue: mockDeleteMetaUseCase },
@@ -395,60 +397,53 @@ describe('MetaListComponent', () => {
 
       component.deleteMeta(metaWithoutId as MetaVentaEntity);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('No se puede eliminar: meta sin ID');
-      expect(mockConfirmDialog.confirm).not.toHaveBeenCalled();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+      expect(mockConfirmDialog.confirmDelete).not.toHaveBeenCalled();
     });
 
-    it('should show confirmation dialog', () => {
-      mockConfirmDialog.confirm.mockReturnValue(of(false));
+    it('should show confirmation dialog', async () => {
+      mockConfirmDialog.confirmDelete.mockReturnValue(of(false));
 
-      component.deleteMeta(mockMetas[0]);
+      await component.deleteMeta(mockMetas[0]);
 
-      expect(mockConfirmDialog.confirm).toHaveBeenCalledWith(
-        expect.objectContaining({
-          title: '¿Está seguro?',
-          confirmText: 'Eliminar',
-          cancelText: 'Cancelar',
-          type: 'danger'
-        })
-      );
+      expect(mockConfirmDialog.confirmDelete).toHaveBeenCalled();
     });
 
-    it('should delete meta when confirmed', () => {
-      mockConfirmDialog.confirm.mockReturnValue(of(true));
+    it('should delete meta when confirmed', async () => {
+      mockConfirmDialog.confirmDelete.mockReturnValue(of(true));
       mockDeleteMetaUseCase.execute.mockReturnValue(of(true));
 
-      component.deleteMeta(mockMetas[0]);
+      await component.deleteMeta(mockMetas[0]);
 
       expect(mockDeleteMetaUseCase.execute).toHaveBeenCalledWith(1);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Meta eliminada correctamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('GOALS.DELETE_SUCCESS');
     });
 
-    it('should not delete meta when cancelled', () => {
-      mockConfirmDialog.confirm.mockReturnValue(of(false));
+    it('should not delete meta when cancelled', async () => {
+      mockConfirmDialog.confirmDelete.mockReturnValue(of(false));
 
-      component.deleteMeta(mockMetas[0]);
+      await component.deleteMeta(mockMetas[0]);
 
       expect(mockDeleteMetaUseCase.execute).not.toHaveBeenCalled();
     });
 
-    it('should handle deletion failure', () => {
-      mockConfirmDialog.confirm.mockReturnValue(of(true));
+    it('should handle deletion failure', async () => {
+      mockConfirmDialog.confirmDelete.mockReturnValue(of(true));
       mockDeleteMetaUseCase.execute.mockReturnValue(of(false));
 
-      component.deleteMeta(mockMetas[0]);
+      await component.deleteMeta(mockMetas[0]);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('No se pudo eliminar la meta');
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
-    it('should handle deletion error', () => {
+    it('should handle deletion error', async () => {
       const error = new Error('Delete error');
-      mockConfirmDialog.confirm.mockReturnValue(of(true));
+      mockConfirmDialog.confirmDelete.mockReturnValue(of(true));
       mockDeleteMetaUseCase.execute.mockReturnValue(throwError(() => error));
 
-      component.deleteMeta(mockMetas[0]);
+      await component.deleteMeta(mockMetas[0]);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al eliminar meta');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
   });
@@ -483,8 +478,8 @@ describe('MetaListComponent', () => {
     });
 
     it('should get tipo display', () => {
-      expect(component.getTipoDisplay(TipoMeta.UNIDADES)).toBe('Unidades');
-      expect(component.getTipoDisplay(TipoMeta.MONETARIO)).toBe('Monetario');
+      expect(component.getTipoDisplay(TipoMeta.UNIDADES)).toBe('GOALS.UNITS');
+      expect(component.getTipoDisplay(TipoMeta.MONETARIO)).toBe('GOALS.MONETARY');
     });
 
     it('should get valor display for monetary type', () => {

@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -76,7 +78,8 @@ describe('ProductoDetailComponent', () => {
         MatIconModule,
         MatChipsModule,
         MatDividerModule,
-        MatLabel
+        MatLabel,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefMock },
@@ -186,14 +189,14 @@ describe('ProductoDetailComponent', () => {
     it('should render card title', () => {
       const compiled = fixture.nativeElement;
       const title = compiled.querySelector('.card-title');
-      expect(title.textContent).toContain('Detalle del Producto');
+      expect(title.textContent).toContain('PRODUCTS.DETAIL_TITLE');
     });
 
     it('should render close button', () => {
       const compiled = fixture.nativeElement;
       const closeButton = compiled.querySelector('.action-buttons button');
       expect(closeButton).toBeTruthy();
-      expect(closeButton.textContent.trim()).toBe('Cerrar');
+      expect(closeButton.textContent.trim()).toBe('COMMON.CLOSE');
     });
   });
 });

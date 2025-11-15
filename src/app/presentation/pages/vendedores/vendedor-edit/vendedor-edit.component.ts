@@ -11,6 +11,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import {
   GetVendedorByIdUseCase,
@@ -33,7 +34,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatCheckboxModule,
     MatProgressSpinnerModule,
     MatDatepickerModule,
-    MatNativeDateModule
+    MatNativeDateModule,
+    TranslateModule
   ],
   templateUrl: './vendedor-edit.component.html',
   styleUrls: ['./vendedor-edit.component.css']
@@ -44,6 +46,7 @@ export class VendedorEditComponent implements OnInit {
   private updateVendedorUseCase = inject(UpdateVendedorUseCase);
   private notificationService = inject(NotificationService);
   private dialogRef = inject(MatDialogRef<VendedorEditComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   vendedorId: number;
@@ -125,7 +128,7 @@ export class VendedorEditComponent implements OnInit {
   onSubmit(): void {
     if (this.vendedorForm.invalid) {
       this.vendedorForm.markAllAsTouched();
-      this.notificationService.warning('Por favor complete los campos requeridos correctamente');
+      this.notificationService.warning(this.translate.instant('SALESPERSONS.COMPLETE_REQUIRED_FIELDS'));
       return;
     }
 
@@ -162,7 +165,7 @@ export class VendedorEditComponent implements OnInit {
     this.updateVendedorUseCase.execute(vendedorDto).subscribe({
       next: (vendedor) => {
         this.loading.set(false);
-        this.notificationService.success('Vendedor actualizado exitosamente');
+        this.notificationService.success(this.translate.instant('SALESPERSONS.UPDATE_SUCCESS'));
         this.dialogRef.close(true);
       },
       error: (error) => {
@@ -197,22 +200,22 @@ export class VendedorEditComponent implements OnInit {
     const control = this.vendedorForm.get(field);
     
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translate.instant('VALIDATION.REQUIRED');
     }
     if (control?.hasError('minlength')) {
-      return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
+      return this.translate.instant('VALIDATION.MIN_LENGTH', { min: control.errors?.['minlength'].requiredLength });
     }
     if (control?.hasError('maxlength')) {
-      return `Máximo ${control.errors?.['maxlength'].requiredLength} caracteres`;
+      return this.translate.instant('VALIDATION.MAX_LENGTH', { max: control.errors?.['maxlength'].requiredLength });
     }
     if (control?.hasError('email')) {
-      return 'Correo electrónico inválido';
+      return this.translate.instant('VALIDATION.INVALID_EMAIL');
     }
     if (control?.hasError('pattern')) {
       if (field === 'phone') {
-        return 'Formato de teléfono inválido';
+        return this.translate.instant('VALIDATION.INVALID_PHONE');
       }
-      return 'Formato inválido';
+      return this.translate.instant('VALIDATION.INVALID_FORMAT');
     }
     
     return '';

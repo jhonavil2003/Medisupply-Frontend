@@ -1,7 +1,7 @@
 <mat-card class="form-card">
   <mat-card-header class="card-header">
     <mat-card-title class="card-title">
-      Editar Meta de Venta
+      {{ 'GOALS.EDIT_TITLE' | translate }}
     </mat-card-title>
   </mat-card-header>
 
@@ -9,14 +9,14 @@
     @if (loading()) {
       <div class="loading-container">
         <mat-spinner></mat-spinner>
-        <p>Cargando meta...</p>
+        <p>{{ 'GOALS.LOADING' | translate }}</p>
       </div>
     } @else {
       <form [formGroup]="metaForm" (ngSubmit)="onSubmit()">
         <div class="form-row">
           <!-- ID Vendedor -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>ID Vendedor (Employee ID)</mat-label>
+            <mat-label>{{ 'GOALS.SALESPERSON_ID' | translate }}</mat-label>
             <input matInput formControlName="idVendedor">
             @if (metaForm.get('idVendedor')?.pending) {
               <mat-spinner matSuffix diameter="20"></mat-spinner>
@@ -26,7 +26,7 @@
 
           <!-- ID Producto -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>SKU del Producto</mat-label>
+            <mat-label>{{ 'GOALS.PRODUCT_SKU' | translate }}</mat-label>
             <input matInput formControlName="idProducto">
             @if (metaForm.get('idProducto')?.pending) {
               <mat-spinner matSuffix diameter="20"></mat-spinner>
@@ -38,7 +38,7 @@
         <div class="form-row">
           <!-- Región -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>Región</mat-label>
+            <mat-label>{{ 'GOALS.REGION' | translate }}</mat-label>
             <mat-select formControlName="region">
               @for (region of regiones; track region) {
                 <mat-option [value]="region">{{ region }}</mat-option>
@@ -49,7 +49,7 @@
 
           <!-- Trimestre -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>Trimestre</mat-label>
+            <mat-label>{{ 'GOALS.QUARTER' | translate }}</mat-label>
             <mat-select formControlName="trimestre">
               @for (trimestre of trimestres; track trimestre) {
                 <mat-option [value]="trimestre">{{ trimestre }}</mat-option>
@@ -62,7 +62,7 @@
         <div class="form-row">
           <!-- Tipo -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>Tipo de Meta</mat-label>
+            <mat-label>{{ 'GOALS.GOAL_TYPE' | translate }}</mat-label>
             <mat-select formControlName="tipo">
               @for (tipo of tipos; track tipo) {
                 <mat-option [value]="tipo">{{ getTipoDisplay(tipo) }}</mat-option>
@@ -73,7 +73,7 @@
 
           <!-- Valor Objetivo -->
           <mat-form-field appearance="outline" floatLabel="always" class="form-field required">
-            <mat-label>Valor Objetivo</mat-label>
+            <mat-label>{{ 'GOALS.TARGET_VALUE' | translate }}</mat-label>
             <input matInput type="number" formControlName="valorObjetivo" min="1">
             <mat-error>{{ getErrorMessage('valorObjetivo') }}</mat-error>
           </mat-form-field>
@@ -85,10 +85,10 @@
             @if (loading()) {
               <mat-spinner diameter="20"></mat-spinner>
             }
-            Guardar
+            {{ 'COMMON.SAVE' | translate }}
           </button>
           <button mat-raised-button type="button" (click)="cancel()" [disabled]="loading()">
-            Cancelar
+            {{ 'COMMON.CANCEL' | translate }}
           </button>
         </div>
       </form>

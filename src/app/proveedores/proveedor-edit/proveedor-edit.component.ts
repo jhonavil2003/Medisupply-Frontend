@@ -9,10 +9,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { GetProveedorByIdUseCase } from '../../core/application/use-cases/proveedor/get-proveedor-by-id.use-case';
 import { UpdateProveedorUseCase } from '../../core/application/use-cases/proveedor/update-proveedor.use-case';
 import { ProveedorEntity } from '../../core/domain/entities/proveedor.entity';
+import { NotificationService } from '../../presentation/shared/services/notification.service';
 
 @Component({
   selector: 'app-proveedor-edit',
@@ -26,7 +28,8 @@ import { ProveedorEntity } from '../../core/domain/entities/proveedor.entity';
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './proveedor-edit.component.html',
   styleUrls: ['./proveedor-edit.component.css']
@@ -36,13 +39,15 @@ export class ProveedorEditComponent implements OnInit {
   private getProveedorByIdUseCase = inject(GetProveedorByIdUseCase);
   private updateProveedorUseCase = inject(UpdateProveedorUseCase);
   private dialogRef = inject(MatDialogRef<ProveedorEditComponent>);
+  private translate = inject(TranslateService);
+  private notificationService = inject(NotificationService);
 
   loading = signal(false);
   proveedorForm: FormGroup;
   proveedorId: number;
   originalProveedor: ProveedorEntity | null = null;
 
-  monedasDisponibles = ['USD', 'COP', 'EUR'];
+  monedasDisponibles = ['COP'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { proveedorId: number }) {
     this.proveedorId = data.proveedorId;
@@ -155,6 +160,7 @@ export class ProveedorEditComponent implements OnInit {
       this.updateProveedorUseCase.execute(updateDto).subscribe({
         next: () => {
           this.loading.set(false);
+          this.notificationService.success(this.translate.instant('SUPPLIERS.UPDATE_SUCCESS'));
           this.dialogRef.close(true);
         },
         error: (error: any) => {
@@ -163,6 +169,7 @@ export class ProveedorEditComponent implements OnInit {
         }
       });
     } else {
+      this.notificationService.warning(this.translate.instant('SUPPLIERS.COMPLETE_REQUIRED_FIELDS'));
       this.markFormGroupTouched();
     }
   }
@@ -200,34 +207,34 @@ export class ProveedorEditComponent implements OnInit {
     const field = this.proveedorForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return 'Este campo es requerido';
+        return this.translate.instant('VALIDATION.REQUIRED');
       }
       if (field.errors['minlength']) {
-        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MIN_LENGTH', { min: field.errors['minlength'].requiredLength });
       }
       if (field.errors['maxlength']) {
-        return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MAX_LENGTH', { max: field.errors['maxlength'].requiredLength });
       }
       if (field.errors['min']) {
-        return `El valor mínimo es ${field.errors['min'].min}`;
+        return this.translate.instant('VALIDATION.MIN_VALUE', { min: field.errors['min'].min });
       }
       if (field.errors['max']) {
-        return `El valor máximo es ${field.errors['max'].max}`;
+        return this.translate.instant('VALIDATION.MAX_VALUE', { max: field.errors['max'].max });
       }
       if (field.errors['email']) {
-        return 'Correo electrónico inválido';
+        return this.translate.instant('VALIDATION.INVALID_EMAIL');
       }
       if (field.errors['pattern']) {
         if (fieldName === 'ruc') {
-          return 'Solo números permitidos';
+          return this.translate.instant('VALIDATION.NUMBERS_ONLY');
         }
         if (fieldName === 'telefono') {
-          return 'Formato de teléfono inválido';
+          return this.translate.instant('VALIDATION.INVALID_PHONE');
         }
         if (fieldName === 'website') {
-          return 'Debe ser un sitio web válido (ej: www.ejemplo.com)';
+          return this.translate.instant('VALIDATION.INVALID_WEBSITE');
         }
-        return 'Formato inválido';
+        return this.translate.instant('VALIDATION.INVALID_FORMAT');
       }
     }
     return '';

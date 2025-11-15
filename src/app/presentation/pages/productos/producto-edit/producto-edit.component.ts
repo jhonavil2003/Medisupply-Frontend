@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { GetProductByIdUseCase } from '../../../../core/application/use-cases/producto/get-product-by-id.use-case';
 import { UpdateProductUseCase } from '../../../../core/application/use-cases/producto/update-product.use-case';
@@ -31,7 +32,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './producto-edit.component.html',
   styleUrls: ['./producto-edit.component.css']
@@ -44,6 +46,7 @@ export class ProductoEditComponent implements OnInit {
   private updateProductUseCase = inject(UpdateProductUseCase);
   private notificationService = inject(NotificationService);
   private dialogRef = inject(MatDialogRef<ProductoEditComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   loadingProduct = signal(true);
@@ -75,11 +78,7 @@ export class ProductoEditComponent implements OnInit {
     'kg'
   ];
 
-  currencies = [
-    'USD',
-    'COP',
-    'EUR'
-  ];
+  currencies = ['COP'];
 
   constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }) {
     this.productId = data.productId;
@@ -150,7 +149,7 @@ export class ProductoEditComponent implements OnInit {
       },
       error: (error) => {
         this.loadingProduct.set(false);
-        this.notificationService.error(`Error al cargar producto: ${error.message}`);
+        this.notificationService.error(`${this.translate.instant('PRODUCTS.UPDATE_SUCCESS').replace('actualizado correctamente', 'Error al cargar producto')}: ${error.message}`);
         this.dialogRef.close(false);
       }
     });
@@ -185,17 +184,17 @@ export class ProductoEditComponent implements OnInit {
       this.updateProductUseCase.execute(this.productId, updateData).subscribe({
         next: (product) => {
           this.loading.set(false);
-          this.notificationService.success('Producto actualizado exitosamente');
+          this.notificationService.success(this.translate.instant('PRODUCTS.UPDATE_SUCCESS'));
           this.dialogRef.close(true); // Cerrar modal y retornar true
         },
         error: (error) => {
           this.loading.set(false);
-          this.notificationService.error(`Error al actualizar producto: ${error.message}`);
+          this.notificationService.error(`${this.translate.instant('PRODUCTS.UPDATE_SUCCESS').replace('actualizado correctamente', 'Error al actualizar producto')}: ${error.message}`);
         }
       });
     } else {
       this.markFormGroupTouched();
-      this.notificationService.warning('Por favor, complete todos los campos requeridos');
+      this.notificationService.warning(this.translate.instant('PRODUCTS.COMPLETE_REQUIRED_FIELDS'));
     }
   }
 
@@ -233,34 +232,34 @@ export class ProductoEditComponent implements OnInit {
     const field = this.productForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return 'Este campo es requerido';
+        return this.translate.instant('VALIDATION.REQUIRED');
       }
       if (field.errors['minlength']) {
-        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MIN_LENGTH', { min: field.errors['minlength'].requiredLength });
       }
       if (field.errors['maxlength']) {
-        return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MAX_LENGTH', { max: field.errors['maxlength'].requiredLength });
       }
       if (field.errors['min']) {
-        return `El valor mínimo es ${field.errors['min'].min}`;
+        return this.translate.instant('VALIDATION.MIN_VALUE', { min: field.errors['min'].min });
       }
       if (field.errors['max']) {
-        return `El valor máximo es ${field.errors['max'].max}`;
+        return this.translate.instant('VALIDATION.MAX_VALUE', { max: field.errors['max'].max });
       }
       if (field.errors['pattern']) {
         if (fieldName === 'sku') {
-          return 'Solo letras, números, guiones y guiones bajos';
+          return this.translate.instant('VALIDATION.INVALID_SKU');
         }
         if (fieldName === 'barcode') {
-          return 'Solo números permitidos';
+          return this.translate.instant('VALIDATION.INVALID_BARCODE');
         }
         if (fieldName === 'supplier_id') {
-          return 'Solo números enteros';
+          return this.translate.instant('VALIDATION.INVALID_SUPPLIER_ID');
         }
         if (fieldName === 'image_url') {
-          return 'Debe ser una URL válida (http:// o https://)';
+          return this.translate.instant('VALIDATION.INVALID_URL');
         }
-        return 'Formato inválido';
+        return this.translate.instant('VALIDATION.INVALID_FORMAT');
       }
     }
     return '';

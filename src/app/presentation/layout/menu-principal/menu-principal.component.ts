@@ -1,12 +1,13 @@
 import { Component, inject } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { TranslateModule } from '@ngx-translate/core';
 import { filter } from 'rxjs/operators';
 
 @Component({
   selector: 'app-menu-principal',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, TranslateModule],
   templateUrl: './menu-principal.component.html',
   styleUrls: ['./menu-principal.component.css']
 })

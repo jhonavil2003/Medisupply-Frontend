@@ -7,6 +7,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { MatLabel } from '@angular/material/form-field';
+import { TranslateModule } from '@ngx-translate/core';
 
 import { Proveedor } from '../proveedor';
 
@@ -20,7 +21,8 @@ import { Proveedor } from '../proveedor';
     MatIconModule,
     MatChipsModule,
     MatDividerModule,
-    MatLabel
+    MatLabel,
+    TranslateModule
   ],
   templateUrl: './proveedor-detail.component.html',
   styleUrls: ['./proveedor-detail.component.css']

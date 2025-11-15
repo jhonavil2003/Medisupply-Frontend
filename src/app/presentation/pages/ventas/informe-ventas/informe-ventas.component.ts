@@ -12,6 +12,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ToastrService } from 'ngx-toastr';
 import { ReportsService, SalesSummaryFilters, SalesSummaryItem } from './reports.service';
 
@@ -31,7 +32,8 @@ import { ReportsService, SalesSummaryFilters, SalesSummaryItem } from './reports
     MatButtonModule,
     MatIconModule,
     MatCardModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './informe-ventas.component.html',
   styleUrls: ['./informe-ventas.component.css']
@@ -39,6 +41,7 @@ import { ReportsService, SalesSummaryFilters, SalesSummaryItem } from './reports
 export class InformeVentasComponent implements OnInit {
   private toastr = inject(ToastrService);
   private reportsService = inject(ReportsService);
+  private translate = inject(TranslateService);
 
   // Signals para estado
   loading = signal(false);
@@ -167,11 +170,11 @@ export class InformeVentasComponent implements OnInit {
         }, 0);
         
         this.loading.set(false);
-        this.toastr.success('Datos cargados correctamente');
+        this.toastr.success(this.translate.instant('REPORTS.DATA_LOADED_SUCCESS'));
       },
       error: (error) => {
         console.error('Error al cargar reportes:', error);
-        this.toastr.error('Error al cargar los datos de reportes');
+        this.toastr.error(this.translate.instant('REPORTS.DATA_LOAD_ERROR'));
         this.loading.set(false);
       }
     });

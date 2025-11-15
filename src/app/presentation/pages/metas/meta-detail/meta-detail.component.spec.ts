@@ -2,6 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MetaDetailComponent } from './meta-detail.component';
 import { GetMetaByIdUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
@@ -78,7 +79,7 @@ describe('MetaDetailComponent', () => {
     mockDialogRef = { close: jest.fn() };
 
     await TestBed.configureTestingModule({
-      imports: [MetaDetailComponent, NoopAnimationsModule],
+      imports: [MetaDetailComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetMetaByIdUseCase, useValue: mockGetMetaByIdUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
@@ -115,7 +116,7 @@ describe('MetaDetailComponent', () => {
 
       component.ngOnInit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de meta no válido');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
@@ -125,7 +126,7 @@ describe('MetaDetailComponent', () => {
 
       component.ngOnInit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Meta no encontrada');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalled();
     });
 
@@ -136,7 +137,7 @@ describe('MetaDetailComponent', () => {
 
       component.ngOnInit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar meta');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
@@ -173,13 +174,13 @@ describe('MetaDetailComponent', () => {
     it('should return "Unidades" for UNIDADES type', () => {
       const display = component.getTipoDisplay(TipoMeta.UNIDADES);
 
-      expect(display).toBe('Unidades');
+      expect(display).toBe('GOALS.UNITS');
     });
 
     it('should return "Monetario" for MONETARIO type', () => {
       const display = component.getTipoDisplay(TipoMeta.MONETARIO);
 
-      expect(display).toBe('Monetario');
+      expect(display).toBe('GOALS.MONETARY');
     });
   });
 

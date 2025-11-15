@@ -3,18 +3,18 @@
   <div class="container">
     <!-- Header -->
     <div class="header-bar">
-      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']" data-cy="back-to-dashboard">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Reporte de desempeño de ventas</h2>
+      <h2 style="margin: 0;">{{ 'REPORTS.TITLE' | translate }}</h2>
     </div>
 
     <!-- Filtros -->
     <div class="filtros">
       <mat-form-field appearance="outline">
-        <mat-label>Mes</mat-label>
-        <mat-select [(ngModel)]="filtroMes" (selectionChange)="filtrar()">
-          <mat-option [value]="null">Todos</mat-option>
+        <mat-label>{{ 'REPORTS.FILTERS.MONTH' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filtroMes" (selectionChange)="filtrar()" data-cy="filter-month">
+          <mat-option [value]="null">{{ 'REPORTS.FILTERS.ALL' | translate }}</mat-option>
           @for (mes of meses; track mes.value) {
             <mat-option [value]="mes.value">{{ mes.nombre }}</mat-option>
           }
@@ -22,8 +22,8 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Año</mat-label>
-        <mat-select [(ngModel)]="filtroAnio" (selectionChange)="filtrar()">
+        <mat-label>{{ 'REPORTS.FILTERS.YEAR' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filtroAnio" (selectionChange)="filtrar()" data-cy="filter-year">
           @for (anio of anios; track anio) {
             <mat-option [value]="anio">{{ anio }}</mat-option>
           }
@@ -31,9 +31,9 @@
       </mat-form-field>
 
       <mat-form-field appearance="outline">
-        <mat-label>Vendedor</mat-label>
-        <mat-select [(ngModel)]="filtroVendedor" (selectionChange)="filtrar()">
-          <mat-option value="">Todos</mat-option>
+        <mat-label>{{ 'REPORTS.FILTERS.SALESPERSON' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filtroVendedor" (selectionChange)="filtrar()" data-cy="filter-salesperson">
+          <mat-option value="">{{ 'REPORTS.FILTERS.ALL' | translate }}</mat-option>
           @for (v of vendedores(); track v.id) {
             <mat-option [value]="v.id">{{ v.nombre }}</mat-option>
           }
@@ -41,9 +41,9 @@
       </mat-form-field>
       
       <mat-form-field appearance="outline">
-        <mat-label>Producto</mat-label>
-        <mat-select [(ngModel)]="filtroProducto" (selectionChange)="filtrar()">
-          <mat-option value="">Todos</mat-option>
+        <mat-label>{{ 'REPORTS.FILTERS.PRODUCT' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filtroProducto" (selectionChange)="filtrar()" data-cy="filter-product">
+          <mat-option value="">{{ 'REPORTS.FILTERS.ALL' | translate }}</mat-option>
           @for (p of productos(); track p.sku) {
             <mat-option [value]="p.sku">{{ p.sku }} - {{ p.nombre }}</mat-option>
           }
@@ -51,9 +51,9 @@
       </mat-form-field>
       
       <mat-form-field appearance="outline">
-        <mat-label>Región</mat-label>
-        <mat-select [(ngModel)]="filtroRegion" (selectionChange)="filtrar()">
-          <mat-option value="">Todas</mat-option>
+        <mat-label>{{ 'REPORTS.FILTERS.REGION' | translate }}</mat-label>
+        <mat-select [(ngModel)]="filtroRegion" (selectionChange)="filtrar()" data-cy="filter-region">
+          <mat-option value="">{{ 'REPORTS.FILTERS.ALL' | translate }}</mat-option>
           @for (r of regiones(); track r) {
             <mat-option [value]="r">{{ r }}</mat-option>
           }
@@ -63,9 +63,9 @@
 
     <!-- Acciones de filtro -->
     <div class="filter-actions">
-      <button mat-button type="button" (click)="limpiarFiltros()">
+      <button mat-button type="button" (click)="limpiarFiltros()" data-cy="clear-filters">
         <mat-icon>filter_list</mat-icon>
-        Limpiar filtros
+        {{ 'REPORTS.CLEAR_FILTERS' | translate }}
       </button>
     </div>
   </div>
@@ -82,31 +82,31 @@
     <!-- Resumen de totales -->
     @if (!loading() && ventas.length > 0) {
       <div class="totales-resumen">
-        <div class="total-item">
+        <div class="total-item" data-cy="kpi-salespersons">
           <mat-icon>people</mat-icon>
           <div>
-            <span class="total-label">Vendedores</span>
+            <span class="total-label">{{ 'REPORTS.KPI.SALESPERSONS' | translate }}</span>
             <span class="total-value">{{ totales.vendedores }}</span>
           </div>
         </div>
-        <div class="total-item">
+        <div class="total-item" data-cy="kpi-products">
           <mat-icon>inventory_2</mat-icon>
           <div>
-            <span class="total-label">Productos</span>
+            <span class="total-label">{{ 'REPORTS.KPI.PRODUCTS' | translate }}</span>
             <span class="total-value">{{ totales.productos }}</span>
           </div>
         </div>
-        <div class="total-item">
+        <div class="total-item" data-cy="kpi-volume">
           <mat-icon>shopping_cart</mat-icon>
           <div>
-            <span class="total-label">Volumen Total</span>
+            <span class="total-label">{{ 'REPORTS.KPI.TOTAL_VOLUME' | translate }}</span>
             <span class="total-value">{{ totales.volumen | number }}</span>
           </div>
         </div>
-        <div class="total-item">
+        <div class="total-item" data-cy="kpi-value">
           <mat-icon>attach_money</mat-icon>
           <div>
-            <span class="total-label">Valor Total</span>
+            <span class="total-label">{{ 'REPORTS.KPI.TOTAL_VALUE' | translate }}</span>
             <span class="total-value">{{ totales.valor | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
           </div>
         </div>
@@ -116,58 +116,58 @@
     @if (!loading()) {
       <div class="card">
         <div class="table-container">
-          <table mat-table [dataSource]="dataSource" matSort class="modern-table">
+          <table mat-table [dataSource]="dataSource" matSort class="modern-table" data-cy="reports-table">
             <ng-container matColumnDef="fecha">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Fecha</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.DATE' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.fecha | date:'dd/MM/yyyy' }}</td>
             </ng-container>
 
             <ng-container matColumnDef="vendedor">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Vendedor</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.SALESPERSON' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.vendedor }}</td>
             </ng-container>
             
             <ng-container matColumnDef="region">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Región</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.REGION' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.region }}</td>
             </ng-container>
 
             <ng-container matColumnDef="skuProducto">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.SKU' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.product_sku }}</td>
             </ng-container>
             
             <ng-container matColumnDef="producto">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.PRODUCT' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.product_name }}</td>
             </ng-container>
             
             <ng-container matColumnDef="tipoObjetivo">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Tipo Objetivo</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.GOAL_TYPE' | translate }}</th>
               <td mat-cell *matCellDef="let row">
                 @if (row.tipo_objetivo) {
                   <span class="badge-objetivo" 
                         [ngClass]="row.tipo_objetivo === 'unidades' ? 'badge-unidades' : 'badge-monetario'">
-                    {{ row.tipo_objetivo === 'unidades' ? 'Unidades' : 'Monetario' }}
+                    {{ (row.tipo_objetivo === 'unidades' ? 'REPORTS.GOAL_TYPE.UNITS' : 'REPORTS.GOAL_TYPE.MONETARY') | translate }}
                   </span>
                 } @else {
-                  <span class="sin-objetivo">N/A</span>
+                  <span class="sin-objetivo">{{ 'COMMON.NA' | translate }}</span>
                 }
               </td>
             </ng-container>
             
             <ng-container matColumnDef="volumenVentas">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Volumen de Ventas</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.SALES_VOLUME' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.volumen_ventas | number }}</td>
             </ng-container>
             
             <ng-container matColumnDef="valorTotal">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor Total</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.TOTAL_VALUE' | translate }}</th>
               <td mat-cell *matCellDef="let row">{{ row.valor_total | currency:'COP':'symbol-narrow':'1.0-0' }}</td>
             </ng-container>
             
             <ng-container matColumnDef="valorObjetivo">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>Valor Objetivo</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.GOAL_VALUE' | translate }}</th>
               <td mat-cell *matCellDef="let row">
                 @if (row.valor_objetivo !== null) {
                   @if (row.tipo_objetivo === 'monetario') {
@@ -176,20 +176,20 @@
                     {{ row.valor_objetivo | number }}
                   }
                 } @else {
-                  <span class="sin-objetivo">N/A</span>
+                  <span class="sin-objetivo">{{ 'COMMON.NA' | translate }}</span>
                 }
               </td>
             </ng-container>
 
             <ng-container matColumnDef="cumplimiento">
-              <th mat-header-cell *matHeaderCellDef mat-sort-header>% Cumplimiento</th>
+              <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'REPORTS.TABLE.COMPLETION' | translate }}</th>
               <td mat-cell *matCellDef="let row">
                 @if (row.cumplimiento_porcentaje !== null) {
                   <span [ngClass]="getCumplimientoClass(row.cumplimiento_porcentaje)">
                     {{ row.cumplimiento_porcentaje | number:'1.1-1' }}%
                   </span>
                 } @else {
-                  <span class="sin-objetivo">N/A</span>
+                  <span class="sin-objetivo">{{ 'COMMON.NA' | translate }}</span>
                 }
               </td>
             </ng-container>
@@ -200,9 +200,9 @@
 
           <!-- Mensaje cuando no hay datos -->
           @if (ventas.length === 0) {
-            <div class="no-data">
+            <div class="no-data" data-cy="no-data-message">
               <mat-icon>info</mat-icon>
-              <p>No se encontraron registros con los filtros seleccionados</p>
+              <p>{{ 'REPORTS.NO_DATA' | translate }}</p>
             </div>
           }
         </div>
@@ -218,13 +218,13 @@
       
       <!-- Acciones fuera de la card -->
       <div class="acciones">
-        <button mat-raised-button color="accent" (click)="exportar('pdf')">
+        <button mat-raised-button color="accent" (click)="exportar('pdf')" data-cy="export-pdf">
           <mat-icon>picture_as_pdf</mat-icon> 
-          <span>Exportar PDF</span>
+          <span>{{ 'REPORTS.EXPORT_PDF' | translate }}</span>
         </button>
-        <button mat-raised-button color="accent" (click)="exportar('excel')">
+        <button mat-raised-button color="accent" (click)="exportar('excel')" data-cy="export-excel">
           <mat-icon>table_view</mat-icon> 
-          <span>Exportar Excel</span>
+          <span>{{ 'REPORTS.EXPORT_EXCEL' | translate }}</span>
         </button>
       </div>
     }

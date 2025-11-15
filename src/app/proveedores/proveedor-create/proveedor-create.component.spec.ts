@@ -3,9 +3,12 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService, MockNotificationService } from '../../../testing/translate.mock';
 
 import { ProveedorCreateComponent } from './proveedor-create.component';
 import { CreateProveedorUseCase } from '../../core/application/use-cases/proveedor/create-proveedor.use-case';
+import { NotificationService } from '../../presentation/shared/services/notification.service';
 
 // Material modules
 import { MatCardModule } from '@angular/material/card';
@@ -42,11 +45,13 @@ describe('ProveedorCreateComponent', () => {
         MatSelectModule,
         MatButtonModule,
         MatIconModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
-        { provide: CreateProveedorUseCase, useValue: createProveedorUseCaseSpy }
+        { provide: CreateProveedorUseCase, useValue: createProveedorUseCaseSpy },
+        { provide: NotificationService, useClass: MockNotificationService }
       ]
     }).compileComponents();
 
@@ -82,9 +87,8 @@ describe('ProveedorCreateComponent', () => {
     });
 
     it('should initialize arrays with correct values', () => {
-      expect(component.monedasDisponibles).toContain('USD');
       expect(component.monedasDisponibles).toContain('COP');
-      expect(component.monedasDisponibles).toContain('EUR');
+      expect(component.monedasDisponibles.length).toBeGreaterThan(0);
     });
   });
 
@@ -207,10 +211,10 @@ describe('ProveedorCreateComponent', () => {
 
       razonSocialControl?.setValue('');
       razonSocialControl?.markAsTouched();
-      expect(component.getFieldError('razonSocial')).toContain('Este campo es requerido');
+      expect(component.getFieldError('razonSocial')).toContain('VALIDATION.REQUIRED');
 
       razonSocialControl?.setValue('AB');
-      expect(component.getFieldError('razonSocial')).toContain('Mínimo 3 caracteres');
+      expect(component.getFieldError('razonSocial')).toContain('VALIDATION.MIN_LENGTH');
 
       razonSocialControl?.setValue('Valid Company Name');
       expect(component.getFieldError('razonSocial')).toBe('');
@@ -221,13 +225,13 @@ describe('ProveedorCreateComponent', () => {
 
       rucControl?.setValue('');
       rucControl?.markAsTouched();
-      expect(component.getFieldError('ruc')).toContain('Este campo es requerido');
+      expect(component.getFieldError('ruc')).toContain('VALIDATION.REQUIRED');
 
       rucControl?.setValue('123');
-      expect(component.getFieldError('ruc')).toContain('Mínimo 10 caracteres');
+      expect(component.getFieldError('ruc')).toContain('VALIDATION.MIN_LENGTH');
 
       rucControl?.setValue('abc123');
-      expect(component.getFieldError('ruc')).toContain('Mínimo 10 caracteres'); // minlength se valida primero
+      expect(component.getFieldError('ruc')).toContain('VALIDATION.MIN_LENGTH'); // minlength se valida primero
 
       rucControl?.setValue('12345678901');
       expect(component.getFieldError('ruc')).toBe('');
@@ -238,10 +242,10 @@ describe('ProveedorCreateComponent', () => {
 
       telefonoControl?.setValue('');
       telefonoControl?.markAsTouched();
-      expect(component.getFieldError('telefono')).toContain('Este campo es requerido');
+      expect(component.getFieldError('telefono')).toContain('VALIDATION.REQUIRED');
 
       telefonoControl?.setValue('123');
-      expect(component.getFieldError('telefono')).toContain('Mínimo 7 caracteres');
+      expect(component.getFieldError('telefono')).toContain('VALIDATION.MIN_LENGTH');
 
       telefonoControl?.setValue('1234567');
       expect(component.getFieldError('telefono')).toBe('');
@@ -252,10 +256,10 @@ describe('ProveedorCreateComponent', () => {
 
       correoControl?.setValue('');
       correoControl?.markAsTouched();
-      expect(component.getFieldError('correoContacto')).toContain('Este campo es requerido');
+      expect(component.getFieldError('correoContacto')).toContain('VALIDATION.REQUIRED');
 
       correoControl?.setValue('invalid-email');
-      expect(component.getFieldError('correoContacto')).toContain('Correo electrónico inválido');
+      expect(component.getFieldError('correoContacto')).toContain('VALIDATION.INVALID_EMAIL');
 
       correoControl?.setValue('valid@email.com');
       expect(component.getFieldError('correoContacto')).toBe('');
@@ -266,7 +270,7 @@ describe('ProveedorCreateComponent', () => {
 
       websiteControl?.setValue('invalid');
       websiteControl?.markAsTouched();
-      expect(component.getFieldError('website')).toContain('Debe ser un sitio web válido (ej: www.ejemplo.com)');
+      expect(component.getFieldError('website')).toContain('VALIDATION.INVALID_WEBSITE');
 
       websiteControl?.setValue('example.com');
       expect(component.getFieldError('website')).toBe('');

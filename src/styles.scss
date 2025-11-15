@@ -85,6 +85,55 @@ $my-theme: mat.m2-define-light-theme((
 // =============================
 // ✨ 4. Estilos globales
 // =============================
+
+// Fix para cursor visible en todos los inputs - CRITICAL FIX
+* {
+  caret-color: auto !important;
+}
+
+// Todos los inputs de Material Design y HTML nativos
+.mat-mdc-input-element,
+.mat-mdc-form-field input,
+.mat-mdc-form-field textarea,
+.mat-input-element,
+input[matInput],
+input,
+textarea,
+.mat-mdc-text-field-wrapper input,
+.mat-mdc-text-field-wrapper textarea {
+  caret-color: #000 !important;
+  color: rgba(0, 0, 0, 0.87) !important;
+}
+
+// Estado focus con cursor azul
+.mat-mdc-input-element:focus,
+.mat-mdc-form-field input:focus,
+.mat-mdc-form-field textarea:focus,
+input[matInput]:focus,
+input:focus,
+textarea:focus {
+  caret-color: #1976d2 !important;
+  outline: none;
+}
+
+// Asegurar que el input sea visible y clickeable
+.mat-mdc-text-field-wrapper {
+  pointer-events: auto !important;
+}
+
+.mat-mdc-form-field-infix {
+  pointer-events: auto !important;
+}
+
+// Fix adicional para campos específicos de formularios
+.mat-mdc-form-field-type-mat-input .mat-mdc-input-element {
+  caret-color: #000 !important;
+}
+
+.mat-mdc-form-field-type-mat-input .mat-mdc-input-element:focus {
+  caret-color: #1976d2 !important;
+}
+
 .container {
   background: var(--color-white);
   border-radius: var(--radius);
@@ -520,4 +569,36 @@ html, body {
 .search-wrap input,
 .search-field input {
   width: 100% !important;
+}
+
+// =============================
+// 🔥 CURSOR VISIBILITY FIX - FINAL OVERRIDE
+// =============================
+// Aplicado al final para garantizar máxima especificidad
+
+input,
+textarea,
+input[type="text"],
+input[type="email"],
+input[type="number"],
+input[type="tel"],
+input[type="url"],
+input[matInput],
+.mat-mdc-input-element,
+.mat-mdc-form-field input,
+.mat-mdc-form-field textarea,
+mat-form-field input,
+mat-form-field textarea {
+  caret-color: #000 !important;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.87) !important;
+}
+
+input:focus,
+textarea:focus,
+input[matInput]:focus,
+.mat-mdc-input-element:focus,
+.mat-mdc-form-field input:focus,
+.mat-mdc-form-field textarea:focus {
+  caret-color: #1976d2 !important;
+  -webkit-text-fill-color: rgba(0, 0, 0, 0.87) !important;
 }

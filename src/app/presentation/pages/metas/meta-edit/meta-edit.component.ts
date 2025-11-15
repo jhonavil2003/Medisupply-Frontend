@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import {
   GetMetaByIdUseCase,
@@ -31,7 +32,8 @@ import { vendedorExistsValidator, productoExistsValidator } from '../validators/
     MatSelectModule,
     MatButtonModule,
     MatIconModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './meta-edit.component.html',
   styleUrls: ['./meta-edit.component.css']
@@ -44,6 +46,7 @@ export class MetaEditComponent implements OnInit {
   private notificationService = inject(NotificationService);
   private vendedorRepository = inject(VendedorRepository);
   private productoRepository = inject(ProductoRepository);
+  private translate: TranslateService = inject(TranslateService);
 
   loading = signal(false);
   metaId: number;
@@ -113,12 +116,12 @@ export class MetaEditComponent implements OnInit {
   onSubmit(): void {
     if (this.metaForm.invalid) {
       this.metaForm.markAllAsTouched();
-      this.notificationService.warning('Por favor complete los campos requeridos correctamente');
+      this.notificationService.warning(this.translate.instant('GOALS.COMPLETE_REQUIRED_FIELDS'));
       return;
     }
 
     if (!this.metaId) {
-      this.notificationService.error('ID de meta no válido');
+      this.notificationService.error(this.translate.instant('GOALS.INVALID_ID'));
       return;
     }
 
@@ -138,7 +141,7 @@ export class MetaEditComponent implements OnInit {
     this.updateMetaUseCase.execute(metaDto).subscribe({
       next: (meta) => {
         this.loading.set(false);
-        this.notificationService.success('Meta actualizada exitosamente');
+        this.notificationService.success(this.translate.instant('GOALS.UPDATE_SUCCESS'));
         this.dialogRef.close(true);
       },
       error: (error) => {
@@ -155,21 +158,21 @@ export class MetaEditComponent implements OnInit {
         }
         // Error HTTP 400 (validación backend)
         else if (error.status === 400) {
-          const errorMsg = error.error?.error || error.error?.message || 'Datos inválidos. Verifique que el vendedor y producto existan';
+          const errorMsg = error.error?.error || error.error?.message || this.translate.instant('GOALS.INVALID_DATA');
           this.notificationService.error(errorMsg);
         } 
         // Error HTTP 404
         else if (error.status === 404) {
-          const errorMsg = error.error?.error || error.error?.message || 'Meta, vendedor o producto no encontrado';
+          const errorMsg = error.error?.error || error.error?.message || this.translate.instant('GOALS.NOT_FOUND_UPDATE');
           this.notificationService.error(errorMsg);
         }
         // Otros errores HTTP
         else if (error.status) {
-          this.notificationService.error(`Error del servidor: ${error.statusText || 'Error desconocido'}`);
+          this.notificationService.error(`${this.translate.instant('GOALS.SERVER_ERROR')}: ${error.statusText || this.translate.instant('GOALS.UNKNOWN_ERROR')}`);
         }
         // Error genérico
         else {
-          this.notificationService.error('Error al actualizar meta. Verifique los datos ingresados');
+          this.notificationService.error(this.translate.instant('GOALS.UPDATE_ERROR'));
         }
       }
     });
@@ -183,25 +186,27 @@ export class MetaEditComponent implements OnInit {
     const control = this.metaForm.get(field);
     
     if (control?.hasError('required')) {
-      return 'Este campo es requerido';
+      return this.translate.instant('GOALS.FIELD_REQUIRED');
     }
     if (control?.hasError('minlength')) {
-      return `Mínimo ${control.errors?.['minlength'].requiredLength} caracteres`;
+      return `${this.translate.instant('GOALS.MIN_LENGTH')} ${control.errors?.['minlength'].requiredLength}`;
     }
     if (control?.hasError('min')) {
-      return `El valor debe ser mayor a ${control.errors?.['min'].min}`;
+      return `${this.translate.instant('GOALS.MIN_VALUE')} ${control.errors?.['min'].min}`;
     }
     if (control?.hasError('vendedorNotExists')) {
-      return 'El vendedor no existe en el sistema';
+      return this.translate.instant('GOALS.SALESPERSON_NOT_EXISTS');
     }
     if (control?.hasError('productoNotExists')) {
-      return 'El producto no existe en el sistema';
+      return this.translate.instant('GOALS.PRODUCT_NOT_EXISTS');
     }
     
     return '';
   }
 
   getTipoDisplay(tipo: TipoMeta): string {
-    return tipo === TipoMeta.UNIDADES ? 'Unidades' : 'Monetario';
+    return tipo === TipoMeta.UNIDADES 
+      ? this.translate.instant('GOALS.UNITS') 
+      : this.translate.instant('GOALS.MONETARY');
   }
 }

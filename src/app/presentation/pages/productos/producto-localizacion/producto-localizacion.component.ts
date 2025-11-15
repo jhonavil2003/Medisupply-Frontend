@@ -2,6 +2,7 @@ import { Component, ViewChild, AfterViewInit, inject, signal, computed, ChangeDe
 import { CommonModule } from '@angular/common';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -38,7 +39,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatChipsModule,
     MatProgressBarModule,
     MatTooltipModule,
-    MatSelectModule
+    MatSelectModule,
+    TranslateModule
   ],
   templateUrl: './producto-localizacion.component.html',
   styleUrls: ['./producto-localizacion.component.css'],
@@ -47,6 +49,7 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class ProductoLocalizacionComponent implements AfterViewInit {
   private searchUseCase = inject(SearchProductLocationUseCase);
   private notify = inject(NotificationService);
+  private translate: TranslateService = inject(TranslateService);
 
   // Signals para estado reactivo
   locations = signal<ProductLocationItem[]>([]);
@@ -113,7 +116,7 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
     const searchTerm = this.searchControl.value?.trim();
     
     if (!searchTerm || searchTerm.length < 3) {
-      this.notify.warning('Ingrese al menos 3 caracteres para buscar');
+      this.notify.warning(this.translate.instant('PRODUCT_LOCATION.MIN_SEARCH_LENGTH'));
       return;
     }
 
@@ -129,11 +132,11 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
           if (!response.found || response.locations.length === 0) {
             this.locations.set([]);
             this.dataSource.data = [];
-            this.notify.info('No se encontraron ubicaciones para este producto');
+            this.notify.info(this.translate.instant('PRODUCT_LOCATION.NO_LOCATIONS_FOUND'));
           } else {
             this.locations.set(response.locations);
             this.dataSource.data = response.locations;
-            this.notify.success(`Se encontraron ${response.total_locations} ubicaciones`);
+            this.notify.success(this.translate.instant('PRODUCT_LOCATION.LOCATIONS_FOUND', { count: response.total_locations }));
           }
         },
         error: (error) => {
@@ -169,7 +172,9 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
   }
 
   getZoneLabel(location: ProductLocationItem): string {
-    return location.physical_location.zone_type === 'refrigerated' ? 'Refrigerado' : 'Ambiente';
+    return location.physical_location.zone_type === 'refrigerated' 
+      ? this.translate.instant('PRODUCT_LOCATION.ZONE.REFRIGERATED') 
+      : this.translate.instant('PRODUCT_LOCATION.ZONE.AMBIENT');
   }
 
   getStatusChipColor(location: ProductLocationItem): string {
@@ -179,9 +184,9 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
   }
 
   getStatusLabel(location: ProductLocationItem): string {
-    if (location.batch.status.is_expired) return 'Vencido';
-    if (!location.batch.status.is_available) return 'No Disponible';
-    return 'Disponible';
+    if (location.batch.status.is_expired) return this.translate.instant('PRODUCT_LOCATION.STATUS.EXPIRED');
+    if (!location.batch.status.is_available) return this.translate.instant('PRODUCT_LOCATION.STATUS.UNAVAILABLE');
+    return this.translate.instant('PRODUCT_LOCATION.STATUS.AVAILABLE');
   }
 
   getTemperatureStatus(location: ProductLocationItem): string {
@@ -211,7 +216,7 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
 
   copiarUbicacion(locationCode: string): void {
     navigator.clipboard.writeText(locationCode);
-    this.notify.success(`Ubicación ${locationCode} copiada al portapapeles`);
+    this.notify.success(this.translate.instant('PRODUCT_LOCATION.LOCATION_COPIED', { code: locationCode }));
   }
 
   resetSearch(): void {

@@ -16,6 +16,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ProductoEntity, ProductQueryParams, Pagination } from '../../../../core/domain/entities/producto.entity';
@@ -47,7 +48,8 @@ import { ProductoDetailComponent } from '../producto-detail/producto-detail.comp
     MatProgressBarModule,
     MatChipsModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
@@ -60,6 +62,7 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
 
   products = signal<ProductoEntity[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -247,12 +250,12 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
         .subscribe({
           next: () => {
             this.loading.set(false);
-            this.notify.success(`Producto "${product.name}" eliminado correctamente`);
+            this.notify.success(this.translate.instant('PRODUCTS.DELETE_SUCCESS', { name: product.name }));
             this.loadProducts(this.pagination()?.page || 1);
           },
           error: (error) => {
             this.loading.set(false);
-            this.notify.error(`Error al eliminar el producto: ${error.message}`);
+            this.notify.error(this.translate.instant('PRODUCTS.DELETE_ERROR', { error: error.message }));
           }
         });
     }

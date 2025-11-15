@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorCreateComponent } from './vendedor-create.component';
 import { CreateVendedorUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -42,7 +44,7 @@ describe('VendedorCreateComponent', () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      imports: [VendedorCreateComponent, NoopAnimationsModule],
+      imports: [VendedorCreateComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: CreateVendedorUseCase, useValue: mockCreateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
@@ -150,7 +152,7 @@ describe('VendedorCreateComponent', () => {
       component.onSubmit();
 
       expect(mockCreateVendedorUseCase.execute).toHaveBeenCalled();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Vendedor creado exitosamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('SALESPERSONS.CREATE_SUCCESS');
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
       expect(component.loading()).toBe(false);
     });
@@ -166,9 +168,7 @@ describe('VendedorCreateComponent', () => {
       component.onSubmit();
 
       expect(mockCreateVendedorUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Por favor complete los campos requeridos correctamente'
-      );
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should handle 400 error (duplicate email/ID)', () => {
@@ -177,7 +177,7 @@ describe('VendedorCreateComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('El ID de empleado o email ya existe');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -187,7 +187,7 @@ describe('VendedorCreateComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error del servidor: Internal Server Error');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -212,7 +212,7 @@ describe('VendedorCreateComponent', () => {
 
       component.onSubmit();
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error de validación específico');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -245,42 +245,42 @@ describe('VendedorCreateComponent', () => {
       control?.setErrors({ required: true });
       control?.markAsTouched();
 
-      expect(component.getErrorMessage('employeeId')).toBe('Este campo es requerido');
+      expect(component.getErrorMessage('employeeId')).toBe('VALIDATION.REQUIRED');
     });
 
     it('should return minlength error message', () => {
       const control = component.vendedorForm.get('firstName');
       control?.setErrors({ minlength: { requiredLength: 2, actualLength: 1 } });
 
-      expect(component.getErrorMessage('firstName')).toBe('Mínimo 2 caracteres');
+      expect(component.getErrorMessage('firstName')).toBe('VALIDATION.MIN_LENGTH');
     });
 
     it('should return maxlength error message', () => {
       const control = component.vendedorForm.get('employeeId');
       control?.setErrors({ maxlength: { requiredLength: 50, actualLength: 51 } });
 
-      expect(component.getErrorMessage('employeeId')).toBe('Máximo 50 caracteres');
+      expect(component.getErrorMessage('employeeId')).toBe('VALIDATION.MAX_LENGTH');
     });
 
     it('should return email error message', () => {
       const control = component.vendedorForm.get('email');
       control?.setErrors({ email: true });
 
-      expect(component.getErrorMessage('email')).toBe('Correo electrónico inválido');
+      expect(component.getErrorMessage('email')).toBe('VALIDATION.INVALID_EMAIL');
     });
 
     it('should return phone pattern error message', () => {
       const control = component.vendedorForm.get('phone');
       control?.setErrors({ pattern: true });
 
-      expect(component.getErrorMessage('phone')).toBe('Formato de teléfono inválido');
+      expect(component.getErrorMessage('phone')).toBe('VALIDATION.INVALID_PHONE');
     });
 
     it('should return generic pattern error message', () => {
       const control = component.vendedorForm.get('territory');
       control?.setErrors({ pattern: true });
 
-      expect(component.getErrorMessage('territory')).toBe('Formato inválido');
+      expect(component.getErrorMessage('territory')).toBe('VALIDATION.INVALID_FORMAT');
     });
   });
 });

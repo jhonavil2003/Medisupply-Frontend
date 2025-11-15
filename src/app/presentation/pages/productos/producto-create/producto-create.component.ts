@@ -11,6 +11,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { CreateProductUseCase } from '../../../../core/application/use-cases/producto/create-product.use-case';
 import { CreateProductRequest } from '../../../../core/domain/repositories/producto.repository';
@@ -29,7 +30,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './producto-create.component.html',
   styleUrls: ['./producto-create.component.css']
@@ -40,6 +42,7 @@ export class ProductoCreateComponent {
   private createProductUseCase = inject(CreateProductUseCase);
   private notificationService = inject(NotificationService);
   private dialogRef = inject(MatDialogRef<ProductoCreateComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   productForm: FormGroup;
@@ -68,11 +71,7 @@ export class ProductoCreateComponent {
     'kg'
   ];
 
-  currencies = [
-    'USD',
-    'COP',
-    'EUR'
-  ];
+  currencies = ['COP'];
 
   constructor() {
     this.productForm = this.fb.group({
@@ -134,17 +133,17 @@ export class ProductoCreateComponent {
       this.createProductUseCase.execute(productData).subscribe({
         next: (product) => {
           this.loading.set(false);
-          this.notificationService.success('Producto creado exitosamente');
+          this.notificationService.success(this.translate.instant('PRODUCTS.CREATE_SUCCESS'));
           this.dialogRef.close(true); // Cerrar modal y retornar true
         },
         error: (error) => {
           this.loading.set(false);
-          this.notificationService.error(`Error al crear producto: ${error.message}`);
+          this.notificationService.error(`${this.translate.instant('PRODUCTS.CREATE_SUCCESS').replace('correctamente', 'Error')}: ${error.message}`);
         }
       });
     } else {
       this.markFormGroupTouched();
-      this.notificationService.warning('Por favor, complete todos los campos requeridos');
+      this.notificationService.warning(this.translate.instant('PRODUCTS.COMPLETE_REQUIRED_FIELDS'));
     }
   }
 
@@ -163,34 +162,34 @@ export class ProductoCreateComponent {
     const field = this.productForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return 'Este campo es requerido';
+        return this.translate.instant('VALIDATION.REQUIRED');
       }
       if (field.errors['minlength']) {
-        return `Mínimo ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MIN_LENGTH', { min: field.errors['minlength'].requiredLength });
       }
       if (field.errors['maxlength']) {
-        return `Máximo ${field.errors['maxlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MAX_LENGTH', { max: field.errors['maxlength'].requiredLength });
       }
       if (field.errors['min']) {
-        return `El valor mínimo es ${field.errors['min'].min}`;
+        return this.translate.instant('VALIDATION.MIN_VALUE', { min: field.errors['min'].min });
       }
       if (field.errors['max']) {
-        return `El valor máximo es ${field.errors['max'].max}`;
+        return this.translate.instant('VALIDATION.MAX_VALUE', { max: field.errors['max'].max });
       }
       if (field.errors['pattern']) {
         if (fieldName === 'sku') {
-          return 'Solo letras, números, guiones y guiones bajos';
+          return this.translate.instant('VALIDATION.INVALID_SKU');
         }
         if (fieldName === 'barcode') {
-          return 'Solo números permitidos';
+          return this.translate.instant('VALIDATION.INVALID_BARCODE');
         }
         if (fieldName === 'supplier_id') {
-          return 'Solo números enteros';
+          return this.translate.instant('VALIDATION.INVALID_SUPPLIER_ID');
         }
         if (fieldName === 'image_url') {
-          return 'Debe ser una URL válida (http:// o https://)';
+          return this.translate.instant('VALIDATION.INVALID_URL');
         }
-        return 'Formato inválido';
+        return this.translate.instant('VALIDATION.INVALID_FORMAT');
       }
     }
     return '';

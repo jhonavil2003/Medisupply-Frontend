@@ -1,28 +1,19 @@
-<!doctype html>
-<html lang="es">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>MediSupply — Inicio</title>
-    <link rel="stylesheet" href="dashboard-admin.component.css" />
-  </head>
-  <body>
-    <header class="topbar" role="region" aria-label="Barra superior">
+<header class="topbar" role="region" aria-label="Barra superior">
       <div class="title">
-        <h2 data-i18n="dashboard.title">MediSupply</h2>
-        <p>Panel de control — Accesos rápidos</p>
+        <h2>MediSupply</h2>
+        <p>{{ 'DASHBOARD.SUBTITLE' | translate }}</p>
       </div>
       <div class="controls" role="group" aria-label="Controles de usuario">
         <div class="controls-relative">
           <div class="lang-select-wrap" style="position:relative;">
-            <button class="lang-select" (click)="showLangMenu = !showLangMenu" [attr.aria-expanded]="showLangMenu" aria-haspopup="true" aria-controls="langMenu" title="Cambiar idioma">
+            <button class="lang-select" (click)="showLangMenu.set(!showLangMenu())" [attr.aria-expanded]="showLangMenu()" aria-haspopup="true" aria-controls="langMenu" [title]="'DASHBOARD.CHANGE_LANGUAGE' | translate" data-cy="language-selector">
               <span aria-hidden="true">🌐</span>
-              <span class="muted" style="margin-left:6px">{{ selectedLanguage.toUpperCase() }}</span>
+              <span class="muted" style="margin-left:6px">{{ selectedLanguage().toUpperCase() }}</span>
             </button>
-            @if (showLangMenu) {
+            @if (showLangMenu()) {
               <div class="lang-menu" id="langMenu" role="menu">
                 @for (lang of languages; track lang) {
-                  <button role="menuitem" class="small-link lang-menu-btn" (click)="selectedLanguage = lang.code; showLangMenu = false">
+                  <button role="menuitem" class="small-link lang-menu-btn" (click)="onLanguageChange(lang.code)" data-cy="language-option">
                     {{ lang.label }}
                   </button>
                 }
@@ -30,226 +21,133 @@
             }
           </div>
         </div>
-        <button class="notif" aria-label="Notificaciones" title="Notificaciones" tabindex="0">🔔</button>
+        <button class="notif" [attr.aria-label]="'DASHBOARD.NOTIFICATIONS' | translate" [title]="'DASHBOARD.NOTIFICATIONS' | translate" tabindex="0" data-cy="notifications-button">🔔</button>
         <div style="display:flex; align-items:center; gap:8px">
           <div class="profile-info">
             <div class="profile-info-name">Laura Gómez</div>
-            <div class="profile-info-role">Administrador</div>
+            <div class="profile-info-role">{{ 'DASHBOARD.ADMINISTRATOR' | translate }}</div>
           </div>
           <div class="avatar" aria-hidden="true">LG</div>
         </div>
       </div>
     </header>
-    <section class="grid" aria-label="Accesos rápidos">
+    <section class="grid" [attr.aria-label]="'DASHBOARD.QUICK_ACCESS' | translate">
       <!-- Card 1 Proveedores -->
-      <article class="card" aria-labelledby="card1-title" tabindex="0">
+      <article class="card" aria-labelledby="card1-title" tabindex="0" data-cy="suppliers-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7l9-4 9 4v9a2 2 0 0 1-2 2h-14a2 2 0 0 1-2-2z" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div>
-            <h3 id="card1-title" data-i18n="card.suppliers.title">Registro de proveedores</h3>
-            <p class="muted">Carga individual o masiva (CSV).</p>
+            <h3 id="card1-title">{{ 'DASHBOARD.SUPPLIERS.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.SUPPLIERS.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/proveedor-list" aria-label="Registrar nuevo proveedor" data-i18n="btn.register">Registrar nuevo</button>
+          <button mat-raised-button color="primary" routerLink="/proveedor-list" [attr.aria-label]="'DASHBOARD.SUPPLIERS.REGISTER_NEW' | translate" data-cy="register-supplier-button">{{ 'DASHBOARD.SUPPLIERS.REGISTER_NEW' | translate }}</button>
           <p>   </p>
-          <button mat-raised-button color="primary" routerLink="/proveedor-upload" aria-label="Carga masiva" data-i18n="btn.register">Carga masiva</button>
+          <button mat-raised-button color="primary" routerLink="/proveedor-upload" [attr.aria-label]="'DASHBOARD.SUPPLIERS.BULK_UPLOAD' | translate" data-cy="upload-suppliers-button">{{ 'DASHBOARD.SUPPLIERS.BULK_UPLOAD' | translate }}</button>
 
         </div>
       </article>
 
       <!-- Card 6 Productos -->
-      <article class="card" aria-labelledby="card6-title" tabindex="0">
+      <article class="card" aria-labelledby="card6-title" tabindex="0" data-cy="products-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3 7l9-4 9 4v9a2 2 0 0 1-2 2h-14a2 2 0 0 1-2-2z" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div>
-            <h3 id="card6-title" data-i18n="card.suppliers.title">Registro de productos</h3>
-            <p class="muted">Carga individual o masiva (CSV).</p>
+            <h3 id="card6-title">{{ 'DASHBOARD.PRODUCTS.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.PRODUCTS.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/producto-list" aria-label="Registrar nuevo producto" data-i18n="btn.register">Registrar nuevo</button>
+          <button mat-raised-button color="primary" routerLink="/producto-list" [attr.aria-label]="'DASHBOARD.PRODUCTS.REGISTER_NEW' | translate" data-cy="register-product-button">{{ 'DASHBOARD.PRODUCTS.REGISTER_NEW' | translate }}</button>
           <p>   </p>
-          <button mat-raised-button color="primary" routerLink="/producto-upload" aria-label="Carga masiva" data-i18n="btn.register">Carga masiva</button>
+          <button mat-raised-button color="primary" routerLink="/producto-upload" [attr.aria-label]="'DASHBOARD.PRODUCTS.BULK_UPLOAD' | translate" data-cy="upload-products-button">{{ 'DASHBOARD.PRODUCTS.BULK_UPLOAD' | translate }}</button>
         </div>
       </article>
 
       <!-- Card 2 -->
-      <article class="card" aria-labelledby="card2-title" tabindex="0">
+      <article class="card" aria-labelledby="card2-title" tabindex="0" data-cy="salespersons-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="#1E63A8" stroke-width="1.6"/></svg>
           </div>
           <div>
-            <h3 id="card2-title" data-i18n="card.vendors.title">Gestión de vendedores y planes de venta</h3>
-            <p class="muted">Crear y asignar metas a vendedores.</p>
+            <h3 id="card2-title">{{ 'DASHBOARD.SALESPERSONS.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.SALESPERSONS.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/vendedores" aria-label="Agregar vendedor" data-i18n="btn.add_vendor">Agregar vendedor</button>
+          <button mat-raised-button color="primary" routerLink="/vendedores" [attr.aria-label]="'DASHBOARD.SALESPERSONS.ADD' | translate" data-cy="add-salesperson-button">{{ 'DASHBOARD.SALESPERSONS.ADD' | translate }}</button>
         </div>
       </article>
 
       <!-- Card 3 -->
-      <article class="card" aria-labelledby="card3-title" tabindex="0">
+      <article class="card" aria-labelledby="card3-title" tabindex="0" data-cy="reports-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M17 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="7" r="4" stroke="#1E63A8" stroke-width="1.6"/></svg>
           </div>
           <div>
-            <h3 id="card3-title" data-i18n="card.reports.title">Reportes</h3>
-            <p class="muted">Filtra por fechas y exporta en PDF/Excel.</p>
+            <h3 id="card3-title">{{ 'DASHBOARD.REPORTS.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.REPORTS.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/informe-ventas" aria-label="Ver reporte" data-i18n="btn.ver_reporte">Ver reporte</button>
+          <button mat-raised-button color="primary" routerLink="/informe-ventas" [attr.aria-label]="'DASHBOARD.REPORTS.VIEW' | translate" data-cy="view-reports-button">{{ 'DASHBOARD.REPORTS.VIEW' | translate }}</button>
         </div>
       </article>
 
       <!-- Card 4 (wide) -->
-      <article class="card" aria-labelledby="card4-title" tabindex="0">
+      <article class="card" aria-labelledby="card4-title" tabindex="0" data-cy="inventory-card">
         <div style="display:flex; gap:16px; align-items:center; min-width:0;">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M12 21s7-4.5 7-10a7 7 0 1 0-14 0c0 5.5 7 10 7 10z" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/><circle cx="12" cy="11" r="2.2" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round"/></svg>
           </div>
           <div style="min-width:0">
-            <h3 id="card4-title" data-i18n="card.inventory.title">Inventario y localización de productos</h3>
-            <p class="muted">Buscar producto y ver stock por bodega / ubicación.</p>
+            <h3 id="card4-title">{{ 'DASHBOARD.INVENTORY.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.INVENTORY.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/producto-localizacion" aria-label="Buscar producto" data-i18n="btn.buscar_reporte">Buscar localización de producto</button>
+          <button mat-raised-button color="primary" routerLink="/producto-localizacion" [attr.aria-label]="'DASHBOARD.INVENTORY.SEARCH' | translate" data-cy="search-product-location-button">{{ 'DASHBOARD.INVENTORY.SEARCH' | translate }}</button>
         </div>
 
       </article>
 
       <!-- Card 5 -->
-      <article class="card" aria-labelledby="card5-title" tabindex="0">
+      <article class="card" aria-labelledby="card5-title" tabindex="0" data-cy="routes-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M1 3h13l7 7v8a1 1 0 0 1-1 1h-1M16 21a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3zm-10 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div>
-            <h3 id="card5-title" data-i18n="card.routes.title">Rutas de entrega</h3>
-            <p class="muted">Generación y optimización de rutas.</p>
+            <h3 id="card5-title">{{ 'DASHBOARD.ROUTES.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.ROUTES.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/rutas" aria-label="Ver rutas">Ver rutas</button>
+          <button mat-raised-button color="primary" routerLink="/rutas" [attr.aria-label]="'DASHBOARD.ROUTES.VIEW' | translate" data-cy="view-routes-button">{{ 'DASHBOARD.ROUTES.VIEW' | translate }}</button>
         </div>
       </article>
 
 
       <!-- Card 7 Metas de venta -->
-      <article class="card" aria-labelledby="card7-title" tabindex="0">
+      <article class="card" aria-labelledby="card7-title" tabindex="0" data-cy="goals-card">
         <div class="card-top">
           <div class="icon" aria-hidden="true">
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="#1E63A8" stroke-width="1.6"/><path d="M8 12l2.5 2.5L16 9" stroke="#1E63A8" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
           <div>
-            <h3 id="card7-title">Metas de venta</h3>
-            <p class="muted">Definición, asignación y seguimiento de metas.</p>
+            <h3 id="card7-title">{{ 'DASHBOARD.GOALS.TITLE' | translate }}</h3>
+            <p class="muted">{{ 'DASHBOARD.GOALS.DESCRIPTION' | translate }}</p>
           </div>
         </div>
         <div class="cta">
-          <button mat-raised-button color="primary" routerLink="/metas" aria-label="Gestionar metas de venta">Gestionar metas</button>
+          <button mat-raised-button color="primary" routerLink="/metas" [attr.aria-label]="'DASHBOARD.GOALS.MANAGE' | translate" data-cy="manage-goals-button">{{ 'DASHBOARD.GOALS.MANAGE' | translate }}</button>
         </div>
       </article>
     </section>
-
-    <script>
-      // ===== Language menu (improved) =====
-      const langBtn = document.getElementById('langBtn');
-      const langMenu = document.getElementById('langMenu');
-      langBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const shown = langMenu.classList.toggle('show');
-      langBtn.setAttribute('aria-expanded', shown ? 'true' : 'false');
-      if (shown) langMenu.querySelector('button')?.focus();
-      });
-      document.addEventListener('click', (e) => {
-      if (langMenu.classList.contains('show') && !langBtn.contains(e.target) && !langMenu.contains(e.target)) {
-      langMenu.classList.remove('show');
-      langBtn.setAttribute('aria-expanded', 'false');
-    }
-    });
-    langMenu.addEventListener('keydown', (e) => {
-    if (e.key === 'Escape') {
-    langMenu.classList.remove('show');
-    langBtn.setAttribute('aria-expanded', 'false');
-    langBtn.focus();
-  }
-  });
-  document.querySelectorAll('#langMenu [data-locale]').forEach(btn => {
-  btn.addEventListener('click', (e) => {
-  const locale = e.currentTarget.dataset.locale;
-  applyLocale(locale);
-  langMenu.classList.remove('show');
-  langBtn.setAttribute('aria-expanded', 'false');
-  langBtn.querySelector('.muted') && (langBtn.querySelector('.muted').innerText = locale.toUpperCase());
-  langBtn.focus();
-  });
-  });
-
-  // ===== i18n swap (demo) =====
-  const strings = {
-  es: {
-  "lang.es": "Español",
-  "lang.en": "Inglés",
-  "lang.pt": "Portugués",
-  "dashboard.title":"MediSupply",
-  "card.suppliers.title":"Registro de proveedores y productos",
-  "btn.register":"Registrar nuevo",
-  "card.vendors.title":"Gestión de vendedores y planes de venta",
-  "btn.add_vendor":"Agregar vendedor",
-  "card.reports.title":"Reportes e informes de ventas",
-  "btn.view_reports":"Ver reportes",
-  "card.inventory.title":"Inventario y localización de productos",
-  "card.routes.title":"Rutas de entrega"
-  },
-  en: {
-  "lang.es": "Spanish",
-  "lang.en": "English",
-  "lang.pt": "Portuguese",
-  "dashboard.title":"MediSupply",
-  "card.suppliers.title":"Suppliers & products registration",
-  "btn.register":"Register new",
-  "card.vendors.title":"Vendors & sales plans",
-  "btn.add_vendor":"Add vendor",
-  "card.reports.title":"Sales reports & insights",
-  "btn.view_reports":"View reports",
-  "card.inventory.title":"Inventory & product location",
-  "card.routes.title":"Delivery routes"
-  },
-  pt: {
-  "lang.es": "Espanhol",
-  "lang.en": "Inglês",
-  "lang.pt": "Português",
-  "dashboard.title":"MediSupply",
-  "card.suppliers.title":"Registro de fornecedores e produtos",
-  "btn.register":"Registrar novo",
-  "card.vendors.title":"Gestão de vendedores e planos de venda",
-  "btn.add_vendor":"Adicionar vendedor",
-  "card.reports.title":"Relatórios de vendas",
-  "btn.view_reports":"Ver relatórios",
-  "card.inventory.title":"Inventário e localização de produtos",
-  "card.routes.title":"Rotas de entrega"
-}
-};
-
-function applyLocale(locale) {
-const dict = strings[locale] || strings.es;
-document.querySelectorAll('[data-i18n]').forEach(node => {
-const key = node.getAttribute('data-i18n');
-if (dict[key]) node.innerText = dict[key];
-});
-document.documentElement.lang = locale;
-}
-applyLocale('es');
-</script>
-</body>
-</html>

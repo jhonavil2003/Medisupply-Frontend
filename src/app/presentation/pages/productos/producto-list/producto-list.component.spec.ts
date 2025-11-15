@@ -3,6 +3,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatTableModule } from '@angular/material/table';
@@ -141,7 +143,8 @@ describe('ProductoListComponent', () => {
         MatProgressBarModule,
         MatChipsModule,
         MatCheckboxModule,
-        MatTooltipModule
+        MatTooltipModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: GetAllProductosUseCase, useValue: getAllProductosUseCaseMock },
@@ -433,7 +436,7 @@ describe('ProductoListComponent', () => {
       expect(confirmDialogServiceMock.confirmDelete).toHaveBeenCalledWith(mockProducts[0].name);
       expect(deleteProductUseCaseMock.execute).toHaveBeenCalledWith(mockProducts[0].id);
       expect(notificationServiceMock.success).toHaveBeenCalledWith(
-        `Producto "${mockProducts[0].name}" eliminado correctamente`
+        'PRODUCTS.DELETE_SUCCESS'
       );
     });
 
@@ -454,9 +457,7 @@ describe('ProductoListComponent', () => {
       
       await component.eliminarProducto(mockProducts[0]);
       
-      expect(notificationServiceMock.error).toHaveBeenCalledWith(
-        `Error al eliminar el producto: ${errorMessage}`
-      );
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('PRODUCTS.DELETE_ERROR');
     });
 
     it('should reload products after successful deletion', async () => {
