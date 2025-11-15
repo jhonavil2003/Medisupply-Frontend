@@ -6,12 +6,15 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { ProductoUploadComponent } from './producto-upload.component';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { environment } from '../../../../../environments/environment';
 
 // Material modules
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+const API_BASE_URL = `${environment.catalogApiUrl}/api/products/bulk-upload`;
 
 describe('ProductoUploadComponent', () => {
   let component: ProductoUploadComponent;
@@ -213,7 +216,7 @@ describe('ProductoUploadComponent', () => {
       );
 
       // Mock HTTP upload response
-      const uploadReq = httpMock.expectOne('http://localhost:3001/api/products/bulk-upload');
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
       expect(uploadReq.request.method).toBe('POST');
       uploadReq.flush(mockUploadResponse);
 
@@ -221,7 +224,7 @@ describe('ProductoUploadComponent', () => {
       tick(3000);
 
       // Mock job status response (completed)
-      const statusReq = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       expect(statusReq.request.method).toBe('GET');
       statusReq.flush(mockJobStatusCompleted);
 
@@ -310,19 +313,19 @@ describe('ProductoUploadComponent', () => {
       expect(component.cargando()).toBe(true);
 
       // Mock upload response
-      const uploadReq = httpMock.expectOne('http://localhost:3001/api/products/bulk-upload');
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
       uploadReq.flush(mockUploadResponse);
 
       // Advance time partially - first poll
       tick(3000);
-      const statusReq1 = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq1 = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq1.flush(mockJobStatusProcessing);
       
       expect(component.cargando()).toBe(true);
 
       // Complete with second poll
       tick(3000);
-      const statusReq2 = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq2 = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq2.flush(mockJobStatusCompleted);
 
       tick(100);
@@ -531,12 +534,12 @@ describe('ProductoUploadComponent', () => {
       component.procesarArchivo();
 
       // Mock upload
-      const uploadReq = httpMock.expectOne('http://localhost:3001/api/products/bulk-upload');
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
       uploadReq.flush(mockUploadResponse);
 
       // Mock job status
       tick(3000);
-      const statusReq = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq.flush(mockJobStatusCompleted);
 
       tick(100);
@@ -599,11 +602,11 @@ describe('ProductoUploadComponent', () => {
       expect(component.cargando()).toBe(true);
       
       // Mock HTTP responses
-      const uploadReq = httpMock.expectOne('http://localhost:3001/api/products/bulk-upload');
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
       uploadReq.flush(mockUploadResponse);
 
       tick(3000);
-      const statusReq = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq.flush(mockJobStatusCompleted);
 
       tick(100);
@@ -655,11 +658,11 @@ describe('ProductoUploadComponent', () => {
       component.procesarArchivo();
 
       // Mock HTTP responses
-      const uploadReq = httpMock.expectOne('http://localhost:3001/api/products/bulk-upload');
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
       uploadReq.flush(mockUploadResponse);
 
       tick(3000);
-      const statusReq = httpMock.expectOne(`http://localhost:3001/api/products/bulk-upload/${mockUploadResponse.job_id}`);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq.flush(mockJobStatusCompleted);
 
       tick(100);

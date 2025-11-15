@@ -1,0 +1,215 @@
+.route-list-container {
+  padding: 24px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.header h1 {
+  margin: 0;
+  font-size: 28px;
+  font-weight: 500;
+  color: #333;
+}
+
+.header button {
+  gap: 8px;
+}
+
+/* Filtros */
+.filters-card {
+  margin-bottom: 24px;
+}
+
+.filters-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
+
+.filters-row mat-form-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding-top: 8px;
+}
+
+/* Loading */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px;
+  gap: 20px;
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+/* Table Card */
+.table-card {
+  overflow: auto;
+}
+
+.routes-table {
+  width: 100%;
+}
+
+.routes-table th {
+  font-weight: 600;
+  color: #333;
+  background-color: #f5f5f5;
+}
+
+.routes-table td {
+  padding: 16px 8px;
+}
+
+/* No Data */
+.no-data {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #999;
+}
+
+.no-data mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  margin-bottom: 16px;
+  opacity: 0.5;
+}
+
+.no-data p {
+  font-size: 16px;
+  margin: 0;
+}
+
+/* Column Specific Styles */
+.vehicle-info,
+.driver-info,
+.stops-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.secondary-text {
+  font-size: 12px;
+  color: #666;
+}
+
+.metrics-info {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+}
+
+.metrics-info div {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.small-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+/* Actions */
+.actions-buttons {
+  display: flex;
+  gap: 4px;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+  .routes-table {
+    font-size: 13px;
+  }
+  
+  .routes-table td {
+    padding: 12px 6px;
+  }
+}
+
+@media (max-width: 768px) {
+  .route-list-container {
+    padding: 16px;
+  }
+
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+
+  .header button {
+    width: 100%;
+  }
+
+  .filters-row {
+    flex-direction: column;
+  }
+
+  .filters-row mat-form-field {
+    width: 100%;
+  }
+
+  .filter-actions {
+    width: 100%;
+  }
+
+  .filter-actions button {
+    flex: 1;
+  }
+}
+
+/* Botón de activación */
+.activate-button {
+  transition: all 0.2s ease;
+}
+
+.activate-button:hover {
+  transform: scale(1.1);
+}
+
+.activate-button mat-icon {
+  color: #4caf50;
+}
+
+.activate-button:hover mat-icon {
+  color: #2e7d32;
+}
+
+/* Snackbar personalizado */
+::ng-deep .success-snackbar {
+  background-color: #4caf50 !important;
+  color: white !important;
+}
+
+::ng-deep .error-snackbar {
+  background-color: #f44336 !important;
+  color: white !important;
+}
