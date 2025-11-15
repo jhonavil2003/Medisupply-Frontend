@@ -1,8 +1,7 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { MockTranslateService } from '../../../../testing/translate.mock';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ConfirmDialogService } from './confirm-dialog.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../components/confirm-dialog/confirm-dialog.component';
 
@@ -22,10 +21,10 @@ describe('ConfirmDialogService', () => {
     };
 
     TestBed.configureTestingModule({
+      imports: [TranslateModule.forRoot()],
       providers: [
         ConfirmDialogService,
-        { provide: MatDialog, useValue: matDialog },
-        { provide: TranslateService, useClass: MockTranslateService }
+        { provide: MatDialog, useValue: matDialog }
       ]
     });
 
@@ -111,10 +110,10 @@ describe('ConfirmDialogService', () => {
     it('should call confirm with correct delete dialog configuration', () => {
       const itemName = 'Test Item';
       const expectedData: ConfirmDialogData = {
-        title: 'Confirmar eliminación',
-        message: `¿Está seguro que desea eliminar "${itemName}"? Esta acción no se puede deshacer.`,
-        confirmText: 'Eliminar',
-        cancelText: 'Cancelar',
+        title: 'DIALOG.CONFIRM_DELETE_TITLE',
+        message: 'DIALOG.CONFIRM_DELETE_MESSAGE',
+        confirmText: 'DIALOG.DELETE',
+        cancelText: 'COMMON.CANCEL',
         type: 'danger'
       };
 
@@ -161,9 +160,8 @@ describe('ConfirmDialogService', () => {
 
         service.confirmDelete(itemName).subscribe();
 
-        const expectedMessage = `¿Está seguro que desea eliminar "${itemName}"? Esta acción no se puede deshacer.`;
         const lastCall = matDialog.open.mock.calls[matDialog.open.mock.calls.length - 1];
-        expect(lastCall[1].data.message).toBe(expectedMessage);
+        expect(lastCall[1].data.message).toBe('DIALOG.CONFIRM_DELETE_MESSAGE');
       });
     });
   });
@@ -175,8 +173,8 @@ describe('ConfirmDialogService', () => {
       const expectedData: ConfirmDialogData = {
         title,
         message,
-        confirmText: 'Confirmar',
-        cancelText: 'Cancelar',
+        confirmText: 'COMMON.CONFIRM',
+        cancelText: 'COMMON.CANCEL',
         type: 'warning'
       };
 
@@ -277,7 +275,7 @@ describe('ConfirmDialogService', () => {
       service.confirmDelete('').subscribe();
 
       const lastCall = matDialog.open.mock.calls[matDialog.open.mock.calls.length - 1];
-      expect(lastCall[1].data.message).toContain('""');
+      expect(lastCall[1].data.message).toBe('DIALOG.CONFIRM_DELETE_MESSAGE');
     });
 
     it('should handle empty strings in confirmAction', () => {
@@ -300,7 +298,7 @@ describe('ConfirmDialogService', () => {
       service.confirmDelete(itemName).subscribe();
 
       const lastCall = matDialog.open.mock.calls[matDialog.open.mock.calls.length - 1];
-      expect(lastCall[1].data.message).toContain(itemName);
+      expect(lastCall[1].data.message).toBe('DIALOG.CONFIRM_DELETE_MESSAGE');
     });
   });
 });

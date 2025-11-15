@@ -1,7 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { of, throwError } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { MockTranslateService } from '../../../../../testing/translate.mock';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MetaVendedorComponent } from './meta-vendedor.component';
 import { GetMetasByVendedorUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { Region, Trimestre, TipoMeta, MetaVentaEntity } from '../../../../core/domain/entities/meta-venta.entity';
@@ -48,10 +47,9 @@ describe('MetaVendedorComponent', () => {
     mockGetMetasUseCase = { execute: jest.fn() };
 
     await TestBed.configureTestingModule({
-      imports: [MetaVendedorComponent, ReactiveFormsModule, NoopAnimationsModule],
+      imports: [MetaVendedorComponent, ReactiveFormsModule, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetMetasByVendedorUseCase, useValue: mockGetMetasUseCase },
-        { provide: TranslateService, useClass: MockTranslateService },
         provideRouter([])
       ]
     }).compileComponents();

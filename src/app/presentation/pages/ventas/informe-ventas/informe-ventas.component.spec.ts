@@ -2,8 +2,7 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
-import { MockTranslateService } from '../../../../../testing/translate.mock';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Material Modules
 import { MatTableModule } from '@angular/material/table';
@@ -119,12 +118,12 @@ describe('InformeVentasComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCardModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: ReportsService, useValue: reportsServiceMock },
         { provide: ToastrService, useValue: toastrServiceMock },
-        { provide: TranslateService, useClass: MockTranslateService },
         provideRouter([])
       ]
     }).compileComponents();
@@ -199,7 +198,7 @@ describe('InformeVentasComponent', () => {
       
       expect(component.loading()).toBe(false);
       expect(toastrServiceMock.error).toHaveBeenCalledWith(
-        'Error al cargar los datos de reportes'
+        'REPORTS.DATA_LOAD_ERROR'
       );
     });
 
@@ -207,7 +206,7 @@ describe('InformeVentasComponent', () => {
       fixture.detectChanges();
       
       expect(toastrServiceMock.success).toHaveBeenCalledWith(
-        'Datos cargados correctamente'
+        'REPORTS.DATA_LOADED_SUCCESS'
       );
     });
   });

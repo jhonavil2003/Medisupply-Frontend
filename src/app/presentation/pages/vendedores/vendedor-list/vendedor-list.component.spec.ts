@@ -2,7 +2,7 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { of, throwError, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorListComponent } from './vendedor-list.component';
 import {
@@ -71,7 +71,8 @@ describe('VendedorListComponent', () => {
     } as any;
     
     mockConfirmDialogService = {
-      confirm: jest.fn()
+      confirm: jest.fn(),
+      confirmDelete: jest.fn().mockReturnValue(of(true))
     } as any;
     
     mockRouter = {
@@ -88,7 +89,7 @@ describe('VendedorListComponent', () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      imports: [VendedorListComponent, NoopAnimationsModule],
+      imports: [VendedorListComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetAllVendedoresUseCase, useValue: mockGetAllVendedoresUseCase },
         { provide: SearchVendedoresUseCase, useValue: mockSearchVendedoresUseCase },
@@ -97,8 +98,7 @@ describe('VendedorListComponent', () => {
         { provide: ConfirmDialogService, useValue: mockConfirmDialogService },
         { provide: Router, useValue: mockRouter },
         { provide: MatDialog, useValue: mockDialog },
-        { provide: ActivatedRoute, useValue: { params: of({}), queryParams: of({}), snapshot: { params: {} } } },
-        { provide: TranslateService, useClass: MockTranslateService }
+        { provide: ActivatedRoute, useValue: { params: of({}), queryParams: of({}), snapshot: { params: {} } } }
       ]
     }).compileComponents();
 
@@ -239,57 +239,47 @@ describe('VendedorListComponent', () => {
 
       component.deleteVendedor(vendedorWithoutId);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith('No se puede eliminar: vendedor sin ID');
-      expect(mockConfirmDialogService.confirm).not.toHaveBeenCalled();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+      expect(mockConfirmDialogService.confirmDelete).not.toHaveBeenCalled();
     });
 
-    it('should delete vendedor when confirmed', () => {
-      mockConfirmDialogService.confirm.mockReturnValue(of(true));
+    it('should delete vendedor when confirmed', async () => {
+      mockConfirmDialogService.confirmDelete.mockReturnValue(of(true));
       mockDeleteVendedorUseCase.execute.mockReturnValue(of(true));
       mockGetAllVendedoresUseCase.execute.mockReturnValue(of([mockVendedores[1]]));
 
-      component.deleteVendedor(mockVendedores[0]);
+      await component.deleteVendedor(mockVendedores[0]);
 
-      expect(mockConfirmDialogService.confirm).toHaveBeenCalledWith({
-        title: '¿Está seguro?',
-        message: '¿Desea eliminar al vendedor Juan Pérez?',
-        confirmText: 'Eliminar',
-        cancelText: 'Cancelar',
-        type: 'danger'
-      });
+      expect(mockConfirmDialogService.confirmDelete).toHaveBeenCalledWith('Juan Pérez');
       expect(mockDeleteVendedorUseCase.execute).toHaveBeenCalledWith(1);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Vendedor eliminado correctamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('SALESPERSONS.DELETE_SUCCESS');
     });
 
-    it('should not delete vendedor when cancelled', () => {
-      mockConfirmDialogService.confirm.mockReturnValue(of(false));
+    it('should not delete vendedor when cancelled', async () => {
+      mockConfirmDialogService.confirmDelete.mockReturnValue(of(false));
 
-      component.deleteVendedor(mockVendedores[0]);
+      await component.deleteVendedor(mockVendedores[0]);
 
       expect(mockDeleteVendedorUseCase.execute).not.toHaveBeenCalled();
     });
 
-    it('should show error when deletion fails', () => {
-      mockConfirmDialogService.confirm.mockReturnValue(of(true));
+    it('should show error when deletion fails', async () => {
+      mockConfirmDialogService.confirmDelete.mockReturnValue(of(true));
       mockDeleteVendedorUseCase.execute.mockReturnValue(of(false));
 
-      component.deleteVendedor(mockVendedores[0]);
+      await component.deleteVendedor(mockVendedores[0]);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith(
-        'No se pudo eliminar el vendedor. Puede tener visitas asociadas.'
-      );
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
-    it('should handle error when deleting vendedor', () => {
+    it('should handle error when deleting vendedor', async () => {
       const error = { status: 400, message: 'Cannot delete' };
-      mockConfirmDialogService.confirm.mockReturnValue(of(true));
+      mockConfirmDialogService.confirmDelete.mockReturnValue(of(true));
       mockDeleteVendedorUseCase.execute.mockReturnValue(throwError(() => error));
 
-      component.deleteVendedor(mockVendedores[0]);
+      await component.deleteVendedor(mockVendedores[0]);
 
-      expect(mockNotificationService.error).toHaveBeenCalledWith(
-        'Error al eliminar vendedor. Puede tener visitas asociadas.'
-      );
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
   });
 

@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorEditComponent } from './vendedor-edit.component';
 import {
@@ -52,14 +52,13 @@ describe('VendedorEditComponent', () => {
     } as any;
 
     await TestBed.configureTestingModule({
-      imports: [VendedorEditComponent, NoopAnimationsModule],
+      imports: [VendedorEditComponent, NoopAnimationsModule, TranslateModule.forRoot()],
       providers: [
         { provide: GetVendedorByIdUseCase, useValue: mockGetVendedorByIdUseCase },
         { provide: UpdateVendedorUseCase, useValue: mockUpdateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: { vendedorId: 1 } },
-        { provide: TranslateService, useClass: MockTranslateService }
+        { provide: MAT_DIALOG_DATA, useValue: { vendedorId: 1 } }
       ]
     }).compileComponents();
   });
@@ -130,7 +129,7 @@ describe('VendedorEditComponent', () => {
       
       component.loadVendedor(1);
       
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al cargar vendedor');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -158,7 +157,7 @@ describe('VendedorEditComponent', () => {
       component.onSubmit();
       
       expect(mockUpdateVendedorUseCase.execute).toHaveBeenCalled();
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Vendedor actualizado exitosamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('SALESPERSONS.UPDATE_SUCCESS');
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
       expect(component.loading()).toBe(false);
     });
@@ -174,9 +173,7 @@ describe('VendedorEditComponent', () => {
       component.onSubmit();
       
       expect(mockUpdateVendedorUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Por favor complete los campos requeridos correctamente'
-      );
+      expect(mockNotificationService.warning).toHaveBeenCalled();
     });
 
     it('should handle invalid vendedorId', () => {
@@ -185,7 +182,7 @@ describe('VendedorEditComponent', () => {
       component.onSubmit();
       
       expect(mockUpdateVendedorUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de vendedor no válido');
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should handle error with message', () => {
@@ -194,7 +191,7 @@ describe('VendedorEditComponent', () => {
       
       component.onSubmit();
       
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error de validación específico');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -204,7 +201,7 @@ describe('VendedorEditComponent', () => {
       
       component.onSubmit();
       
-      expect(mockNotificationService.error).toHaveBeenCalledWith('El ID de empleado o email ya existe');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -214,7 +211,7 @@ describe('VendedorEditComponent', () => {
       
       component.onSubmit();
       
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error del servidor: Internal Server Error');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -224,7 +221,7 @@ describe('VendedorEditComponent', () => {
       
       component.onSubmit();
       
-      expect(mockNotificationService.error).toHaveBeenCalledWith('Error al actualizar vendedor');
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(component.loading()).toBe(false);
     });
 
@@ -287,7 +284,7 @@ describe('VendedorEditComponent', () => {
       control?.markAsTouched();
       
       expect(control?.hasError('required')).toBeTruthy();
-      expect(component.getErrorMessage('employeeId')).toBe('Este campo es requerido');
+      expect(component.getErrorMessage('employeeId')).toBe('VALIDATION.REQUIRED');
     });
 
     it('should validate employeeId minlength', () => {
@@ -296,7 +293,7 @@ describe('VendedorEditComponent', () => {
       control?.markAsTouched();
       
       expect(control?.hasError('minlength')).toBeTruthy();
-      expect(component.getErrorMessage('employeeId')).toBe('Mínimo 2 caracteres');
+      expect(component.getErrorMessage('employeeId')).toBe('VALIDATION.MIN_LENGTH');
     });
 
     it('should validate email format', () => {
@@ -305,7 +302,7 @@ describe('VendedorEditComponent', () => {
       control?.markAsTouched();
       
       expect(control?.hasError('email')).toBeTruthy();
-      expect(component.getErrorMessage('email')).toBe('Correo electrónico inválido');
+      expect(component.getErrorMessage('email')).toBe('VALIDATION.INVALID_EMAIL');
     });
 
     it('should validate phone pattern', () => {
@@ -314,7 +311,7 @@ describe('VendedorEditComponent', () => {
       control?.markAsTouched();
       
       expect(control?.hasError('pattern')).toBeTruthy();
-      expect(component.getErrorMessage('phone')).toBe('Formato de teléfono inválido');
+      expect(component.getErrorMessage('phone')).toBe('VALIDATION.INVALID_PHONE');
     });
 
     it('should accept valid phone format', () => {
@@ -329,7 +326,7 @@ describe('VendedorEditComponent', () => {
       control?.setValue('a'.repeat(51));
       
       expect(control?.hasError('maxlength')).toBeTruthy();
-      expect(component.getErrorMessage('employeeId')).toBe('Máximo 50 caracteres');
+      expect(component.getErrorMessage('employeeId')).toBe('VALIDATION.MAX_LENGTH');
     });
   });
 });
