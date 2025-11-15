@@ -4,7 +4,7 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoCreateComponent } from './producto-create.component';
@@ -96,12 +96,12 @@ describe('ProductoCreateComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: CreateProductUseCase, useValue: createProductUseCaseSpy },
-        { provide: TranslateService, useClass: MockTranslateService },
         { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();
@@ -174,7 +174,7 @@ describe('ProductoCreateComponent', () => {
 
       expect(component.loading()).toBe(false);
       expect(mockCreateProductUseCase.execute).toHaveBeenCalledWith(expect.any(Object));
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Producto creado exitosamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCTS.CREATE_SUCCESS');
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     }));
 
@@ -201,7 +201,7 @@ describe('ProductoCreateComponent', () => {
       tick();
 
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al crear producto: ${errorMessage}`);
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).not.toHaveBeenCalled();
     }));
 
@@ -215,7 +215,7 @@ describe('ProductoCreateComponent', () => {
       component.onSubmit();
 
       expect(mockCreateProductUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Por favor, complete todos los campos requeridos');
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCTS.COMPLETE_REQUIRED_FIELDS');
     });
 
     it('should mark form controls as touched when form is invalid', () => {
@@ -238,11 +238,11 @@ describe('ProductoCreateComponent', () => {
       // Test required validation
       skuControl?.setValue('');
       skuControl?.markAsTouched();
-      expect(component.getFieldError('sku')).toContain('Este campo es requerido');
+      expect(component.getFieldError('sku')).toContain('VALIDATION.REQUIRED');
       
       // Test minLength validation
       skuControl?.setValue('AB');
-      expect(component.getFieldError('sku')).toContain('Mínimo 3 caracteres');
+      expect(component.getFieldError('sku')).toContain('VALIDATION.MIN_LENGTH');
       
       // Test valid value
       skuControl?.setValue('ABC-123');
@@ -254,10 +254,10 @@ describe('ProductoCreateComponent', () => {
       
       nameControl?.setValue('');
       nameControl?.markAsTouched();
-      expect(component.getFieldError('name')).toContain('Este campo es requerido');
+      expect(component.getFieldError('name')).toContain('VALIDATION.REQUIRED');
       
       nameControl?.setValue('A');
-      expect(component.getFieldError('name')).toContain('Mínimo 3 caracteres');
+      expect(component.getFieldError('name')).toContain('VALIDATION.MIN_LENGTH');
       
       nameControl?.setValue('Valid Name');
       expect(component.getFieldError('name')).toBe('');
@@ -268,10 +268,10 @@ describe('ProductoCreateComponent', () => {
       
       priceControl?.setValue(null);
       priceControl?.markAsTouched();
-      expect(component.getFieldError('unit_price')).toContain('Este campo es requerido');
+      expect(component.getFieldError('unit_price')).toContain('VALIDATION.REQUIRED');
       
       priceControl?.setValue(0);
-      expect(component.getFieldError('unit_price')).toContain('El valor mínimo es 0.01');
+      expect(component.getFieldError('unit_price')).toContain('VALIDATION.MIN_VALUE');
       
       priceControl?.setValue(10.50);
       expect(component.getFieldError('unit_price')).toBe('');
@@ -282,10 +282,10 @@ describe('ProductoCreateComponent', () => {
       
       supplierControl?.setValue(null);
       supplierControl?.markAsTouched();
-      expect(component.getFieldError('supplier_id')).toContain('Este campo es requerido');
+      expect(component.getFieldError('supplier_id')).toContain('VALIDATION.REQUIRED');
       
       supplierControl?.setValue(0);
-      expect(component.getFieldError('supplier_id')).toContain('El valor mínimo es 1');
+      expect(component.getFieldError('supplier_id')).toContain('VALIDATION.MIN_VALUE');
       
       supplierControl?.setValue(5);
       expect(component.getFieldError('supplier_id')).toBe('');

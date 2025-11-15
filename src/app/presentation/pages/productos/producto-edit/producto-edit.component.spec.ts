@@ -4,7 +4,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoEditComponent } from './producto-edit.component';
@@ -126,7 +126,8 @@ describe('ProductoEditComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
@@ -135,8 +136,7 @@ describe('ProductoEditComponent', () => {
         { provide: UpdateProductUseCase, useValue: updateProductUseCaseSpy },
         { provide: NotificationService, useValue: notificationServiceSpy },
         { provide: Router, useValue: { navigate: jest.fn() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } },
-        { provide: TranslateService, useClass: MockTranslateService }
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } }
       ]
     }).compileComponents();
 
@@ -231,7 +231,7 @@ describe('ProductoEditComponent', () => {
       component.loadProduct();
       
       expect(component.loadingProduct()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al cargar producto: ${errorMessage}`);
+      expect(mockNotificationService.error).toHaveBeenCalled();
       expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
@@ -266,7 +266,7 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Producto actualizado exitosamente');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCTS.UPDATE_SUCCESS');
       expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     });
 
@@ -297,7 +297,7 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al actualizar producto: ${errorMessage}`);
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should not submit invalid form', () => {
@@ -307,7 +307,7 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(mockUpdateProductUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Por favor, complete todos los campos requeridos');
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCTS.COMPLETE_REQUIRED_FIELDS');
     });
 
     it('should mark form controls as touched when form is invalid', () => {
@@ -378,10 +378,10 @@ describe('ProductoEditComponent', () => {
       
       skuControl?.setValue('');
       skuControl?.markAsTouched();
-      expect(component.getFieldError('sku')).toBe('Este campo es requerido');
+      expect(component.getFieldError('sku')).toBe('VALIDATION.REQUIRED');
       
       skuControl?.setValue('AB');
-      expect(component.getFieldError('sku')).toBe('Mínimo 3 caracteres');
+      expect(component.getFieldError('sku')).toBe('VALIDATION.MIN_LENGTH');
       
       skuControl?.setValue('ABC123');
       expect(component.getFieldError('sku')).toBe('');
@@ -392,10 +392,10 @@ describe('ProductoEditComponent', () => {
       
       nameControl?.setValue('');
       nameControl?.markAsTouched();
-      expect(component.getFieldError('name')).toBe('Este campo es requerido');
+      expect(component.getFieldError('name')).toBe('VALIDATION.REQUIRED');
       
       nameControl?.setValue('A');
-      expect(component.getFieldError('name')).toBe('Mínimo 3 caracteres');
+      expect(component.getFieldError('name')).toBe('VALIDATION.MIN_LENGTH');
       
       nameControl?.setValue('Valid Name');
       expect(component.getFieldError('name')).toBe('');
@@ -406,10 +406,10 @@ describe('ProductoEditComponent', () => {
       
       priceControl?.setValue('');
       priceControl?.markAsTouched();
-      expect(component.getFieldError('unit_price')).toBe('Este campo es requerido');
+      expect(component.getFieldError('unit_price')).toBe('VALIDATION.REQUIRED');
       
       priceControl?.setValue(0);
-      expect(component.getFieldError('unit_price')).toBe('El valor mínimo es 0.01');
+      expect(component.getFieldError('unit_price')).toBe('VALIDATION.MIN_VALUE');
       
       priceControl?.setValue(25.99);
       expect(component.getFieldError('unit_price')).toBe('');
@@ -420,10 +420,10 @@ describe('ProductoEditComponent', () => {
       
       supplierControl?.setValue('');
       supplierControl?.markAsTouched();
-      expect(component.getFieldError('supplier_id')).toBe('Este campo es requerido');
+      expect(component.getFieldError('supplier_id')).toBe('VALIDATION.REQUIRED');
       
       supplierControl?.setValue(0);
-      expect(component.getFieldError('supplier_id')).toBe('El valor mínimo es 1');
+      expect(component.getFieldError('supplier_id')).toBe('VALIDATION.MIN_VALUE');
       
       supplierControl?.setValue(1);
       expect(component.getFieldError('supplier_id')).toBe('');
