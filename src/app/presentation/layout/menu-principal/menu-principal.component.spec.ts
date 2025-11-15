@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, NavigationEnd } from '@angular/router';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../testing/translate.mock';
 import { MenuPrincipalComponent } from './menu-principal.component';
 import { Subject } from 'rxjs';
 
@@ -21,7 +23,8 @@ describe('MenuPrincipalComponent', () => {
     await TestBed.configureTestingModule({
       imports: [MenuPrincipalComponent],
       providers: [
-        { provide: Router, useValue: mockRouter }
+        { provide: Router, useValue: mockRouter },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoLocalizacionComponent } from './producto-localizacion.component';
 import { SearchProductLocationUseCase } from '../../../../core/application/use-cases/product-location/product-location.use-cases';
@@ -148,7 +150,8 @@ describe('ProductoLocalizacionComponent', () => {
       ],
       providers: [
         { provide: SearchProductLocationUseCase, useValue: mockSearchUseCase },
-        { provide: NotificationService, useValue: mockNotificationService }
+        { provide: NotificationService, useValue: mockNotificationService },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

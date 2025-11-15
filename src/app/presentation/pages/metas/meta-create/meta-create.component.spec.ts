@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ReactiveFormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { MetaCreateComponent } from './meta-create.component';
 import { CreateMetaVentaUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -42,7 +44,8 @@ describe('MetaCreateComponent', () => {
         { provide: ProductoRepository, useValue: mockProductoRepository },
         { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: {} }
+        { provide: MAT_DIALOG_DATA, useValue: {} },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

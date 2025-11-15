@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -80,7 +82,8 @@ describe('ProductoDetailComponent', () => {
       ],
       providers: [
         { provide: MatDialogRef, useValue: dialogRefMock },
-        { provide: MAT_DIALOG_DATA, useValue: mockProduct }
+        { provide: MAT_DIALOG_DATA, useValue: mockProduct },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { provideRouter } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatTableModule } from '@angular/material/table';
@@ -122,6 +124,7 @@ describe('InformeVentasComponent', () => {
       providers: [
         { provide: ReportsService, useValue: reportsServiceMock },
         { provide: ToastrService, useValue: toastrServiceMock },
+        { provide: TranslateService, useClass: MockTranslateService },
         provideRouter([])
       ]
     }).compileComponents();

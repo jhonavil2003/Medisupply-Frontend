@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorCreateComponent } from './vendedor-create.component';
 import { CreateVendedorUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -46,7 +48,8 @@ describe('VendedorCreateComponent', () => {
       providers: [
         { provide: CreateVendedorUseCase, useValue: mockCreateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: MatDialogRef, useValue: mockDialogRef }
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

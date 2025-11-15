@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { of, throwError, Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorListComponent } from './vendedor-list.component';
 import {
   GetAllVendedoresUseCase,
@@ -95,7 +97,8 @@ describe('VendedorListComponent', () => {
         { provide: ConfirmDialogService, useValue: mockConfirmDialogService },
         { provide: Router, useValue: mockRouter },
         { provide: MatDialog, useValue: mockDialog },
-        { provide: ActivatedRoute, useValue: { params: of({}), queryParams: of({}), snapshot: { params: {} } } }
+        { provide: ActivatedRoute, useValue: { params: of({}), queryParams: of({}), snapshot: { params: {} } } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

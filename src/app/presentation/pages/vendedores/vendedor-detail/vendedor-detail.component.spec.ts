@@ -1,5 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorDetailComponent } from './vendedor-detail.component';
 import { VendedorEntity } from '../../../../core/domain/entities/vendedor.entity';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
@@ -32,7 +34,8 @@ describe('VendedorDetailComponent', () => {
       imports: [VendedorDetailComponent, NoopAnimationsModule],
       providers: [
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: mockVendedor }
+        { provide: MAT_DIALOG_DATA, useValue: mockVendedor },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

@@ -4,6 +4,8 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { Router, ActivatedRoute } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoEditComponent } from './producto-edit.component';
 import { GetProductByIdUseCase } from '../../../../core/application/use-cases/producto/get-product-by-id.use-case';
@@ -133,7 +135,8 @@ describe('ProductoEditComponent', () => {
         { provide: UpdateProductUseCase, useValue: updateProductUseCaseSpy },
         { provide: NotificationService, useValue: notificationServiceSpy },
         { provide: Router, useValue: { navigate: jest.fn() } },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } }
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

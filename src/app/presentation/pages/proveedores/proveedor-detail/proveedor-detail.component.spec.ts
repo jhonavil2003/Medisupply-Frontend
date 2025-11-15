@@ -1,5 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { ProveedorDetailComponent } from './proveedor-detail.component';
 import { Proveedor } from '../proveedor';
 
@@ -31,7 +34,10 @@ describe('ProveedorDetailComponent', () => {
     };
 
     await TestBed.configureTestingModule({
-      imports: [ProveedorDetailComponent],
+      imports: [
+        ProveedorDetailComponent,
+        TranslateModule.forRoot()
+      ],
       providers: [
         {
           provide: MatDialogRef,
@@ -89,7 +95,7 @@ describe('ProveedorDetailComponent', () => {
   it('should display card title "Detalle del Proveedor"', () => {
     const compiled = fixture.nativeElement;
     const cardTitle = compiled.querySelector('.card-title');
-    expect(cardTitle.textContent).toContain('Detalle del Proveedor');
+    expect(cardTitle.textContent).toContain('SUPPLIERS.DETAIL_TITLE');
   });
 
   it('should close dialog when cerrar is called', () => {
@@ -101,7 +107,7 @@ describe('ProveedorDetailComponent', () => {
     const compiled = fixture.nativeElement;
     const closeButton = compiled.querySelector('button');
     expect(closeButton).toBeTruthy();
-    expect(closeButton.textContent).toContain('Cerrar');
+    expect(closeButton.textContent).toContain('COMMON.CLOSE');
   });
 
   it('should handle proveedor without certifications', () => {
@@ -142,6 +148,6 @@ describe('ProveedorDetailComponent', () => {
 
   it('should display estado as ACTIVO', () => {
     const compiled = fixture.nativeElement;
-    expect(compiled.textContent).toContain('Activo');
+    expect(compiled.textContent).toContain('COMMON.ACTIVE');
   });
 });

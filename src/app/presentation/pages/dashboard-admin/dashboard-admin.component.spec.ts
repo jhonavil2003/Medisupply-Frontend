@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { RouterModule } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../testing/translate.mock';
 import { DashboardAdminComponent } from './dashboard-admin.component';
 
 describe('DashboardAdminComponent', () => {
@@ -13,6 +15,9 @@ describe('DashboardAdminComponent', () => {
         DashboardAdminComponent,
         RouterModule.forRoot([]),
         MatButtonModule
+      ],
+      providers: [
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

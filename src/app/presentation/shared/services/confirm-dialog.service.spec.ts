@@ -1,6 +1,8 @@
 import { TestBed } from '@angular/core/testing';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { of } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../testing/translate.mock';
 import { ConfirmDialogService } from './confirm-dialog.service';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../components/confirm-dialog/confirm-dialog.component';
 
@@ -22,7 +24,8 @@ describe('ConfirmDialogService', () => {
     TestBed.configureTestingModule({
       providers: [
         ConfirmDialogService,
-        { provide: MatDialog, useValue: matDialog }
+        { provide: MatDialog, useValue: matDialog },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     });
 

@@ -4,6 +4,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoCreateComponent } from './producto-create.component';
 import { CreateProductUseCase } from '../../../../core/application/use-cases/producto/create-product.use-case';
@@ -99,6 +101,7 @@ describe('ProductoCreateComponent', () => {
       providers: [
         { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: CreateProductUseCase, useValue: createProductUseCaseSpy },
+        { provide: TranslateService, useClass: MockTranslateService },
         { provide: NotificationService, useValue: notificationServiceSpy }
       ]
     }).compileComponents();

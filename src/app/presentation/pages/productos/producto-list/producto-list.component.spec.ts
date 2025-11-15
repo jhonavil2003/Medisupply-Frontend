@@ -3,6 +3,8 @@ import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatTableModule } from '@angular/material/table';
@@ -150,7 +152,8 @@ describe('ProductoListComponent', () => {
         { provide: NotificationService, useValue: notificationServiceMock },
         { provide: ConfirmDialogService, useValue: confirmDialogServiceMock },
         { provide: MatDialog, useValue: dialogMock },
-        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } }
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

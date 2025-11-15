@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testin
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { MetaEditComponent } from './meta-edit.component';
 import {
@@ -110,7 +112,8 @@ describe('MetaEditComponent', () => {
         { provide: ProductoRepository, useValue: mockProductoRepository },
         { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: { metaId: 1 } }
+        { provide: MAT_DIALOG_DATA, useValue: { metaId: 1 } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

@@ -2,6 +2,8 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { MetaDetailComponent } from './meta-detail.component';
 import { GetMetaByIdUseCase } from '../../../../core/application/use-cases/meta/meta-venta.use-cases';
@@ -86,7 +88,8 @@ describe('MetaDetailComponent', () => {
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: { id: 1 } }
+        { provide: MAT_DIALOG_DATA, useValue: { id: 1 } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 

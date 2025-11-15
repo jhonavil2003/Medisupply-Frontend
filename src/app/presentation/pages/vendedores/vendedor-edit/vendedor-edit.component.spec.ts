@@ -1,6 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorEditComponent } from './vendedor-edit.component';
 import {
   GetVendedorByIdUseCase,
@@ -56,7 +58,8 @@ describe('VendedorEditComponent', () => {
         { provide: UpdateVendedorUseCase, useValue: mockUpdateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
         { provide: MatDialogRef, useValue: mockDialogRef },
-        { provide: MAT_DIALOG_DATA, useValue: { vendedorId: 1 } }
+        { provide: MAT_DIALOG_DATA, useValue: { vendedorId: 1 } },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
   });

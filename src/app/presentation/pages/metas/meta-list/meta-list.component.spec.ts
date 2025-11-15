@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { of, throwError } from 'rxjs';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { MetaListComponent } from './meta-list.component';
 import {
@@ -155,7 +157,8 @@ describe('MetaListComponent', () => {
         { provide: MetaVentaRepository, useValue: mockMetaVentaRepository },
         { provide: VendedorRepository, useValue: mockVendedorRepository },
         { provide: ProductoRepository, useValue: mockProductoRepository },
-        { provide: MatDialog, useValue: mockDialog }
+        { provide: MatDialog, useValue: mockDialog },
+        { provide: TranslateService, useClass: MockTranslateService }
       ]
     }).compileComponents();
 
