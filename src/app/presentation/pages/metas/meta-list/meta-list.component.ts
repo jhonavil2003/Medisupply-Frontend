@@ -15,6 +15,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { MetaVentaEntity, Region, Trimestre, TipoMeta } from '../../../../core/domain/entities/meta-venta.entity';
 import { MetaVentaFilters } from '../../../../core/domain/repositories/meta-venta.repository';
@@ -45,7 +46,8 @@ import { MetaDetailComponent } from '../meta-detail/meta-detail.component';
     MatCardModule,
     MatChipsModule,
     MatTooltipModule,
-    MatProgressBarModule
+    MatProgressBarModule,
+    TranslateModule
   ],
   templateUrl: './meta-list.component.html',
   styleUrls: ['./meta-list.component.css']
@@ -57,6 +59,7 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
   private dialog = inject(MatDialog);
+  private translate: TranslateService = inject(TranslateService);
 
   metas = signal<MetaVentaEntity[]>([]);
   loading = signal(false);
@@ -254,7 +257,9 @@ export class MetaListComponent implements OnInit, AfterViewInit {
   }
 
   getTipoDisplay(tipo: TipoMeta): string {
-    return tipo === TipoMeta.UNIDADES ? 'Unidades' : 'Monetario';
+    return tipo === TipoMeta.UNIDADES 
+      ? this.translate.instant('GOALS.UNITS') 
+      : this.translate.instant('GOALS.MONETARY');
   }
 
   getValorDisplay(meta: MetaVentaEntity): string {

@@ -1,7 +1,7 @@
 <mat-card class="form-card">
   <mat-card-header class="card-header">
     <mat-card-title class="card-title">
-      Detalle Meta de Venta
+      {{ 'GOALS.DETAIL_TITLE' | translate }}
     </mat-card-title>
   </mat-card-header>
 
@@ -9,100 +9,100 @@
       @if (loading()) {
         <div class="loading-container">
           <mat-spinner></mat-spinner>
-          <p>Cargando meta...</p>
+          <p>{{ 'GOALS.LOADING' | translate }}</p>
         </div>
       } @else if (meta(); as metaData) {
         <div class="detail-grid">
           <div class="detail-section">
-            <h3><mat-icon>info</mat-icon> Información General</h3>
+            <h3><mat-icon>info</mat-icon> {{ 'GOALS.GENERAL_INFO' | translate }}</h3>
             <mat-divider></mat-divider>
             
             <div class="detail-row">
-              <mat-label>ID:</mat-label>
+              <mat-label>{{ 'GOALS.ID' | translate }}:</mat-label>
               <span class="value">{{ metaData.id }}</span>
             </div>
 
             <div class="detail-row">
-              <mat-label>Región:</mat-label>
+              <mat-label>{{ 'GOALS.REGION' | translate }}:</mat-label>
               <mat-chip class="region-chip">{{ metaData.region }}</mat-chip>
             </div>
 
             <div class="detail-row">
-              <mat-label>Trimestre:</mat-label>
+              <mat-label>{{ 'GOALS.QUARTER' | translate }}:</mat-label>
               <mat-chip>{{ metaData.trimestre }}</mat-chip>
             </div>
 
             <div class="detail-row">
-              <mat-label>Tipo de Meta:</mat-label>
+              <mat-label>{{ 'GOALS.GOAL_TYPE' | translate }}:</mat-label>
               <mat-chip [class]="metaData.tipo === TipoMeta.UNIDADES ? 'tipo-unidades' : 'tipo-monetario'">
                 {{ getTipoDisplay(metaData.tipo) }}
               </mat-chip>
             </div>
 
             <div class="detail-row">
-              <mat-label>Valor Objetivo:</mat-label>
+              <mat-label>{{ 'GOALS.TARGET_VALUE' | translate }}:</mat-label>
               <span class="value highlight">{{ getValorDisplay(metaData) }}</span>
             </div>
           </div>
 
           <div class="detail-section">
-            <h3><mat-icon>person</mat-icon> Vendedor</h3>
+            <h3><mat-icon>person</mat-icon> {{ 'GOALS.SALESPERSON' | translate }}</h3>
             <mat-divider></mat-divider>
             
             <div class="detail-row">
-              <mat-label>ID Empleado:</mat-label>
+              <mat-label>{{ 'GOALS.EMPLOYEE_ID' | translate }}:</mat-label>
               <span class="value">{{ metaData.idVendedor }}</span>
             </div>
 
             @if (metaData.vendedor) {
               <div class="detail-row">
-                <mat-label>Nombre Completo:</mat-label>
+                <mat-label>{{ 'GOALS.FULL_NAME' | translate }}:</mat-label>
                 <span class="value">{{ metaData.vendedor.nombreCompleto }}</span>
               </div>
 
               <div class="detail-row">
-                <mat-label>Email:</mat-label>
+                <mat-label>{{ 'COMMON.EMAIL' | translate }}:</mat-label>
                 <span class="value">{{ metaData.vendedor.email }}</span>
               </div>
             }
           </div>
 
           <div class="detail-section">
-            <h3><mat-icon>inventory_2</mat-icon> Producto</h3>
+            <h3><mat-icon>inventory_2</mat-icon> {{ 'GOALS.PRODUCT' | translate }}</h3>
             <mat-divider></mat-divider>
             
             <div class="detail-row">
-              <mat-label>SKU:</mat-label>
+              <mat-label>{{ 'PRODUCTS.SKU' | translate }}:</mat-label>
               <span class="value">{{ metaData.idProducto }}</span>
             </div>
 
             @if (metaData.producto) {
               @if (metaData.producto.name) {
                 <div class="detail-row">
-                  <mat-label>Nombre:</mat-label>
+                  <mat-label>{{ 'PRODUCTS.NAME' | translate }}:</mat-label>
                   <span class="value">{{ metaData.producto.name }}</span>
                 </div>
               }
 
               @if (metaData.producto.description) {
                 <div class="detail-row">
-                  <mat-label>Descripción:</mat-label>
+                  <mat-label>{{ 'PRODUCTS.DESCRIPTION' | translate }}:</mat-label>
                   <span class="value">{{ metaData.producto.description }}</span>
                 </div>
               }
 
               @if (metaData.producto.unitPrice !== null) {
                 <div class="detail-row">
-                  <mat-label>Precio Unitario:</mat-label>
+                  <mat-label>{{ 'PRODUCTS.UNIT_PRICE' | translate }}:</mat-label>
                   <span class="value">{{ metaData.producto.unitPrice | currency:'COP':'symbol-narrow':'1.0-0' }}</span>
                 </div>
               }
 
               @if (metaData.producto.isActive !== null) {
                 <div class="detail-row">
-                  <mat-label>Estado:</mat-label>
+                  <mat-label>{{ 'PRODUCTS.STATUS' | translate }}:</mat-label>
                   <mat-chip [class]="metaData.producto.isActive ? 'status-active' : 'status-inactive'">
-                    {{ metaData.producto.isActive ? 'Activo' : 'Inactivo' }}
+                    {{ (metaData.producto.isActive ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
                   </mat-chip>
                 </div>
               }
@@ -110,16 +110,16 @@
           </div>
 
           <div class="detail-section">
-            <h3><mat-icon>schedule</mat-icon> Fechas</h3>
+            <h3><mat-icon>schedule</mat-icon> {{ 'GOALS.DATES' | translate }}</h3>
             <mat-divider></mat-divider>
             
             <div class="detail-row">
-              <mat-label>Creación:</mat-label>
+              <mat-label>{{ 'GOALS.CREATION_DATE' | translate }}:</mat-label>
               <span class="value">{{ formatDate(metaData.fechaCreacion) }}</span>
             </div>
 
             <div class="detail-row">
-              <mat-label>Última Actualización:</mat-label>
+              <mat-label>{{ 'GOALS.LAST_UPDATE' | translate }}:</mat-label>
               <span class="value">{{ formatDate(metaData.fechaActualizacion) }}</span>
             </div>
           </div>
@@ -128,7 +128,7 @@
         <!-- Action Buttons -->
         <div class="action-buttons">
           <button mat-raised-button type="button" (click)="navigateBack()">
-            Cerrar
+            {{ 'COMMON.CLOSE' | translate }}
           </button>
         </div>
       }
