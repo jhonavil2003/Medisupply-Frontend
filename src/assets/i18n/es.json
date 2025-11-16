@@ -22,6 +22,7 @@
     "INACTIVE": "Inactivo",
     "NA": "N/A",
     "ALL": "Todos",
+    "NO_RESULTS": "No hay resultados",
     "METADATA": "Metadatos",
     "CREATED_AT": "Fecha de Creación",
     "UPDATED_AT": "Última Actualización"
