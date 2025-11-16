@@ -11,16 +11,21 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 // Clean Architecture Imports
 import { GetAllProveedoresUseCase } from '../../core/application/use-cases/proveedor/get-all-proveedores.use-case';
-import { CreateProveedorUseCase } from '../../core/application/use-cases/proveedor/create-proveedor.use-case';
-import { UpdateProveedorUseCase } from '../../core/application/use-cases/proveedor/update-proveedor.use-case';
 import { DeleteProveedorUseCase } from '../../core/application/use-cases/proveedor/delete-proveedor.use-case';
 import { SearchProveedoresUseCase } from '../../core/application/use-cases/proveedor/search-proveedores.use-case';
 
 import { ProveedorEntity, EstadoProveedor } from '../../core/domain/entities/proveedor.entity';
 import { NotificationService } from '../../presentation/shared/services/notification.service';
+import { ConfirmDialogService } from '../../presentation/shared/services/confirm-dialog.service';
+import { ProveedorCreateComponent } from '../proveedor-create/proveedor-create.component';
+import { ProveedorEditComponent } from '../proveedor-edit/proveedor-edit.component';
+import { ProveedorDetailComponent } from '../../presentation/pages/proveedores/proveedor-detail/proveedor-detail.component';
 
 /**
  * Componente de lista de proveedores usando Clean Architecture
@@ -32,7 +37,7 @@ import { NotificationService } from '../../presentation/shared/services/notifica
  * 4. El componente solo maneja presentación
  */
 @Component({
-  selector: 'app-proveedor-list',
+  selector: 'app-proveedor-list-clean-alt',
   standalone: true,
   imports: [
     CommonModule,
@@ -46,33 +51,31 @@ import { NotificationService } from '../../presentation/shared/services/notifica
     MatInputModule,
     MatButtonModule,
     MatIconModule,
-    MatCardModule
+    MatCardModule,
+    MatTooltipModule,
+    TranslateModule
   ],
-  templateUrl: './proveedor-list.component.html',
-  styleUrls: ['./proveedor-list.component.css']
+  templateUrl: './proveedor-list-clean.component.html',
+  styleUrls: ['./proveedor-list-clean.component.css']
 })
 export class ProveedorListComponentClean implements OnInit, AfterViewInit {
   // Inyección de Use Cases (en lugar de servicios)
   private getAllProveedoresUseCase = inject(GetAllProveedoresUseCase);
-  private createProveedorUseCase = inject(CreateProveedorUseCase);
-  private updateProveedorUseCase = inject(UpdateProveedorUseCase);
   private deleteProveedorUseCase = inject(DeleteProveedorUseCase);
   private searchProveedoresUseCase = inject(SearchProveedoresUseCase);
   private notify = inject(NotificationService);
+  private dialog = inject(MatDialog);
+  private confirmDialog = inject(ConfirmDialogService);
+  private translate = inject(TranslateService);
 
   // Signals para estado reactivo (opcional)
   isLoading = signal(false);
   
   proveedores: ProveedorEntity[] = [];
-  proveedorEditando: Partial<ProveedorEntity> | null = null;
-  mostrarModal: boolean = false;
-  modoEdicion: boolean = false;
-  mostrarDetalle: boolean = false;
-  proveedorDetalle: ProveedorEntity | null = null;
   filtroBusqueda: string = '';
   
   dataSource = new MatTableDataSource<ProveedorEntity>();
-  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'certificacionesVigentes', 'acciones'];
+  displayedColumns: string[] = ['razonSocial', 'ruc', 'telefono', 'correoContacto', 'estado', 'acciones'];
 
   // Estados disponibles
   estadosDisponibles = Object.values(EstadoProveedor);
@@ -98,8 +101,10 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     
     this.getAllProveedoresUseCase.execute().subscribe({
       next: (proveedores) => {
-        this.proveedores = proveedores;
-        this.dataSource.data = proveedores;
+        // Filtrar solo proveedores activos
+        const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
+        this.proveedores = proveedoresActivos;
+        this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -123,7 +128,9 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
     
     this.searchProveedoresUseCase.execute(this.filtroBusqueda).subscribe({
       next: (proveedores) => {
-        this.dataSource.data = proveedores;
+        // Filtrar solo proveedores activos
+        const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
+        this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
       },
       error: (error) => {
@@ -138,115 +145,81 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
    * Abre el modal para agregar un nuevo proveedor
    */
   agregarProveedor(): void {
-    this.proveedorEditando = {
-      razonSocial: '',
-      ruc: '',
-      telefono: '',
-      correoContacto: '',
-      estado: EstadoProveedor.ACTIVO,
-      certificacionesVigentes: []
-    };
-    this.modoEdicion = false;
-    this.mostrarModal = true;
+    const dialogRef = this.dialog.open(ProveedorCreateComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cargarProveedores();
+      }
+    });
   }
 
   /**
    * Abre el modal para editar un proveedor existente
    */
   editarProveedor(proveedor: ProveedorEntity): void {
-    this.proveedorEditando = { ...proveedor };
-    this.modoEdicion = true;
-    this.mostrarModal = true;
-  }
+    if (!proveedor.id) return;
 
-  /**
-   * Guarda (crea o actualiza) un proveedor usando los casos de uso
-   */
-  guardarProveedor(): void {
-    if (!this.proveedorEditando) return;
+    const dialogRef = this.dialog.open(ProveedorEditComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      data: { proveedorId: parseInt(proveedor.id) }
+    });
 
-    this.isLoading.set(true);
-
-    if (this.modoEdicion && this.proveedorEditando.id) {
-      // Actualizar
-      this.updateProveedorUseCase.execute({
-        id: this.proveedorEditando.id,
-        ...this.proveedorEditando
-      } as any).subscribe({
-        next: () => {
-          this.notify.success('Proveedor actualizado correctamente');
-          this.cerrarModal();
-          this.cargarProveedores();
-        },
-        error: (error) => {
-          this.notify.error(error.message || 'Error al actualizar', 'Error');
-          this.isLoading.set(false);
-        }
-      });
-    } else {
-      // Crear
-      this.createProveedorUseCase.execute(this.proveedorEditando as any).subscribe({
-        next: () => {
-          this.notify.success('Proveedor creado correctamente');
-          this.cerrarModal();
-          this.cargarProveedores();
-        },
-        error: (error) => {
-          this.notify.error(error.message || 'Error al crear', 'Error');
-          this.isLoading.set(false);
-        }
-      });
-    }
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        this.cargarProveedores();
+      }
+    });
   }
 
   /**
    * Elimina un proveedor usando el caso de uso
    */
-  eliminarProveedor(proveedor: ProveedorEntity): void {
+  async eliminarProveedor(proveedor: ProveedorEntity): Promise<void> {
     if (!proveedor.id) return;
     
-    if (!confirm(`¿Está seguro de eliminar el proveedor "${proveedor.razonSocial}"?`)) {
-      return;
-    }
+    const confirmed = await this.confirmDialog.confirmDelete(proveedor.razonSocial).toPromise();
+    
+    if (confirmed) {
+      this.isLoading.set(true);
 
-    this.isLoading.set(true);
-
-    this.deleteProveedorUseCase.execute(proveedor.id).subscribe({
-      next: (success) => {
-        if (success) {
-          this.notify.success('Proveedor eliminado correctamente');
-          this.cargarProveedores();
-        } else {
-          this.notify.error('No se pudo eliminar el proveedor', 'Error');
+      this.deleteProveedorUseCase.execute(proveedor.id).subscribe({
+        next: (success) => {
+          if (success) {
+            this.isLoading.set(false);
+            this.notify.success(this.translate.instant('SUPPLIERS.DELETE_SUCCESS', { name: proveedor.razonSocial }));
+            this.cargarProveedores();
+          } else {
+            this.notify.error(this.translate.instant('SUPPLIERS.DELETE_ERROR_GENERIC'));
+            this.isLoading.set(false);
+          }
+        },
+        error: (error) => {
           this.isLoading.set(false);
+          this.notify.error(this.translate.instant('SUPPLIERS.DELETE_ERROR_GENERIC'));
+          console.error(error);
         }
-      },
-      error: (error) => {
-        this.notify.error('Error al eliminar', 'Error');
-        console.error(error);
-        this.isLoading.set(false);
-      }
-    });
+      });
+    }
   }
 
   /**
    * Muestra el detalle de un proveedor
    */
   verProveedor(proveedor: ProveedorEntity): void {
-    this.proveedorDetalle = proveedor;
-    this.mostrarDetalle = true;
-  }
-
-  cerrarModal(): void {
-    this.mostrarModal = false;
-    this.proveedorEditando = null;
-    this.modoEdicion = false;
-    this.isLoading.set(false);
-  }
-
-  cerrarDetalle(): void {
-    this.mostrarDetalle = false;
-    this.proveedorDetalle = null;
+    this.dialog.open(ProveedorDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { proveedor: proveedor }
+    });
   }
 
   private configurarFiltro(): void {

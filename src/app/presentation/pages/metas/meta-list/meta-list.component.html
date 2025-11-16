@@ -1,158 +1,131 @@
 <div class="container">
   <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
     <div style="display: flex; align-items: center; gap: 16px;">
-      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+      <button mat-icon-button (click)="navigateBack()">
         <mat-icon>arrow_back</mat-icon>
-      </a>
-      <h2 style="margin: 0;">Definición de metas de venta</h2>
+      </button>
+      <h2 style="margin: 0;">{{ 'GOALS.LIST_TITLE' | translate }}</h2>
     </div>
-    <button mat-raised-button color="primary" (click)="agregarMeta()">
+    <button mat-raised-button color="primary" (click)="navigateToCreate()">
       <mat-icon>add</mat-icon>
-      Agregar Meta
+      {{ 'GOALS.CREATE_GOAL' | translate }}
     </button>
   </div>
 
-  <div class="search-bar">
-    <div class="search-wrap" style="width: 100%;">
-      <mat-form-field appearance="outline" class="search-field">
-        <mat-label>Buscar metas</mat-label>
-        <input matInput
-          placeholder="Producto, región, trimestre o responsable..."
-          [(ngModel)]="filtroBusqueda"
-          (keyup.enter)="filtrarMetas()" />
-
-        @if (filtroBusqueda) {
-          <button
-            matSuffix
-            mat-icon-button
-            aria-label="Limpiar"
-            (click)="filtroBusqueda=''">
-            <mat-icon>close</mat-icon>
-          </button>
+  <div class="filter-section">
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>{{ 'GOALS.REGION' | translate }}</mat-label>
+      <mat-select [formControl]="regionControl">
+        <mat-option value="">{{ 'GOALS.ALL_REGIONS' | translate }}</mat-option>
+        @for (region of regiones; track region) {
+          <mat-option [value]="region">{{ region }}</mat-option>
         }
+      </mat-select>
+    </mat-form-field>
 
-        <mat-icon matSuffix>search</mat-icon>
-      </mat-form-field>
-      <!-- botón al costado (Opción 1) -->
-      <button mat-raised-button
-        color="primary"
-        class="search-btn"
-        (click)="filtrarMetas()">
-        <mat-icon>search</mat-icon>
-      </button>
-    </div>
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>{{ 'GOALS.QUARTER' | translate }}</mat-label>
+      <mat-select [formControl]="trimestreControl">
+        <mat-option value="">{{ 'GOALS.ALL_QUARTERS' | translate }}</mat-option>
+        @for (trimestre of trimestres; track trimestre) {
+          <mat-option [value]="trimestre">{{ trimestre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="filter-field">
+      <mat-label>{{ 'GOALS.TYPE' | translate }}</mat-label>
+      <mat-select [formControl]="tipoControl">
+        <mat-option value="">{{ 'GOALS.ALL_TYPES' | translate }}</mat-option>
+        @for (tipo of tipos; track tipo) {
+          <mat-option [value]="tipo">{{ (tipo === 'unidades' ? 'GOALS.UNITS' : 'GOALS.MONETARY') | translate }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
 
-
-
-  <div class="card">
-    <table class="modern-table">
-      <thead>
-        <tr>
-          <th>Producto</th>
-          <th>Región</th>
-          <th>Trimestre</th>
-          <th>Valor objetivo</th>
-          <th>Tipo</th>
-          <th>Responsable</th>
-          <th>Acciones</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (meta of metasFiltradas; track meta) {
-          <tr>
-            <td>{{ meta.producto }}</td>
-            <td>{{ meta.region }}</td>
-            <td>{{ meta.trimestre }}</td>
-            <td>{{ meta.valorObjetivo }}</td>
-            <td>{{ meta.tipo }}</td>
-            <td>{{ meta.usuarioResponsable }}</td>
-            <td class="actions">
-              <button class="btn-icon" title="Ver" (click)="verMeta(meta)"><i class="fas fa-eye"></i></button>
-              <button class="btn-icon" title="Editar" [disabled]="!meta.editable" (click)="editarMeta(meta)"><i class="fas fa-edit"></i></button>
-              <button class="btn-icon danger" title="Eliminar" (click)="eliminarMeta(meta)"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>
-        }
-      </tbody>
-    </table>
+  <div class="filter-actions">
+    <button mat-button type="button" (click)="clearFilters()">
+      <mat-icon>filter_list</mat-icon>
+      {{ 'GOALS.CLEAR_FILTERS' | translate }}
+    </button>
   </div>
+</div>
 
-  <!-- Modal Detalle -->
-  <div class="detalle-modal" [ngStyle]="{display: mostrarDetalle ? 'flex' : 'none'}">
-    @if (metaDetalle) {
-      <div class="detalle-content">
-        <button mat-icon-button (click)="cerrarDetalle()" aria-label="Cerrar" class="close" type="button">
-          <mat-icon>close</mat-icon>
+@if (loading()) {
+  <mat-progress-bar mode="indeterminate"></mat-progress-bar>
+}
+
+@if (errorMessage()) {
+  <div class="error-message">
+    <mat-icon>error</mat-icon>
+    <span>{{ errorMessage() }}</span>
+  </div>
+}
+
+<div class="container">
+  <div class="table-container">
+    @if (metas().length === 0 && !loading() && !errorMessage()) {
+      <div class="empty-state">
+        <mat-icon>assessment</mat-icon>
+        <h3>{{ 'GOALS.NO_GOALS' | translate }}</h3>
+        <p>{{ 'GOALS.ADD_FIRST' | translate }}</p>
+        <button mat-raised-button color="primary" (click)="navigateToCreate()">
+          <mat-icon>add</mat-icon>
+          {{ 'GOALS.CREATE_FIRST_GOAL' | translate }}
         </button>
-        <h2>Detalle de la Meta</h2>
-        <p></p>
-        <p><strong>Producto:</strong> {{ metaDetalle.producto }}</p>
-        <p><strong>Región:</strong> {{ metaDetalle.region }}</p>
-        <p><strong>Trimestre:</strong> {{ metaDetalle.trimestre }}</p>
-        <p><strong>Valor objetivo:</strong> {{ metaDetalle.valorObjetivo }}</p>
-        <p><strong>Tipo:</strong> {{ metaDetalle.tipo }}</p>
-        <p><strong>Responsable:</strong> {{ metaDetalle.usuarioResponsable }}</p>
-        <p><strong>Fecha de creación:</strong> {{ metaDetalle.fechaCreacion | date:'short' }}</p>
       </div>
-    }
-  </div>
+    } @else {
+      <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
+        
+        <ng-container matColumnDef="idVendedor">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.SALESPERSON' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ getVendedorDisplay(row) }}</td>
+        </ng-container>
 
-  <!-- Modal Edición/Creación -->
-  <div class="detalle-modal" [ngStyle]="{display: mostrarModal ? 'flex' : 'none'}">
-    @if (metaEditando) {
-      <div class="detalle-content">
-        <div style="display: flex; align-items: flex-start; justify-content: space-between;">
-          <h2 style="margin: 0; flex: 1;">{{ modoEdicion ? 'Editar Meta' : 'Agregar Meta' }}</h2>
-          <button mat-icon-button (click)="cancelarEdicion()" aria-label="Cerrar" class="close" type="button">
-            <mat-icon>close</mat-icon>
-          </button>
-        </div>
-        <p></p>
-        <form (ngSubmit)="guardarMeta()" class="form-container">
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Producto</mat-label>
-            <mat-select [(ngModel)]="metaEditando.producto" name="producto" required>
-              <mat-option value="" disabled>Seleccione...</mat-option>
-              @for (p of productos; track p) {
-                <mat-option [value]="p">{{ p }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Región</mat-label>
-            <mat-select [(ngModel)]="metaEditando.region" name="region" required>
-              <mat-option value="" disabled>Seleccione...</mat-option>
-              @for (r of regiones; track r) {
-                <mat-option [value]="r">{{ r }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Trimestre</mat-label>
-            <mat-select [(ngModel)]="metaEditando.trimestre" name="trimestre" required>
-              <mat-option value="" disabled>Seleccione...</mat-option>
-              @for (t of trimestres; track t) {
-                <mat-option [value]="t">{{ t }}</mat-option>
-              }
-            </mat-select>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Valor objetivo</mat-label>
-            <input matInput type="number" [(ngModel)]="metaEditando.valorObjetivo" name="valorObjetivo" min="1" required>
-          </mat-form-field>
-          <mat-form-field appearance="outline" class="form-field">
-            <mat-label>Tipo</mat-label>
-            <mat-select [(ngModel)]="metaEditando.tipo" name="tipo" required>
-              <mat-option value="unidades">Unidades</mat-option>
-              <mat-option value="monetario">Monetario</mat-option>
-            </mat-select>
-          </mat-form-field>
-          <div class="form-actions">
-            <button mat-flat-button color="primary" type="submit">Guardar</button>
-          </div>
-        </form>
-      </div>
+        <ng-container matColumnDef="idProducto">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.PRODUCT' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ getProductoDisplay(row) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="region">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.REGION' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.region }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="trimestre">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.QUARTER' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ row.trimestre }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="tipo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.TYPE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ getTipoDisplay(row.tipo) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="valorObjetivo">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'GOALS.TARGET_VALUE' | translate }}</th>
+          <td mat-cell *matCellDef="let row">{{ getValorDisplay(row) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="acciones">
+          <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
+          <td mat-cell *matCellDef="let row" class="actions">
+            <button class="btn-icon" [title]="'COMMON.VIEW' | translate" (click)="navigateToDetail(row.id!)"><i class="fas fa-eye"></i></button>
+            <button class="btn-icon" [title]="'COMMON.EDIT' | translate" (click)="navigateToEdit(row.id!)"><i class="fas fa-edit"></i></button>
+            <button class="btn-icon danger" [title]="'COMMON.DELETE' | translate" (click)="deleteMeta(row)"><i class="fas fa-trash"></i></button>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
+
+      <mat-paginator 
+        [pageSize]="10" 
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
     }
   </div>
 </div>

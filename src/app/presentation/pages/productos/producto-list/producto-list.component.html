@@ -1,118 +1,90 @@
-<div class="producto-catalog-container">
-  <mat-card class="header-card">
-    <mat-card-header>
-      <mat-card-title>
-        <h2>📦 Catálogo de Productos Médicos</h2>
-      </mat-card-title>
-      <div class="header-actions">
-        <button mat-raised-button color="primary" (click)="navigateToCreate()">
-          <mat-icon>add</mat-icon>
-          Crear Producto
-        </button>
-      </div>
-    </mat-card-header>
-  </mat-card>
-
-  <!-- Barra de Búsqueda y Filtros -->
-  <mat-card class="search-filters-card">
-    <mat-card-content>
-      <!-- Búsqueda -->
-      <mat-form-field appearance="outline" class="full-width search-field">
-        <mat-label>Buscar productos</mat-label>
-        <input 
-          matInput 
-          [formControl]="searchControl" 
-          placeholder="Buscar por nombre, SKU, código de barras, fabricante...">
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']" data-cy="back-to-dashboard">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">{{ 'PRODUCTS.LIST_TITLE' | translate }}</h2>
+    </div>
+    <button mat-raised-button color="primary" (click)="navigateToCreate()" [attr.aria-label]="'PRODUCTS.CREATE_TITLE' | translate" data-cy="create-product-button">
+      <mat-icon>add</mat-icon> {{ 'PRODUCTS.CREATE_BUTTON' | translate }}
+    </button>
+  </div>
+  
+  <div class="search-bar" style="flex: 1;">
+    <div class="search-wrap">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'PRODUCTS.SEARCH_PRODUCTS' | translate }}</mat-label>
+        <input matInput
+          [placeholder]="'PRODUCTS.SEARCH_PLACEHOLDER' | translate"
+          [formControl]="searchControl"
+          data-cy="product-search-input"
+          />
+        @if (searchControl.value) {
+          <button
+            matSuffix
+            mat-icon-button
+            [attr.aria-label]="'COMMON.CLEAR_FILTERS' | translate"
+            (click)="searchControl.setValue('')" color="primary"
+            data-cy="clear-search">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
         <mat-icon matPrefix>search</mat-icon>
-        <button 
-          mat-icon-button 
-          matSuffix 
-          *ngIf="searchControl.value"
-          (click)="searchControl.setValue('')"
-          type="button">
-          <mat-icon>close</mat-icon>
-        </button>
       </mat-form-field>
+    </div>
+  </div>
 
-      <!-- Filtros -->
-      <form [formGroup]="filterForm">
-        <div class="filters-row">
-          <mat-form-field appearance="outline">
-            <mat-label>Categoría</mat-label>
-            <mat-select formControlName="category" (selectionChange)="onFilterChange()">
-              <mat-option value="">Todas</mat-option>
+  <!-- Filtros -->
+  <form [formGroup]="filterForm">
+    <div class="filters-row">
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>{{ 'PRODUCTS.CATEGORY' | translate }}</mat-label>
+            <mat-select formControlName="category" (selectionChange)="onFilterChange()" data-cy="filter-category">
+              <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
               <mat-option *ngFor="let cat of categories" [value]="cat">
                 {{ cat }}
               </mat-option>
             </mat-select>
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Subcategoría</mat-label>
-            <input matInput formControlName="subcategory" (change)="onFilterChange()">
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ 'PRODUCTS.SUBCATEGORY' | translate }}</mat-label>
+            <input matInput formControlName="subcategory" (change)="onFilterChange()" data-cy="filter-subcategory">
           </mat-form-field>
 
-          <mat-form-field appearance="outline">
-            <mat-label>Cadena de Frío</mat-label>
-            <mat-select formControlName="requires_cold_chain" (selectionChange)="onFilterChange()">
-              <mat-option [value]="null">Todos</mat-option>
-              <mat-option [value]="true">Sí ❄️</mat-option>
-              <mat-option [value]="false">No</mat-option>
-            </mat-select>
-          </mat-form-field>
-
-          <mat-form-field appearance="outline">
-            <mat-label>Items por página</mat-label>
-            <mat-select formControlName="per_page" (selectionChange)="onFilterChange()">
-              <mat-option [value]="10">10</mat-option>
-              <mat-option [value]="20">20</mat-option>
-              <mat-option [value]="50">50</mat-option>
-              <mat-option [value]="100">100</mat-option>
+          <mat-form-field appearance="outline" floatLabel="always">
+            <mat-label>{{ 'PRODUCTS.COLD_CHAIN' | translate }}</mat-label>
+            <mat-select formControlName="requires_cold_chain" (selectionChange)="onFilterChange()" data-cy="filter-cold-chain">
+              <mat-option [value]="null">{{ 'COMMON.ALL' | translate }}</mat-option>
+              <mat-option [value]="true">{{ 'COMMON.YES' | translate }} ❄️</mat-option>
+              <mat-option [value]="false">{{ 'COMMON.NO' | translate }}</mat-option>
             </mat-select>
           </mat-form-field>
         </div>
 
         <div class="filter-actions">
-          <mat-checkbox formControlName="is_active" (change)="onFilterChange()">
-            Solo productos activos
-          </mat-checkbox>
-          <button mat-button type="button" (click)="resetFilters()">
-            <mat-icon>refresh</mat-icon>
-            Limpiar filtros
+          <button mat-button type="button" (click)="resetFilters()" data-cy="clear-filters">
+            <mat-icon>filter_list</mat-icon>
+            {{ 'COMMON.CLEAR_FILTERS' | translate }}
           </button>
         </div>
       </form>
-    </mat-card-content>
-  </mat-card>
+</div>
 
-  <!-- Loading Spinner -->
-  <mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
+<!-- Loading Spinner -->
+<mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
 
-  <!-- Error Message -->
-  <mat-card *ngIf="errorMessage()" class="error-card">
+<!-- Error Message -->
+<mat-card *ngIf="errorMessage()" class="error-card">
     <mat-icon color="warn">error</mat-icon>
     <p>{{ errorMessage() }}</p>
   </mat-card>
 
-  <!-- Información de Resultados -->
-  <div *ngIf="pagination() && !loading()" class="results-info">
-    <p>
-      Mostrando 
-      <strong>{{ products().length }}</strong> 
-      de 
-      <strong>{{ pagination()?.total_items }}</strong> 
-      productos
-      <span *ngIf="(pagination()?.total_pages || 0) > 1">
-        (Página {{ pagination()?.page }} de {{ pagination()?.total_pages }})
-      </span>
-    </p>
-  </div>
-
   <!-- Tabla de Productos -->
-  <mat-card *ngIf="products().length > 0 && !loading()" class="table-card">
-    <mat-card-content>
-      <div class="table-container">
-        <table mat-table [dataSource]="dataSource" matSort class="products-table">
+  <div *ngIf="products().length > 0 && !loading()" class="container">
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
           
           <!-- SKU Column -->
           <ng-container matColumnDef="sku">
@@ -122,11 +94,11 @@
 
           <!-- Name Column -->
           <ng-container matColumnDef="name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Producto</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCTS.NAME' | translate }}</th>
             <td mat-cell *matCellDef="let product">
               <div class="product-name">
                 <span>{{ getColdChainIcon(product) }} {{ getPrescriptionIcon(product) }}</span>
-                <strong>{{ product.name }}</strong>
+                <span>{{ product.name }}</span>
                 <small *ngIf="product.description">{{ product.description }}</small>
               </div>
             </td>
@@ -134,7 +106,7 @@
 
           <!-- Category Column -->
           <ng-container matColumnDef="category">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Categoría</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCTS.CATEGORY' | translate }}</th>
             <td mat-cell *matCellDef="let product">
               {{ product.category }}
               <span *ngIf="product.subcategory">/ {{ product.subcategory }}</span>
@@ -143,13 +115,13 @@
 
           <!-- Supplier Column -->
           <ng-container matColumnDef="supplier_name">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Proveedor</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCTS.SUPPLIER' | translate }}</th>
             <td mat-cell *matCellDef="let product">{{ product.supplier_name || 'N/A' }}</td>
           </ng-container>
 
           <!-- Price Column -->
           <ng-container matColumnDef="unit_price">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Precio</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCTS.PRICE' | translate }}</th>
             <td mat-cell *matCellDef="let product">
               <div class="price-cell">
                 <span class="price">{{ product.currency }} {{ product.unit_price | number:'1.2-2' }}</span>
@@ -160,7 +132,7 @@
 
           <!-- Cold Chain Column -->
           <ng-container matColumnDef="cold_chain">
-            <th mat-header-cell *matHeaderCellDef>Cadena Frío</th>
+            <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCTS.COLD_CHAIN' | translate }}</th>
             <td mat-cell *matCellDef="let product">
               <mat-icon *ngIf="product.requires_cold_chain" color="primary" class="cold-icon">ac_unit</mat-icon>
               <span *ngIf="getTemperatureRange(product)" class="temp-range">
@@ -171,27 +143,21 @@
 
           <!-- Active Column -->
           <ng-container matColumnDef="is_active">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header>Estado</th>
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCTS.STATUS' | translate }}</th>
             <td mat-cell *matCellDef="let product">
-              <mat-chip [color]="product.is_active ? 'primary' : 'warn'">
-                {{ product.is_active ? 'Activo' : 'Inactivo' }}
-              </mat-chip>
+              <span [style.color]="product.is_active ? '#2e7d32' : '#d32f2f'">
+                {{ (product.is_active ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
+              </span>
             </td>
           </ng-container>
 
           <!-- Actions Column -->
           <ng-container matColumnDef="acciones">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let product">
-              <button mat-icon-button color="primary" (click)="verDetalle(product)" matTooltip="Ver detalle">
-                <mat-icon>visibility</mat-icon>
-              </button>
-              <button mat-icon-button color="accent" (click)="editarProducto(product)" matTooltip="Editar">
-                <mat-icon>edit</mat-icon>
-              </button>
-              <button mat-icon-button color="warn" (click)="eliminarProducto(product)" matTooltip="Eliminar">
-                <mat-icon>delete</mat-icon>
-              </button>
+            <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
+            <td mat-cell *matCellDef="let product" class="actions">
+              <button class="btn-icon" [title]="'COMMON.VIEW' | translate" (click)="verDetalle(product)" data-cy="view-product"><i class="fas fa-eye"></i></button>
+              <button class="btn-icon" [title]="'COMMON.EDIT' | translate" (click)="editarProducto(product)" data-cy="edit-product"><i class="fas fa-edit"></i></button>
+              <button class="btn-icon danger" [title]="'COMMON.DELETE' | translate" (click)="eliminarProducto(product)" data-cy="delete-product"><i class="fas fa-trash"></i></button>
             </td>
           </ng-container>
 
@@ -200,8 +166,9 @@
         </table>
       </div>
 
-      <!-- Paginación -->
+      <!-- Paginación unificada -->
       <mat-paginator 
+        class="unified-paginator"
         *ngIf="pagination()"
         [length]="pagination()?.total_items"
         [pageSize]="pagination()?.per_page"
@@ -210,16 +177,14 @@
         (page)="onPageChange($event)"
         showFirstLastButtons>
       </mat-paginator>
-    </mat-card-content>
-  </mat-card>
+    </div>
 
   <!-- Sin Resultados -->
-  <mat-card *ngIf="products().length === 0 && !loading() && !errorMessage()" class="no-results-card">
+  <mat-card *ngIf="products().length === 0 && !loading() && !errorMessage()" class="no-results-card" data-cy="no-results">
     <mat-icon>inventory</mat-icon>
-    <h3>No se encontraron productos</h3>
-    <p>Intenta ajustar los filtros de búsqueda</p>
-    <button mat-raised-button color="primary" (click)="resetFilters()">
-      Limpiar filtros
+    <h3>{{ 'PRODUCTS.NO_RESULTS' | translate }}</h3>
+    <p>{{ 'PRODUCTS.ADJUST_FILTERS' | translate }}</p>
+    <button mat-raised-button color="primary" (click)="resetFilters()" data-cy="clear-filters-no-results">
+      {{ 'COMMON.CLEAR_FILTERS' | translate }}
     </button>
   </mat-card>
-</div>

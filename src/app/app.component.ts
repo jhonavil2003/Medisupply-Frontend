@@ -13,7 +13,7 @@ import { MenuPrincipalComponent } from './presentation/layout/menu-principal/men
 export class AppComponent {
   private toastr = inject(ToastrService);
 
-  title = 'mynewapp';
+  title = 'medisupply';
 
   showSuccess() {
     this.toastr.success('La operación fue exitosa ✅', 'Éxito');

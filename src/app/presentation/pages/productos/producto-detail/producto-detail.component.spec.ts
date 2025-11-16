@@ -1,7 +1,8 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-import { ActivatedRoute, Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of, throwError } from 'rxjs';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatCardModule } from '@angular/material/card';
@@ -9,23 +10,16 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDividerModule } from '@angular/material/divider';
-import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { MatGridListModule } from '@angular/material/grid-list';
-import { MatBadgeModule } from '@angular/material/badge';
+import { MatLabel } from '@angular/material/form-field';
 
 // Component and dependencies
 import { ProductoDetailComponent } from './producto-detail.component';
-import { GetProductByIdUseCase } from '../../../../core/application/use-cases/producto/get-product-by-id.use-case';
-import { NotificationService } from '../../../shared/services/notification.service';
 import { ProductoDetailedEntity } from '../../../../core/domain/entities/producto.entity';
 
 describe('ProductoDetailComponent', () => {
   let component: ProductoDetailComponent;
   let fixture: ComponentFixture<ProductoDetailComponent>;
-  let getProductByIdUseCaseMock: jest.Mocked<GetProductByIdUseCase>;
-  let notificationServiceMock: jest.Mocked<NotificationService>;
-  let routerMock: jest.Mocked<Router>;
-  let activatedRouteMock: any;
+  let dialogRefMock: jest.Mocked<MatDialogRef<ProductoDetailComponent>>;
 
   // Mock data
   const mockProduct: ProductoDetailedEntity = {
@@ -70,29 +64,10 @@ describe('ProductoDetailComponent', () => {
   };
 
   beforeEach(async () => {
-    // Create mocks
-    getProductByIdUseCaseMock = {
-      execute: jest.fn().mockReturnValue(of(mockProduct))
+    // Create dialog ref mock
+    dialogRefMock = {
+      close: jest.fn()
     } as any;
-
-    notificationServiceMock = {
-      error: jest.fn(),
-      info: jest.fn(),
-      success: jest.fn(),
-      warning: jest.fn()
-    } as any;
-
-    routerMock = {
-      navigate: jest.fn()
-    } as any;
-
-    activatedRouteMock = {
-      snapshot: {
-        paramMap: {
-          get: jest.fn().mockReturnValue('1')
-        }
-      }
-    };
 
     await TestBed.configureTestingModule({
       imports: [
@@ -103,20 +78,18 @@ describe('ProductoDetailComponent', () => {
         MatIconModule,
         MatChipsModule,
         MatDividerModule,
-        MatProgressBarModule,
-        MatGridListModule,
-        MatBadgeModule
+        MatLabel,
+        TranslateModule.forRoot()
       ],
       providers: [
-        { provide: GetProductByIdUseCase, useValue: getProductByIdUseCaseMock },
-        { provide: NotificationService, useValue: notificationServiceMock },
-        { provide: Router, useValue: routerMock },
-        { provide: ActivatedRoute, useValue: activatedRouteMock }
+        { provide: MatDialogRef, useValue: dialogRefMock },
+        { provide: MAT_DIALOG_DATA, useValue: mockProduct }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductoDetailComponent);
     component = fixture.componentInstance;
+    fixture.detectChanges();
   });
 
   describe('Component Initialization', () => {
@@ -124,67 +97,22 @@ describe('ProductoDetailComponent', () => {
       expect(component).toBeTruthy();
     });
 
-    it('should initialize with default values', () => {
-      expect(component.product()).toBeNull();
-      expect(component.loading()).toBe(false);
-      expect(component.errorMessage()).toBeNull();
-    });
-
-    it('should load product on initialization with valid ID', () => {
-      fixture.detectChanges(); // This triggers ngOnInit
-
-      expect(getProductByIdUseCaseMock.execute).toHaveBeenCalledWith(1);
-      expect(component.product()).toEqual(mockProduct);
-      expect(component.loading()).toBe(false);
-    });
-
-    it('should set error message when no ID is provided', () => {
-      activatedRouteMock.snapshot.paramMap.get.mockReturnValue(null);
-      
-      fixture.detectChanges();
-
-      expect(component.errorMessage()).toBe('ID de producto no válido');
-      expect(getProductByIdUseCaseMock.execute).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Data Loading', () => {
-    beforeEach(() => {
-      fixture.detectChanges();
-    });
-
-    it('should handle loading state correctly', () => {
-      getProductByIdUseCaseMock.execute.mockReturnValue(of(mockProduct));
-      
-      component.loadProduct(1);
-
-      expect(component.loading()).toBe(false); // Should be false after observable completes
-      expect(component.errorMessage()).toBeNull();
-    });
-
-    it('should handle error state correctly', () => {
-      const errorMessage = 'Product not found';
-      getProductByIdUseCaseMock.execute.mockReturnValue(throwError(() => new Error(errorMessage)));
-
-      component.loadProduct(1);
-
-      expect(component.loading()).toBe(false);
-      expect(component.errorMessage()).toBe(errorMessage);
-      expect(notificationServiceMock.error).toHaveBeenCalledWith(`Error al cargar el producto: ${errorMessage}`);
+    it('should receive product data through MAT_DIALOG_DATA', () => {
+      expect(component.product).toEqual(mockProduct);
     });
   });
 
   describe('Utility Methods', () => {
-    beforeEach(() => {
-      fixture.detectChanges();
-    });
-
     it('should return correct temperature range when values are present', () => {
       expect(component.getTemperatureRange()).toBe('15°C - 25°C');
     });
 
-    it('should return null when product is null', () => {
-      component.product.set(null);
+    it('should return null when product storage_conditions is missing', () => {
+      const productWithoutStorage = {
+        ...mockProduct,
+        storage_conditions: null as any
+      };
+      component.product = productWithoutStorage;
       expect(component.getTemperatureRange()).toBeNull();
     });
 
@@ -197,111 +125,78 @@ describe('ProductoDetailComponent', () => {
           humidity_max: 60
         }
       };
-      component.product.set(productWithNullTemp);
+      component.product = productWithNullTemp;
       expect(component.getTemperatureRange()).toBeNull();
     });
 
     it('should format date correctly', () => {
       const formattedDate = component.formatDate('2024-01-01T12:00:00Z');
       expect(formattedDate).toContain('2024');
-      expect(formattedDate).toMatch(/enero|january/i); // Accept both Spanish and English
+      expect(formattedDate).toMatch(/enero|january/i);
     });
 
-    it('should return N/A for undefined date', () => {
-      expect(component.formatDate(undefined)).toBe('N/A');
+    it('should return dash for undefined date', () => {
+      expect(component.formatDate(undefined)).toBe('-');
+    });
+
+    it('should return dash for empty date string', () => {
+      expect(component.formatDate('')).toBe('-');
     });
   });
 
-  describe('Navigation', () => {
-    beforeEach(() => {
+  describe('Dialog Actions', () => {
+    it('should close dialog when cerrar is called', () => {
+      component.cerrar();
+      expect(dialogRefMock.close).toHaveBeenCalled();
+    });
+  });
+
+  describe('Product with Cold Chain', () => {
+    it('should display cold chain requirement correctly', () => {
+      const coldChainProduct = {
+        ...mockProduct,
+        requires_cold_chain: true
+      };
+      component.product = coldChainProduct;
       fixture.detectChanges();
-    });
 
-    it('should navigate back to products list', () => {
-      component.goBack();
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-list']);
+      expect(component.product.requires_cold_chain).toBe(true);
     });
+  });
 
-    it('should navigate to edit product page', () => {
-      component.editProduct();
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-edit', mockProduct.id]);
-    });
+  describe('Product with Prescription Requirement', () => {
+    it('should display prescription requirement correctly', () => {
+      const prescriptionProduct = {
+        ...mockProduct,
+        regulatory_info: {
+          ...mockProduct.regulatory_info,
+          requires_prescription: true
+        }
+      };
+      component.product = prescriptionProduct;
+      fixture.detectChanges();
 
-    it('should not navigate to edit when product is null', () => {
-      component.product.set(null);
-      component.editProduct();
-      expect(routerMock.navigate).not.toHaveBeenCalled();
+      expect(component.product.regulatory_info.requires_prescription).toBe(true);
     });
   });
 
   describe('Template Rendering', () => {
-    beforeEach(() => {
-      fixture.detectChanges();
-    });
-
-    it('should display product name', () => {
+    it('should render product name', () => {
       const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain(mockProduct.name);
+      expect(compiled.textContent).toContain('Paracetamol 500mg');
     });
 
-    it('should display basic product information', () => {
+    it('should render card title', () => {
       const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain(mockProduct.sku);
-      expect(compiled.textContent).toContain(mockProduct.category);
-      expect(compiled.textContent).toContain(mockProduct.supplier_name);
+      const title = compiled.querySelector('.card-title');
+      expect(title.textContent).toContain('PRODUCTS.DETAIL_TITLE');
     });
 
-    it('should display price information', () => {
+    it('should render close button', () => {
       const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain(mockProduct.currency);
-      expect(compiled.textContent).toContain('2.50');
-      expect(compiled.textContent).toContain(mockProduct.unit_of_measure);
-    });
-
-    it('should show loading bar when loading', () => {
-      component.loading.set(true);
-      fixture.detectChanges();
-
-      const progressBar = fixture.nativeElement.querySelector('mat-progress-bar');
-      expect(progressBar).toBeTruthy();
-    });
-
-    it('should show error message when error occurs', () => {
-      const errorMessage = 'Test error';
-      component.errorMessage.set(errorMessage);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain(errorMessage);
-    });
-
-    it('should display cold chain badge when required', () => {
-      const coldChainProduct = { ...mockProduct, requires_cold_chain: true };
-      component.product.set(coldChainProduct);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain('Cadena de Frío');
-    });
-
-    it('should display prescription badge when required', () => {
-      const prescriptionProduct = {
-        ...mockProduct,
-        regulatory_info: { ...mockProduct.regulatory_info, requires_prescription: true }
-      };
-      component.product.set(prescriptionProduct);
-      fixture.detectChanges();
-
-      const compiled = fixture.nativeElement;
-      expect(compiled.textContent).toContain('Requiere Receta');
-    });
-  });
-
-  describe('Component Lifecycle', () => {
-    it('should call loadProduct on ngOnInit when ID is available', () => {
-      const loadProductSpy = jest.spyOn(component, 'loadProduct');
-      component.ngOnInit();
-      expect(loadProductSpy).toHaveBeenCalledWith(1);
+      const closeButton = compiled.querySelector('.action-buttons button');
+      expect(closeButton).toBeTruthy();
+      expect(closeButton.textContent.trim()).toBe('COMMON.CLOSE');
     });
   });
 });

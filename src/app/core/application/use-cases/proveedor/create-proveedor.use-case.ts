@@ -21,13 +21,19 @@ export class CreateProveedorUseCase {
       throw new Error('El RUC no es válido');
     }
 
-    if (!this.isValidEmail(proveedor.correoContacto)) {
+    // Email is required and must be valid
+    if (!proveedor.correoContacto || !this.isValidEmail(proveedor.correoContacto)) {
       throw new Error('El correo electrónico no es válido');
+    }
+
+    if (!proveedor.country || proveedor.country.trim().length === 0) {
+      throw new Error('El país es requerido');
     }
   }
 
   private isValidRUC(ruc: string): boolean {
-    return /^\d{11}$/.test(ruc);
+    // RUC must be between 10 and 20 digits only
+    return /^\d{10,20}$/.test(ruc);
   }
 
   private isValidEmail(email: string): boolean {

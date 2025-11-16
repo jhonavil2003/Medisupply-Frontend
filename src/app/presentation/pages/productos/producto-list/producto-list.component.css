@@ -1,3 +1,14 @@
+/* ============================================
+   ESTILOS ESPECÍFICOS SOLO PARA PRODUCTOS
+   Los estilos de tabla están en styles.scss
+   ============================================ */
+
+/* Asegurar que el container use el mismo padding que otros módulos */
+.container {
+  padding: 24px !important;
+  margin: 24px 0 !important;
+}
+
 .producto-catalog-container {
   padding: 20px;
   max-width: 1400px;
@@ -49,49 +60,95 @@
 }
 
 .header-actions button {
-  min-height: 40px;
+  margin-left: 8px;
+}
+
+.search-bar {
+  margin-bottom: 20px;
+}
+
+.search-bar mat-form-field {
+  width: 100%;
+}
+
+.filters {
+  display: flex;
+  gap: 1.5rem; /* Aumentado de 1rem a 1.5rem */
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.filters mat-form-field {
+  min-width: 180px; /* Aumentado de 150px a 180px */
+  flex: 1;
+  margin-right: 8px; /* Añadido margen adicional */
+}
+
+.filters-row {
+  display: flex;
+  gap: 1.5rem; /* Espaciado amplio entre campos */
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+
+.filters-row mat-form-field {
+  min-width: 200px; /* Ancho mínimo mayor para evitar apretamiento */
+  flex: 1;
+}
+
+.filter-button-group {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.filter-button {
+  min-width: auto;
+}
+
+/* Estilos mejorados para la sección de acciones de filtro */
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-top: 16px;
+}
+
+.filter-actions button {
+  background-color: #e3f2fd !important;
+  color: var(--color-primary) !important;
+  border-radius: 4px;
   padding: 8px 16px;
   font-weight: 500;
 }
 
-.header-actions button mat-icon {
-  margin-right: 8px;
+.filter-actions button:hover {
+  background-color: #bbdefb !important;
 }
 
-.header-actions-center button {
-  min-height: 40px;
-  padding: 8px 24px;
-  font-weight: 500;
-  font-size: 14px;
+.filter-actions button {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px !important;
+  font-size: 0.9rem !important;
+  font-weight: 500 !important;
+  transition: all 0.2s ease !important;
+  text-transform: none !important;
 }
 
-.header-actions-center button mat-icon {
-  margin-right: 8px;
+.filter-actions button:hover {
+  background: rgba(99, 102, 241, 0.12) !important;
+  border-color: rgba(99, 102, 241, 0.3) !important;
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.15);
 }
 
-.search-filters-card {
-  margin-bottom: 20px;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.search-field {
-  margin-bottom: 16px;
-}
-
-.filters-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 16px;
-  margin-bottom: 16px;
-}
-
-.filter-actions {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+.filter-actions button mat-icon {
+  margin-right: 6px !important;
+  font-size: 18px !important;
 }
 
 .results-info {
@@ -110,14 +167,7 @@
   margin-bottom: 20px;
 }
 
-.table-container {
-  overflow-x: auto;
-}
-
-.products-table {
-  width: 100%;
-}
-
+/* Específico para productos - Contenido de celdas */
 .product-name {
   display: flex;
   flex-direction: column;
@@ -143,71 +193,115 @@
   color: #2e7d32;
 }
 
-.price-cell small {
-  font-size: 11px;
+.price-cell .discount {
+  font-size: 12px;
   color: #666;
+  text-decoration: line-through;
 }
 
-.cold-icon {
-  vertical-align: middle;
-}
-
-.temp-range {
-  font-size: 12px;
-  color: #1976d2;
-  display: block;
-  margin-top: 4px;
-}
-
-mat-chip {
-  font-size: 12px;
-}
-
-.error-card {
-  background: #ffebee;
-  color: #c62828;
-  margin: 20px 0;
+.stock-cell {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.error-card mat-icon {
-  font-size: 32px;
-  width: 32px;
-  height: 32px;
+.stock-disponible {
+  color: #2e7d32;
+  font-weight: 500;
 }
 
-.no-results-card {
+.stock-bajo {
+  color: #ff9800;
+  font-weight: 500;
+}
+
+.stock-agotado {
+  color: #f44336;
+  font-weight: 500;
+}
+
+.status-badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 11px;
+  font-weight: 500;
   text-align: center;
-  padding: 40px;
+  min-width: 60px;
 }
 
-.no-results-card mat-icon {
-  font-size: 64px;
-  width: 64px;
-  height: 64px;
-  color: #999;
+.status-active {
+  color: inherit;
+  background: transparent;
 }
 
-.no-results-card h3 {
-  color: #666;
-  margin: 16px 0 8px;
+.status-inactive {
+  color: inherit;
+  background: transparent;
 }
 
-.no-results-card p {
-  color: #999;
-  margin-bottom: 24px;
+/* Específico para productos - Modal */
+.detalle-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
 }
 
+.detalle-content {
+  background: white;
+  border-radius: 8px;
+  padding: 2rem;
+  width: 90%;
+  max-width: 600px;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+}
+
+.close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+}
+
+.info-row {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 8px;
+}
+
+.info-label {
+  font-weight: 600;
+  color: #555;
+}
+
+.info-value {
+  color: #333;
+  text-align: right;
+}
+
+.detalle-content h2 {
+  margin-top: 0;
+  color: var(--color-primary);
+}
+
+/* Responsive design */
 @media (max-width: 768px) {
-  .filters-row {
-    grid-template-columns: 1fr;
-  }
-  
-  .filter-actions {
+  .filters {
     flex-direction: column;
-    gap: 12px;
-    align-items: stretch;
+  }
+
+  .header-actions {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }

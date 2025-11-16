@@ -1,9 +1,122 @@
-<h2>Mis metas de venta</h2>
-<ul>
-  @for (meta of metas(); track meta) {
-    <li>
-      <strong>{{ meta.producto }}</strong> — {{ meta.region }} — {{ meta.trimestre }}:
-      <span>{{ meta.valorObjetivo }} {{ meta.tipo === 'unidades' ? 'unidades' : 'moneda' }}</span>
-    </li>
+<!-- PRIMER DIV CONTAINER: Header y Filtros -->
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">{{ 'MY_GOALS.TITLE' | translate }}</h2>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-row">
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'GOALS.REGION' | translate }}</mat-label>
+      <mat-select [formControl]="regionControl">
+        <mat-option value="">{{ 'GOALS.ALL_REGIONS' | translate }}</mat-option>
+        @for (region of regiones; track region) {
+          <mat-option [value]="region">{{ region }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'GOALS.QUARTER' | translate }}</mat-label>
+      <mat-select [formControl]="trimestreControl">
+        <mat-option value="">{{ 'GOALS.ALL_QUARTERS' | translate }}</mat-option>
+        @for (trimestre of trimestres; track trimestre) {
+          <mat-option [value]="trimestre">{{ trimestre }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>{{ 'GOALS.TYPE' | translate }}</mat-label>
+      <mat-select [formControl]="tipoControl">
+        <mat-option value="">{{ 'GOALS.ALL_TYPES' | translate }}</mat-option>
+        @for (tipo of tipos; track tipo) {
+          <mat-option [value]="tipo">{{ getTipoDisplay(tipo) }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
+  </div>
+
+  <div class="filter-actions">
+    <button mat-button type="button" (click)="limpiarFiltros()">
+      <mat-icon>filter_list</mat-icon>
+      {{ 'GOALS.CLEAR_FILTERS' | translate }}
+    </button>
+  </div>
+</div>
+
+<!-- SEGUNDO DIV CONTAINER: Datos de las Metas -->
+<div class="container">
+  <!-- Contador de resultados -->
+  @if (!loading() && !errorMessage() && metas().length > 0) {
+    <div class="results-count">
+      {{ 'MY_GOALS.SHOWING_RESULTS' | translate: {shown: metasFiltradas().length, total: metas().length} }}
+    </div>
   }
-</ul>
+  @if (loading()) {
+    <div class="loading-container">
+      <mat-spinner></mat-spinner>
+      <p>{{ 'MY_GOALS.LOADING' | translate }}</p>
+    </div>
+  } @else if (errorMessage()) {
+    <div class="error-message">
+      <mat-icon>error</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  } @else if (metasFiltradas().length === 0 && metas().length === 0) {
+    <div class="empty-state">
+      <mat-icon>assessment</mat-icon>
+      <p>{{ 'MY_GOALS.NO_GOALS_ASSIGNED' | translate }}</p>
+    </div>
+  } @else if (metasFiltradas().length === 0 && metas().length > 0) {
+    <div class="empty-state">
+      <p>{{ 'MY_GOALS.NO_MATCHING_FILTERS' | translate }}</p>
+    </div>
+  } @else {
+    <div class="metas-grid">
+      @for (meta of metasFiltradas(); track meta.id) {
+        <mat-card class="meta-card">
+          <mat-card-content>
+            <div class="meta-header">
+              <h3>{{ getProductoDisplay(meta) }}</h3>
+              <mat-chip [class]="meta.tipo === TipoMeta.UNIDADES ? 'tipo-unidades' : 'tipo-monetario'">
+                {{ getTipoDisplay(meta.tipo) }}
+              </mat-chip>
+            </div>
+            
+            <div class="meta-details">
+              <div class="detail-item">
+                <mat-icon>place</mat-icon>
+                <span><strong>{{ 'MY_GOALS.REGION' | translate }}:</strong> {{ meta.region }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <mat-icon>calendar_today</mat-icon>
+                <span><strong>{{ 'MY_GOALS.QUARTER' | translate }}:</strong> {{ meta.trimestre }}</span>
+              </div>
+              
+              <div class="detail-item">
+                <mat-icon>track_changes</mat-icon>
+                <span><strong>{{ 'MY_GOALS.GOAL' | translate }}:</strong> {{ getValorDisplay(meta) }}</span>
+              </div>
+            </div>
+
+            <!-- Barra de progreso (placeholder - se puede conectar con ventas reales) -->
+            <div class="progress-section">
+              <div class="progress-header">
+                <span>{{ 'MY_GOALS.PROGRESS' | translate }}</span>
+                <span class="progress-value">0%</span>
+              </div>
+              <mat-progress-bar mode="determinate" [value]="0"></mat-progress-bar>
+            </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
+</div>

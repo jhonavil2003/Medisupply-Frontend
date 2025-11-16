@@ -2,13 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="utf-8">
-  <title>Mynewapp</title>
+  <title>Medisupply</title>
   <base href="/">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+  <!-- Cargar variables de entorno antes de la aplicación -->
+  <script src="assets/env.js"></script>
+  <!-- Google Maps API -->
+  <script>
+    // Cargar Google Maps API con la API key del environment
+    (function() {
+      const apiKey = window['env']?.['GOOGLE_MAPS_API_KEY'] || '';
+      if (apiKey) {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+        script.async = true;
+        script.defer = true;
+        document.head.appendChild(script);
+      }
+    })();
+  </script>
 </head>
 <body class="mat-typography">
   <app-root></app-root>

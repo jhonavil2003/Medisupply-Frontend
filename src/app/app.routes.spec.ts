@@ -80,7 +80,7 @@ describe('App Routes', () => {
     });
 
     it('should have correct number of routes', () => {
-      expect(routes.length).toBe(14);
+      expect(routes.length).toBe(32); // Actualizado: incluye rutas de logística (ordenes, confirmar-ordenes, generar-rutas, rutas, rutas/:id, rutas/:id/mapa)
     });
   });
 
@@ -130,7 +130,8 @@ describe('App Routes', () => {
     it('should have vendedor-list route', () => {
       const vendedorRoute = routes.find(route => route.path === 'vendedor-list');
       expect(vendedorRoute).toBeDefined();
-      expect(vendedorRoute?.loadComponent).toBeDefined();
+      // Esta es una ruta redirect, no tiene loadComponent
+      expect(vendedorRoute?.redirectTo).toBe('vendedores');
     });
 
     it('should have producto-upload route', () => {
@@ -145,16 +146,22 @@ describe('App Routes', () => {
       expect(proveedorUploadRoute?.loadComponent).toBeDefined();
     });
 
+    it('should have proveedores/upload route', () => {
+      const proveedorUploadRoute = routes.find(route => route.path === 'proveedores/upload');
+      expect(proveedorUploadRoute).toBeDefined();
+      expect(proveedorUploadRoute?.loadComponent).toBeDefined();
+    });
+
+    it('should have proveedores/upload/historial route', () => {
+      const proveedorHistorialRoute = routes.find(route => route.path === 'proveedores/upload/historial');
+      expect(proveedorHistorialRoute).toBeDefined();
+      expect(proveedorHistorialRoute?.loadComponent).toBeDefined();
+    });
+
     it('should have producto-localizacion route', () => {
       const localizacionRoute = routes.find(route => route.path === 'producto-localizacion');
       expect(localizacionRoute).toBeDefined();
       expect(localizacionRoute?.loadComponent).toBeDefined();
-    });
-
-    it('should have rutas-entrega route', () => {
-      const rutasRoute = routes.find(route => route.path === 'rutas-entrega');
-      expect(rutasRoute).toBeDefined();
-      expect(rutasRoute?.loadComponent).toBeDefined();
     });
 
     it('should have metas-list route', () => {
@@ -173,8 +180,13 @@ describe('App Routes', () => {
   describe('Lazy Loading Configuration', () => {
     it('should have loadComponent for all routes', () => {
       routes.forEach(route => {
-        expect(route.loadComponent).toBeDefined();
-        expect(typeof route.loadComponent).toBe('function');
+        // Skip redirect routes
+        if (route.redirectTo) {
+          expect(route.loadComponent).toBeUndefined();
+        } else {
+          expect(route.loadComponent).toBeDefined();
+          expect(typeof route.loadComponent).toBe('function');
+        }
       });
     });
 
@@ -210,7 +222,6 @@ describe('App Routes', () => {
         'producto-upload',
         'proveedor-upload',
         'producto-localizacion',
-        'rutas-entrega',
         'metas-list',
         'informe-ventas'
       ];
@@ -227,9 +238,12 @@ describe('App Routes', () => {
     it('should have valid route objects', () => {
       routes.forEach(route => {
         expect(route).toHaveProperty('path');
-        expect(route).toHaveProperty('loadComponent');
+        // Skip redirect routes
+        if (!route.redirectTo) {
+          expect(route).toHaveProperty('loadComponent');
+          expect(typeof route.loadComponent).toBe('function');
+        }
         expect(typeof route.path).toBe('string');
-        expect(typeof route.loadComponent).toBe('function');
       });
     });
 
@@ -254,9 +268,12 @@ describe('App Routes', () => {
     it('should have consistent route structure', () => {
       routes.forEach((route, index) => {
         expect(route.path).toBeDefined();
-        expect(route.loadComponent).toBeDefined();
+        // Skip redirect routes
+        if (!route.redirectTo) {
+          expect(route.loadComponent).toBeDefined();
+          expect(typeof route.loadComponent).toBe('function');
+        }
         expect(typeof route.path).toBe('string');
-        expect(typeof route.loadComponent).toBe('function');
       });
     });
   });
@@ -268,14 +285,16 @@ describe('App Routes', () => {
         const path = route.path;
         expect(typeof path).toBe('string');
 
-        // Access loadComponent property
+        // Access loadComponent property (skip redirect routes)
         const loadComponent = route.loadComponent;
-        expect(typeof loadComponent).toBe('function');
+        if (!route.redirectTo) {
+          expect(typeof loadComponent).toBe('function');
 
-        // Call loadComponent to ensure it returns a promise
-        if (loadComponent) {
-          const result = loadComponent();
-          expect(result).toHaveProperty('then');
+          // Call loadComponent to ensure it returns a promise
+          if (loadComponent) {
+            const result = loadComponent();
+            expect(result).toBeInstanceOf(Promise);
+          }
         }
       });
     });
@@ -284,9 +303,10 @@ describe('App Routes', () => {
       // Test array methods
       expect(routes.length).toBeGreaterThan(0);
       expect(routes.map(r => r.path)).toContain('');
-      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(2);
+      expect(routes.filter(r => r.path && r.path.includes(':')).length).toBe(9); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit, ordenes/:id, rutas/:id, rutas/:id/mapa
       expect(routes.some(r => r.path === 'dashboard-admin')).toBe(true);
-      expect(routes.every(r => r.loadComponent !== undefined)).toBe(true);
+      // Excluir redirect routes de la validación de loadComponent
+      expect(routes.filter(r => !r.redirectTo).every(r => r.loadComponent !== undefined)).toBe(true);
     });
 
     it('should handle edge cases in route configuration', () => {
@@ -296,7 +316,7 @@ describe('App Routes', () => {
 
       // Test parameterized paths
       const paramRoutes = routes.filter(r => r.path && r.path.includes(':'));
-      expect(paramRoutes.length).toBe(2);
+      expect(paramRoutes.length).toBe(9); // producto/:id, vendedor/:id/detail, vendedor/:id/edit, metas/:id, metas/:id/edit, ordenes/:id, rutas/:id, rutas/:id/mapa
 
       // Test loadComponent functions
       routes.forEach(route => {

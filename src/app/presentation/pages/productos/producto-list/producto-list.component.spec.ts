@@ -1,7 +1,10 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { ActivatedRoute } from '@angular/router';
 import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 // Material Modules
 import { MatTableModule } from '@angular/material/table';
@@ -16,6 +19,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 
 // Component and dependencies
 import { ProductoListComponent } from './producto-list.component';
@@ -25,7 +29,6 @@ import { DeleteProductUseCase } from '../../../../core/application/use-cases/pro
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 import { ProductoEntity, ProductListResponse, Pagination } from '../../../../core/domain/entities/producto.entity';
-import { Router } from '@angular/router';
 
 describe('ProductoListComponent', () => {
   let component: ProductoListComponent;
@@ -35,7 +38,7 @@ describe('ProductoListComponent', () => {
   let deleteProductUseCaseMock: jest.Mocked<DeleteProductUseCase>;
   let notificationServiceMock: jest.Mocked<NotificationService>;
   let confirmDialogServiceMock: jest.Mocked<ConfirmDialogService>;
-  let routerMock: jest.Mocked<Router>;
+  let dialogMock: jest.Mocked<MatDialog>;
 
   // Mock data
   const mockProducts: ProductoEntity[] = [
@@ -120,8 +123,8 @@ describe('ProductoListComponent', () => {
       confirm: jest.fn().mockReturnValue(of(true))
     } as any;
 
-    routerMock = {
-      navigate: jest.fn()
+    dialogMock = {
+      open: jest.fn()
     } as any;
 
     await TestBed.configureTestingModule({
@@ -140,7 +143,8 @@ describe('ProductoListComponent', () => {
         MatProgressBarModule,
         MatChipsModule,
         MatCheckboxModule,
-        MatTooltipModule
+        MatTooltipModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: GetAllProductosUseCase, useValue: getAllProductosUseCaseMock },
@@ -148,7 +152,8 @@ describe('ProductoListComponent', () => {
         { provide: DeleteProductUseCase, useValue: deleteProductUseCaseMock },
         { provide: NotificationService, useValue: notificationServiceMock },
         { provide: ConfirmDialogService, useValue: confirmDialogServiceMock },
-        { provide: Router, useValue: routerMock }
+        { provide: MatDialog, useValue: dialogMock },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } }
       ]
     }).compileComponents();
 
@@ -386,24 +391,6 @@ describe('ProductoListComponent', () => {
       };
       expect(component.getTemperatureRange(productWithPartialTemp)).toBeNull();
     });
-
-    it('should handle verDetalle method', () => {
-      component.verDetalle(mockProducts[0]);
-      
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-detail', mockProducts[0].id]);
-    });
-
-    it('should handle editarProducto method', () => {
-      component.editarProducto(mockProducts[0]);
-      
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-edit', mockProducts[0].id]);
-    });
-
-    it('should handle navigateToCreate method', () => {
-      component.navigateToCreate();
-      
-      expect(routerMock.navigate).toHaveBeenCalledWith(['/producto-create']);
-    });
   });
 
   describe('Form Validation', () => {
@@ -449,7 +436,7 @@ describe('ProductoListComponent', () => {
       expect(confirmDialogServiceMock.confirmDelete).toHaveBeenCalledWith(mockProducts[0].name);
       expect(deleteProductUseCaseMock.execute).toHaveBeenCalledWith(mockProducts[0].id);
       expect(notificationServiceMock.success).toHaveBeenCalledWith(
-        `Producto "${mockProducts[0].name}" eliminado correctamente`
+        'PRODUCTS.DELETE_SUCCESS'
       );
     });
 
@@ -470,9 +457,7 @@ describe('ProductoListComponent', () => {
       
       await component.eliminarProducto(mockProducts[0]);
       
-      expect(notificationServiceMock.error).toHaveBeenCalledWith(
-        `Error al eliminar el producto: ${errorMessage}`
-      );
+      expect(notificationServiceMock.error).toHaveBeenCalledWith('PRODUCTS.DELETE_ERROR');
     });
 
     it('should reload products after successful deletion', async () => {

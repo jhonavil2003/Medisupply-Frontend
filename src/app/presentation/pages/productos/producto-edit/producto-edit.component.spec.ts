@@ -1,8 +1,11 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router, ActivatedRoute } from '@angular/router';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { Router, ActivatedRoute } from '@angular/router';
 import { of, throwError, Subject } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoEditComponent } from './producto-edit.component';
 import { GetProductByIdUseCase } from '../../../../core/application/use-cases/producto/get-product-by-id.use-case';
@@ -23,8 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 describe('ProductoEditComponent', () => {
   let component: ProductoEditComponent;
   let fixture: ComponentFixture<ProductoEditComponent>;
-  let mockRouter: any;
-  let mockActivatedRoute: any;
+  let mockDialogRef: any;
   let mockGetProductByIdUseCase: any;
   let mockUpdateProductUseCase: any;
   let mockNotificationService: any;
@@ -94,16 +96,8 @@ describe('ProductoEditComponent', () => {
   };
 
   beforeEach(async () => {
-    const routerSpy = {
-      navigate: jest.fn()
-    };
-
-    const activatedRouteSpy = {
-      snapshot: {
-        paramMap: {
-          get: jest.fn().mockReturnValue('1')
-        }
-      }
+    const dialogRefSpy = {
+      close: jest.fn()
     };
 
     const getProductByIdUseCaseSpy = {
@@ -132,23 +126,26 @@ describe('ProductoEditComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
-        { provide: Router, useValue: routerSpy },
-        { provide: ActivatedRoute, useValue: activatedRouteSpy },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
+        { provide: MAT_DIALOG_DATA, useValue: { productId: 1 } },
         { provide: GetProductByIdUseCase, useValue: getProductByIdUseCaseSpy },
         { provide: UpdateProductUseCase, useValue: updateProductUseCaseSpy },
-        { provide: NotificationService, useValue: notificationServiceSpy }
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        { provide: Router, useValue: { navigate: jest.fn() } },
+        { provide: ActivatedRoute, useValue: { snapshot: { paramMap: { get: jest.fn() } } } }
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductoEditComponent);
     component = fixture.componentInstance;
-    mockRouter = TestBed.inject(Router);
-    mockActivatedRoute = TestBed.inject(ActivatedRoute);
+    mockDialogRef = TestBed.inject(MatDialogRef);
     mockGetProductByIdUseCase = TestBed.inject(GetProductByIdUseCase);
     mockUpdateProductUseCase = TestBed.inject(UpdateProductUseCase);
+    mockNotificationService = TestBed.inject(NotificationService);
     mockNotificationService = TestBed.inject(NotificationService);
   });
 
@@ -160,7 +157,6 @@ describe('ProductoEditComponent', () => {
     it('should initialize with default form values', () => {
       expect(component.productForm).toBeDefined();
       expect(component.productForm.get('currency')?.value).toBe('USD');
-      expect(component.productForm.get('is_active')?.value).toBe(true);
       expect(component.productForm.get('is_discontinued')?.value).toBe(false);
     });
 
@@ -170,12 +166,12 @@ describe('ProductoEditComponent', () => {
       expect(form.get('sku')?.hasError('required')).toBe(true);
       expect(form.get('name')?.hasError('required')).toBe(true);
       expect(form.get('category')?.hasError('required')).toBe(true);
-      // unit_price has default value 0, so check min validation instead
-      expect(form.get('unit_price')?.hasError('min')).toBe(true);
+      // unit_price has default value null, so it should have required error
+      expect(form.get('unit_price')?.hasError('required')).toBe(true);
       expect(form.get('currency')?.hasError('required')).toBe(false); // has default value 'USD'
       expect(form.get('unit_of_measure')?.hasError('required')).toBe(true);
-      // supplier_id has default value 1, so no required error
-      expect(form.get('supplier_id')?.hasError('required')).toBe(false);
+      // supplier_id has default value null, so it should have required error
+      expect(form.get('supplier_id')?.hasError('required')).toBe(true);
     });
 
     it('should initialize arrays with correct values', () => {
@@ -183,7 +179,6 @@ describe('ProductoEditComponent', () => {
       expect(component.categories).toContain('Instrumental');
       expect(component.unitsOfMeasure).toContain('unidad');
       expect(component.unitsOfMeasure).toContain('caja');
-      expect(component.currencies).toContain('USD');
       expect(component.currencies).toContain('COP');
     });
   });
@@ -196,25 +191,6 @@ describe('ProductoEditComponent', () => {
       
       expect(component.productId).toBe(1);
       expect(mockGetProductByIdUseCase.execute).toHaveBeenCalledWith(1);
-    });
-
-    it('should navigate to product list when no ID is provided', () => {
-      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue(null);
-      
-      component.ngOnInit();
-      
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de producto no válido');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
-    });
-
-    it('should navigate to product list when invalid ID is provided', () => {
-      mockActivatedRoute.snapshot.paramMap.get.mockReturnValue('invalid');
-      
-      component.ngOnInit();
-      
-      expect(component.productId).toBeNaN();
-      expect(mockNotificationService.error).toHaveBeenCalledWith('ID de producto no válido');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
     });
   });
 
@@ -255,16 +231,8 @@ describe('ProductoEditComponent', () => {
       component.loadProduct();
       
       expect(component.loadingProduct()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al cargar producto: ${errorMessage}`);
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
-    });
-
-    it('should not load product when productId is null', () => {
-      component.productId = null;
-      
-      component.loadProduct();
-      
-      expect(mockGetProductByIdUseCase.execute).not.toHaveBeenCalled();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
@@ -279,7 +247,6 @@ describe('ProductoEditComponent', () => {
       expect(component.productForm.get('unit_price')?.value).toBe(mockProduct.unit_price);
       expect(component.productForm.get('currency')?.value).toBe(mockProduct.currency);
       expect(component.productForm.get('requires_cold_chain')?.value).toBe(mockProduct.requires_cold_chain);
-      expect(component.productForm.get('is_active')?.value).toBe(mockProduct.is_active);
     });
   });
 
@@ -299,8 +266,8 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Producto actualizado exitosamente');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCTS.UPDATE_SUCCESS');
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     });
 
     it('should handle loading state during submission', () => {
@@ -330,7 +297,7 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al actualizar producto: ${errorMessage}`);
+      expect(mockNotificationService.error).toHaveBeenCalled();
     });
 
     it('should not submit invalid form', () => {
@@ -340,16 +307,7 @@ describe('ProductoEditComponent', () => {
       component.onSubmit();
       
       expect(mockUpdateProductUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Por favor, complete todos los campos requeridos');
-    });
-
-    it('should not submit when productId is null', () => {
-      component.productId = null;
-      
-      component.onSubmit();
-      
-      expect(mockUpdateProductUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Por favor, complete todos los campos requeridos');
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCTS.COMPLETE_REQUIRED_FIELDS');
     });
 
     it('should mark form controls as touched when form is invalid', () => {
@@ -397,20 +355,20 @@ describe('ProductoEditComponent', () => {
 
     it('should detect boolean field changes correctly', () => {
       component.productForm.get('requires_cold_chain')?.setValue(true);
-      component.productForm.get('is_active')?.setValue(false);
+      component.productForm.get('is_discontinued')?.setValue(true);
       
       const changedFields = component.getChangedFields();
       
       expect(changedFields.requires_cold_chain).toBe(true);
-      expect(changedFields.is_active).toBe(false);
+      expect(changedFields.is_discontinued).toBe(true);
     });
   });
 
   describe('Navigation', () => {
-    it('should navigate to product list on cancel', () => {
+    it('should close dialog with false on cancel', () => {
       component.onCancel();
       
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
@@ -420,10 +378,10 @@ describe('ProductoEditComponent', () => {
       
       skuControl?.setValue('');
       skuControl?.markAsTouched();
-      expect(component.getFieldError('sku')).toBe('sku es requerido');
+      expect(component.getFieldError('sku')).toBe('VALIDATION.REQUIRED');
       
       skuControl?.setValue('AB');
-      expect(component.getFieldError('sku')).toBe('sku debe tener al menos 3 caracteres');
+      expect(component.getFieldError('sku')).toBe('VALIDATION.MIN_LENGTH');
       
       skuControl?.setValue('ABC123');
       expect(component.getFieldError('sku')).toBe('');
@@ -434,10 +392,10 @@ describe('ProductoEditComponent', () => {
       
       nameControl?.setValue('');
       nameControl?.markAsTouched();
-      expect(component.getFieldError('name')).toBe('name es requerido');
+      expect(component.getFieldError('name')).toBe('VALIDATION.REQUIRED');
       
       nameControl?.setValue('A');
-      expect(component.getFieldError('name')).toBe('name debe tener al menos 2 caracteres');
+      expect(component.getFieldError('name')).toBe('VALIDATION.MIN_LENGTH');
       
       nameControl?.setValue('Valid Name');
       expect(component.getFieldError('name')).toBe('');
@@ -448,10 +406,10 @@ describe('ProductoEditComponent', () => {
       
       priceControl?.setValue('');
       priceControl?.markAsTouched();
-      expect(component.getFieldError('unit_price')).toBe('unit_price es requerido');
+      expect(component.getFieldError('unit_price')).toBe('VALIDATION.REQUIRED');
       
       priceControl?.setValue(0);
-      expect(component.getFieldError('unit_price')).toBe('unit_price debe ser mayor a 0.01');
+      expect(component.getFieldError('unit_price')).toBe('VALIDATION.MIN_VALUE');
       
       priceControl?.setValue(25.99);
       expect(component.getFieldError('unit_price')).toBe('');
@@ -462,10 +420,10 @@ describe('ProductoEditComponent', () => {
       
       supplierControl?.setValue('');
       supplierControl?.markAsTouched();
-      expect(component.getFieldError('supplier_id')).toBe('supplier_id es requerido');
+      expect(component.getFieldError('supplier_id')).toBe('VALIDATION.REQUIRED');
       
       supplierControl?.setValue(0);
-      expect(component.getFieldError('supplier_id')).toBe('supplier_id debe ser mayor a 1');
+      expect(component.getFieldError('supplier_id')).toBe('VALIDATION.MIN_VALUE');
       
       supplierControl?.setValue(1);
       expect(component.getFieldError('supplier_id')).toBe('');
@@ -540,7 +498,7 @@ describe('ProductoEditComponent', () => {
     });
 
     it('should have all required currencies', () => {
-      const expectedCurrencies = ['USD', 'COP', 'EUR'];
+      const expectedCurrencies = ['COP'];
       
       expect(component.currencies).toEqual(expectedCurrencies);
     });

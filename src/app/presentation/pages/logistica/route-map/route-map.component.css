@@ -1,0 +1,419 @@
+/* Contenedor Principal */
+.route-map-container {
+  display: flex;
+  flex-direction: column;
+  height: calc(100vh - 64px);
+  background: #f5f5f5;
+}
+
+/* Loading y Error */
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 400px;
+  gap: 16px;
+  background: white;
+  border-radius: 8px;
+  margin: 16px;
+  padding: 40px;
+}
+
+.loading-container p {
+  font-size: 16px;
+  color: #666;
+  margin: 0;
+}
+
+.error-card {
+  margin: 24px auto;
+  max-width: 600px;
+}
+
+.error-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.error-content mat-icon {
+  font-size: 48px;
+  width: 48px;
+  height: 48px;
+}
+
+.error-content h3 {
+  margin: 0;
+  font-size: 20px;
+  color: #333;
+}
+
+.error-content p {
+  margin: 0;
+  color: #666;
+}
+
+/* Header */
+.map-header {
+  background: white;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+  flex-shrink: 0;
+}
+
+.header-content {
+  padding: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.back-button {
+  flex-shrink: 0;
+}
+
+.route-info {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.route-title-section {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex: 1;
+}
+
+.route-icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: #1976d2;
+  flex-shrink: 0;
+}
+
+.route-title-section h1 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #1976d2;
+  line-height: 1.2;
+}
+
+.route-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 0 0;
+  color: rgba(0, 0, 0, 0.6);
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+
+.small-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+}
+
+.separator {
+  color: rgba(0, 0, 0, 0.3);
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-shrink: 0;
+}
+
+/* Map Wrapper */
+.map-wrapper {
+  flex: 1;
+  position: relative;
+  overflow: hidden;
+  margin: 0;
+  min-height: 0;
+}
+
+.map-wrapper google-map {
+  width: 100%;
+  height: 100%;
+}
+
+/* Ensure directions renderer is visible */
+.map-wrapper ::ng-deep .gm-style .gm-style-iw-c {
+  padding: 0 !important;
+}
+
+.map-wrapper ::ng-deep .gm-style .gm-style-iw-d {
+  overflow: auto !important;
+  max-height: 400px;
+}
+
+/* Info Window Styling */
+.info-window-content {
+  padding: 12px;
+  min-width: 250px;
+  max-width: 300px;
+}
+
+.info-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.stop-number {
+  background: #1976d2;
+  color: white;
+  padding: 4px 12px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.stop-status-chip-small {
+  font-size: 11px;
+  height: 24px;
+}
+
+.info-window-content h3 {
+  margin: 8px 0;
+  font-size: 16px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.info-details {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin: 12px 0;
+}
+
+.info-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #666;
+  font-size: 13px;
+}
+
+.info-row mat-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #1976d2;
+}
+
+.info-orders {
+  background: #f8f9fa;
+  border-radius: 6px;
+  padding: 8px;
+  margin: 12px 0;
+}
+
+.orders-title {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 8px;
+  color: #1976d2;
+  font-weight: 600;
+  font-size: 13px;
+}
+
+.orders-title mat-icon {
+  font-size: 18px;
+  width: 18px;
+  height: 18px;
+}
+
+.orders-list-compact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.order-item-small {
+  background: white;
+  border-radius: 4px;
+  padding: 4px 8px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  border: 1px solid #e0e0e0;
+  font-size: 12px;
+}
+
+.order-num {
+  font-weight: 600;
+  color: #212121;
+}
+
+.priority-high-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #f44336;
+}
+
+.cold-chain-icon {
+  font-size: 16px;
+  width: 16px;
+  height: 16px;
+  color: #2196f3;
+}
+
+.close-info-btn {
+  width: 100%;
+  margin-top: 8px;
+}
+
+/* Legend */
+.map-legend {
+  position: absolute;
+  bottom: 24px;
+  right: 24px;
+  background: white;
+  border-radius: 8px;
+  padding: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 5;
+  min-width: 150px;
+}
+
+.map-legend h3 {
+  margin: 0 0 12px 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #212121;
+}
+
+.legend-items {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.legend-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 13px;
+  color: #666;
+}
+
+.legend-marker {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  border: 2px solid white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+  flex-shrink: 0;
+}
+
+.legend-marker.start {
+  background: #4caf50;
+}
+
+.legend-marker.middle {
+  background: #1976d2;
+}
+
+.legend-marker.end {
+  background: #f44336;
+}
+
+.legend-line {
+  width: 24px;
+  height: 4px;
+  background: #1976d2;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .route-map-container {
+    height: calc(100vh - 56px);
+  }
+
+  .header-content {
+    padding: 12px;
+  }
+
+  .route-info {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .route-title-section {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+
+  .route-title-section h1 {
+    font-size: 20px;
+  }
+
+  .header-actions {
+    width: 100%;
+    justify-content: space-between;
+  }
+
+  .map-legend {
+    bottom: 12px;
+    right: 12px;
+    padding: 12px;
+    min-width: 120px;
+  }
+
+  .map-legend h3 {
+    font-size: 12px;
+  }
+
+  .legend-items {
+    gap: 6px;
+  }
+
+  .legend-item {
+    font-size: 11px;
+  }
+
+  .legend-marker {
+    width: 20px;
+    height: 20px;
+  }
+
+  .legend-line {
+    width: 20px;
+    height: 3px;
+  }
+}
+
+@media (max-width: 480px) {
+  .route-title-section h1 {
+    font-size: 18px;
+  }
+
+  .route-meta {
+    font-size: 12px;
+  }
+
+  .info-window-content {
+    min-width: 200px;
+    padding: 10px;
+  }
+}

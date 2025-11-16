@@ -15,6 +15,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ProductoEntity, ProductQueryParams, Pagination } from '../../../../core/domain/entities/producto.entity';
@@ -23,6 +25,9 @@ import { SearchProductosUseCase } from '../../../../core/application/use-cases/p
 import { DeleteProductUseCase } from '../../../../core/application/use-cases/producto/delete-product.use-case';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
+import { ProductoCreateComponent } from '../producto-create/producto-create.component';
+import { ProductoEditComponent } from '../producto-edit/producto-edit.component';
+import { ProductoDetailComponent } from '../producto-detail/producto-detail.component';
 
 @Component({
   selector: 'app-producto-list',
@@ -43,7 +48,8 @@ import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.se
     MatProgressBarModule,
     MatChipsModule,
     MatCheckboxModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
@@ -55,6 +61,8 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   private notify = inject(NotificationService);
   private confirmDialog = inject(ConfirmDialogService);
   private router = inject(Router);
+  private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
 
   products = signal<ProductoEntity[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -190,15 +198,46 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   }
 
   verDetalle(product: ProductoEntity): void {
-    this.router.navigate(['/producto-detail', product.id]);
+    this.dialog.open(ProductoDetailComponent, {
+      width: '1000px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: product
+    });
   }
 
   editarProducto(product: ProductoEntity): void {
-    this.router.navigate(['/producto-edit', product.id]);
+    const dialogRef = this.dialog.open(ProductoEditComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true,
+      data: { productId: product.id }
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Recargar la lista después de editar
+        this.loadProducts();
+      }
+    });
   }
 
   navigateToCreate(): void {
-    this.router.navigate(['/producto-create']);
+    const dialogRef = this.dialog.open(ProductoCreateComponent, {
+      width: '900px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result) {
+        // Recargar la lista después de crear
+        this.loadProducts();
+      }
+    });
   }
 
   async eliminarProducto(product: ProductoEntity): Promise<void> {
@@ -211,12 +250,12 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
         .subscribe({
           next: () => {
             this.loading.set(false);
-            this.notify.success(`Producto "${product.name}" eliminado correctamente`);
+            this.notify.success(this.translate.instant('PRODUCTS.DELETE_SUCCESS', { name: product.name }));
             this.loadProducts(this.pagination()?.page || 1);
           },
           error: (error) => {
             this.loading.set(false);
-            this.notify.error(`Error al eliminar el producto: ${error.message}`);
+            this.notify.error(this.translate.instant('PRODUCTS.DELETE_ERROR', { error: error.message }));
           }
         });
     }

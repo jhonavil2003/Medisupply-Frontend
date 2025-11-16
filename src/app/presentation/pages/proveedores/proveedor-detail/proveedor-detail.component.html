@@ -1,0 +1,157 @@
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      {{ 'SUPPLIERS.DETAIL_TITLE' | translate }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="detail-grid">
+      <!-- Información General -->
+      <div class="detail-section">
+        <h3><mat-icon>business</mat-icon> {{ 'SUPPLIERS.GENERAL_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (proveedor.id) {
+          <div class="detail-row">
+            <mat-label>ID:</mat-label>
+            <span class="value">{{ proveedor.id }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.BUSINESS_NAME' | translate }}:</mat-label>
+          <span class="value">{{ proveedor.razonSocial }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.RUC' | translate }}:</mat-label>
+          <span class="value">{{ proveedor.ruc }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.STATUS' | translate }}:</mat-label>
+          <mat-chip [class]="proveedor.estado === 'Activo' ? 'status-active' : 'status-inactive'">
+            {{ (proveedor.estado === 'Activo' ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
+          </mat-chip>
+        </div>
+
+        @if (proveedor.country) {
+          <div class="detail-row">
+            <mat-label>{{ 'SUPPLIERS.COUNTRY' | translate }}:</mat-label>
+            <span class="value">{{ proveedor.country }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Contacto -->
+      <div class="detail-section">
+        <h3><mat-icon>contact_phone</mat-icon> {{ 'SUPPLIERS.CONTACT_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.PHONE' | translate }}:</mat-label>
+          <span class="value">{{ proveedor.telefono }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.EMAIL' | translate }}:</mat-label>
+          <span class="value">{{ proveedor.correoContacto }}</span>
+        </div>
+
+        @if (proveedor.website) {
+          <div class="detail-row">
+            <mat-label>{{ 'SUPPLIERS.WEBSITE' | translate }}:</mat-label>
+            <span class="value">{{ proveedor.website }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Dirección (si existe) -->
+      @if (proveedor.addressLine1 || proveedor.city || proveedor.state) {
+        <div class="detail-section">
+          <h3><mat-icon>location_on</mat-icon> {{ 'SUPPLIERS.ADDRESS_INFO' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          @if (proveedor.addressLine1) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.ADDRESS' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.addressLine1 }}</span>
+            </div>
+          }
+
+          @if (proveedor.city) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.CITY' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.city }}</span>
+            </div>
+          }
+
+          @if (proveedor.state) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.STATE' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.state }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Información Financiera (si existe) -->
+      @if (proveedor.paymentTerms || proveedor.creditLimit || proveedor.currency) {
+        <div class="detail-section">
+          <h3><mat-icon>payments</mat-icon> {{ 'SUPPLIERS.FINANCIAL_INFO' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          @if (proveedor.paymentTerms) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.PAYMENT_TERMS' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.paymentTerms }}</span>
+            </div>
+          }
+
+          @if (proveedor.creditLimit !== undefined && proveedor.creditLimit !== null) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.CREDIT_LIMIT' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.creditLimit | number:'1.2-2' }}</span>
+            </div>
+          }
+
+          @if (proveedor.currency) {
+            <div class="detail-row">
+              <mat-label>{{ 'SUPPLIERS.CURRENCY' | translate }}:</mat-label>
+              <span class="value">{{ proveedor.currency }}</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Certificaciones -->
+      <div class="detail-section">
+        <h3><mat-icon>verified</mat-icon> {{ 'SUPPLIERS.CERTIFICATIONS' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        <div class="detail-row">
+          <mat-label>{{ 'SUPPLIERS.CERTIFICATIONS' | translate }}:</mat-label>
+          <div class="value">
+            @if (proveedor.certificacionesVigentes && proveedor.certificacionesVigentes.length > 0) {
+              <div class="certificaciones-list">
+                @for (cert of proveedor.certificacionesVigentes; track cert) {
+                  <mat-chip class="cert-chip">{{ cert }}</mat-chip>
+                }
+              </div>
+            } @else {
+              <span class="no-data">{{ 'SUPPLIERS.NO_CERTIFICATIONS' | translate }}</span>
+            }
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="cerrar()">
+        {{ 'COMMON.CLOSE' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

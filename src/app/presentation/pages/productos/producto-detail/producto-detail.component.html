@@ -1,0 +1,246 @@
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      {{ 'PRODUCTS.DETAIL_TITLE' | translate }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="detail-grid">
+      <!-- Información Básica -->
+      <div class="detail-section">
+        <h3><mat-icon>info</mat-icon> {{ 'PRODUCTS.BASIC_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (product.id) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.ID' | translate }}:</mat-label>
+            <span class="value">{{ product.id }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.NAME' | translate }}:</mat-label>
+          <span class="value">{{ product.name }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.SKU' | translate }}:</mat-label>
+          <span class="value">{{ product.sku }}</span>
+        </div>
+
+        @if (product.barcode) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.BARCODE' | translate }}:</mat-label>
+            <span class="value">{{ product.barcode }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.CATEGORY' | translate }}:</mat-label>
+          <span class="value">{{ product.category }}</span>
+        </div>
+
+        @if (product.subcategory) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.SUBCATEGORY' | translate }}:</mat-label>
+            <span class="value">{{ product.subcategory }}</span>
+          </div>
+        }
+
+        @if (product.description) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.DESCRIPTION' | translate }}:</mat-label>
+            <span class="value">{{ product.description }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.STATUS' | translate }}:</mat-label>
+          <mat-chip [class]="product.is_active ? 'status-active' : 'status-inactive'">
+            {{ (product.is_active ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
+          </mat-chip>
+        </div>
+      </div>
+
+      <!-- Información de Precios -->
+      <div class="detail-section">
+        <h3><mat-icon>attach_money</mat-icon> {{ 'PRODUCTS.PRICING_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.UNIT_PRICE' | translate }}:</mat-label>
+          <span class="value price-highlight">{{ product.currency }} {{ product.unit_price | number:'1.2-2' }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.UNIT_OF_MEASURE' | translate }}:</mat-label>
+          <span class="value">{{ product.unit_of_measure }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.CURRENCY' | translate }}:</mat-label>
+          <span class="value">{{ product.currency }}</span>
+        </div>
+      </div>
+
+      <!-- Proveedor y Fabricación -->
+      <div class="detail-section">
+        <h3><mat-icon>business</mat-icon> {{ 'PRODUCTS.SUPPLIER_AND_MANUFACTURING' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (product.supplier_name) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.SUPPLIER' | translate }}:</mat-label>
+            <span class="value">{{ product.supplier_name }}</span>
+          </div>
+        }
+
+        @if (product.manufacturer) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.MANUFACTURER' | translate }}:</mat-label>
+            <span class="value">{{ product.manufacturer }}</span>
+          </div>
+        }
+
+        @if (product.country_of_origin) {
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.COUNTRY_OF_ORIGIN' | translate }}:</mat-label>
+            <span class="value">{{ product.country_of_origin }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Condiciones de Almacenamiento -->
+      @if (product.storage_conditions) {
+        <div class="detail-section">
+          <h3><mat-icon>thermostat</mat-icon> {{ 'PRODUCTS.STORAGE_CONDITIONS' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.COLD_CHAIN' | translate }}:</mat-label>
+            <mat-chip [class]="product.requires_cold_chain ? 'requires-cold-chain' : 'no-cold-chain'">
+              {{ (product.requires_cold_chain ? 'PRODUCTS.COLD_CHAIN_REQUIRED' : 'PRODUCTS.COLD_CHAIN_NOT_REQUIRED') | translate }}
+            </mat-chip>
+          </div>
+
+          @if (getTemperatureRange()) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.TEMPERATURE' | translate }}:</mat-label>
+              <span class="value">{{ getTemperatureRange() }}</span>
+            </div>
+          }
+
+          @if (product.storage_conditions.humidity_max) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.MAXIMUM_HUMIDITY' | translate }}:</mat-label>
+              <span class="value">{{ product.storage_conditions.humidity_max }}%</span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Información Regulatoria -->
+      @if (product.regulatory_info) {
+        <div class="detail-section">
+          <h3><mat-icon>gavel</mat-icon> {{ 'PRODUCTS.REGULATORY_INFO' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          @if (product.regulatory_info.sanitary_registration) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.SANITARY_REGISTRATION' | translate }}:</mat-label>
+              <span class="value">{{ product.regulatory_info.sanitary_registration }}</span>
+            </div>
+          }
+
+          @if (product.regulatory_info.regulatory_class) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.REGULATORY_CLASS' | translate }}:</mat-label>
+              <span class="value">{{ product.regulatory_info.regulatory_class }}</span>
+            </div>
+          }
+
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.REQUIRES_PRESCRIPTION' | translate }}:</mat-label>
+            <mat-chip [class]="product.regulatory_info.requires_prescription ? 'requires-prescription' : 'no-prescription'">
+              {{ (product.regulatory_info.requires_prescription ? 'PRODUCTS.PRESCRIPTION_YES' : 'PRODUCTS.PRESCRIPTION_NO') | translate }}
+            </mat-chip>
+          </div>
+        </div>
+      }
+
+      <!-- Dimensiones Físicas -->
+      @if (product.physical_dimensions) {
+        <div class="detail-section">
+          <h3><mat-icon>straighten</mat-icon> {{ 'PRODUCTS.PHYSICAL_DIMENSIONS' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          @if (product.physical_dimensions.weight_kg) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.WEIGHT' | translate }}:</mat-label>
+              <span class="value">{{ product.physical_dimensions.weight_kg }} kg</span>
+            </div>
+          }
+
+          @if (product.physical_dimensions.length_cm && product.physical_dimensions.width_cm && product.physical_dimensions.height_cm) {
+            <div class="detail-row">
+              <mat-label>{{ 'PRODUCTS.DIMENSIONS' | translate }}:</mat-label>
+              <span class="value">
+                {{ product.physical_dimensions.length_cm }} × 
+                {{ product.physical_dimensions.width_cm }} × 
+                {{ product.physical_dimensions.height_cm }} cm
+              </span>
+            </div>
+          }
+        </div>
+      }
+
+      <!-- Metadatos -->
+      <div class="detail-section">
+        <h3><mat-icon>schedule</mat-icon> {{ 'COMMON.METADATA' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (product.created_at) {
+          <div class="detail-row">
+            <mat-label>{{ 'COMMON.CREATED_AT' | translate }}:</mat-label>
+            <span class="value">{{ formatDate(product.created_at) }}</span>
+          </div>
+        }
+
+        @if (product.updated_at) {
+          <div class="detail-row">
+            <mat-label>{{ 'COMMON.UPDATED_AT' | translate }}:</mat-label>
+            <span class="value">{{ formatDate(product.updated_at) }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'PRODUCTS.DISCONTINUED' | translate }}:</mat-label>
+          <mat-chip [class]="product.is_discontinued ? 'status-inactive' : 'status-active'">
+            {{ (product.is_discontinued ? 'PRODUCTS.DISCONTINUED_YES' : 'PRODUCTS.DISCONTINUED_NO') | translate }}
+          </mat-chip>
+        </div>
+      </div>
+
+      <!-- URL de Imagen -->
+      @if (product.image_url) {
+        <div class="detail-section">
+          <h3><mat-icon>image</mat-icon> {{ 'PRODUCTS.IMAGE' | translate }}</h3>
+          <mat-divider></mat-divider>
+          
+          <div class="detail-row">
+            <mat-label>{{ 'PRODUCTS.IMAGE_URL' | translate }}:</mat-label>
+            <span class="value">{{ product.image_url }}</span>
+          </div>
+        </div>
+      }
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="cerrar()">
+        {{ 'COMMON.CLOSE' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

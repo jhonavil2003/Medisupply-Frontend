@@ -6,6 +6,8 @@ import { RouterTestingModule } from '@angular/router/testing';
 import { By } from '@angular/platform-browser';
 import { signal } from '@angular/core';
 import { of, throwError } from 'rxjs';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoLocalizacionComponent } from './producto-localizacion.component';
 import { SearchProductLocationUseCase } from '../../../../core/application/use-cases/product-location/product-location.use-cases';
@@ -144,7 +146,8 @@ describe('ProductoLocalizacionComponent', () => {
         ProductoLocalizacionComponent,
         ReactiveFormsModule,
         NoopAnimationsModule,
-        RouterTestingModule
+        RouterTestingModule,
+        TranslateModule.forRoot()
       ],
       providers: [
         { provide: SearchProductLocationUseCase, useValue: mockSearchUseCase },
@@ -251,7 +254,7 @@ describe('ProductoLocalizacionComponent', () => {
       expect(component.loading()).toBe(false);
       expect(component.locations()).toEqual(mockResponse.locations);
       expect(component.dataSource.data).toEqual(mockResponse.locations);
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Se encontraron 1 ubicaciones');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCT_LOCATION.LOCATIONS_FOUND');
     });
 
     it('should handle search with no results', () => {
@@ -287,7 +290,7 @@ describe('ProductoLocalizacionComponent', () => {
 
       expect(component.locations()).toEqual([]);
       expect(component.dataSource.data).toEqual([]);
-      expect(mockNotificationService.info).toHaveBeenCalledWith('No se encontraron ubicaciones para este producto');
+      expect(mockNotificationService.info).toHaveBeenCalledWith('PRODUCT_LOCATION.NO_LOCATIONS_FOUND');
     });
 
     it('should handle search error', () => {
@@ -305,27 +308,27 @@ describe('ProductoLocalizacionComponent', () => {
     });
 
     it('should show warning for search term less than 3 characters', () => {
-      component.searchControl.setValue('TE');
+      component.searchControl.setValue('AB');
       component.search();
 
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Ingrese al menos 3 caracteres para buscar');
-      expect(mockSearchUseCase.execute).not.toHaveBeenCalled();
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCT_LOCATION.MIN_SEARCH_LENGTH');
+      expect(component.locations()).toEqual([]);
     });
 
     it('should show warning for empty search term', () => {
       component.searchControl.setValue('');
       component.search();
 
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Ingrese al menos 3 caracteres para buscar');
-      expect(mockSearchUseCase.execute).not.toHaveBeenCalled();
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCT_LOCATION.MIN_SEARCH_LENGTH');
+      expect(component.locations()).toEqual([]);
     });
 
     it('should handle search with whitespace only', () => {
       component.searchControl.setValue('   ');
       component.search();
 
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Ingrese al menos 3 caracteres para buscar');
-      expect(mockSearchUseCase.execute).not.toHaveBeenCalled();
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCT_LOCATION.MIN_SEARCH_LENGTH');
+      expect(component.locations()).toEqual([]);
     });
 
     it('should set loading state correctly during search', () => {
@@ -413,7 +416,7 @@ describe('ProductoLocalizacionComponent', () => {
 
     it('should return correct zone label for refrigerated', () => {
       const result = component.getZoneLabel(mockLocation);
-      expect(result).toBe('Refrigerado');
+      expect(result).toBe('PRODUCT_LOCATION.ZONE.REFRIGERATED');
     });
 
     it('should return correct zone label for ambient', () => {
@@ -426,7 +429,7 @@ describe('ProductoLocalizacionComponent', () => {
       };
       
       const result = component.getZoneLabel(ambientLocation);
-      expect(result).toBe('Ambiente');
+      expect(result).toBe('PRODUCT_LOCATION.ZONE.AMBIENT');
     });
 
     it('should return correct status chip color for expired', () => {
@@ -458,7 +461,7 @@ describe('ProductoLocalizacionComponent', () => {
 
     it('should return correct status label for expired', () => {
       const result = component.getStatusLabel(mockExpiredLocation);
-      expect(result).toBe('Vencido');
+      expect(result).toBe('PRODUCT_LOCATION.STATUS.EXPIRED');
     });
 
     it('should return correct status label for unavailable', () => {
@@ -475,12 +478,12 @@ describe('ProductoLocalizacionComponent', () => {
       };
       
       const result = component.getStatusLabel(unavailableLocation);
-      expect(result).toBe('No Disponible');
+      expect(result).toBe('PRODUCT_LOCATION.STATUS.UNAVAILABLE');
     });
 
     it('should return correct status label for available', () => {
       const result = component.getStatusLabel(mockLocation);
-      expect(result).toBe('Disponible');
+      expect(result).toBe('PRODUCT_LOCATION.STATUS.AVAILABLE');
     });
 
     it('should return temperature status', () => {
@@ -559,7 +562,7 @@ describe('ProductoLocalizacionComponent', () => {
       component.copiarUbicacion('A1-B2-C3');
 
       expect(mockClipboard.writeText).toHaveBeenCalledWith('A1-B2-C3');
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Ubicación A1-B2-C3 copiada al portapapeles');
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCT_LOCATION.LOCATION_COPIED');
     });
   });
 

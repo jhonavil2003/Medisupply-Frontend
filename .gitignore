@@ -46,3 +46,11 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# Generated environment files
+src/assets/env.json

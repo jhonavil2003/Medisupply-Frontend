@@ -6,10 +6,10 @@ import { VendedorRepository } from './domain/repositories/vendedor.repository';
 import { MetaVentaRepository } from './domain/repositories/meta-venta.repository';
 import { RutaEntregaRepository } from './domain/repositories/ruta-entrega.repository';
 import { ProductLocationRepository } from './domain/repositories/product-location.repository';
-import { MockProveedorRepository } from './infrastructure/repositories/mock/mock-proveedor.repository';
+import { HttpProveedorRepository } from './infrastructure/repositories/http/http-proveedor.repository';
 import { HttpProductoRepository } from './infrastructure/repositories/http/http-producto.repository';
-import { MockVendedorRepository } from './infrastructure/repositories/mock/mock-vendedor.repository';
-import { MockMetaVentaRepository } from './infrastructure/repositories/mock/mock-meta-venta.repository';
+import { HttpVendedorRepository } from './infrastructure/repositories/http/http-vendedor.repository';
+import { HttpMetaVentaRepository } from './infrastructure/repositories/http/http-meta-venta.repository';
 import { MockRutaEntregaRepository } from './infrastructure/repositories/mock/mock-ruta-entrega.repository';
 import { HttpProductLocationRepository } from './infrastructure/repositories/http/http-product-location.repository';
 import { provideHttpClient } from '@angular/common/http';
@@ -22,7 +22,7 @@ describe('CORE_PROVIDERS', () => {
     });
 
     it('should have correct number of providers', () => {
-      expect(CORE_PROVIDERS.length).toBe(6);
+      expect(CORE_PROVIDERS.length).toBe(8);
     });
 
     it('should be exportable and importable', () => {
@@ -45,7 +45,7 @@ describe('CORE_PROVIDERS', () => {
     it('should inject ProveedorRepository correctly', () => {
       const repository = TestBed.inject(ProveedorRepository);
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(MockProveedorRepository);
+      expect(repository).toBeInstanceOf(HttpProveedorRepository);
     });
 
     it('should inject ProductoRepository correctly', () => {
@@ -57,13 +57,13 @@ describe('CORE_PROVIDERS', () => {
     it('should inject VendedorRepository correctly', () => {
       const repository = TestBed.inject(VendedorRepository);
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(MockVendedorRepository);
+      expect(repository).toBeInstanceOf(HttpVendedorRepository); // Cambiado de Mock a Http
     });
 
     it('should inject MetaVentaRepository correctly', () => {
       const repository = TestBed.inject(MetaVentaRepository);
       expect(repository).toBeDefined();
-      expect(repository).toBeInstanceOf(MockMetaVentaRepository);
+      expect(repository).toBeInstanceOf(HttpMetaVentaRepository); // Cambiado de Mock a Http
     });
 
     it('should inject RutaEntregaRepository correctly', () => {
@@ -131,7 +131,7 @@ describe('CORE_PROVIDERS', () => {
 
     it('should be importable in other modules', () => {
       const providers = [...CORE_PROVIDERS];
-      expect(providers.length).toBe(6);
+      expect(providers.length).toBe(8);
       expect(providers).toEqual(CORE_PROVIDERS);
     });
 
@@ -183,7 +183,7 @@ describe('CORE_PROVIDERS', () => {
 
   describe('Coverage Tests', () => {
     it('should access all provider array methods', () => {
-      expect(CORE_PROVIDERS.length).toBe(6);
+      expect(CORE_PROVIDERS.length).toBe(8);
       expect(CORE_PROVIDERS.slice(0, 3)).toHaveLength(3);
       expect(CORE_PROVIDERS.indexOf(CORE_PROVIDERS[0])).toBe(0);
       expect(CORE_PROVIDERS.includes(CORE_PROVIDERS[0])).toBe(true);
@@ -210,7 +210,7 @@ describe('CORE_PROVIDERS', () => {
       expect(filtered.length).toBe(CORE_PROVIDERS.length);
       
       const mapped = CORE_PROVIDERS.map((p, index) => index);
-      expect(mapped).toEqual([0, 1, 2, 3, 4, 5]);
+      expect(mapped).toEqual([0, 1, 2, 3, 4, 5, 6, 7]);
       
       const some = CORE_PROVIDERS.some(p => p !== null);
       expect(some).toBe(true);
@@ -243,7 +243,7 @@ describe('CORE_PROVIDERS', () => {
       
       expect(first).toBeDefined();
       expect(second).toBeDefined();
-      expect(rest).toHaveLength(4);
+      expect(rest).toHaveLength(6);
       expect([first, second, ...rest]).toEqual(CORE_PROVIDERS);
     });
   });

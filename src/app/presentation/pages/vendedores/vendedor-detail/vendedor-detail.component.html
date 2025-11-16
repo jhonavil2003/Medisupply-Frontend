@@ -1,0 +1,111 @@
+<mat-card class="form-card">
+  <mat-card-header class="card-header">
+    <mat-card-title class="card-title">
+      {{ 'SALESPERSONS.DETAIL_TITLE' | translate }}
+    </mat-card-title>
+  </mat-card-header>
+
+  <mat-card-content>
+    <div class="detail-grid">
+      <!-- Información Personal -->
+      <div class="detail-section">
+        <h3><mat-icon>person</mat-icon> {{ 'SALESPERSONS.PERSONAL_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.id) {
+          <div class="detail-row">
+            <mat-label>ID:</mat-label>
+            <span class="value">{{ vendedor.id }}</span>
+          </div>
+        }
+
+        <div class="detail-row">
+          <mat-label>{{ 'SALESPERSONS.EMPLOYEE_ID' | translate }}:</mat-label>
+          <span class="value">{{ vendedor.employeeId }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SALESPERSONS.FIRST_NAME' | translate }}:</mat-label>
+          <span class="value">{{ vendedor.firstName }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SALESPERSONS.LAST_NAME' | translate }}:</mat-label>
+          <span class="value">{{ vendedor.lastName }}</span>
+        </div>
+
+        <div class="detail-row">
+          <mat-label>{{ 'SALESPERSONS.STATUS' | translate }}:</mat-label>
+          <mat-chip [class]="vendedor.isActive ? 'status-active' : 'status-inactive'">
+            {{ (vendedor.isActive ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
+          </mat-chip>
+        </div>
+      </div>
+
+      <!-- Información de Contacto -->
+      <div class="detail-section">
+        <h3><mat-icon>contact_phone</mat-icon> {{ 'SALESPERSONS.CONTACT_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        <div class="detail-row">
+          <mat-label>{{ 'SALESPERSONS.EMAIL' | translate }}:</mat-label>
+          <span class="value">{{ vendedor.email }}</span>
+        </div>
+
+        @if (vendedor.phone) {
+          <div class="detail-row">
+            <mat-label>{{ 'SALESPERSONS.PHONE' | translate }}:</mat-label>
+            <span class="value">{{ vendedor.phone }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Información Laboral -->
+      <div class="detail-section">
+        <h3><mat-icon>work</mat-icon> {{ 'SALESPERSONS.WORK_INFO' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.territory) {
+          <div class="detail-row">
+            <mat-label>{{ 'SALESPERSONS.TERRITORY' | translate }}:</mat-label>
+            <span class="value">{{ vendedor.territory }}</span>
+          </div>
+        }
+
+        @if (vendedor.hireDate) {
+          <div class="detail-row">
+            <mat-label>{{ 'SALESPERSONS.HIRE_DATE' | translate }}:</mat-label>
+            <span class="value">{{ formatDate(vendedor.hireDate) }}</span>
+          </div>
+        }
+      </div>
+
+      <!-- Metadatos -->
+      <div class="detail-section">
+        <h3><mat-icon>schedule</mat-icon> {{ 'COMMON.METADATA' | translate }}</h3>
+        <mat-divider></mat-divider>
+        
+        @if (vendedor.createdAt) {
+          <div class="detail-row">
+            <mat-label>{{ 'COMMON.CREATED_AT' | translate }}:</mat-label>
+            <span class="value">{{ formatDate(vendedor.createdAt) }}</span>
+          </div>
+        }
+
+        @if (vendedor.updatedAt) {
+          <div class="detail-row">
+            <mat-label>{{ 'COMMON.UPDATED_AT' | translate }}:</mat-label>
+            <span class="value">{{ formatDate(vendedor.updatedAt) }}</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="cerrar()">
+        {{ 'COMMON.CLOSE' | translate }}
+      </button>
+    </div>
+  </mat-card-content>
+</mat-card>

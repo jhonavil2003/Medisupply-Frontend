@@ -1,18 +1,43 @@
-/* lateral3.css - Estilos para el sidebar y contenido principal */
+
 body {
   margin: 0;
   font-family: Arial, sans-serif;
   display: flex;
 }
 
-/* Sidebar */
 .sidebar {
-  background-color: var(--color-sidebar-bg);
+  background: linear-gradient(180deg, var(--color-sidebar-bg) 0%, #0a1f3d 100%);
   color: var(--color-white);
   height: 100vh;
-  width: 240px;
-  transition: width 0.3s;
-  overflow: hidden;
+  width: 260px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overflow-x: hidden;
+  overflow-y: auto;
+  box-shadow: 2px 0 12px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Scrollbar personalizado */
+.sidebar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.sidebar::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.sidebar::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 3px;
+}
+
+.sidebar::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .sidebar.collapsed {
@@ -20,91 +45,283 @@ body {
 }
 
 .sidebar .toggle-btn {
-  background: none;
+  background: rgba(255, 255, 255, 0.1);
   border: none;
   color: var(--color-white);
   font-size: 20px;
-  margin: 10px;
+  margin: 15px 10px;
+  padding: 10px;
   cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: calc(100% - 20px);
 }
 
+.sidebar .toggle-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.05);
+}
+
+.sidebar.collapsed .toggle-btn {
+  width: 50px;
+  margin: 15px auto;
+}
+
+/* Lista principal del menú */
 .sidebar ul {
   list-style: none;
   padding: 0;
-  margin: 15px 0;
+  margin: 10px 0;
+  flex: 1;
 }
 
+/* Items del menú principal */
 .sidebar ul li {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 12px 15px;
+  padding: 14px 18px;
+  margin: 4px 10px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-radius: 10px;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto hover moderno */
+.sidebar ul li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: 100%;
+  width: 0;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.1) 0%, transparent 100%);
+  transition: width 0.3s ease;
+  z-index: 0;
+}
+
+.sidebar ul li:hover::before {
+  width: 100%;
 }
 
 .sidebar ul li:hover {
   background-color: var(--color-sidebar-hover);
+  transform: translateX(4px);
 }
 
+/* Ruta activa con estilo moderno */
+.sidebar ul li.active-route {
+  background: linear-gradient(135deg, var(--color-primary-blue) 0%, #1565c0 100%);
+  color: var(--color-white);
+  border-left: 4px solid var(--color-accent-green);
+  font-weight: 600;
+  box-shadow: 0 4px 12px rgba(30, 99, 168, 0.3);
+}
+
+.sidebar ul li.active-route::before {
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+  width: 100%;
+}
+
+.sidebar ul li.active-route:hover {
+  background: linear-gradient(135deg, var(--color-primary-dark) 0%, var(--color-primary-darker) 100%);
+  transform: translateX(4px);
+}
+
+/* Submenú con ruta activa */
+.submenu li.active-route {
+  color: var(--color-white);
+  font-weight: 600;
+  background: linear-gradient(90deg, rgba(255, 255, 255, 0.15) 0%, transparent 100%);
+  padding-left: 15px;
+  border-left: 3px solid var(--color-accent-green);
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Iconos del menú */
 .sidebar ul li i {
   font-size: 18px;
   margin-right: 12px;
   min-width: 25px;
   text-align: center;
+  position: relative;
+  z-index: 1;
+  transition: transform 0.3s ease;
 }
 
+.sidebar ul li:hover i {
+  transform: scale(1.1);
+}
 
 .sidebar ul li .menu-text {
   flex: 1;
   text-align: left;
+  position: relative;
+  z-index: 1;
+  font-size: 14.5px;
+  letter-spacing: 0.3px;
 }
 
+/* Flecha de submenú mejorada */
 .sidebar ul li .arrow {
-  transition: transform 0.3s;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-left: 8px;
+  position: relative;
+  z-index: 1;
+  font-size: 14px;
+  opacity: 0.7;
 }
 
 .sidebar ul li .arrow.open {
   transform: rotate(90deg);
+  opacity: 1;
 }
 
+.sidebar ul li:hover .arrow {
+  opacity: 1;
+}
 
+/* Ocultar elementos en modo colapsado */
 .sidebar.collapsed ul li span,
 .sidebar.collapsed ul li .arrow {
+  opacity: 0;
+  width: 0;
+  overflow: hidden;
   display: none;
 }
 
-/* Submenús */
+/* Centrar iconos en modo colapsado */
+.sidebar.collapsed ul li {
+  justify-content: center;
+  padding: 14px 0;
+}
+
+.sidebar.collapsed ul li i {
+  margin: 0;
+}
+
+/* Submenús con animación suave */
 .submenu {
   display: none;
   flex-direction: column;
-  padding-left: 20px;
-  background: var(--color-sidebar-bg);
-  margin-top: -5px;
+  padding: 8px 0 8px 20px;
+  background: rgba(0, 0, 0, 0.15);
+  margin: 4px 10px 8px 10px;
+  border-radius: 8px;
+  animation: slideDown 0.3s ease-out;
+  backdrop-filter: blur(10px);
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+    max-height: 0;
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+    max-height: 500px;
+  }
 }
 
 .submenu li {
-  padding: 6px 0;
+  padding: 10px 15px;
   font-size: 14px;
-  color: var(--color-muted);
+  color: rgba(255, 255, 255, 0.8);
+  border-radius: 6px;
+  margin: 2px 0;
+  transition: all 0.2s ease;
+  position: relative;
+  z-index: 1;
 }
 
 .submenu li:hover {
   color: var(--color-white);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateX(6px);
 }
 
+/* Mostrar submenú cuando está activo */
 .sidebar ul li.active + .submenu {
   display: flex;
 }
 
+/* Ocultar submenús en modo colapsado */
 .sidebar.collapsed .submenu {
   display: none !important;
 }
 
-/* Contenido principal */
-.content {
-  flex: 1;
-  padding: 20px;
-  background-color: var(--color-bg);
+/* Separador visual */
+.sidebar ul > li:not(:first-child):not(.submenu) {
+  margin-top: 2px;
+}
+
+/* Espaciado especial para items del footer */
+.sidebar ul li:nth-last-child(-n+3) {
+  margin-top: auto;
+  opacity: 0.85;
+  font-size: 13px;
+}
+
+  .sidebar ul li:nth-last-child(-n+3):hover {
+  opacity: 1;
+}
+
+/* Responsive: Ocultar sidebar en móviles */
+@media (max-width: 768px) {
+  .sidebar {
+    transform: translateX(-100%);
+  }
+
+  .sidebar.collapsed {
+    transform: translateX(0);
+    width: 70px;
+  }
+}
+
+/* Mejora de accesibilidad - focus visible */
+.sidebar ul li:focus-visible {
+  outline: 2px solid var(--color-accent-green);
+  outline-offset: 2px;
+}
+
+/* Tooltip para modo colapsado */
+.sidebar.collapsed ul li {
+  position: relative;
+}
+
+.sidebar.collapsed ul li:hover::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: 100%;
+  top: 50%;
+  transform: translateY(-50%);
+  background: var(--color-sidebar-bg);
+  color: var(--color-white);
+  padding: 8px 12px;
+  border-radius: 6px;
+  margin-left: 10px;
+  white-space: nowrap;
+  font-size: 13px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+  z-index: 1001;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-50%) translateX(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
 }

@@ -8,8 +8,8 @@ export const routes: Routes = [
   },
   { 
     path: 'proveedor-list', 
-    loadComponent: () => import('./presentation/pages/proveedores/proveedor-list/proveedor-list.component')
-      .then(m => m.ProveedorListComponent)
+    loadComponent: () => import('./proveedores/proveedor-list/proveedor-list-clean.component')
+      .then(m => m.ProveedorListComponentClean)
   },
   { 
     path: 'producto-list', 
@@ -37,9 +37,29 @@ export const routes: Routes = [
       .then(m => m.DashboardAdminComponent)
   },
   { 
-    path: 'vendedor-list', 
-    loadComponent: () => import('./presentation/pages/vendedores/vendedor-list.component')
+    path: 'vendedores', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-list/vendedor-list.component')
       .then(m => m.VendedorListComponent)
+  },
+  { 
+    path: 'vendedores/create', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-create/vendedor-create.component')
+      .then(m => m.VendedorCreateComponent)
+  },
+  { 
+    path: 'vendedores/:id', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-detail/vendedor-detail.component')
+      .then(m => m.VendedorDetailComponent)
+  },
+  { 
+    path: 'vendedores/:id/edit', 
+    loadComponent: () => import('./presentation/pages/vendedores/vendedor-edit/vendedor-edit.component')
+      .then(m => m.VendedorEditComponent)
+  },
+  { 
+    path: 'vendedor-list', 
+    redirectTo: 'vendedores',
+    pathMatch: 'full'
   },
   { 
     path: 'producto-upload', 
@@ -47,9 +67,24 @@ export const routes: Routes = [
       .then(m => m.ProductoUploadComponent)
   },
   { 
+    path: 'productos/upload/historial', 
+    loadComponent: () => import('./presentation/pages/productos/producto-upload/producto-upload-history/producto-upload-history.component')
+      .then(m => m.ProductoUploadHistoryComponent)
+  },
+  { 
     path: 'proveedor-upload', 
     loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
       .then(m => m.ProveedorUploadComponent)
+  },
+  { 
+    path: 'proveedores/upload', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload.component')
+      .then(m => m.ProveedorUploadComponent)
+  },
+  { 
+    path: 'proveedores/upload/historial', 
+    loadComponent: () => import('./presentation/pages/proveedores/proveedor-upload/proveedor-upload-history/proveedor-upload-history.component')
+      .then(m => m.ProveedorUploadHistoryComponent)
   },
   { 
     path: 'producto-localizacion', 
@@ -57,14 +92,69 @@ export const routes: Routes = [
       .then(m => m.ProductoLocalizacionComponent)
   },
   { 
-    path: 'rutas-entrega', 
-    loadComponent: () => import('./presentation/pages/logistica/ruta-entrega-list/ruta-entrega-list.component')
-      .then(m => m.RutaEntregaListaComponent)
+    path: 'ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-list/order-list.component')
+      .then(m => m.OrderListComponent)
+  },
+  { 
+    path: 'ordenes/:id', 
+    loadComponent: () => import('./presentation/pages/logistica/order-detail/order-detail.component')
+      .then(m => m.OrderDetailComponent)
+  },
+  { 
+    path: 'confirmar-ordenes', 
+    loadComponent: () => import('./presentation/pages/logistica/order-confirmation/order-confirmation.component')
+      .then(m => m.OrderConfirmationComponent)
+  },
+  { 
+    path: 'generar-rutas', 
+    loadComponent: () => import('./presentation/pages/logistica/route-generation/route-generation.component')
+      .then(m => m.RouteGenerationComponent)
+  },
+  {
+    path: 'rutas',
+    loadComponent: () => import('./presentation/pages/logistica/route-list/route-list.component')
+      .then(m => m.RouteListComponent)
+  },
+  {
+    path: 'rutas/:id',
+    loadComponent: () => import('./presentation/pages/logistica/route-detail/route-detail.component')
+      .then(m => m.RouteDetailComponent)
+  },
+  {
+    path: 'rutas/:id/mapa',
+    loadComponent: () => import('./presentation/pages/logistica/route-map/route-map.component')
+      .then(m => m.RouteMapComponent)
   },
   { 
     path: 'metas-list', 
     loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
       .then(m => m.MetaListComponent)
+  },
+  { 
+    path: 'metas', 
+    loadComponent: () => import('./presentation/pages/metas/meta-list/meta-list.component')
+      .then(m => m.MetaListComponent)
+  },
+  { 
+    path: 'metas/create', 
+    loadComponent: () => import('./presentation/pages/metas/meta-create/meta-create.component')
+      .then(m => m.MetaCreateComponent)
+  },
+  { 
+    path: 'metas/:id', 
+    loadComponent: () => import('./presentation/pages/metas/meta-detail/meta-detail.component')
+      .then(m => m.MetaDetailComponent)
+  },
+  { 
+    path: 'metas/:id/edit', 
+    loadComponent: () => import('./presentation/pages/metas/meta-edit/meta-edit.component')
+      .then(m => m.MetaEditComponent)
+  },
+  { 
+    path: 'mis-metas', 
+    loadComponent: () => import('./presentation/pages/metas/meta-vendedor/meta-vendedor.component')
+      .then(m => m.MetaVendedorComponent)
   },
   { 
     path: 'informe-ventas', 

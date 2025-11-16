@@ -1,0 +1,87 @@
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']" [attr.data-cy]="'back-button'">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;" data-cy="suppliers-list-title">{{ 'SUPPLIERS.LIST_TITLE' | translate }}</h2>
+    </div>
+    <button mat-raised-button color="primary" (click)="agregarProveedor()" [attr.aria-label]="'SUPPLIERS.CREATE_TITLE' | translate" data-cy="create-supplier-button">
+      <mat-icon>add</mat-icon> {{ 'SUPPLIERS.CREATE_TITLE' | translate }}
+    </button>
+  </div>
+  
+  <div class="search-bar" style="flex: 1;">
+    <div class="search-wrap">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'COMMON.SEARCH' | translate }}</mat-label>
+        <input matInput 
+          [(ngModel)]="filtroBusqueda"
+          (input)="filtrarProveedores()"
+          [placeholder]="'SUPPLIERS.SEARCH_PLACEHOLDER' | translate"
+          class="search-input"
+          data-cy="supplier-search-input">
+        @if (filtroBusqueda) {
+          <button
+            matSuffix
+            mat-icon-button
+            [attr.aria-label]="'COMMON.CLEAR_FILTERS' | translate"
+            (click)="filtroBusqueda = ''; filtrarProveedores()">
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
+      <ng-container matColumnDef="razonSocial">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SUPPLIERS.BUSINESS_NAME' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.razonSocial }}</td>
+      </ng-container>
+      <ng-container matColumnDef="ruc">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SUPPLIERS.RUC' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.ruc }}</td>
+      </ng-container>
+      <ng-container matColumnDef="telefono">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SUPPLIERS.PHONE' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.telefono }}</td>
+      </ng-container>
+      <ng-container matColumnDef="correoContacto">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SUPPLIERS.EMAIL' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.correoContacto }}</td>
+      </ng-container>
+      <ng-container matColumnDef="estado">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SUPPLIERS.STATUS' | translate }}</th>
+        <td mat-cell *matCellDef="let row">
+          <span [style.color]="row.estado === 'Activo' ? '#2e7d32' : '#d32f2f'">
+            {{ (row.estado === 'Activo' ? 'COMMON.ACTIVE' : 'COMMON.INACTIVE') | translate }}
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="certificacionesVigentes">
+        <th mat-header-cell *matHeaderCellDef>{{ 'SUPPLIERS.CERTIFICATIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let row">{{ row.certificacionesVigentes ? row.certificacionesVigentes.join(', ') : '-' }}</td>
+      </ng-container>
+      <ng-container matColumnDef="acciones">
+        <th mat-header-cell *matHeaderCellDef>{{ 'COMMON.ACTIONS' | translate }}</th>
+        <td mat-cell *matCellDef="let row" class="actions">
+          <button class="btn-icon" [title]="'COMMON.VIEW' | translate" (click)="verProveedor(row)" data-cy="view-supplier"><i class="fas fa-eye"></i></button>
+          <button class="btn-icon" [title]="'COMMON.EDIT' | translate" (click)="editarProveedor(row)" data-cy="edit-supplier"><i class="fas fa-edit"></i></button>
+          <button class="btn-icon danger" [title]="'COMMON.DELETE' | translate" (click)="eliminarProveedor(row)" data-cy="delete-supplier"><i class="fas fa-trash"></i></button>
+        </td>
+      </ng-container>
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator 
+      class="unified-paginator"
+      [pageSize]="10" 
+      [pageSizeOptions]="[5, 10, 25, 100]" 
+      showFirstLastButtons>
+    </mat-paginator>
+  </div>
+</div>
+

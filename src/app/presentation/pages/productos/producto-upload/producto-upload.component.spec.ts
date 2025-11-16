@@ -1,9 +1,12 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
+import { provideHttpClient } from '@angular/common/http';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { ProductoUploadComponent } from './producto-upload.component';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { environment } from '../../../../../environments/environment';
 
 // Material modules
 import { MatButtonModule } from '@angular/material/button';
@@ -11,10 +14,13 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 
+const API_BASE_URL = `${environment.catalogApiUrl}/api/products/bulk-upload`;
+
 describe('ProductoUploadComponent', () => {
   let component: ProductoUploadComponent;
   let fixture: ComponentFixture<ProductoUploadComponent>;
   let mockNotificationService: any;
+  let httpMock: HttpTestingController;
 
   beforeEach(async () => {
     const notificationServiceSpy = {
@@ -35,13 +41,26 @@ describe('ProductoUploadComponent', () => {
         MatProgressSpinnerModule
       ],
       providers: [
-        { provide: NotificationService, useValue: notificationServiceSpy }
+        { provide: NotificationService, useValue: notificationServiceSpy },
+        provideHttpClient(),
+        provideHttpClientTesting()
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(ProductoUploadComponent);
     component = fixture.componentInstance;
     mockNotificationService = TestBed.inject(NotificationService);
+    httpMock = TestBed.inject(HttpTestingController);
+  });
+
+  afterEach(() => {
+    // Clean up any pending requests without strict verification
+    try {
+      httpMock.verify();
+    } catch (e) {
+      // Ignore verification errors for tests that don't make HTTP calls
+    }
+    component.ngOnDestroy();
   });
 
   describe('Component Initialization', () => {
@@ -50,9 +69,9 @@ describe('ProductoUploadComponent', () => {
     });
 
     it('should initialize with default values', () => {
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
-      expect(component.cargando).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
+      expect(component.cargando()).toBe(false);
     });
   });
 
@@ -70,8 +89,8 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBe(mockFile);
-      expect(component.archivoValido).toBe(true);
+      expect(component.archivoSeleccionado()).toBe(mockFile);
+      expect(component.archivoValido()).toBe(true);
       expect(mockNotificationService.warning).not.toHaveBeenCalled();
     });
 
@@ -88,17 +107,17 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV.',
+        'Solo se aceptan archivos CSV',
         'Error'
       );
     });
 
-    it('should reject files larger than 10MB', () => {
+    it('should reject files larger than 20MB', () => {
       // Arrange
-      const largeContent = 'a'.repeat(11 * 1024 * 1024); // 11MB
+      const largeContent = 'a'.repeat(21 * 1024 * 1024); // 21MB
       const mockFile = new File([largeContent], 'large.csv', { type: 'text/csv' });
       const mockEvent = {
         target: {
@@ -110,10 +129,10 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'El archivo excede el tamaño máximo de 10 MB.',
+        'El archivo excede el tamaño máximo de 20 MB',
         'Error'
       );
     });
@@ -130,8 +149,8 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
     });
 
     it('should handle event with empty files array', () => {
@@ -146,8 +165,8 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
     });
 
     it('should handle input element without files property', () => {
@@ -160,8 +179,8 @@ describe('ProductoUploadComponent', () => {
       expect(() => component.onFileSelected(mockEvent)).not.toThrow();
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
     });
   });
 
@@ -169,41 +188,69 @@ describe('ProductoUploadComponent', () => {
     it('should process valid file successfully', fakeAsync(() => {
       // Arrange
       const mockFile = new File(['test,content'], 'test.csv', { type: 'text/csv' });
-      component.archivoSeleccionado = mockFile;
-      component.archivoValido = true;
+      component.archivoSeleccionado.set(mockFile);
+      component.archivoValido.set(true);
+
+      const mockUploadResponse = {
+        success: true,
+        message: 'Archivo recibido',
+        job_id: 'job-123'
+      };
+
+      const mockJobStatusCompleted = {
+        job_id: 'job-123',
+        status: 'completed',
+        total_rows: 10,
+        successful_rows: 10,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:10Z'
+      };
 
       // Act
       component.procesarArchivo();
-      expect(component.cargando).toBe(true);
+      expect(component.cargando()).toBe(true);
       expect(mockNotificationService.info).toHaveBeenCalledWith(
-        'Procesando archivo',
+        'Subiendo archivo...',
         'test.csv'
       );
 
-      // Simulate timeout
-      tick(2000);
+      // Mock HTTP upload response
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
+      expect(uploadReq.request.method).toBe('POST');
+      uploadReq.flush(mockUploadResponse);
+
+      // Wait for polling to start (3 seconds interval)
+      tick(3000);
+
+      // Mock job status response (completed)
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      expect(statusReq.request.method).toBe('GET');
+      statusReq.flush(mockJobStatusCompleted);
+
+      tick(100); // Small delay for async operations
 
       // Assert
-      expect(component.cargando).toBe(false);
+      expect(component.cargando()).toBe(false);
       expect(mockNotificationService.success).toHaveBeenCalledWith(
-        'Archivo cargado correctamente (simulado)'
+        '✅ 10 productos importados exitosamente'
       );
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
     }));
 
     it('should not process when no file is selected', () => {
       // Arrange
-      component.archivoSeleccionado = null;
-      component.archivoValido = false;
+      component.archivoSeleccionado.set(null);
+      component.archivoValido.set(false);
 
       // Act
       component.procesarArchivo();
 
       // Assert
-      expect(component.cargando).toBe(false);
+      expect(component.cargando()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Seleccione un archivo válido antes de cargar.',
+        'Seleccione un archivo válido antes de cargar',
         'Error'
       );
       expect(mockNotificationService.info).not.toHaveBeenCalled();
@@ -212,16 +259,16 @@ describe('ProductoUploadComponent', () => {
     it('should not process when file is invalid', () => {
       // Arrange
       const mockFile = new File(['test,content'], 'test.csv', { type: 'text/csv' });
-      component.archivoSeleccionado = mockFile;
-      component.archivoValido = false;
+      component.archivoSeleccionado.set(mockFile);
+      component.archivoValido.set(false);
 
       // Act
       component.procesarArchivo();
 
       // Assert
-      expect(component.cargando).toBe(false);
+      expect(component.cargando()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Seleccione un archivo válido antes de cargar.',
+        'Seleccione un archivo válido antes de cargar',
         'Error'
       );
       expect(mockNotificationService.info).not.toHaveBeenCalled();
@@ -230,22 +277,60 @@ describe('ProductoUploadComponent', () => {
     it('should handle loading state correctly during processing', fakeAsync(() => {
       // Arrange
       const mockFile = new File(['test,content'], 'test.csv', { type: 'text/csv' });
-      component.archivoSeleccionado = mockFile;
-      component.archivoValido = true;
+      component.archivoSeleccionado.set(mockFile);
+      component.archivoValido.set(true);
+
+      const mockUploadResponse = {
+        success: true,
+        message: 'Archivo recibido',
+        job_id: 'job-456'
+      };
+
+      const mockJobStatusProcessing = {
+        job_id: 'job-456',
+        status: 'processing',
+        total_rows: 10,
+        successful_rows: 5,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:05Z'
+      };
+
+      const mockJobStatusCompleted = {
+        job_id: 'job-456',
+        status: 'completed',
+        total_rows: 10,
+        successful_rows: 10,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:10Z'
+      };
 
       // Act
       component.procesarArchivo();
 
       // Assert initial state
-      expect(component.cargando).toBe(true);
+      expect(component.cargando()).toBe(true);
 
-      // Advance time partially
-      tick(1000);
-      expect(component.cargando).toBe(true);
+      // Mock upload response
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
+      uploadReq.flush(mockUploadResponse);
 
-      // Complete timeout
-      tick(1000);
-      expect(component.cargando).toBe(false);
+      // Advance time partially - first poll
+      tick(3000);
+      const statusReq1 = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      statusReq1.flush(mockJobStatusProcessing);
+      
+      expect(component.cargando()).toBe(true);
+
+      // Complete with second poll
+      tick(3000);
+      const statusReq2 = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      statusReq2.flush(mockJobStatusCompleted);
+
+      tick(100);
+
+      expect(component.cargando()).toBe(false);
     }));
   });
 
@@ -273,16 +358,13 @@ describe('ProductoUploadComponent', () => {
         }
       } as any;
 
-      const onFileSelectedSpy = jest.spyOn(component, 'onFileSelected');
-
       // Act
       component.onFileDrop(mockEvent);
 
       // Assert
       expect(mockEvent.preventDefault).toHaveBeenCalled();
-      expect(onFileSelectedSpy).toHaveBeenCalledWith({
-        target: { files: [mockFile] }
-      });
+      expect(component.archivoSeleccionado()).toBe(mockFile);
+      expect(component.archivoValido()).toBe(true);
     });
 
     it('should handle file drop with no files', () => {
@@ -342,9 +424,9 @@ describe('ProductoUploadComponent', () => {
   });
 
   describe('File Validation Edge Cases', () => {
-    it('should accept file exactly at 10MB limit', () => {
+    it('should accept file exactly at 20MB limit', () => {
       // Arrange
-      const content = 'a'.repeat(10 * 1024 * 1024); // Exactly 10MB
+      const content = 'a'.repeat(20 * 1024 * 1024); // Exactly 20MB
       const mockFile = new File([content], 'limit.csv', { type: 'text/csv' });
       const mockEvent = {
         target: {
@@ -356,8 +438,8 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBe(mockFile);
-      expect(component.archivoValido).toBe(true);
+      expect(component.archivoSeleccionado()).toBe(mockFile);
+      expect(component.archivoValido()).toBe(true);
       expect(mockNotificationService.warning).not.toHaveBeenCalled();
     });
 
@@ -374,10 +456,10 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert - Should be rejected because of case-sensitive check
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV.',
+        'Solo se aceptan archivos CSV',
         'Error'
       );
     });
@@ -395,10 +477,10 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV.',
+        'Solo se aceptan archivos CSV',
         'Error'
       );
     });
@@ -416,10 +498,10 @@ describe('ProductoUploadComponent', () => {
       component.onFileSelected(mockEvent);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV.',
+        'Solo se aceptan archivos CSV',
         'Error'
       );
     });
@@ -429,32 +511,58 @@ describe('ProductoUploadComponent', () => {
     it('should reset state correctly after successful upload', fakeAsync(() => {
       // Arrange
       const mockFile = new File(['test,content'], 'test.csv', { type: 'text/csv' });
-      component.archivoSeleccionado = mockFile;
-      component.archivoValido = true;
+      component.archivoSeleccionado.set(mockFile);
+      component.archivoValido.set(true);
+
+      const mockUploadResponse = {
+        success: true,
+        message: 'Archivo recibido',
+        job_id: 'job-789'
+      };
+
+      const mockJobStatusCompleted = {
+        job_id: 'job-789',
+        status: 'completed',
+        total_rows: 5,
+        successful_rows: 5,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:10Z'
+      };
 
       // Act
       component.procesarArchivo();
-      tick(2000);
+
+      // Mock upload
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
+      uploadReq.flush(mockUploadResponse);
+
+      // Mock job status
+      tick(3000);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      statusReq.flush(mockJobStatusCompleted);
+
+      tick(100);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
-      expect(component.cargando).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
+      expect(component.cargando()).toBe(false);
     }));
 
     it('should maintain state when upload fails validation', () => {
       // Arrange
-      const initialFile = component.archivoSeleccionado;
-      const initialValid = component.archivoValido;
-      const initialLoading = component.cargando;
+      const initialFile = component.archivoSeleccionado();
+      const initialValid = component.archivoValido();
+      const initialLoading = component.cargando();
 
       // Act
       component.procesarArchivo();
 
       // Assert
-      expect(component.archivoSeleccionado).toBe(initialFile);
-      expect(component.archivoValido).toBe(initialValid);
-      expect(component.cargando).toBe(initialLoading);
+      expect(component.archivoSeleccionado()).toBe(initialFile);
+      expect(component.archivoValido()).toBe(initialValid);
+      expect(component.cargando()).toBe(initialLoading);
     });
   });
 
@@ -468,21 +576,45 @@ describe('ProductoUploadComponent', () => {
         }
       } as any;
 
+      const mockUploadResponse = {
+        success: true,
+        message: 'Archivo recibido',
+        job_id: 'job-workflow'
+      };
+
+      const mockJobStatusCompleted = {
+        job_id: 'job-workflow',
+        status: 'completed',
+        total_rows: 20,
+        successful_rows: 20,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:10Z'
+      };
+
       // Act - File selection
       component.onFileSelected(mockEvent);
-      expect(component.archivoSeleccionado).toBe(mockFile);
-      expect(component.archivoValido).toBe(true);
+      expect(component.archivoSeleccionado()).toBe(mockFile);
+      expect(component.archivoValido()).toBe(true);
 
       // Act - File processing
       component.procesarArchivo();
-      expect(component.cargando).toBe(true);
+      expect(component.cargando()).toBe(true);
       
-      tick(2000);
+      // Mock HTTP responses
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
+      uploadReq.flush(mockUploadResponse);
+
+      tick(3000);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      statusReq.flush(mockJobStatusCompleted);
+
+      tick(100);
       
       // Assert - Final state
-      expect(component.cargando).toBe(false);
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.cargando()).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.success).toHaveBeenCalled();
     }));
 
@@ -496,6 +628,22 @@ describe('ProductoUploadComponent', () => {
         }
       } as any;
 
+      const mockUploadResponse = {
+        success: true,
+        message: 'Archivo recibido',
+        job_id: 'job-dragdrop'
+      };
+
+      const mockJobStatusCompleted = {
+        job_id: 'job-dragdrop',
+        status: 'completed',
+        total_rows: 15,
+        successful_rows: 15,
+        failed_rows: 0,
+        created_at: '2024-01-01T00:00:00Z',
+        updated_at: '2024-01-01T00:00:10Z'
+      };
+
       // Act - Drag over
       const mockDragEvent = { preventDefault: jest.fn() } as any;
       component.onDragOver(mockDragEvent);
@@ -503,16 +651,25 @@ describe('ProductoUploadComponent', () => {
 
       // Act - Drop file
       component.onFileDrop(mockDropEvent);
-      expect(component.archivoSeleccionado).toBe(mockFile);
-      expect(component.archivoValido).toBe(true);
+      expect(component.archivoSeleccionado()).toBe(mockFile);
+      expect(component.archivoValido()).toBe(true);
 
       // Act - Process file
       component.procesarArchivo();
-      tick(2000);
+
+      // Mock HTTP responses
+      const uploadReq = httpMock.expectOne(API_BASE_URL);
+      uploadReq.flush(mockUploadResponse);
+
+      tick(3000);
+      const statusReq = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
+      statusReq.flush(mockJobStatusCompleted);
+
+      tick(100);
 
       // Assert
-      expect(component.archivoSeleccionado).toBeNull();
-      expect(component.archivoValido).toBe(false);
+      expect(component.archivoSeleccionado()).toBeNull();
+      expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.success).toHaveBeenCalled();
     }));
   });

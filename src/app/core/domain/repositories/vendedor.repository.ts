@@ -2,21 +2,34 @@ import { Observable } from 'rxjs';
 import { VendedorEntity, CreateVendedorDto, UpdateVendedorDto } from '../entities/vendedor.entity';
 
 /**
+ * Filtros para búsqueda de vendedores
+ */
+export interface VendedorFilters {
+  territory?: string;
+  isActive?: boolean;
+}
+
+/**
  * Contrato del repositorio de Vendedores
  */
 export abstract class VendedorRepository {
   /**
-   * Obtiene todos los vendedores
+   * Obtiene todos los vendedores con filtros opcionales
    */
-  abstract getAll(): Observable<VendedorEntity[]>;
+  abstract getAll(filters?: VendedorFilters): Observable<VendedorEntity[]>;
 
   /**
    * Obtiene un vendedor por ID
    */
-  abstract getById(id: string): Observable<VendedorEntity | null>;
+  abstract getById(id: number): Observable<VendedorEntity | null>;
 
   /**
-   * Busca vendedores por criterio
+   * Obtiene un vendedor por Employee ID
+   */
+  abstract getByEmployeeId(employeeId: string): Observable<VendedorEntity | null>;
+
+  /**
+   * Busca vendedores por criterio (búsqueda general)
    */
   abstract search(criteria: string): Observable<VendedorEntity[]>;
 
@@ -33,10 +46,10 @@ export abstract class VendedorRepository {
   /**
    * Elimina un vendedor por ID
    */
-  abstract delete(id: string): Observable<boolean>;
+  abstract delete(id: number): Observable<boolean>;
 
   /**
-   * Filtra vendedores por región
+   * Filtra vendedores por territorio
    */
-  abstract filterByRegion(region: string): Observable<VendedorEntity[]>;
+  abstract filterByTerritory(territory: string): Observable<VendedorEntity[]>;
 }

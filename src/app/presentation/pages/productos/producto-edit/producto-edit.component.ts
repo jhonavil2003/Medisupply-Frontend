@@ -1,4 +1,4 @@
-import { Component, inject, signal, OnInit } from '@angular/core';
+import { Component, inject, signal, OnInit, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
@@ -10,6 +10,8 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 
 import { GetProductByIdUseCase } from '../../../../core/application/use-cases/producto/get-product-by-id.use-case';
 import { UpdateProductUseCase } from '../../../../core/application/use-cases/producto/update-product.use-case';
@@ -30,7 +32,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatButtonModule,
     MatIconModule,
     MatCheckboxModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    TranslateModule
   ],
   templateUrl: './producto-edit.component.html',
   styleUrls: ['./producto-edit.component.css']
@@ -42,11 +45,13 @@ export class ProductoEditComponent implements OnInit {
   private getProductByIdUseCase = inject(GetProductByIdUseCase);
   private updateProductUseCase = inject(UpdateProductUseCase);
   private notificationService = inject(NotificationService);
+  private dialogRef = inject(MatDialogRef<ProductoEditComponent>);
+  private translate = inject(TranslateService);
 
   loading = signal(false);
   loadingProduct = signal(true);
   productForm: FormGroup;
-  productId: number | null = null;
+  productId: number;
   originalProduct: ProductoDetailedEntity | null = null;
 
   categories = [
@@ -73,41 +78,63 @@ export class ProductoEditComponent implements OnInit {
     'kg'
   ];
 
-  currencies = [
-    'USD',
-    'COP',
-    'EUR'
-  ];
+  currencies = ['COP'];
 
-  constructor() {
+  constructor(@Inject(MAT_DIALOG_DATA) public data: { productId: number }) {
+    this.productId = data.productId;
     this.productForm = this.fb.group({
-      sku: ['', [Validators.required, Validators.minLength(3)]],
-      name: ['', [Validators.required, Validators.minLength(2)]],
-      description: [''],
+      sku: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.maxLength(50),
+        Validators.pattern(/^[A-Za-z0-9\-_]+$/)
+      ]],
+      name: ['', [
+        Validators.required, 
+        Validators.minLength(3), 
+        Validators.maxLength(200)
+      ]],
+      description: ['', [
+        Validators.maxLength(1000)
+      ]],
       category: ['', Validators.required],
-      subcategory: [''],
-      unit_price: [0, [Validators.required, Validators.min(0.01)]],
+      subcategory: ['', [
+        Validators.maxLength(100)
+      ]],
+      unit_price: [null, [
+        Validators.required, 
+        Validators.min(0.01),
+        Validators.max(999999999.99)
+      ]],
       currency: ['USD', Validators.required],
       unit_of_measure: ['', Validators.required],
-      supplier_id: [1, [Validators.required, Validators.min(1)]],
+      supplier_id: [null, [
+        Validators.required, 
+        Validators.min(1),
+        Validators.pattern(/^[0-9]+$/)
+      ]],
       requires_cold_chain: [false],
-      manufacturer: [''],
-      country_of_origin: [''],
-      barcode: [''],
-      image_url: [''],
-      is_active: [true],
+      manufacturer: ['', [
+        Validators.maxLength(200)
+      ]],
+      country_of_origin: ['', [
+        Validators.maxLength(100)
+      ]],
+      barcode: ['', [
+        Validators.minLength(8),
+        Validators.maxLength(50),
+        Validators.pattern(/^[0-9]+$/)
+      ]],
+      image_url: ['', [
+        Validators.maxLength(500),
+        Validators.pattern(/^https?:\/\/.+/)
+      ]],
       is_discontinued: [false]
     });
   }
 
   ngOnInit(): void {
-    this.productId = Number(this.route.snapshot.paramMap.get('id'));
-    if (this.productId) {
-      this.loadProduct();
-    } else {
-      this.notificationService.error('ID de producto no válido');
-      this.router.navigate(['/producto-list']);
-    }
+    this.loadProduct();
   }
 
   loadProduct(): void {
@@ -122,8 +149,8 @@ export class ProductoEditComponent implements OnInit {
       },
       error: (error) => {
         this.loadingProduct.set(false);
-        this.notificationService.error(`Error al cargar producto: ${error.message}`);
-        this.router.navigate(['/producto-list']);
+        this.notificationService.error(`${this.translate.instant('PRODUCTS.UPDATE_SUCCESS').replace('actualizado correctamente', 'Error al cargar producto')}: ${error.message}`);
+        this.dialogRef.close(false);
       }
     });
   }
@@ -144,7 +171,6 @@ export class ProductoEditComponent implements OnInit {
       country_of_origin: product.country_of_origin,
       barcode: product.barcode,
       image_url: product.image_url,
-      is_active: product.is_active,
       is_discontinued: product.is_discontinued
     });
   }
@@ -158,17 +184,17 @@ export class ProductoEditComponent implements OnInit {
       this.updateProductUseCase.execute(this.productId, updateData).subscribe({
         next: (product) => {
           this.loading.set(false);
-          this.notificationService.success('Producto actualizado exitosamente');
-          this.router.navigate(['/producto-list']);
+          this.notificationService.success(this.translate.instant('PRODUCTS.UPDATE_SUCCESS'));
+          this.dialogRef.close(true); // Cerrar modal y retornar true
         },
         error: (error) => {
           this.loading.set(false);
-          this.notificationService.error(`Error al actualizar producto: ${error.message}`);
+          this.notificationService.error(`${this.translate.instant('PRODUCTS.UPDATE_SUCCESS').replace('actualizado correctamente', 'Error al actualizar producto')}: ${error.message}`);
         }
       });
     } else {
       this.markFormGroupTouched();
-      this.notificationService.warning('Por favor, complete todos los campos requeridos');
+      this.notificationService.warning(this.translate.instant('PRODUCTS.COMPLETE_REQUIRED_FIELDS'));
     }
   }
 
@@ -192,7 +218,7 @@ export class ProductoEditComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['/producto-list']);
+    this.dialogRef.close(false); // Cerrar modal sin guardar
   }
 
   private markFormGroupTouched(): void {
@@ -206,13 +232,34 @@ export class ProductoEditComponent implements OnInit {
     const field = this.productForm.get(fieldName);
     if (field?.errors && field.touched) {
       if (field.errors['required']) {
-        return `${fieldName} es requerido`;
+        return this.translate.instant('VALIDATION.REQUIRED');
       }
       if (field.errors['minlength']) {
-        return `${fieldName} debe tener al menos ${field.errors['minlength'].requiredLength} caracteres`;
+        return this.translate.instant('VALIDATION.MIN_LENGTH', { min: field.errors['minlength'].requiredLength });
+      }
+      if (field.errors['maxlength']) {
+        return this.translate.instant('VALIDATION.MAX_LENGTH', { max: field.errors['maxlength'].requiredLength });
       }
       if (field.errors['min']) {
-        return `${fieldName} debe ser mayor a ${field.errors['min'].min}`;
+        return this.translate.instant('VALIDATION.MIN_VALUE', { min: field.errors['min'].min });
+      }
+      if (field.errors['max']) {
+        return this.translate.instant('VALIDATION.MAX_VALUE', { max: field.errors['max'].max });
+      }
+      if (field.errors['pattern']) {
+        if (fieldName === 'sku') {
+          return this.translate.instant('VALIDATION.INVALID_SKU');
+        }
+        if (fieldName === 'barcode') {
+          return this.translate.instant('VALIDATION.INVALID_BARCODE');
+        }
+        if (fieldName === 'supplier_id') {
+          return this.translate.instant('VALIDATION.INVALID_SUPPLIER_ID');
+        }
+        if (fieldName === 'image_url') {
+          return this.translate.instant('VALIDATION.INVALID_URL');
+        }
+        return this.translate.instant('VALIDATION.INVALID_FORMAT');
       }
     }
     return '';

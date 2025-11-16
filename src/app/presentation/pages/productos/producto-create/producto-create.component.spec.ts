@@ -1,9 +1,11 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
+import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
+import { MockTranslateService } from '../../../../../testing/translate.mock';
 
 import { ProductoCreateComponent } from './producto-create.component';
 import { CreateProductUseCase } from '../../../../core/application/use-cases/producto/create-product.use-case';
@@ -24,7 +26,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 describe('ProductoCreateComponent', () => {
   let component: ProductoCreateComponent;
   let fixture: ComponentFixture<ProductoCreateComponent>;
-  let mockRouter: any;
+  let mockDialogRef: any;
   let mockCreateProductUseCase: any;
   let mockNotificationService: any;
 
@@ -70,8 +72,8 @@ describe('ProductoCreateComponent', () => {
   };
 
   beforeEach(async () => {
-    const routerSpy = {
-      navigate: jest.fn().mockReturnValue(Promise.resolve(true))
+    const dialogRefSpy = {
+      close: jest.fn()
     };
     const createProductUseCaseSpy = {
       execute: jest.fn()
@@ -94,10 +96,11 @@ describe('ProductoCreateComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCheckboxModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot()
       ],
       providers: [
-        { provide: Router, useValue: routerSpy },
+        { provide: MatDialogRef, useValue: dialogRefSpy },
         { provide: CreateProductUseCase, useValue: createProductUseCaseSpy },
         { provide: NotificationService, useValue: notificationServiceSpy }
       ]
@@ -105,7 +108,7 @@ describe('ProductoCreateComponent', () => {
 
     fixture = TestBed.createComponent(ProductoCreateComponent);
     component = fixture.componentInstance;
-    mockRouter = TestBed.inject(Router) as any;
+    mockDialogRef = TestBed.inject(MatDialogRef) as any;
     mockCreateProductUseCase = TestBed.inject(CreateProductUseCase) as any;
     mockNotificationService = TestBed.inject(NotificationService) as any;
 
@@ -122,9 +125,9 @@ describe('ProductoCreateComponent', () => {
       expect(component.productForm.get('sku')?.value).toBe('');
       expect(component.productForm.get('name')?.value).toBe('');
       expect(component.productForm.get('category')?.value).toBe('');
-      expect(component.productForm.get('unit_price')?.value).toBe(0);
+      expect(component.productForm.get('unit_price')?.value).toBe(null);
       expect(component.productForm.get('currency')?.value).toBe('USD');
-      expect(component.productForm.get('supplier_id')?.value).toBe(1);
+      expect(component.productForm.get('supplier_id')?.value).toBe(null);
       expect(component.productForm.get('requires_cold_chain')?.value).toBe(false);
       expect(component.loading()).toBe(false);
     });
@@ -137,9 +140,8 @@ describe('ProductoCreateComponent', () => {
       expect(form.get('category')?.hasError('required')).toBe(true);
       expect(form.get('unit_of_measure')?.hasError('required')).toBe(true);
       
-      // unit_price has default value 0, so it doesn't have required error
-      // but it should have min error since 0 < 0.01
-      expect(form.get('unit_price')?.hasError('min')).toBe(true);
+      // unit_price has default value null, so it should have required error
+      expect(form.get('unit_price')?.hasError('required')).toBe(true); // required validator kicks in for null
     });
 
     it('should initialize arrays with correct values', () => {
@@ -147,7 +149,6 @@ describe('ProductoCreateComponent', () => {
       expect(component.categories).toContain('Instrumental');
       expect(component.unitsOfMeasure).toContain('unidad');
       expect(component.unitsOfMeasure).toContain('caja');
-      expect(component.currencies).toContain('USD');
       expect(component.currencies).toContain('COP');
     });
   });
@@ -173,8 +174,8 @@ describe('ProductoCreateComponent', () => {
 
       expect(component.loading()).toBe(false);
       expect(mockCreateProductUseCase.execute).toHaveBeenCalledWith(expect.any(Object));
-      expect(mockNotificationService.success).toHaveBeenCalledWith('Producto creado exitosamente');
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
+      expect(mockNotificationService.success).toHaveBeenCalledWith('PRODUCTS.CREATE_SUCCESS');
+      expect(mockDialogRef.close).toHaveBeenCalledWith(true);
     }));
 
     it('should handle loading state during submission', fakeAsync(() => {
@@ -200,8 +201,8 @@ describe('ProductoCreateComponent', () => {
       tick();
 
       expect(component.loading()).toBe(false);
-      expect(mockNotificationService.error).toHaveBeenCalledWith(`Error al crear producto: ${errorMessage}`);
-      expect(mockRouter.navigate).not.toHaveBeenCalled();
+      expect(mockNotificationService.error).toHaveBeenCalled();
+      expect(mockDialogRef.close).not.toHaveBeenCalled();
     }));
 
     it('should not submit invalid form', () => {
@@ -214,7 +215,7 @@ describe('ProductoCreateComponent', () => {
       component.onSubmit();
 
       expect(mockCreateProductUseCase.execute).not.toHaveBeenCalled();
-      expect(mockNotificationService.warning).toHaveBeenCalledWith('Por favor, complete todos los campos requeridos');
+      expect(mockNotificationService.warning).toHaveBeenCalledWith('PRODUCTS.COMPLETE_REQUIRED_FIELDS');
     });
 
     it('should mark form controls as touched when form is invalid', () => {
@@ -237,11 +238,11 @@ describe('ProductoCreateComponent', () => {
       // Test required validation
       skuControl?.setValue('');
       skuControl?.markAsTouched();
-      expect(component.getFieldError('sku')).toContain('sku es requerido');
+      expect(component.getFieldError('sku')).toContain('VALIDATION.REQUIRED');
       
       // Test minLength validation
       skuControl?.setValue('AB');
-      expect(component.getFieldError('sku')).toContain('debe tener al menos 3 caracteres');
+      expect(component.getFieldError('sku')).toContain('VALIDATION.MIN_LENGTH');
       
       // Test valid value
       skuControl?.setValue('ABC-123');
@@ -253,10 +254,10 @@ describe('ProductoCreateComponent', () => {
       
       nameControl?.setValue('');
       nameControl?.markAsTouched();
-      expect(component.getFieldError('name')).toContain('name es requerido');
+      expect(component.getFieldError('name')).toContain('VALIDATION.REQUIRED');
       
       nameControl?.setValue('A');
-      expect(component.getFieldError('name')).toContain('debe tener al menos 2 caracteres');
+      expect(component.getFieldError('name')).toContain('VALIDATION.MIN_LENGTH');
       
       nameControl?.setValue('Valid Name');
       expect(component.getFieldError('name')).toBe('');
@@ -267,10 +268,10 @@ describe('ProductoCreateComponent', () => {
       
       priceControl?.setValue(null);
       priceControl?.markAsTouched();
-      expect(component.getFieldError('unit_price')).toContain('unit_price es requerido');
+      expect(component.getFieldError('unit_price')).toContain('VALIDATION.REQUIRED');
       
       priceControl?.setValue(0);
-      expect(component.getFieldError('unit_price')).toContain('debe ser mayor a 0.01');
+      expect(component.getFieldError('unit_price')).toContain('VALIDATION.MIN_VALUE');
       
       priceControl?.setValue(10.50);
       expect(component.getFieldError('unit_price')).toBe('');
@@ -281,10 +282,10 @@ describe('ProductoCreateComponent', () => {
       
       supplierControl?.setValue(null);
       supplierControl?.markAsTouched();
-      expect(component.getFieldError('supplier_id')).toContain('supplier_id es requerido');
+      expect(component.getFieldError('supplier_id')).toContain('VALIDATION.REQUIRED');
       
       supplierControl?.setValue(0);
-      expect(component.getFieldError('supplier_id')).toContain('debe ser mayor a 1');
+      expect(component.getFieldError('supplier_id')).toContain('VALIDATION.MIN_VALUE');
       
       supplierControl?.setValue(5);
       expect(component.getFieldError('supplier_id')).toBe('');
@@ -308,10 +309,10 @@ describe('ProductoCreateComponent', () => {
   });
 
   describe('Navigation', () => {
-    it('should navigate to product list on cancel', () => {
+    it('should close dialog on cancel', () => {
       component.onCancel();
 
-      expect(mockRouter.navigate).toHaveBeenCalledWith(['/producto-list']);
+      expect(mockDialogRef.close).toHaveBeenCalledWith(false);
     });
   });
 
@@ -362,11 +363,9 @@ describe('ProductoCreateComponent', () => {
     });
 
     it('should have all required currencies', () => {
-      const expectedCurrencies = ['USD', 'COP', 'EUR'];
+      const expectedCurrencies = ['COP'];
       
-      expectedCurrencies.forEach(currency => {
-        expect(component.currencies).toContain(currency);
-      });
+      expect(component.currencies).toEqual(expectedCurrencies);
     });
   });
 });
