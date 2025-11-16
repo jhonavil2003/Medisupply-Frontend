@@ -6,7 +6,18 @@
 /* Asegurar que el container use el mismo padding que otros módulos */
 .container {
   padding: 24px !important;
-  margin: 24px 0 !important;
+  margin: 24px 0 24px 16px !important;
+}
+
+.no-results-message {
+  text-align: center;
+  padding: 40px 20px;
+  color: #666;
+  font-size: 16px;
+}
+
+.no-results-message p {
+  margin: 0;
 }
 
 .producto-catalog-container {

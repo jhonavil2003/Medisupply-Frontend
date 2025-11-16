@@ -81,10 +81,10 @@
     <p>{{ errorMessage() }}</p>
   </mat-card>
 
-  <!-- Tabla de Productos -->
-  <div *ngIf="products().length > 0 && !loading()" class="container">
-    <div class="table-container">
-      <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
+<!-- Tabla de Productos -->
+<div class="container">
+  <div *ngIf="products().length > 0 && !loading()" class="table-container">
+    <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
           
           <!-- SKU Column -->
           <ng-container matColumnDef="sku">
@@ -164,7 +164,6 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-      </div>
 
       <!-- Paginación unificada -->
       <mat-paginator 
@@ -177,14 +176,10 @@
         (page)="onPageChange($event)"
         showFirstLastButtons>
       </mat-paginator>
-    </div>
+  </div>
 
   <!-- Sin Resultados -->
-  <mat-card *ngIf="products().length === 0 && !loading() && !errorMessage()" class="no-results-card" data-cy="no-results">
-    <mat-icon>inventory</mat-icon>
-    <h3>{{ 'PRODUCTS.NO_RESULTS' | translate }}</h3>
-    <p>{{ 'PRODUCTS.ADJUST_FILTERS' | translate }}</p>
-    <button mat-raised-button color="primary" (click)="resetFilters()" data-cy="clear-filters-no-results">
-      {{ 'COMMON.CLEAR_FILTERS' | translate }}
-    </button>
-  </mat-card>
+  <div *ngIf="products().length === 0 && !loading() && !errorMessage()" class="no-results-message" data-cy="no-results">
+    <p>{{ 'COMMON.NO_RESULTS' | translate }}</p>
+  </div>
+</div>
