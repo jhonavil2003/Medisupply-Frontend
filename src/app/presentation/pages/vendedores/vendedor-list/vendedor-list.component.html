@@ -40,19 +40,15 @@
     </div>
   }
 
-  <div class="table-container">
-    @if (vendedores().length === 0 && !loading() && !errorMessage()) {
-      <div class="empty-state">
-        <mat-icon>people_outline</mat-icon>
-        <h3>{{ 'SALESPERSONS.NO_SALESPERSONS' | translate }}</h3>
-        <p>{{ 'SALESPERSONS.ADD_FIRST' | translate }}</p>
-        <button mat-raised-button color="primary" (click)="navigateToCreate()">
-          <mat-icon>add</mat-icon>
-          {{ 'SALESPERSONS.CREATE_FIRST' | translate }}
-        </button>
-      </div>
-    } @else {
-      <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
+  <!-- Sin Resultados -->
+  @if (vendedores().length === 0 && !loading() && !errorMessage()) {
+    <div class="no-results-message">
+      <p>{{ 'COMMON.NO_RESULTS' | translate }}</p>
+    </div>
+  }
+
+  <div class="table-container" *ngIf="vendedores().length > 0">
+    <table mat-table [dataSource]="dataSource" matSort class="modern-table products-table">
         
         <ng-container matColumnDef="employeeId">
           <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'SALESPERSONS.EMPLOYEE_ID' | translate }}</th>
@@ -112,6 +108,5 @@
         [pageSizeOptions]="[5, 10, 20, 50]"
         showFirstLastButtons>
       </mat-paginator>
-    }
   </div>
 </div>

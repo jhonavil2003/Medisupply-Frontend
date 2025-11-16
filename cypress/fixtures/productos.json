@@ -1,0 +1,64 @@
+{
+  "sampleProduct": {
+    "sku": "TEST-12345",
+    "name": "Producto de Prueba E2E",
+    "description": "Descripción de prueba para testing automatizado",
+    "category": "Medicamentos",
+    "subcategory": "Analgésicos",
+    "unit_price": 250.00,
+    "currency": "COP",
+    "unit_of_measure": "unidad",
+    "supplier_id": 1,
+    "requires_cold_chain": false,
+    "manufacturer": "Fabricante Test",
+    "country_of_origin": "Colombia",
+    "barcode": "1234567890123"
+  },
+  "coldChainProduct": {
+    "sku": "COLD-TEST-001",
+    "name": "Producto Cadena Frío",
+    "description": "Producto que requiere refrigeración",
+    "category": "Medicamentos",
+    "subcategory": "Vacunas",
+    "unit_price": 500.00,
+    "currency": "COP",
+    "unit_of_measure": "vial",
+    "supplier_id": 1,
+    "requires_cold_chain": true,
+    "manufacturer": "Fabricante Frío",
+    "country_of_origin": "Colombia"
+  },
+  "invalidProduct": {
+    "sku": "",
+    "name": "A",
+    "unit_price": -10,
+    "supplier_id": "abc"
+  },
+  "searchTerms": {
+    "common": "MED",
+    "specific": "TEST-12345",
+    "noResults": "ZZZZZ999999XXXX"
+  },
+  "categories": [
+    "Medicamentos",
+    "Instrumental",
+    "Equipos médicos",
+    "Suministros",
+    "Reactivos",
+    "Material quirúrgico",
+    "Otros"
+  ],
+  "unitsOfMeasure": [
+    "unidad",
+    "caja",
+    "paquete",
+    "botella",
+    "frasco",
+    "ampolla",
+    "vial",
+    "tubo",
+    "ml",
+    "gr",
+    "kg"
+  ]
+}
