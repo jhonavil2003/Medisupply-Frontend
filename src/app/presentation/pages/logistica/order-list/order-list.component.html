@@ -1,136 +1,93 @@
-<div class="order-list-container">
+<div class="container">
   <!-- Header -->
-  <div class="page-header">
-    <h1>
-      <mat-icon>shopping_cart</mat-icon>
-      Listado de Órdenes
-    </h1>
-    <p class="subtitle">Gestiona y consulta todas las órdenes de la compañía</p>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">Listado de Órdenes</h2>
+    </div>
   </div>
 
-  <!-- Sección de Filtros -->
-  <mat-card class="filters-card">
-    <mat-card-header>
-      <mat-card-title>
-        <mat-icon>filter_list</mat-icon>
-        Filtros
-      </mat-card-title>
-    </mat-card-header>
-    <mat-card-content>
-      <div class="filters-grid">
-        <!-- Filtro de Estado -->
-        <mat-form-field appearance="outline">
-          <mat-label>Estado</mat-label>
-          <mat-select 
-            [(ngModel)]="filterStatus" 
-            (ngModelChange)="onFilterChange()">
-            @for (option of statusOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-          <mat-icon matPrefix>inventory</mat-icon>
-        </mat-form-field>
+  <!-- Filtros -->
+  <form>
+    <div class="filters-row">
+      <!-- Filtro de Estado -->
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Estado</mat-label>
+        <mat-select 
+          [ngModel]="filterStatus()" 
+          (ngModelChange)="filterStatus.set($event); onFilterChange()"
+          [ngModelOptions]="{standalone: true}">
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
 
-        <!-- Filtro Fecha Orden Desde -->
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha Orden Desde</mat-label>
-          <input 
-            matInput 
-            type="date" 
-            [(ngModel)]="filterOrderDateFrom"
-            (ngModelChange)="onFilterChange()">
-          <mat-icon matPrefix>calendar_today</mat-icon>
-        </mat-form-field>
+      <!-- Filtro Fecha Orden Desde -->
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Fecha Orden Desde</mat-label>
+        <input 
+          matInput 
+          type="date" 
+          [ngModel]="filterOrderDateFrom()"
+          (ngModelChange)="filterOrderDateFrom.set($event); onFilterChange()"
+          [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
 
-        <!-- Filtro Fecha Orden Hasta -->
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha Orden Hasta</mat-label>
-          <input 
-            matInput 
-            type="date" 
-            [(ngModel)]="filterOrderDateTo"
-            (ngModelChange)="onFilterChange()">
-          <mat-icon matPrefix>calendar_today</mat-icon>
-        </mat-form-field>
+      <!-- Filtro Fecha Orden Hasta -->
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Fecha Orden Hasta</mat-label>
+        <input 
+          matInput 
+          type="date" 
+          [ngModel]="filterOrderDateTo()"
+          (ngModelChange)="filterOrderDateTo.set($event); onFilterChange()"
+          [ngModelOptions]="{standalone: true}">
+      </mat-form-field>
 
-        <!-- Filtro Fecha Entrega Desde -->
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha Entrega Desde</mat-label>
-          <input 
-            matInput 
-            type="date" 
-            [(ngModel)]="filterDeliveryDateFrom"
-            (ngModelChange)="onFilterChange()">
-          <mat-icon matPrefix>local_shipping</mat-icon>
-        </mat-form-field>
+      <!-- Filtro Ciudad de Entrega -->
+      <mat-form-field appearance="outline" floatLabel="always">
+        <mat-label>Ciudad de Entrega</mat-label>
+        <input 
+          matInput 
+          [ngModel]="filterDeliveryCity()"
+          (ngModelChange)="filterDeliveryCity.set($event); onFilterChange()"
+          [ngModelOptions]="{standalone: true}"
+          placeholder="Buscar ciudad...">
+      </mat-form-field>
+    </div>
 
-        <!-- Filtro Fecha Entrega Hasta -->
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha Entrega Hasta</mat-label>
-          <input 
-            matInput 
-            type="date" 
-            [(ngModel)]="filterDeliveryDateTo"
-            (ngModelChange)="onFilterChange()">
-          <mat-icon matPrefix>local_shipping</mat-icon>
-        </mat-form-field>
-      </div>
+    <div class="filter-actions">
+      <button mat-button type="button" (click)="clearFilters()">
+        <mat-icon>filter_list_off</mat-icon>
+        Limpiar Filtros
+      </button>
+    </div>
+  </form>
+</div>
 
-      @if (hasActiveFilters()) {
-        <div class="filters-actions">
-          <button 
-            mat-raised-button 
-            color="accent" 
-            (click)="clearFilters()">
-            <mat-icon>clear</mat-icon>
-            Limpiar Filtros
-          </button>
-        </div>
-      }
-    </mat-card-content>
+<!-- Loading Spinner -->
+<mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
+
+<!-- Estado de error -->
+@if (error() && !loading()) {
+  <mat-card class="error-card" style="margin: 16px;">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ error() }}</p>
+    <button mat-raised-button color="primary" (click)="retry()">
+      <mat-icon>refresh</mat-icon>
+      Reintentar
+    </button>
   </mat-card>
+}
 
-  <!-- Resumen -->
-  <div class="summary-section">
-    <div class="summary-info">
-      <mat-icon>info</mat-icon>
-      <span>
-        Mostrando <strong>{{ orders().length }}</strong> de 
-        <strong>{{ totalOrders() }}</strong> órdenes
-      </span>
-    </div>
-  </div>
-
-  <!-- Estado de carga -->
-  @if (loading()) {
-    <div class="loading-container">
-      <mat-spinner diameter="50"></mat-spinner>
-      <p>Cargando órdenes...</p>
-    </div>
-  }
-
-  <!-- Estado de error -->
-  @if (error() && !loading()) {
-    <mat-card class="error-card">
-      <mat-card-content>
-        <div class="error-content">
-          <mat-icon color="warn">error</mat-icon>
-          <p>{{ error() }}</p>
-          <button mat-raised-button color="primary" (click)="retry()">
-            <mat-icon>refresh</mat-icon>
-            Reintentar
-          </button>
-        </div>
-      </mat-card-content>
-    </mat-card>
-  }
-
-  <!-- Tabla de Órdenes -->
+<!-- Tabla de Órdenes -->
+<div class="container">
   @if (!loading() && !error()) {
-    <mat-card class="table-card">
-      <mat-card-content>
-        <div class="table-container">
-          <table mat-table [dataSource]="orders()" class="orders-table">
+    <div class="table-container">
+      <table mat-table [dataSource]="orders()" class="modern-table orders-table">
             
             <!-- Columna: Número de Orden -->
             <ng-container matColumnDef="orderNumber">
@@ -196,13 +153,12 @@
             <!-- Columna: Acciones -->
             <ng-container matColumnDef="actions">
               <th mat-header-cell *matHeaderCellDef>Acciones</th>
-              <td mat-cell *matCellDef="let order">
+              <td mat-cell *matCellDef="let order" class="actions">
                 <button 
-                  mat-icon-button 
-                  color="primary"
-                  matTooltip="Ver detalle"
+                  class="btn-icon"
+                  title="Ver detalle"
                   [routerLink]="['/ordenes', order.id]">
-                  <mat-icon>visibility</mat-icon>
+                  <i class="fas fa-eye"></i>
                 </button>
               </td>
             </ng-container>
@@ -226,6 +182,7 @@
 
         <!-- Paginación -->
         <mat-paginator 
+          class="unified-paginator"
           [length]="totalOrders()"
           [pageSize]="perPage()"
           [pageIndex]="currentPage() - 1"
@@ -233,7 +190,12 @@
           (page)="onPageChange($event)"
           showFirstLastButtons>
         </mat-paginator>
-      </mat-card-content>
-    </mat-card>
-  }
-</div>
+      }
+
+      <!-- Sin Resultados -->
+      @if (orders().length === 0 && !loading() && !error()) {
+        <div class="no-results-message">
+          <p>No se encontraron órdenes</p>
+        </div>
+      }
+    </div>

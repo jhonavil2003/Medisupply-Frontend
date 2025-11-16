@@ -9,55 +9,48 @@
   </div>
 
   <!-- Search Section -->
-  <mat-card class="search-card">
-    <mat-card-content>
-      <div class="search-form">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>
-            <mat-icon>search</mat-icon>
-            {{ 'PRODUCT_LOCATION.SEARCH_PRODUCT' | translate }}
-          </mat-label>
-          <input 
-            matInput 
-            [formControl]="searchControl"
-            [placeholder]="'PRODUCT_LOCATION.SEARCH_PLACEHOLDER' | translate"
-            autofocus
-          />
-          <mat-hint>{{ 'PRODUCT_LOCATION.SEARCH_HINT' | translate }}</mat-hint>
-          @if (searchControl.value) {
-            <button mat-icon-button matSuffix (click)="resetSearch()" [matTooltip]="'PRODUCT_LOCATION.CLEAR_SEARCH' | translate">
-              <mat-icon>close</mat-icon>
-            </button>
-          }
-        </mat-form-field>
-        
-        <button 
-          mat-raised-button 
-          color="primary" 
-          (click)="search()" 
-          [disabled]="loading() || !searchControl.value"
-          class="search-button"
-        >
-          <mat-icon>search</mat-icon>
-          {{ 'PRODUCT_LOCATION.SEARCH' | translate }}
-        </button>
-      </div>
+  <div class="search-bar" style="flex: 1;">
+    <div class="search-wrap">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'PRODUCT_LOCATION.SEARCH_PRODUCT' | translate }}</mat-label>
+        <input 
+          matInput 
+          [formControl]="searchControl"
+          [placeholder]="'PRODUCT_LOCATION.SEARCH_PLACEHOLDER' | translate"
+          (keyup.enter)="search()"
+          autofocus
+        />
+        @if (searchControl.value) {
+          <button 
+            matSuffix 
+            mat-icon-button 
+            [attr.aria-label]="'PRODUCT_LOCATION.CLEAR_SEARCH' | translate"
+            (click)="resetSearch()" 
+            color="primary"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
+    </div>
+  </div>
+</div>
 
-      @if (loading()) {
-        <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
-      }
+<!-- Loading Spinner -->
+<mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
 
-      @if (errorMessage()) {
-        <div class="error-message">
-          <mat-icon>error_outline</mat-icon>
-          <span>{{ errorMessage() }}</span>
-        </div>
-      }
-    </mat-card-content>
+<!-- Error Message -->
+@if (errorMessage()) {
+  <mat-card class="error-card" style="margin: 16px;">
+    <mat-icon color="warn">error</mat-icon>
+    <p>{{ errorMessage() }}</p>
   </mat-card>
+}
 
-  <!-- Summary Stats -->
-  @if (hasResults() && searchPerformed()) {
+<!-- Summary Stats -->
+@if (hasResults() && searchPerformed() && !loading()) {
+  <div class="container">
     <div class="stats-container">
       <mat-card class="stat-card">
         <mat-card-content>
@@ -95,20 +88,14 @@
         </mat-card-content>
       </mat-card>
     </div>
-  }
+  </div>
+}
 
-  <!-- Results Table -->
-  @if (hasResults()) {
-    <mat-card class="table-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>list</mat-icon>
-          {{ 'PRODUCT_LOCATION.LOCATIONS_FOUND_TITLE' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="table-container">
-          <table mat-table [dataSource]="dataSource" matSort class="locations-table">
+<!-- Results Table -->
+<div class="container">
+  @if (hasResults() && !loading()) {
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="modern-table locations-table">
             
             <!-- Product SKU Column -->
             <ng-container matColumnDef="product_sku">
@@ -234,33 +221,33 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
           </table>
-        </div>
-        <mat-paginator 
-          [pageSize]="10" 
-          [pageSizeOptions]="[5, 10, 20, 50]"
-          showFirstLastButtons
-        ></mat-paginator>
-      </mat-card-content>
-    </mat-card>
+      </div>
+        
+      <!-- Paginación -->
+      <mat-paginator 
+        class="unified-paginator"
+        [pageSize]="10" 
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
   }
 
   <!-- No Results Message -->
   @if (!hasResults() && searchPerformed() && !loading()) {
-    <mat-card class="empty-state">
-      <mat-card-content>
-        <mat-icon class="empty-icon">search_off</mat-icon>
-        <h3>{{ 'PRODUCT_LOCATION.NO_RESULTS_TITLE' | translate }}</h3>
-        <p>{{ 'PRODUCT_LOCATION.NO_RESULTS_MESSAGE' | translate }}</p>
-        <button mat-raised-button color="primary" (click)="resetSearch()">
-          <mat-icon>refresh</mat-icon>
-          {{ 'PRODUCT_LOCATION.NEW_SEARCH' | translate }}
-        </button>
-      </mat-card-content>
-    </mat-card>
+    <div class="no-results-message">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h3>{{ 'PRODUCT_LOCATION.NO_RESULTS_TITLE' | translate }}</h3>
+      <p>{{ 'PRODUCT_LOCATION.NO_RESULTS_MESSAGE' | translate }}</p>
+      <button mat-raised-button color="primary" (click)="resetSearch()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'PRODUCT_LOCATION.NEW_SEARCH' | translate }}
+      </button>
+    </div>
   }
+</div>
 
-  <!-- Detail Modal -->
-  @if (selectedLocation()) {
+<!-- Detail Modal -->
+@if (selectedLocation()) {
     <div class="modal-overlay" (click)="cerrarDetalle()">
       <mat-card class="detail-modal" (click)="$event.stopPropagation()">
         <mat-card-header>
@@ -430,4 +417,3 @@
       </mat-card>
     </div>
   }
-</div>

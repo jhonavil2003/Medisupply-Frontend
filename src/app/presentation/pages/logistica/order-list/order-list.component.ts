@@ -11,6 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
@@ -32,6 +33,7 @@ import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/dom
     MatIconModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatChipsModule,
     MatTooltipModule
   ],
@@ -58,6 +60,7 @@ export class OrderListComponent implements OnInit {
   filterOrderDateTo = signal<string>('');
   filterDeliveryDateFrom = signal<string>('');
   filterDeliveryDateTo = signal<string>('');
+  filterDeliveryCity = signal<string>('');
 
   // Columnas de la tabla
   displayedColumns: string[] = [
@@ -84,15 +87,6 @@ export class OrderListComponent implements OnInit {
 
   // Opciones de items por página
   pageSizeOptions: number[] = [10, 20, 50, 100];
-
-  // Computed para verificar si hay filtros activos
-  hasActiveFilters = computed(() => {
-    return this.filterStatus() !== '' ||
-           this.filterOrderDateFrom() !== '' ||
-           this.filterOrderDateTo() !== '' ||
-           this.filterDeliveryDateFrom() !== '' ||
-           this.filterDeliveryDateTo() !== '';
-  });
 
   ngOnInit(): void {
     this.loadOrders();
@@ -145,19 +139,6 @@ export class OrderListComponent implements OnInit {
    */
   onFilterChange(): void {
     this.currentPage.set(1); // Resetear a la primera página
-    this.loadOrders();
-  }
-
-  /**
-   * Limpia todos los filtros
-   */
-  clearFilters(): void {
-    this.filterStatus.set('');
-    this.filterOrderDateFrom.set('');
-    this.filterOrderDateTo.set('');
-    this.filterDeliveryDateFrom.set('');
-    this.filterDeliveryDateTo.set('');
-    this.currentPage.set(1);
     this.loadOrders();
   }
 
@@ -235,5 +216,32 @@ export class OrderListComponent implements OnInit {
       month: 'short',
       day: 'numeric'
     });
+  }
+
+  /**
+   * Verifica si hay filtros activos
+   */
+  hasActiveFilters(): boolean {
+    return !!(
+      this.filterStatus() ||
+      this.filterOrderDateFrom() ||
+      this.filterOrderDateTo() ||
+      this.filterDeliveryDateFrom() ||
+      this.filterDeliveryDateTo() ||
+      this.filterDeliveryCity()
+    );
+  }
+
+  /**
+   * Limpia todos los filtros
+   */
+  clearFilters(): void {
+    this.filterStatus.set('');
+    this.filterOrderDateFrom.set('');
+    this.filterOrderDateTo.set('');
+    this.filterDeliveryDateFrom.set('');
+    this.filterDeliveryDateTo.set('');
+    this.filterDeliveryCity.set('');
+    this.loadOrders();
   }
 }
