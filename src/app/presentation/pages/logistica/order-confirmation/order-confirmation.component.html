@@ -1,41 +1,36 @@
-<div class="order-confirmation-container">
-  <div class="header">
-    <div class="header-content">
-      <div class="title-section">
-        <mat-icon class="header-icon">fact_check</mat-icon>
-        <div>
-          <h1>Confirmación de Órdenes</h1>
-          <p class="subtitle">Órdenes preparadas pendientes de confirmación</p>
-        </div>
-      </div>
-
-      @if (hasSelectedOrders()) {
-        <div class="bulk-actions">
-          <span class="selection-info">{{ selectedCount() }} seleccionadas</span>
-          <button 
-            mat-raised-button 
-            color="primary" 
-            (click)="confirmSelectedOrders()"
-            [disabled]="loading()">
-            <mat-icon>check_circle</mat-icon>
-            Confirmar Seleccionadas
-          </button>
-        </div>
-      }
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">Confirmación de Órdenes</h2>
     </div>
 
-    <div class="stats">
-      <div class="stat-card">
-        <mat-icon>pending_actions</mat-icon>
-        <div class="stat-content">
-          <span class="stat-value">{{ totalOrders() }}</span>
-          <span class="stat-label">Órdenes Preparadas</span>
-        </div>
+    @if (hasSelectedOrders()) {
+      <button 
+        mat-raised-button 
+        color="primary" 
+        (click)="confirmSelectedOrders()"
+        [disabled]="loading()">
+        <mat-icon>check_circle</mat-icon>
+        Confirmar Seleccionadas ({{ selectedCount() }})
+      </button>
+    }
+  </div>
+
+  <div class="totales-resumen">
+    <div class="total-item">
+      <mat-icon>pending_actions</mat-icon>
+      <div>
+        <span class="total-label">Órdenes Preparadas</span>
+        <span class="total-value">{{ totalOrders() }}</span>
       </div>
     </div>
   </div>
+</div>
 
-  @if (loading() && orders().length === 0) {
+@if (loading() && orders().length === 0) {
     <div class="loading-container">
       <mat-spinner diameter="50"></mat-spinner>
       <p>Cargando órdenes preparadas...</p>
@@ -58,19 +53,19 @@
     </mat-card>
   }
 
-  @if (!loading() && !error() && orders().length === 0) {
-    <mat-card class="empty-state">
-      <mat-card-content>
-        <mat-icon>check_circle_outline</mat-icon>
-        <h2>No hay órdenes preparadas</h2>
-        <p>Todas las órdenes han sido confirmadas o no hay órdenes pendientes</p>
-        <button mat-raised-button color="primary" (click)="retry()">
-          <mat-icon>refresh</mat-icon>
-          Actualizar
-        </button>
-      </mat-card-content>
-    </mat-card>
-  }
+@if (!loading() && !error() && orders().length === 0) {
+  <div class="container">
+    <div class="no-results-message">
+      <mat-icon>check_circle_outline</mat-icon>
+      <h2>No hay órdenes preparadas</h2>
+      <p>Todas las órdenes han sido confirmadas o no hay órdenes pendientes</p>
+      <button mat-raised-button color="primary" (click)="retry()">
+        <mat-icon style="font-size: 20px; width: 20px; height: 20px;">refresh</mat-icon>
+        Actualizar
+      </button>
+    </div>
+  </div>
+}
 
   @if (orders().length > 0) {
     <mat-card class="table-card">
@@ -197,4 +192,3 @@
       </mat-paginator>
     </mat-card>
   }
-</div>
