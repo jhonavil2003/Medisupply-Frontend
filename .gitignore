@@ -28,17 +28,20 @@ yarn-error.log
 !.vscode/extensions.json
 .history/*
 
+# Test reports
+junit.xml
+
+# Coverage reports
+/coverage
+/coverage-*
+
 # Miscellaneous
 /.angular/cache
 .sass-cache/
 /connect.lock
-/coverage
 /libpeerconnection.log
 testem.log
 /typings
-
-# Test reports
-junit.xml
 
 # System files
 .DS_Store

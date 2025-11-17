@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError } from 'rxjs/operators';
-import { ProductoRepository } from '../../../domain/repositories/producto.repository';
+import { ProductoRepository, CreateProductRequest, UpdateProductRequest } from '../../../domain/repositories/producto.repository';
 import {
   ProductoEntity,
   ProductoDetailedEntity,
@@ -24,6 +24,11 @@ export class HttpProductoRepository extends ProductoRepository {
 
   getBySku(sku: string): Observable<ProductoDetailedEntity> {
     return this.http.get<ProductoDetailedEntity>(`${this.apiUrl}/${sku}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  getById(id: number): Observable<ProductoDetailedEntity> {
+    return this.http.get<ProductoDetailedEntity>(`${this.apiUrl}/${id}`)
       .pipe(catchError(this.handleError));
   }
 
@@ -69,6 +74,21 @@ export class HttpProductoRepository extends ProductoRepository {
       page,
       per_page: 20
     });
+  }
+
+  create(productData: CreateProductRequest): Observable<ProductoDetailedEntity> {
+    return this.http.post<ProductoDetailedEntity>(this.apiUrl, productData)
+      .pipe(catchError(this.handleError));
+  }
+
+  update(productId: number, productData: UpdateProductRequest): Observable<ProductoDetailedEntity> {
+    return this.http.put<ProductoDetailedEntity>(`${this.apiUrl}/${productId}`, productData)
+      .pipe(catchError(this.handleError));
+  }
+
+  delete(productId: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${productId}`)
+      .pipe(catchError(this.handleError));
   }
 
   private buildHttpParams(params: ProductQueryParams): HttpParams {

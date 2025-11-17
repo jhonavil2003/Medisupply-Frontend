@@ -3,9 +3,9 @@
     <i class="fas fa-bars"></i>
   </button>
   <ul>
-    <li>
+    <li (click)="navigateTo('')" class="menuitem">
       <i class="fas fa-home"></i>
-      <span class="menu-text" (click)="navigateTo('')">Inicio</span>
+      <span class="menu-text">Inicio</span>
     </li>
     <li (click)="toggleSubmenu('gestion')" [ngClass]="{ 'active': gestionOpen }">
       <i class="fas fa-clipboard-list"></i>

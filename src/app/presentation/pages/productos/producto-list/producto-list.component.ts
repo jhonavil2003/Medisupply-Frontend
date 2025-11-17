@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, AfterViewInit, inject, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, ReactiveFormsModule } from '@angular/forms';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule, MatTableDataSource } from '@angular/material/table';
 import { MatPaginatorModule, MatPaginator, PageEvent } from '@angular/material/paginator';
 import { MatSortModule, MatSort } from '@angular/material/sort';
@@ -14,12 +14,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
 
 import { ProductoEntity, ProductQueryParams, Pagination } from '../../../../core/domain/entities/producto.entity';
 import { GetAllProductosUseCase } from '../../../../core/application/use-cases/producto/get-products.use-case';
 import { SearchProductosUseCase } from '../../../../core/application/use-cases/producto/search-products.use-case';
+import { DeleteProductUseCase } from '../../../../core/application/use-cases/producto/delete-product.use-case';
 import { NotificationService } from '../../../shared/services/notification.service';
+import { ConfirmDialogService } from '../../../shared/services/confirm-dialog.service';
 
 @Component({
   selector: 'app-producto-list',
@@ -39,7 +42,8 @@ import { NotificationService } from '../../../shared/services/notification.servi
     MatCardModule,
     MatProgressBarModule,
     MatChipsModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatTooltipModule
   ],
   templateUrl: './producto-list.component.html',
   styleUrls: ['./producto-list.component.css']
@@ -47,7 +51,10 @@ import { NotificationService } from '../../../shared/services/notification.servi
 export class ProductoListComponent implements OnInit, AfterViewInit {
   private getAllProductosUseCase = inject(GetAllProductosUseCase);
   private searchProductosUseCase = inject(SearchProductosUseCase);
+  private deleteProductUseCase = inject(DeleteProductUseCase);
   private notify = inject(NotificationService);
+  private confirmDialog = inject(ConfirmDialogService);
+  private router = inject(Router);
 
   products = signal<ProductoEntity[]>([]);
   pagination = signal<Pagination | null>(null);
@@ -141,7 +148,6 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
           this.loading.set(false);
           this.errorMessage.set(error.message);
           this.notify.error(error.message);
-          console.error('Error loading products:', error);
         }
       });
   }
@@ -184,6 +190,35 @@ export class ProductoListComponent implements OnInit, AfterViewInit {
   }
 
   verDetalle(product: ProductoEntity): void {
-    this.notify.info(`Ver detalle de: ${product.name}`);
+    this.router.navigate(['/producto-detail', product.id]);
+  }
+
+  editarProducto(product: ProductoEntity): void {
+    this.router.navigate(['/producto-edit', product.id]);
+  }
+
+  navigateToCreate(): void {
+    this.router.navigate(['/producto-create']);
+  }
+
+  async eliminarProducto(product: ProductoEntity): Promise<void> {
+    const confirmed = await this.confirmDialog.confirmDelete(product.name).toPromise();
+    
+    if (confirmed) {
+      this.loading.set(true);
+      
+      this.deleteProductUseCase.execute(product.id)
+        .subscribe({
+          next: () => {
+            this.loading.set(false);
+            this.notify.success(`Producto "${product.name}" eliminado correctamente`);
+            this.loadProducts(this.pagination()?.page || 1);
+          },
+          error: (error) => {
+            this.loading.set(false);
+            this.notify.error(`Error al eliminar el producto: ${error.message}`);
+          }
+        });
+    }
   }
 }

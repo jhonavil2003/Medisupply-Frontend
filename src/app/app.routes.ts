@@ -17,6 +17,21 @@ export const routes: Routes = [
       .then(m => m.ProductoListComponent)
   },
   { 
+    path: 'producto-detail/:id', 
+    loadComponent: () => import('./presentation/pages/productos/producto-detail/producto-detail.component')
+      .then(m => m.ProductoDetailComponent)
+  },
+  { 
+    path: 'producto-create', 
+    loadComponent: () => import('./presentation/pages/productos/producto-create/producto-create.component')
+      .then(m => m.ProductoCreateComponent)
+  },
+  { 
+    path: 'producto-edit/:id', 
+    loadComponent: () => import('./presentation/pages/productos/producto-edit/producto-edit.component')
+      .then(m => m.ProductoEditComponent)
+  },
+  { 
     path: 'dashboard-admin', 
     loadComponent: () => import('./presentation/pages/dashboard-admin/dashboard-admin.component')
       .then(m => m.DashboardAdminComponent)

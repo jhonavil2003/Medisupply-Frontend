@@ -4,6 +4,12 @@
       <mat-card-title>
         <h2>📦 Catálogo de Productos Médicos</h2>
       </mat-card-title>
+      <div class="header-actions">
+        <button mat-raised-button color="primary" (click)="navigateToCreate()">
+          <mat-icon>add</mat-icon>
+          Crear Producto
+        </button>
+      </div>
     </mat-card-header>
   </mat-card>
 
@@ -180,8 +186,11 @@
               <button mat-icon-button color="primary" (click)="verDetalle(product)" matTooltip="Ver detalle">
                 <mat-icon>visibility</mat-icon>
               </button>
-              <button mat-icon-button color="accent" [routerLink]="['/products', product.sku]" matTooltip="Editar">
+              <button mat-icon-button color="accent" (click)="editarProducto(product)" matTooltip="Editar">
                 <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" (click)="eliminarProducto(product)" matTooltip="Eliminar">
+                <mat-icon>delete</mat-icon>
               </button>
             </td>
           </ng-container>
