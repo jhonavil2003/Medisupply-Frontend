@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -31,6 +31,7 @@ import { VehicleEntity, GenerateRoutesResponse, GeneratedRoute } from '../../../
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatTableModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -80,6 +81,7 @@ export class RouteGenerationComponent implements OnInit {
   
   generationResult = signal<GenerateRoutesResponse | null>(null);
   showResults = signal(false);
+  showVehicleDetails = signal(false);
 
   displayedColumns: string[] = ['select', 'orderNumber', 'customerName', 'date', 'totalAmount', 'actions'];
   vehicleColumns: string[] = ['plate', 'type', 'capacity', 'driver', 'status'];
@@ -338,4 +340,12 @@ export class RouteGenerationComponent implements OnInit {
     };
     return colors[status] || '#9e9e9e';
   }
+
+  /**
+   * Alterna la visibilidad de los detalles de vehículos
+   */
+  toggleVehicleDetails(): void {
+    this.showVehicleDetails.update(v => !v);
+  }
+
 }
