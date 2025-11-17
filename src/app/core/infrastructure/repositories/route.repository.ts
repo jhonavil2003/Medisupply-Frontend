@@ -2,7 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
-import { environment } from '../../../../environments/environment.development';
+import { environment } from '../../../../environments/environment';
 
 export interface VehicleEntity {
   id: number;
@@ -233,14 +233,14 @@ export class RouteRepository {
     return this.http.get<any>(`${this.vehiclesUrl}/available`, { params }).pipe(
       map(response => {
         console.log('Raw vehicles response:', response);
-        
+
         const vehicles = response.vehicles || response.data || response;
-        
+
         if (!Array.isArray(vehicles)) {
           console.error('Unexpected response format:', response);
           return [];
         }
-        
+
         return vehicles.map((v: BackendVehicle) => this.mapVehicleToDomain(v));
       }),
       catchError(error => {

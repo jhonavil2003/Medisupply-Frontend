@@ -3,14 +3,14 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { OrderRepository } from '../../../domain/repositories/order.repository';
-import { 
-  OrderEntity, 
-  OrdersListResponse, 
+import {
+  OrderEntity,
+  OrdersListResponse,
   GetOrdersFilters,
   CustomerEntity,
   OrderItemEntity
 } from '../../../domain/entities/order.entity';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 
 /**
  * Formato de respuesta del backend para Customer
@@ -252,8 +252,8 @@ export class HttpOrderRepository extends OrderRepository {
    * Obtiene órdenes de un vendedor específico
    */
   override getOrdersBySeller(
-    sellerId: string, 
-    page: number = 1, 
+    sellerId: string,
+    page: number = 1,
     perPage: number = 20
   ): Observable<OrdersListResponse> {
     return this.getOrders({ sellerId, page, perPage });
@@ -263,8 +263,8 @@ export class HttpOrderRepository extends OrderRepository {
    * Obtiene órdenes de un cliente específico
    */
   override getOrdersByCustomer(
-    customerId: number, 
-    page: number = 1, 
+    customerId: number,
+    page: number = 1,
     perPage: number = 20
   ): Observable<OrdersListResponse> {
     return this.getOrders({ customerId, page, perPage });
@@ -274,8 +274,8 @@ export class HttpOrderRepository extends OrderRepository {
    * Obtiene órdenes por estado
    */
   override getOrdersByStatus(
-    status: string, 
-    page: number = 1, 
+    status: string,
+    page: number = 1,
     perPage: number = 20
   ): Observable<OrdersListResponse> {
     return this.getOrders({ status: status as any, page, perPage });
@@ -301,14 +301,14 @@ export class HttpOrderRepository extends OrderRepository {
    * Actualiza el estado de múltiples órdenes
    */
   override updateMultipleOrdersStatus(
-    orderIds: number[], 
+    orderIds: number[],
     newStatus: string
   ): Observable<{ success: boolean; updatedCount: number }> {
     return this.http.patch<{ success: boolean; updated_count: number }>(
       `${this.apiUrl}/bulk-update`,
-      { 
+      {
         order_ids: orderIds,
-        status: newStatus 
+        status: newStatus
       }
     ).pipe(
       map(response => ({

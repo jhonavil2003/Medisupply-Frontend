@@ -1,6 +1,6 @@
 import { Component, Input, OnInit, OnDestroy, PLATFORM_ID, inject, signal } from '@angular/core';
 import { CommonModule, isPlatformBrowser } from '@angular/common';
-import { environment } from '../../../../../environments/environment.development';
+import { environment } from '../../../../../environments/environment';
 
 declare global {
   interface Window {
@@ -92,7 +92,7 @@ declare global {
 })
 export class GoogleMapComponent implements OnInit, OnDestroy {
   private platformId = inject(PLATFORM_ID);
-  
+
   @Input() latitude!: number;
   @Input() longitude!: number;
   @Input() markerTitle: string = 'Ubicación de entrega';
@@ -165,7 +165,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
   private initializeMap(): void {
     try {
       const mapElement = document.getElementById('map');
-      
+
       if (!mapElement) {
         this.error.set('Elemento del mapa no encontrado');
         this.loading.set(false);
@@ -212,8 +212,8 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
               Lat: ${this.latitude.toFixed(6)}<br>
               Lng: ${this.longitude.toFixed(6)}
             </p>
-            <a 
-              href="https://www.google.com/maps?q=${this.latitude},${this.longitude}" 
+            <a
+              href="https://www.google.com/maps?q=${this.latitude},${this.longitude}"
               target="_blank"
               style="display: inline-block; margin-top: 8px; color: #1976d2; text-decoration: none; font-size: 13px;"
             >
@@ -247,7 +247,7 @@ export class GoogleMapComponent implements OnInit, OnDestroy {
     if (!this.map || !this.marker) return;
 
     const newPosition = { lat, lng };
-    
+
     this.map.setCenter(newPosition);
     this.marker.setPosition(newPosition);
   }
