@@ -3,7 +3,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 import { provideHttpClient } from '@angular/common/http';
 import { ProductoBulkUploadService } from './producto-bulk-upload.service';
 import { BulkUploadJob, BulkUploadHistoryResponse, BulkUploadStats } from './models/bulk-upload.models';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../..//environments/environment';
 
 describe('ProductoBulkUploadService', () => {
   let service: ProductoBulkUploadService;
@@ -219,7 +219,7 @@ describe('ProductoBulkUploadService', () => {
       });
 
       const req = httpMock.expectOne(
-        req => req.url.includes(`${API_URL}/history`) && 
+        req => req.url.includes(`${API_URL}/history`) &&
                req.params.get('limit') === '25' &&
                req.params.get('offset') === '50' &&
                req.params.get('status') === 'completed'
@@ -255,12 +255,12 @@ describe('ProductoBulkUploadService', () => {
     it('should trigger download', () => {
       const mockBlob = new Blob(['test'], { type: 'text/csv' });
       const filename = 'test.csv';
-      
+
       // Mock window.URL.createObjectURL and revokeObjectURL
       const mockUrl = 'blob:http://localhost/mock-url';
       global.URL.createObjectURL = jest.fn(() => mockUrl);
       global.URL.revokeObjectURL = jest.fn();
-      
+
       // Create spy for createElement
       const mockLink = document.createElement('a');
       const createElementSpy = jest.spyOn(document, 'createElement').mockReturnValue(mockLink);

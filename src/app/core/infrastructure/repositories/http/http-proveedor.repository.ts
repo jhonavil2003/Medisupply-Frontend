@@ -127,7 +127,7 @@ export class HttpProveedorRepository extends ProveedorRepository {
     console.log('[HttpProveedorRepository] mapFromApi - address object:', s.address);
     console.log('[HttpProveedorRepository] mapFromApi - line1 value:', s.address?.line1);
     console.log('[HttpProveedorRepository] mapFromApi - full address object keys:', s.address ? Object.keys(s.address) : 'no address');
-    
+
     const mapped = {
       id: String(s.id),
       razonSocial: s.name || s.legal_name || 'Sin nombre',
@@ -147,7 +147,7 @@ export class HttpProveedorRepository extends ProveedorRepository {
       fechaRegistro: s['created_at'] ? new Date(s['created_at']) : undefined,
       fechaActualizacion: s['updated_at'] ? new Date(s['updated_at']) : undefined
     } as ProveedorEntity;
-    
+
     console.log('[HttpProveedorRepository] mapFromApi - mapped entity:', JSON.stringify(mapped, null, 2));
     return mapped;
   }
@@ -160,12 +160,12 @@ export class HttpProveedorRepository extends ProveedorRepository {
       state: dto.state,
       country: dto.country
     });
-    
+
     // El address es requerido y country es requerido dentro de address
     const address: any = {
       country: dto.country || 'Colombia'  // Default a Colombia si no se especifica
     };
-    
+
     // Incluir todos los campos de dirección, incluso si están vacíos
     address.line1 = dto.addressLine1 || null;
     address.city = dto.city || null;
@@ -188,7 +188,7 @@ export class HttpProveedorRepository extends ProveedorRepository {
       country: dto.country || 'Colombia',  // ✅ AGREGADO: country a nivel raíz también
       address  // Siempre incluir address
     };
-    
+
     console.log('[HttpProveedorRepository] mapToApiCreate - final payload:', JSON.stringify(payload, null, 2));
     return payload;
   }
@@ -201,7 +201,7 @@ export class HttpProveedorRepository extends ProveedorRepository {
       state: (dto as any).state,
       country: (dto as any).country
     });
-    
+
     const payload: any = {};
     if (dto.razonSocial !== undefined) payload.name = dto.razonSocial;
     if (dto.ruc !== undefined) payload.tax_id = dto.ruc;
@@ -213,26 +213,26 @@ export class HttpProveedorRepository extends ProveedorRepository {
     if ((dto as any).paymentTerms !== undefined) payload.payment_terms = (dto as any).paymentTerms;
     if ((dto as any).creditLimit !== undefined) payload.credit_limit = (dto as any).creditLimit;
     if ((dto as any).currency !== undefined) payload.currency = (dto as any).currency;
-    
+
     // ✅ AGREGADO: country a nivel raíz también
     if ((dto as any).country !== undefined) payload.country = (dto as any).country;
-    
+
     // Handle address fields in nested structure - incluir siempre address completo
     const address: any = {};
-    
+
     // Siempre incluir country (requerido)
     address.country = (dto as any).country !== undefined ? (dto as any).country : 'Colombia';
-    
+
     // Incluir otros campos de dirección incluso si están vacíos
     if ((dto as any).addressLine1 !== undefined) address.line1 = (dto as any).addressLine1 || null;
     if ((dto as any).city !== undefined) address.city = (dto as any).city || null;
     if ((dto as any).state !== undefined) address.state = (dto as any).state || null;
-    
+
     console.log('[HttpProveedorRepository] mapToApiUpdate - address object being sent:', address);
-    
+
     // Siempre incluir address
     payload.address = address;
-    
+
     console.log('[HttpProveedorRepository] mapToApiUpdate - final payload:', JSON.stringify(payload, null, 2));
     return payload;
   }

@@ -6,7 +6,7 @@ import { HttpTestingController, provideHttpClientTesting } from '@angular/common
 
 import { ProductoUploadComponent } from './producto-upload.component';
 import { NotificationService } from '../../../shared/services/notification.service';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../..//environments/environment';
 
 // Material modules
 import { MatButtonModule } from '@angular/material/button';
@@ -320,7 +320,7 @@ describe('ProductoUploadComponent', () => {
       tick(3000);
       const statusReq1 = httpMock.expectOne(`${API_BASE_URL}/${mockUploadResponse.job_id}`);
       statusReq1.flush(mockJobStatusProcessing);
-      
+
       expect(component.cargando()).toBe(true);
 
       // Complete with second poll
@@ -600,7 +600,7 @@ describe('ProductoUploadComponent', () => {
       // Act - File processing
       component.procesarArchivo();
       expect(component.cargando()).toBe(true);
-      
+
       // Mock HTTP responses
       const uploadReq = httpMock.expectOne(API_BASE_URL);
       uploadReq.flush(mockUploadResponse);
@@ -610,7 +610,7 @@ describe('ProductoUploadComponent', () => {
       statusReq.flush(mockJobStatusCompleted);
 
       tick(100);
-      
+
       // Assert - Final state
       expect(component.cargando()).toBe(false);
       expect(component.archivoSeleccionado()).toBeNull();
