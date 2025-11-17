@@ -54,3 +54,5 @@ Thumbs.db
 
 # Generated environment files
 src/assets/env.json
+
+src/environments/environment.ts

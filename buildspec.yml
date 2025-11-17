@@ -16,7 +16,10 @@ phases:
   build:
     commands:
       - echo "Construyendo imagen Docker..."
-      - docker build -t ${REPOSITORY_URI}:${IMAGE_TAG} -t ${REPOSITORY_URI}:latest .
+      - docker build \
+        --build-arg API_KEY=${API_KEY} \
+        -t ${REPOSITORY_URI}:${IMAGE_TAG} \
+        -t ${REPOSITORY_URI}:latest .
       - echo "Pushing a ECR..."
       - docker push ${REPOSITORY_URI}:${IMAGE_TAG}
       - docker push ${REPOSITORY_URI}:latest
