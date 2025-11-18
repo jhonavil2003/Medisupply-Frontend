@@ -1,4 +1,4 @@
-import { Component, OnInit, inject, signal, computed } from '@angular/core';
+import { Component, OnInit, inject, signal, computed, Inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { MatCardModule } from '@angular/material/card';
@@ -8,6 +8,7 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
 import { GetOrderByIdUseCase } from '../../../../core/application/use-cases/order/get-order-by-id.usecase';
 import { OrderEntity, OrderItemEntity } from '../../../../core/domain/entities/order.entity';
 import { GoogleMapComponent } from '../../../shared/components/google-map/google-map.component';
@@ -25,6 +26,7 @@ import { GoogleMapComponent } from '../../../shared/components/google-map/google
     MatProgressSpinnerModule,
     MatTooltipModule,
     MatDividerModule,
+    MatDialogModule,
     GoogleMapComponent
   ],
   templateUrl: './order-detail.component.html',
@@ -34,17 +36,29 @@ export class OrderDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private getOrderByIdUseCase = inject(GetOrderByIdUseCase);
+  public dialogRef = inject(MatDialogRef<OrderDetailComponent>, { optional: true });
 
   // Signals
   order = signal<OrderEntity | null>(null);
   loading = signal<boolean>(true);
   error = signal<string | null>(null);
+  isModal = signal<boolean>(false);
 
   // Computed values
   orderId = computed(() => {
+    // Si viene del modal (data.id), usarlo; sino, obtener de la ruta
+    if (this.data?.id) {
+      return this.data.id;
+    }
     const id = this.route.snapshot.paramMap.get('id');
     return id ? parseInt(id, 10) : 0;
   });
+
+  constructor(
+    @Inject(MAT_DIALOG_DATA) public data: { id: number } | null
+  ) {
+    this.isModal.set(!!data);
+  }
 
   totalItems = computed(() => this.order()?.items?.length || 0);
   
@@ -114,7 +128,15 @@ export class OrderDetailComponent implements OnInit {
   }
 
   goBack(): void {
-    this.router.navigate(['/ordenes']);
+    if (this.isModal()) {
+      this.close();
+    } else {
+      this.router.navigate(['/ordenes']);
+    }
+  }
+
+  close(): void {
+    this.dialogRef?.close();
   }
 
   handlePrint(): void {

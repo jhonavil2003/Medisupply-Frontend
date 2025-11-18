@@ -25,6 +25,7 @@ import { GenerateRoutesUseCase } from '../../../../core/application/use-cases/ge
 import { GetAvailableVehiclesUseCase } from '../../../../core/application/use-cases/get-available-vehicles.usecase';
 import { OrderEntity, OrdersListResponse } from '../../../../core/domain/entities/order.entity';
 import { VehicleEntity, GenerateRoutesResponse, GeneratedRoute } from '../../../../core/infrastructure/repositories/route.repository';
+import { OrderDetailComponent } from '../order-detail/order-detail.component';
 
 @Component({
   selector: 'app-route-generation',
@@ -178,7 +179,13 @@ export class RouteGenerationComponent implements OnInit {
   }
 
   viewOrderDetail(order: OrderEntity): void {
-    this.router.navigate(['/ordenes', order.id]);
+    this.dialog.open(OrderDetailComponent, {
+      width: '1200px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { id: order.id }
+    });
   }
 
   async generateRoutes(): Promise<void> {

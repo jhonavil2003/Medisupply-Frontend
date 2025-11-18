@@ -1,3 +1,47 @@
+/* Dialog/Modal styling - Order Detail */
+.form-card {
+  padding: 0;
+  box-shadow: none;
+  margin: 0;
+}
+
+/* Card Header Styling */
+.card-header {
+  background-color: #f5f5f5;
+  padding: 1.5rem 2rem !important;
+  margin: 0 !important;
+  border-radius: 4px 4px 0 0;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.card-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  font-family: 'Roboto', sans-serif !important;
+  color: #1976d2 !important;
+  margin: 0 !important;
+}
+
+mat-card-header.card-header mat-card-title.card-title {
+  font-size: 24px !important;
+  font-weight: 400 !important;
+  color: #1976d2 !important;
+}
+
+.card-title mat-chip {
+  margin-left: auto;
+}
+
+/* Card Content */
+.form-card mat-card-content {
+  padding: 2rem !important;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
 /* Contenedor principal */
 .order-detail-container {
   max-width: 1400px;
@@ -23,19 +67,12 @@
 }
 
 /* Error State */
-.error-card {
-  margin: 20px auto;
-  max-width: 600px;
-  background: #fff3e0;
-  border-left: 4px solid #ff9800;
-}
-
 .error-content {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 16px;
-  padding: 20px;
+  padding: 40px 20px;
   text-align: center;
 }
 
@@ -62,52 +99,43 @@
   margin-top: 8px;
 }
 
-/* Header */
-.order-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  background: white;
-  padding: 20px 24px;
-  border-radius: 8px;
-  margin-bottom: 24px;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
 .header-title {
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-.header-title h1 {
-  margin: 0;
-  font-size: 26px;
-  font-weight: 600;
-  color: #333;
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* Grid Layout */
+.order-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 
-.header-title h1 mat-icon {
-  color: #1976d2;
-}
-
-.header-actions {
+.order-column {
   display: flex;
-  gap: 12px;
+  flex-direction: column;
+  gap: 1.5rem;
 }
 
 /* Status Chips */
 mat-chip {
-  font-weight: 600;
+  font-weight: 600 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  gap: 4px !important;
+  vertical-align: middle !important;
+  padding: 4px 12px !important;
+}
+
+mat-chip mat-icon {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-size: 16px !important;
+  width: 16px !important;
+  height: 16px !important;
+  vertical-align: middle !important;
 }
 
 .status-pending {
@@ -163,6 +191,27 @@ mat-chip {
 mat-card {
   border-radius: 8px;
   box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+mat-card mat-card-header {
+  padding-bottom: 16px;
+}
+
+mat-card mat-card-title {
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  margin: 0 !important;
+  font-size: 1.1rem !important;
+  font-weight: 500 !important;
+  color: #333 !important;
+}
+
+mat-card mat-card-title mat-icon {
+  font-size: 20px !important;
+  width: 20px !important;
+  height: 20px !important;
+  color: #333 !important;
 }
 
 ::ng-deep mat-card-header {
@@ -577,6 +626,33 @@ mat-card {
 
 mat-card {
   animation: fadeIn 0.4s ease-out;
+}
+
+/* Action Buttons */
+.action-buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+  margin-top: 32px;
+  padding-top: 16px;
+}
+
+.action-buttons button {
+  min-width: 100px;
+}
+
+/* Forzar fondo blanco en todos los estados del botón */
+::ng-deep .action-buttons .mat-mdc-raised-button.mdc-button {
+  background-color: #ffffff !important;
+}
+
+::ng-deep .action-buttons .mat-mdc-raised-button:hover .mdc-button__ripple::before,
+::ng-deep .action-buttons .mat-mdc-raised-button:focus .mdc-button__ripple::before {
+  opacity: 0 !important;
+}
+
+::ng-deep .action-buttons .mat-mdc-raised-button .mdc-button__label {
+  color: rgba(0, 0, 0, 0.87) !important;
 }
 
 /* Mejoras de accesibilidad */

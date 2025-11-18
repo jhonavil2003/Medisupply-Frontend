@@ -1,4 +1,4 @@
-<div class="order-detail-container">
+<mat-card class="form-card">
   <!-- Loading State -->
   @if (loading()) {
     <div class="loading-container">
@@ -9,56 +9,39 @@
 
   <!-- Error State -->
   @if (error() && !loading()) {
-    <mat-card class="error-card">
-      <mat-card-content>
-        <div class="error-content">
-          <mat-icon color="warn" class="error-icon">error</mat-icon>
-          <h2>Error al cargar la orden</h2>
-          <p>{{ error() }}</p>
-          <div class="error-actions">
-            <button mat-raised-button color="primary" (click)="retry()">
-              <mat-icon>refresh</mat-icon>
-              Reintentar
-            </button>
-            <button mat-raised-button (click)="goBack()">
-              <mat-icon>arrow_back</mat-icon>
-              Volver al Listado
-            </button>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <div class="error-content">
+      <mat-icon color="warn" class="error-icon">error</mat-icon>
+      <h2>Error al cargar la orden</h2>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button mat-raised-button color="primary" (click)="retry()">
+          <mat-icon>refresh</mat-icon>
+          Reintentar
+        </button>
+        <button mat-raised-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          {{ isModal() ? 'Cerrar' : 'Volver al Listado' }}
+        </button>
+      </div>
+    </div>
   }
 
   <!-- Order Detail Content -->
   @if (order() && !loading()) {
     <!-- Header -->
-    <div class="order-header">
-      <div class="header-left">
-        <button mat-icon-button (click)="goBack()" matTooltip="Volver al listado">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <div class="header-title">
-          <h1>
-            <mat-icon>shopping_cart</mat-icon>
-            Orden {{ order()!.orderNumber }}
-          </h1>
-          <mat-chip [class]="getStatusConfig(order()!.status).className">
-            <mat-icon>{{ getStatusConfig(order()!.status).icon }}</mat-icon>
-            {{ getStatusConfig(order()!.status).label }}
-          </mat-chip>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button mat-raised-button (click)="handlePrint()">
-          <mat-icon>print</mat-icon>
-          Imprimir
-        </button>
-      </div>
-    </div>
+    <mat-card-header class="card-header">
+      <mat-card-title class="card-title">
+        Orden {{ order()!.orderNumber }}
+        <mat-chip [class]="getStatusConfig(order()!.status).className">
+          <mat-icon>{{ getStatusConfig(order()!.status).icon }}</mat-icon>
+          {{ getStatusConfig(order()!.status).label }}
+        </mat-chip>
+      </mat-card-title>
+    </mat-card-header>
 
-    <!-- Grid Layout -->
-    <div class="order-grid">
+    <mat-card-content>
+      <!-- Grid Layout -->
+      <div class="order-grid">
       <!-- Columna Izquierda -->
       <div class="order-column">
         <!-- Información del Cliente -->
@@ -394,5 +377,13 @@
         </mat-card-content>
       </mat-card>
     }
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="goBack()">
+        Cerrar
+      </button>
+    </div>
+    </mat-card-content>
   }
-</div>
+</mat-card>

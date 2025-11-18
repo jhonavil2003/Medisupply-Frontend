@@ -14,8 +14,10 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
 import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/domain/entities/order.entity';
+import { OrderDetailComponent } from '../order-detail/order-detail.component';
 
 @Component({
   selector: 'app-order-list',
@@ -42,6 +44,7 @@ import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/dom
 })
 export class OrderListComponent implements OnInit {
   private getOrdersUseCase = inject(GetOrdersUseCase);
+  private dialog = inject(MatDialog);
 
   // Signals para el estado del componente
   orders = signal<OrderEntity[]>([]);
@@ -243,5 +246,18 @@ export class OrderListComponent implements OnInit {
     this.filterDeliveryDateTo.set('');
     this.filterDeliveryCity.set('');
     this.loadOrders();
+  }
+
+  /**
+   * Abre el detalle de una orden en modal
+   */
+  viewOrderDetail(order: OrderEntity): void {
+    this.dialog.open(OrderDetailComponent, {
+      width: '1200px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { id: order.id }
+    });
   }
 }
