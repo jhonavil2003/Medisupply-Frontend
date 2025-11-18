@@ -25,7 +25,9 @@
     "NO_RESULTS": "No hay resultados",
     "METADATA": "Metadatos",
     "CREATED_AT": "Fecha de Creación",
-    "UPDATED_AT": "Última Actualización"
+    "UPDATED_AT": "Última Actualización",
+    "ERROR": "Error",
+    "UNKNOWN_ERROR": "Error desconocido"
   },
   "DIALOG": {
     "CONFIRM_DELETE_TITLE": "Confirmar eliminación",
@@ -315,6 +317,48 @@
       "DRIVER": "Conductor",
       "STATUS": "Estado",
       "INCLUDED_ORDERS": "Pedidos incluidos"
+    },
+    "ROUTE": {
+      "TITLE": "Rutas de Entrega",
+      "GENERATE_NEW_ROUTE": "Generar Nueva Ruta",
+      "NO_ROUTES_FOUND": "No se encontraron rutas",
+      "NO_ROUTES_WITH_FILTERS": "No hay rutas con los filtros seleccionados",
+      "FILTERS": {
+        "PLANNED_DATE": "Fecha Planificada",
+        "STATUS": "Estado",
+        "VEHICLE_ID": "ID Vehículo",
+        "ENTER_ID": "Ingrese ID",
+        "CLEAR_FILTERS": "Limpiar Filtros"
+      },
+      "STATUS": {
+        "DRAFT": "Borrador",
+        "ACTIVE": "Activa",
+        "IN_PROGRESS": "En Progreso",
+        "COMPLETED": "Completada",
+        "CANCELLED": "Cancelada"
+      },
+      "TABLE": {
+        "ROUTE_NUMBER": "N° Ruta",
+        "PLANNED_DATE": "Fecha Planificada",
+        "STATUS": "Estado",
+        "VEHICLE": "Vehículo",
+        "DRIVER": "Conductor",
+        "STOPS": "Paradas",
+        "STOPS_UNIT": "paradas",
+        "COMPLETED": "completado",
+        "METRICS": "Métricas",
+        "ACTIONS": "Acciones"
+      },
+      "ACTIONS": {
+        "VIEW_DETAILS": "Ver Detalles",
+        "VIEW_ON_MAP": "Ver en Mapa",
+        "ACTIVATE_ROUTE": "Activar Ruta"
+      },
+      "MESSAGES": {
+        "ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED": "Solo se pueden activar rutas en estado borrador",
+        "ROUTE_ACTIVATED_SUCCESSFULLY": "✅ Ruta activada exitosamente",
+        "ERROR_ACTIVATING_ROUTE": "Error al activar la ruta"
+      }
     }
   },
   "PRODUCT_LOCATION": {

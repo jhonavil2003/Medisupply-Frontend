@@ -25,7 +25,9 @@
     "NO_RESULTS": "No results",
     "METADATA": "Metadata",
     "CREATED_AT": "Created At",
-    "UPDATED_AT": "Last Updated"
+    "UPDATED_AT": "Last Updated",
+    "ERROR": "Error",
+    "UNKNOWN_ERROR": "Unknown error"
   },
   "DIALOG": {
     "CONFIRM_DELETE_TITLE": "Confirm Deletion",
@@ -315,6 +317,48 @@
       "DRIVER": "Driver",
       "STATUS": "Status",
       "INCLUDED_ORDERS": "Included Orders"
+    },
+    "ROUTE": {
+      "TITLE": "Delivery Routes",
+      "GENERATE_NEW_ROUTE": "Generate New Route",
+      "NO_ROUTES_FOUND": "No routes found",
+      "NO_ROUTES_WITH_FILTERS": "No routes match the selected filters",
+      "FILTERS": {
+        "PLANNED_DATE": "Planned Date",
+        "STATUS": "Status",
+        "VEHICLE_ID": "Vehicle ID",
+        "ENTER_ID": "Enter ID",
+        "CLEAR_FILTERS": "Clear Filters"
+      },
+      "STATUS": {
+        "DRAFT": "Draft",
+        "ACTIVE": "Active",
+        "IN_PROGRESS": "In Progress",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      },
+      "TABLE": {
+        "ROUTE_NUMBER": "Route #",
+        "PLANNED_DATE": "Planned Date",
+        "STATUS": "Status",
+        "VEHICLE": "Vehicle",
+        "DRIVER": "Driver",
+        "STOPS": "Stops",
+        "STOPS_UNIT": "stops",
+        "COMPLETED": "completed",
+        "METRICS": "Metrics",
+        "ACTIONS": "Actions"
+      },
+      "ACTIONS": {
+        "VIEW_DETAILS": "View Details",
+        "VIEW_ON_MAP": "View on Map",
+        "ACTIVATE_ROUTE": "Activate Route"
+      },
+      "MESSAGES": {
+        "ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED": "Only routes in draft status can be activated",
+        "ROUTE_ACTIVATED_SUCCESSFULLY": "✅ Route activated successfully",
+        "ERROR_ACTIVATING_ROUTE": "Error activating route"
+      }
     }
   },
   "PRODUCT_LOCATION": {

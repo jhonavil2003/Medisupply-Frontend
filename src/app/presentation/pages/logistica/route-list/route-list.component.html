@@ -4,43 +4,43 @@
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Rutas de Entrega</h2>
+      <h2 style="margin: 0;">{{ 'LOGISTICS.ROUTE.TITLE' | translate }}</h2>
     </div>
     <button mat-raised-button color="primary" routerLink="/logistica/generar-rutas">
       <mat-icon>add</mat-icon>
-      Generar Nueva Ruta
+      {{ 'LOGISTICS.ROUTE.GENERATE_NEW_ROUTE' | translate }}
     </button>
   </div>
 
   <!-- Filtros -->
   <div class="filters-row">
     <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>Fecha Planificada</mat-label>
+      <mat-label>{{ 'LOGISTICS.ROUTE.FILTERS.PLANNED_DATE' | translate }}</mat-label>
       <input matInput [matDatepicker]="picker" [(ngModel)]="plannedDate" (dateChange)="onFilterChange()">
       <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
       <mat-datepicker #picker></mat-datepicker>
     </mat-form-field>
 
     <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>Estado</mat-label>
+      <mat-label>{{ 'LOGISTICS.ROUTE.FILTERS.STATUS' | translate }}</mat-label>
       <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFilterChange()">
-        <mat-option value="">Todos</mat-option>
+        <mat-option value="">{{ 'COMMON.ALL' | translate }}</mat-option>
         @for (status of statusOptions; track status.value) {
-          <mat-option [value]="status.value">{{ status.label }}</mat-option>
+          <mat-option [value]="status.value">{{ status.labelKey | translate }}</mat-option>
         }
       </mat-select>
     </mat-form-field>
 
     <mat-form-field appearance="outline" floatLabel="always">
-      <mat-label>ID Vehículo</mat-label>
-      <input matInput type="number" [(ngModel)]="selectedVehicleId" (ngModelChange)="onFilterChange()" placeholder="Ingrese ID">
+      <mat-label>{{ 'LOGISTICS.ROUTE.FILTERS.VEHICLE_ID' | translate }}</mat-label>
+      <input matInput type="number" [(ngModel)]="selectedVehicleId" (ngModelChange)="onFilterChange()" [placeholder]="'LOGISTICS.ROUTE.FILTERS.ENTER_ID' | translate">
     </mat-form-field>
   </div>
 
   <div class="filter-actions">
     <button mat-button type="button" (click)="clearFilters()">
       <mat-icon>filter_list</mat-icon>
-      Limpiar Filtros
+      {{ 'LOGISTICS.ROUTE.FILTERS.CLEAR_FILTERS' | translate }}
     </button>
   </div>
 </div>
@@ -54,8 +54,8 @@
     @if (routes().length === 0) {
       <div class="no-results-message">
         <mat-icon>route</mat-icon>
-        <h2>No se encontraron rutas</h2>
-        <p>No hay rutas con los filtros seleccionados</p>
+        <h2>{{ 'LOGISTICS.ROUTE.NO_ROUTES_FOUND' | translate }}</h2>
+        <p>{{ 'LOGISTICS.ROUTE.NO_ROUTES_WITH_FILTERS' | translate }}</p>
       </div>
     } @else {
       <mat-card>
@@ -64,7 +64,7 @@
           
           <!-- Route Number Column -->
             <ng-container matColumnDef="routeNumber">
-              <th mat-header-cell *matHeaderCellDef>N° Ruta</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.ROUTE_NUMBER' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <strong>{{ route.routeCode }}</strong>
               </td>
@@ -72,7 +72,7 @@
 
             <!-- Planned Date Column -->
             <ng-container matColumnDef="plannedDate">
-              <th mat-header-cell *matHeaderCellDef>Fecha Planificada</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.PLANNED_DATE' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 {{ route.dates.plannedDate }}
               </td>
@@ -80,7 +80,7 @@
 
             <!-- Status Column -->
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.STATUS' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <mat-chip [color]="getStatusColor(route.status)">
                   {{ getStatusLabel(route.status) }}
@@ -90,7 +90,7 @@
 
             <!-- Vehicle Column -->
             <ng-container matColumnDef="vehicle">
-              <th mat-header-cell *matHeaderCellDef>Vehículo</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.VEHICLE' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <div class="vehicle-info">
                   <div><strong>{{ route.vehicle.plate }}</strong></div>
@@ -101,7 +101,7 @@
 
             <!-- Driver Column -->
             <ng-container matColumnDef="driver">
-              <th mat-header-cell *matHeaderCellDef>Conductor</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.DRIVER' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <div class="driver-info">
                   <div>{{ route.driver.name }}</div>
@@ -112,12 +112,12 @@
 
             <!-- Stops Column -->
             <ng-container matColumnDef="stops">
-              <th mat-header-cell *matHeaderCellDef>Paradas</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.STOPS' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <div class="stops-info">
-                  <div><strong>{{ route.metrics.totalStops }}</strong> paradas</div>
+                  <div><strong>{{ route.metrics.totalStops }}</strong> {{ 'LOGISTICS.ROUTE.TABLE.STOPS_UNIT' | translate }}</div>
                   <div class="secondary-text">
-                    {{ route.metrics.completionPercentage }}% completado
+                    {{ route.metrics.completionPercentage }}% {{ 'LOGISTICS.ROUTE.TABLE.COMPLETED' | translate }}
                   </div>
                 </div>
               </td>
@@ -125,7 +125,7 @@
 
             <!-- Metrics Column -->
             <ng-container matColumnDef="metrics">
-              <th mat-header-cell *matHeaderCellDef>Métricas</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.METRICS' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <div class="metrics-info">
                   <div>
@@ -142,24 +142,24 @@
 
             <!-- Actions Column -->
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'LOGISTICS.ROUTE.TABLE.ACTIONS' | translate }}</th>
               <td mat-cell *matCellDef="let route">
                 <div class="actions-buttons">
                   <button mat-icon-button color="primary" 
                           (click)="viewRoute(route)"
-                          matTooltip="Ver Detalles">
+                          [matTooltip]="'LOGISTICS.ROUTE.ACTIONS.VIEW_DETAILS' | translate">
                     <mat-icon>visibility</mat-icon>
                   </button>
                   <button mat-icon-button color="accent" 
                           (click)="viewOnMap(route)"
-                          matTooltip="Ver en Mapa">
+                          [matTooltip]="'LOGISTICS.ROUTE.ACTIONS.VIEW_ON_MAP' | translate">
                     <mat-icon>map</mat-icon>
                   </button>
                   @if (canActivateRoute(route)) {
                     <button mat-icon-button 
                             color="primary" 
                             (click)="activateRoute(route, $event)"
-                            matTooltip="Activar Ruta"
+                            [matTooltip]="'LOGISTICS.ROUTE.ACTIONS.ACTIVATE_ROUTE' | translate"
                             class="activate-button">
                       <mat-icon>check_circle</mat-icon>
                     </button>
