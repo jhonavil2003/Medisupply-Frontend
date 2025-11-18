@@ -16,6 +16,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
 import { GetRoutesUseCase } from '../../../../core/application/use-cases/get-routes.usecase';
 import { UpdateRouteStatusUseCase } from '../../../../core/application/use-cases/update-route-status.usecase';
@@ -42,7 +43,8 @@ import { ActivateRouteDialogComponent } from './activate-route-dialog.component'
     MatPaginatorModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressBarModule
   ],
   templateUrl: './route-list.component.html',
   styleUrl: './route-list.component.css',
@@ -127,6 +129,10 @@ export class RouteListComponent implements OnInit {
       page: 1 // Reset to first page
     }));
     this.loadRoutes();
+  }
+
+  onFilterChange(): void {
+    this.applyFilters();
   }
 
   clearFilters(): void {

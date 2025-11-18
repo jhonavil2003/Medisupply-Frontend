@@ -7,14 +7,24 @@
         <div class="controls-relative">
           <div class="lang-select-wrap" style="position:relative;">
             <button class="lang-select" (click)="showLangMenu.set(!showLangMenu())" [attr.aria-expanded]="showLangMenu()" aria-haspopup="true" aria-controls="langMenu" [title]="'DASHBOARD.CHANGE_LANGUAGE' | translate" data-cy="language-selector">
-              <span aria-hidden="true">🌐</span>
-              <span class="muted" style="margin-left:6px">{{ selectedLanguage().toUpperCase() }}</span>
+              <span class="lang-icon">🌐</span>
+              <span class="lang-text">{{ selectedLanguage().toUpperCase() }}</span>
+              <span class="lang-arrow" [class.open]="showLangMenu()">▼</span>
             </button>
             @if (showLangMenu()) {
               <div class="lang-menu" id="langMenu" role="menu">
                 @for (lang of languages; track lang) {
-                  <button role="menuitem" class="small-link lang-menu-btn" (click)="onLanguageChange(lang.code)" data-cy="language-option">
-                    {{ lang.label }}
+                  <button 
+                    role="menuitem" 
+                    class="lang-menu-btn" 
+                    (click)="onLanguageChange(lang.code)" 
+                    [class.active]="selectedLanguage() === lang.code"
+                    data-cy="language-option">
+                    <span class="lang-flag">{{ lang.code === 'es' ? '🇪🇸' : '🇬🇧' }}</span>
+                    <span class="lang-label">{{ lang.label }}</span>
+                    @if (selectedLanguage() === lang.code) {
+                      <span class="lang-check">✓</span>
+                    }
                   </button>
                 }
               </div>

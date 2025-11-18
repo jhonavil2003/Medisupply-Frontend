@@ -1,7 +1,11 @@
-<div class="route-list-container">
-  <!-- Header -->
-  <div class="header">
-    <h1>Rutas de Entrega</h1>
+<div class="container">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+    <div style="display: flex; align-items: center; gap: 16px;">
+      <a mat-icon-button [routerLink]="['/dashboard-admin']">
+        <mat-icon>arrow_back</mat-icon>
+      </a>
+      <h2 style="margin: 0;">Rutas de Entrega</h2>
+    </div>
     <button mat-raised-button color="primary" routerLink="/logistica/generar-rutas">
       <mat-icon>add</mat-icon>
       Generar Nueva Ruta
@@ -9,66 +13,56 @@
   </div>
 
   <!-- Filtros -->
-  <mat-card class="filters-card">
-    <mat-card-content>
-      <div class="filters-row">
-        <mat-form-field appearance="outline">
-          <mat-label>Fecha Planificada</mat-label>
-          <input matInput [matDatepicker]="picker" [(ngModel)]="plannedDate">
-          <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-          <mat-datepicker #picker></mat-datepicker>
-        </mat-form-field>
+  <div class="filters-row">
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Fecha Planificada</mat-label>
+      <input matInput [matDatepicker]="picker" [(ngModel)]="plannedDate" (dateChange)="onFilterChange()">
+      <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+      <mat-datepicker #picker></mat-datepicker>
+    </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Estado</mat-label>
-          <mat-select [(ngModel)]="selectedStatus">
-            <mat-option value="">Todos</mat-option>
-            @for (status of statusOptions; track status.value) {
-              <mat-option [value]="status.value">{{ status.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>Estado</mat-label>
+      <mat-select [(ngModel)]="selectedStatus" (selectionChange)="onFilterChange()">
+        <mat-option value="">Todos</mat-option>
+        @for (status of statusOptions; track status.value) {
+          <mat-option [value]="status.value">{{ status.label }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>ID Vehículo</mat-label>
-          <input matInput type="number" [(ngModel)]="selectedVehicleId" placeholder="Ingrese ID">
-        </mat-form-field>
+    <mat-form-field appearance="outline" floatLabel="always">
+      <mat-label>ID Vehículo</mat-label>
+      <input matInput type="number" [(ngModel)]="selectedVehicleId" (ngModelChange)="onFilterChange()" placeholder="Ingrese ID">
+    </mat-form-field>
+  </div>
 
-        <div class="filter-actions">
-          <button mat-raised-button color="primary" (click)="applyFilters()">
-            <mat-icon>search</mat-icon>
-            Buscar
-          </button>
-          <button mat-button (click)="clearFilters()">
-            <mat-icon>clear</mat-icon>
-            Limpiar
-          </button>
-        </div>
+  <div class="filter-actions">
+    <button mat-button type="button" (click)="clearFilters()">
+      <mat-icon>filter_list</mat-icon>
+      Limpiar Filtros
+    </button>
+  </div>
+</div>
+
+<!-- Loading Spinner -->
+<mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
+
+<!-- Tabla de Rutas -->
+@if (!loading()) {
+  <div class="table-container">
+    @if (routes().length === 0) {
+      <div class="no-results-message">
+        <mat-icon>route</mat-icon>
+        <h2>No se encontraron rutas</h2>
+        <p>No hay rutas con los filtros seleccionados</p>
       </div>
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Loading Spinner -->
-  @if (loading()) {
-    <div class="loading-container">
-      <mat-spinner></mat-spinner>
-      <p>Cargando rutas...</p>
-    </div>
-  }
-
-  <!-- Tabla de Rutas -->
-  @if (!loading()) {
-    <mat-card class="table-card">
-      <mat-card-content>
-        @if (routes().length === 0) {
-          <div class="no-data">
-            <mat-icon>route</mat-icon>
-            <p>No se encontraron rutas con los filtros seleccionados</p>
-          </div>
-        } @else {
+    } @else {
+      <mat-card>
+        <mat-card-content>
           <table mat-table [dataSource]="routes()" class="routes-table">
-            
-            <!-- Route Number Column -->
+          
+          <!-- Route Number Column -->
             <ng-container matColumnDef="routeNumber">
               <th mat-header-cell *matHeaderCellDef>N° Ruta</th>
               <td mat-cell *matCellDef="let route">
@@ -185,10 +179,11 @@
             [pageIndex]="page() - 1"
             [pageSizeOptions]="[5, 10, 25, 50]"
             (page)="onPageChange($event)"
-            showFirstLastButtons>
+            showFirstLastButtons
+            class="unified-paginator">
           </mat-paginator>
-        }
-      </mat-card-content>
-    </mat-card>
-  }
-</div>
+        </mat-card-content>
+      </mat-card>
+    }
+  </div>
+}

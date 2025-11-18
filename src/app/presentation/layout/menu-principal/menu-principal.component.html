@@ -17,7 +17,7 @@
     <!-- Gestión -->
     <li (click)="toggleSubmenu('gestion')" 
         class="menuitem"
-        [ngClass]="{ 'active': gestionOpen }"
+        [ngClass]="{ 'active': gestionOpen, 'active-route': isGestionActive() }"
         data-tooltip="Gestión"
         tabindex="0">
       <i class="fas fa-clipboard-list"></i>
@@ -27,19 +27,19 @@
     <ul class="submenu" [ngStyle]="{ display: gestionOpen ? 'flex' : 'none' }">
       <li class="menuitem" 
           (click)="navigateTo('proveedor-list')" 
-          [ngClass]="{ 'active-route': isActive('proveedor') }"
+          [ngClass]="{ 'active-route': isActive('proveedor-list') || isActive('proveedor') }"
           tabindex="0">
         {{ 'SIDEBAR.SUPPLIERS' | translate }}
       </li>
       <li class="menuitem" 
           (click)="navigateTo('producto-list')" 
-          [ngClass]="{ 'active-route': isActive('producto') }"
+          [ngClass]="{ 'active-route': isActive('producto-list') || isActive('producto') }"
           tabindex="0">
         {{ 'SIDEBAR.PRODUCTS' | translate }}
       </li>
       <li class="menuitem" 
           (click)="navigateTo('vendedores')" 
-          [ngClass]="{ 'active-route': isActive('vendedor') }"
+          [ngClass]="{ 'active-route': isActive('vendedores') || isActive('vendedor') }"
           tabindex="0">
         {{ 'SIDEBAR.SALESPERSONS' | translate }}
       </li>
@@ -48,7 +48,7 @@
     <!-- Ventas y Reportes -->
     <li (click)="toggleSubmenu('ventas')" 
         class="menuitem"
-        [ngClass]="{ 'active': ventasOpen }"
+        [ngClass]="{ 'active': ventasOpen, 'active-route': isVentasActive() }"
         data-tooltip="Ventas y Reportes"
         tabindex="0">
       <i class="fas fa-chart-line"></i>
@@ -79,7 +79,7 @@
     <!-- Logística -->
     <li (click)="toggleSubmenu('logistica')" 
         class="menuitem"
-        [ngClass]="{ 'active': logisticaOpen }"
+        [ngClass]="{ 'active': logisticaOpen, 'active-route': isLogisticaActive() }"
         data-tooltip="Logística"
         tabindex="0">
       <i class="fas fa-truck"></i>
