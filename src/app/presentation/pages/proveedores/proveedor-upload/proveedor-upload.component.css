@@ -1,31 +1,21 @@
-/* Container */
-.container {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 24px;
-}
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA BULK UPLOAD PROVEEDORES
+   Usando contenedores globales de styles.scss
+   ============================================ */
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header-left h2 {
+/* Contenedor principal */
+.bulk-upload-container {
+  padding: 0;
+  max-width: none;
   margin: 0;
-  font-size: 1.75rem;
+}
+
+/* Header siguiendo patrón de productos */
+.container h2 {
+  font-size: 20px;
   font-weight: 600;
   color: #1976d2;
+  line-height: 1.2;
 }
 
 .header-actions {
@@ -76,21 +66,34 @@
   font-size: 0.95rem;
 }
 
-/* Upload Card */
-.upload-card {
+/* Upload Section */
+.upload-section {
   margin-bottom: 24px;
+  padding: 24px;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
 }
 
-.upload-card mat-card-header {
-  margin-bottom: 16px;
-}
-
-.upload-card mat-card-title {
+.upload-header {
   display: flex;
   align-items: center;
   gap: 8px;
+  margin-bottom: 16px;
+}
+
+.upload-header h3 {
+  margin: 0;
   font-size: 1.25rem;
   color: #424242;
+  font-weight: 500;
+}
+
+.upload-header mat-icon {
+  color: #1976d2;
+  font-size: 24px;
+  width: 24px;
+  height: 24px;
 }
 
 /* Upload Box */

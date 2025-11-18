@@ -25,7 +25,9 @@
     "NO_RESULTS": "No results",
     "METADATA": "Metadata",
     "CREATED_AT": "Created At",
-    "UPDATED_AT": "Last Updated"
+    "UPDATED_AT": "Last Updated",
+    "ERROR": "Error",
+    "UNKNOWN_ERROR": "Unknown error"
   },
   "DIALOG": {
     "CONFIRM_DELETE_TITLE": "Confirm Deletion",
@@ -315,6 +317,155 @@
       "DRIVER": "Driver",
       "STATUS": "Status",
       "INCLUDED_ORDERS": "Included Orders"
+    },
+    "ROUTE": {
+      "TITLE": "Delivery Routes",
+      "GENERATE_NEW_ROUTE": "Generate New Route",
+      "NO_ROUTES_FOUND": "No routes found",
+      "NO_ROUTES_WITH_FILTERS": "No routes match the selected filters",
+      "FILTERS": {
+        "PLANNED_DATE": "Planned Date",
+        "STATUS": "Status",
+        "VEHICLE_ID": "Vehicle ID",
+        "ENTER_ID": "Enter ID",
+        "CLEAR_FILTERS": "Clear Filters"
+      },
+      "STATUS": {
+        "DRAFT": "Draft",
+        "ACTIVE": "Active",
+        "IN_PROGRESS": "In Progress",
+        "COMPLETED": "Completed",
+        "CANCELLED": "Cancelled"
+      },
+      "TABLE": {
+        "ROUTE_NUMBER": "Route #",
+        "PLANNED_DATE": "Planned Date",
+        "STATUS": "Status",
+        "VEHICLE": "Vehicle",
+        "DRIVER": "Driver",
+        "STOPS": "Stops",
+        "STOPS_UNIT": "stops",
+        "COMPLETED": "completed",
+        "METRICS": "Metrics",
+        "ACTIONS": "Actions"
+      },
+      "ACTIONS": {
+        "VIEW_DETAILS": "View Details",
+        "VIEW_ON_MAP": "View on Map",
+        "ACTIVATE_ROUTE": "Activate Route"
+      },
+      "MESSAGES": {
+        "ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED": "Only routes in draft status can be activated",
+        "ROUTE_ACTIVATED_SUCCESSFULLY": "✅ Route activated successfully",
+        "ERROR_ACTIVATING_ROUTE": "Error activating route"
+      }
+    }
+  },
+  "BULK_UPLOAD": {
+    "TITLE": "Bulk Product Upload",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Download CSV Template",
+      "VIEW_HISTORY": "View History",
+      "DOWNLOAD_ERRORS": "Download Error Report",
+      "CANCEL_PROCESS": "Cancel Process",
+      "UPLOAD_ANOTHER_FILE": "Upload Another File"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instructions for bulk upload",
+      "STEP_1": "Download the CSV template by clicking the \"Download CSV Template\" button",
+      "STEP_2": "Complete the product data in the CSV file (7 required columns, 19 optional)",
+      "STEP_3": "Ensure that suppliers (supplier_id) exist in the system",
+      "STEP_4": "Upload the completed file by dragging or selecting it",
+      "STEP_5": "Monitor progress and download error report if necessary",
+      "LIMITS_LABEL": "Limits:",
+      "LIMITS_TEXT": "Maximum 20 MB and 10,000 rows per file"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Select CSV File",
+      "DRAG_DROP_TEXT": "Drag and drop your file here or",
+      "SELECT_FILE_BUTTON": "Select File",
+      "UPLOAD_TO_DATABASE": "Upload File to Database"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Upload Status",
+      "FILE": "File",
+      "STARTED": "Started",
+      "PROGRESS_LABEL": "Progress",
+      "ROWS": "rows",
+      "ESTIMATED_TIME_REMAINING": "Estimated time remaining",
+      "SECONDS": "seconds"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Successful",
+      "FAILED": "Failed",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Success Rate"
+    },
+    "STATUS": {
+      "PENDING": "Pending",
+      "VALIDATING": "Validating",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Template downloaded successfully",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error downloading template",
+      "ONLY_CSV_FILES": "Only CSV files are accepted",
+      "FILE_SIZE_LIMIT": "File exceeds maximum size of 20 MB",
+      "SELECT_VALID_FILE": "Select a valid file before uploading",
+      "UPLOADING_FILE": "Uploading file...",
+      "UPLOAD_ERROR": "Error uploading file",
+      "STATUS_CHECK_ERROR": "Error checking process status",
+      "PRODUCTS_IMPORTED_SUCCESS": "✅ {{count}} products imported successfully",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Process completed: {{successful}} successful, {{failed}} with errors",
+      "UPLOAD_FAILED": "❌ Upload failed. Please check the file and try again",
+      "UPLOAD_CANCELLED": "🚫 Upload cancelled",
+      "ERRORS_FILE_DOWNLOADED": "Error file downloaded",
+      "NO_ERRORS_TO_DOWNLOAD": "No errors to download",
+      "ERRORS_DOWNLOAD_ERROR": "Error downloading error file",
+      "CANCEL_ERROR": "Could not cancel process"
+    },
+    "HISTORY": {
+      "TITLE": "Product Bulk Upload History",
+      "REFRESH": "Refresh",
+      "LOADING": "Loading history...",
+      "NO_RECORDS": "No bulk upload records found",
+      "FILTER_BY_STATUS": "Filter by Status",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total Uploads",
+        "COMPLETED": "Completed",
+        "IN_PROGRESS": "In Progress",
+        "FAILED": "Failed",
+        "PRODUCTS_IMPORTED": "Products Imported",
+        "AVERAGE_SUCCESS_RATE": "Average Success Rate"
+      },
+      "TABLE": {
+        "FILENAME": "File",
+        "STATUS": "Status",
+        "CREATED_AT": "Creation Date",
+        "TOTAL_ROWS": "Total",
+        "SUCCESSFUL_ROWS": "Successful",
+        "FAILED_ROWS": "Failed",
+        "SUCCESS_RATE": "Success Rate",
+        "ACTIONS": "Actions"
+      },
+      "FILTER_OPTIONS": {
+        "ALL": "All",
+        "COMPLETED": "Completed",
+        "IN_PROGRESS": "In Progress",
+        "FAILED": "Failed",
+        "CANCELLED": "Cancelled"
+      },
+      "ACTIONS": {
+        "DOWNLOAD_ERRORS": "Download errors"
+      },
+      "MESSAGES": {
+        "LOADING_ERROR": "Error loading history",
+        "ERRORS_DOWNLOADED": "Error file downloaded",
+        "DOWNLOAD_ERROR": "Error downloading error file"
+      }
     }
   },
   "PRODUCT_LOCATION": {
@@ -328,6 +479,7 @@
     "MIN_SEARCH_LENGTH": "Enter at least 3 characters to search",
     "NO_LOCATIONS_FOUND": "No locations found for this product",
     "LOCATIONS_FOUND": "Found {{count}} locations",
+    "PRODUCT_NOT_FOUND": "Product not found in warehouse",
     "DAYS": "days",
     "STATS": {
       "TOTAL_LOCATIONS": "Total Locations",
@@ -441,6 +593,222 @@
       "MONETARY": "Monetary"
     }
   },
+  "ORDERS": {
+    "TITLE": "Orders List",
+    "LOADING": "Loading orders...",
+    "ERROR_LOADING": "Error loading orders. Please try again.",
+    "NO_ORDERS_FOUND": "No orders found",
+    "RETRY": "Retry",
+    "FILTERS": {
+      "STATUS": "Status",
+      "ORDER_DATE_FROM": "Order Date From",
+      "ORDER_DATE_TO": "Order Date To",
+      "DELIVERY_CITY": "Delivery City",
+      "SEARCH_CITY_PLACEHOLDER": "Search city..."
+    },
+    "STATUS": {
+      "ALL": "All",
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PROCESSING": "Processing",
+      "IN_TRANSIT": "In Transit",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Cancelled"
+    },
+    "TABLE": {
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "STATUS": "Status",
+      "ORDER_DATE": "Order Date",
+      "DELIVERY_DATE": "Delivery Date",
+      "CITY": "City",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View detail"
+    }
+  },
+  "ORDER_DETAIL": {
+    "TITLE": "Order",
+    "LOADING": "Loading order details...",
+    "ERROR_LOADING": "Error loading order",
+    "RETRY": "Retry",
+    "CLOSE": "Close",
+    "BACK_TO_LIST": "Back to List",
+    "CUSTOMER_INFO": "Customer Information",
+    "BUSINESS_NAME": "Business Name",
+    "DOCUMENT": "Document",
+    "TYPE": "Type",
+    "PHONE": "Phone",
+    "EMAIL": "Email",
+    "DELIVERY_INFO": "Delivery Information",
+    "COPY_ADDRESS": "Copy address",
+    "ADDRESS": "Address",
+    "CITY": "City",
+    "DEPARTMENT": "Department",
+    "DELIVERY_DATE": "Delivery Date",
+    "GPS_COORDINATES": "GPS Coordinates",
+    "DELIVERY_ADDRESS": "Delivery Address",
+    "NOTES": "Notes",
+    "ORDER_INFO": "Order Information",
+    "ORDER_NUMBER": "Order Number",
+    "CREATED_AT": "Created At",
+    "UPDATED_AT": "Last Update",
+    "SELLER": "Seller",
+    "DISTRIBUTION_CENTER": "Distribution Center",
+    "PAYMENT_INFO": "Payment Information",
+    "PAYMENT_TERMS": "Payment Terms",
+    "PAYMENT_METHOD": "Payment Method",
+    "AMOUNTS_SUMMARY": "Amounts Summary",
+    "SUBTOTAL": "Subtotal",
+    "DISCOUNT": "Discount",
+    "TAX": "Tax (VAT)",
+    "TOTAL": "Total",
+    "METRICS": "Metrics",
+    "ITEMS": "Items",
+    "UNITS": "Units",
+    "ITEMS_WITH_DISCOUNT": "Items with Discount",
+    "AVG_DISCOUNT": "Avg. Discount",
+    "ORDER_ITEMS": "Order Items",
+    "TABLE": {
+      "SKU": "SKU",
+      "PRODUCT": "Product",
+      "QUANTITY": "Quantity",
+      "UNIT_PRICE": "Unit Price",
+      "DISCOUNT_PCT": "Disc. %",
+      "SUBTOTAL": "Subtotal",
+      "DISCOUNT": "Discount",
+      "TAX": "VAT",
+      "TOTAL": "Total",
+      "STOCK": "Stock",
+      "TOTALS": "Totals"
+    },
+    "ADDRESS_COPIED": "Address copied to clipboard"
+  },
+  "ROUTE_GENERATION": {
+    "TITLE": "Delivery Route Generation",
+    "SELECT_CONFIG": "Select the configuration for route generation",
+    "SELECT_ORDERS": "Select the confirmed orders you want to include in the route",
+    "FILTERS": {
+      "DISTRIBUTION_CENTER": "Distribution Center",
+      "DELIVERY_DATE": "Delivery Date",
+      "OPTIMIZATION_STRATEGY": "Optimization Strategy"
+    },
+    "STRATEGIES": {
+      "BALANCED": "⭐ Balanced (Recommended)",
+      "BALANCED_DESC": "Balance between distance, time and capacity",
+      "MINIMIZE_DISTANCE": "🛣️ Minimize Distance",
+      "MINIMIZE_DISTANCE_DESC": "Reduces kilometers traveled and fuel",
+      "MINIMIZE_TIME": "⏱️ Minimize Time",
+      "MINIMIZE_TIME_DESC": "Optimizes delivery time",
+      "MINIMIZE_COST": "💰 Minimize Cost",
+      "MINIMIZE_COST_DESC": "Reduces total operating cost",
+      "PRIORITY_FIRST": "🔥 Priority First",
+      "PRIORITY_FIRST_DESC": "Serves critical customers first"
+    },
+    "VEHICLES": {
+      "AVAILABLE": "Available Vehicles",
+      "LOADING": "Loading...",
+      "SHOW_DETAILS": "Show details",
+      "HIDE_DETAILS": "Hide details",
+      "NO_VEHICLES": "No vehicles available for the selected date",
+      "CAPACITY": "Capacity",
+      "DRIVER": "Driver",
+      "PHONE": "Phone",
+      "FUEL": "Fuel",
+      "TYPES": {
+        "VAN": "Van",
+        "TRUCK": "Truck",
+        "REFRIGERATED": "Refrigerated",
+        "MOTORCYCLE": "Motorcycle"
+      }
+    },
+    "SELECTION": {
+      "ORDERS_SELECTED": "orders selected",
+      "ESTIMATED_WEIGHT": "Estimated weight",
+      "TOTAL": "Total",
+      "CLEAR": "Clear selection",
+      "GENERATE": "Generate Routes"
+    },
+    "TABLE": {
+      "SELECT": "Select",
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "DATE": "Date",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View detail"
+    },
+    "LOADING_ORDERS": "Loading confirmed orders...",
+    "NO_ORDERS": "No confirmed orders available",
+    "RELOAD": "Reload",
+    "GENERATION": {
+      "TITLE": "Generating routes...",
+      "COMPLETED": "completed",
+      "SUCCESS": "Routes Generated Successfully!",
+      "PARTIAL": "Routes Generated with Warnings"
+    },
+    "SUMMARY": {
+      "ROUTES_GENERATED": "Routes Generated",
+      "ORDERS_ASSIGNED": "Orders Assigned",
+      "TOTAL_DISTANCE": "Total Distance",
+      "ESTIMATED_DURATION": "Estimated Duration",
+      "OPTIMIZATION_SCORE": "Optimization Score",
+      "FUEL_COST": "Fuel Cost"
+    },
+    "WARNINGS": "Warnings",
+    "UNASSIGNED": {
+      "TITLE": "Unassigned Orders",
+      "ORDER": "Order"
+    },
+    "ROUTES_CREATED": "Created Routes",
+    "ROUTE_INFO": {
+      "VEHICLE": "Vehicle",
+      "DRIVER": "Driver",
+      "ORDERS_STOPS": "Orders / Stops",
+      "ORDERS": "orders",
+      "STOPS": "stops",
+      "DISTANCE": "Distance",
+      "DURATION": "Duration",
+      "FUEL_COST": "Fuel Cost"
+    },
+    "ACTIONS": {
+      "GENERATE_NEW": "Generate New Routes",
+      "VIEW_ROUTES": "View Generated Routes"
+    }
+  },
+  "CONFIRM_ORDERS": {
+    "TITLE": "Order Confirmation",
+    "LOADING": "Loading prepared orders...",
+    "ERROR_LOADING": "Error loading orders",
+    "RETRY": "Retry",
+    "UPDATE": "Update",
+    "PREPARED_ORDERS": "Prepared Orders",
+    "NO_PREPARED_ORDERS": "No prepared orders",
+    "NO_PREPARED_ORDERS_DESC": "All orders have been confirmed or there are no pending orders",
+    "CONFIRM_SELECTED": "Confirm Selected",
+    "CONFIRM": "Confirm",
+    "NO_SELECTED": "No orders selected",
+    "NO_DATE_SPECIFIED": "Not specified",
+    "TABLE": {
+      "SELECT": "Select",
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "ORDER_DATE": "Order Date",
+      "DELIVERY_DATE": "Delivery Date",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View order detail",
+      "CONFIRM_ORDER": "Confirm order"
+    },
+    "SUCCESS": {
+      "SINGLE": "Order {{orderNumber}} confirmed successfully",
+      "MULTIPLE": "{{count}} orders confirmed successfully"
+    },
+    "ERROR": {
+      "SINGLE": "Error confirming order {{orderNumber}}",
+      "MULTIPLE": "Error confirming selected orders"
+    }
+  },
   "SIDEBAR": {
     "HOME": "Home",
     "MANAGEMENT": "Management",
@@ -477,5 +845,104 @@
     "INVALID_BARCODE": "Only numbers allowed",
     "INVALID_SUPPLIER_ID": "Only whole numbers",
     "INVALID_URL": "Must be a valid URL (http:// or https://)"
+  },
+  "BULK_UPLOAD_PROVIDERS": {
+    "TITLE": "Bulk Provider Upload",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Download CSV Template",
+      "VIEW_HISTORY": "View History",
+      "DOWNLOAD_ERRORS": "Download Error Report",
+      "CANCEL_PROCESS": "Cancel Process",
+      "UPLOAD_ANOTHER_FILE": "Upload Another File"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instructions for bulk upload",
+      "STEP_1": "Download the CSV template by clicking the \"Download CSV Template\" button",
+      "STEP_2": "Complete the provider data in the CSV file (6 required columns, 13 optional)",
+      "STEP_3": "Ensure that tax_id values are unique in the system",
+      "STEP_4": "Upload the completed file by dragging it or selecting it",
+      "STEP_5": "Monitor the progress and download the error report if necessary",
+      "LIMITS_LABEL": "Limits:",
+      "LIMITS_TEXT": "Maximum 10 MB and 10,000 rows per file"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Select CSV File",
+      "DRAG_DROP_TEXT": "Drag and drop your file here or",
+      "SELECT_FILE_BUTTON": "Select File",
+      "UPLOAD_TO_DATABASE": "Upload File to Database"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Upload Status",
+      "FILE": "File",
+      "STARTED": "Started",
+      "PROGRESS_LABEL": "Progress",
+      "ROWS": "rows",
+      "ESTIMATED_TIME_REMAINING": "Estimated time remaining",
+      "SECONDS": "seconds"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Successful",
+      "FAILED": "Failed",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Success Rate"
+    },
+    "STATUS": {
+      "PENDING": "Pending",
+      "VALIDATING": "Validating",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Template downloaded successfully",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error downloading template",
+      "ONLY_CSV_FILES": "Only CSV files are accepted",
+      "FILE_SIZE_LIMIT": "File exceeds maximum size of 10 MB",
+      "SELECT_VALID_FILE": "Select a valid file before uploading",
+      "UPLOADING_FILE": "Uploading file...",
+      "UPLOAD_ERROR": "Error uploading file",
+      "STATUS_CHECK_ERROR": "Error checking process status",
+      "PROVIDERS_IMPORTED_SUCCESS": "✅ {{count}} providers imported successfully",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Process completed: {{successful}} successful, {{failed}} with errors",
+      "UPLOAD_FAILED": "❌ Upload failed. Please check the file and try again",
+      "UPLOAD_CANCELLED": "🚫 Upload cancelled",
+      "ERRORS_FILE_DOWNLOADED": "Error file downloaded",
+      "NO_ERRORS_TO_DOWNLOAD": "No errors to download",
+      "ERRORS_DOWNLOAD_ERROR": "Error downloading error file",
+      "CANCEL_ERROR": "Could not cancel process"
+    },
+    "HISTORY": {
+      "TITLE": "Provider Bulk Upload History",
+      "REFRESH": "Refresh",
+      "LOADING": "Loading history...",
+      "NO_RECORDS": "No bulk upload records found",
+      "FILTER_BY_STATUS": "Filter by Status",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total Uploads",
+        "COMPLETED": "Completed",
+        "IN_PROGRESS": "In Progress",
+        "FAILED": "Failed",
+        "PROVIDERS_IMPORTED": "Providers Imported",
+        "AVERAGE_SUCCESS_RATE": "Average Success Rate"
+      },
+      "TABLE": {
+        "ID": "ID",
+        "FILENAME": "Filename",
+        "STATUS": "Status",
+        "TOTAL_ROWS": "Total Rows",
+        "PROCESSED": "Processed",
+        "SUCCESSFUL": "Successful",
+        "FAILED": "Failed",
+        "SUCCESS_RATE": "% Success",
+        "CREATED_AT": "Created At",
+        "UPDATED_AT": "Last Updated",
+        "ACTIONS": "Actions",
+        "DOWNLOAD_ERRORS": "Download Errors",
+        "VIEW_DETAILS": "View Details",
+        "LOADING_ERROR": "Error loading history",
+        "ALL_STATUSES": "All Statuses"
+      }
+    }
   }
 }

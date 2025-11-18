@@ -11,10 +11,14 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
 import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/domain/entities/order.entity';
+import { OrderDetailComponent } from '../order-detail/order-detail.component';
 
 @Component({
   selector: 'app-order-list',
@@ -32,14 +36,17 @@ import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/dom
     MatIconModule,
     MatCardModule,
     MatProgressSpinnerModule,
+    MatProgressBarModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
 })
 export class OrderListComponent implements OnInit {
   private getOrdersUseCase = inject(GetOrdersUseCase);
+  private dialog = inject(MatDialog);
 
   // Signals para el estado del componente
   orders = signal<OrderEntity[]>([]);
@@ -58,6 +65,7 @@ export class OrderListComponent implements OnInit {
   filterOrderDateTo = signal<string>('');
   filterDeliveryDateFrom = signal<string>('');
   filterDeliveryDateTo = signal<string>('');
+  filterDeliveryCity = signal<string>('');
 
   // Columnas de la tabla
   displayedColumns: string[] = [
@@ -73,26 +81,17 @@ export class OrderListComponent implements OnInit {
 
   // Estados disponibles
   statusOptions: Array<{ value: OrderStatus | '', label: string }> = [
-    { value: '', label: 'Todos' },
-    { value: 'pending', label: 'Pendiente' },
-    { value: 'confirmed', label: 'Confirmada' },
-    { value: 'processing', label: 'Procesando' },
-    { value: 'in_transit', label: 'En Tránsito' },
-    { value: 'delivered', label: 'Entregada' },
-    { value: 'cancelled', label: 'Cancelada' }
+    { value: '', label: 'ORDERS.STATUS.ALL' },
+    { value: 'pending', label: 'ORDERS.STATUS.PENDING' },
+    { value: 'confirmed', label: 'ORDERS.STATUS.CONFIRMED' },
+    { value: 'processing', label: 'ORDERS.STATUS.PROCESSING' },
+    { value: 'in_transit', label: 'ORDERS.STATUS.IN_TRANSIT' },
+    { value: 'delivered', label: 'ORDERS.STATUS.DELIVERED' },
+    { value: 'cancelled', label: 'ORDERS.STATUS.CANCELLED' }
   ];
 
   // Opciones de items por página
   pageSizeOptions: number[] = [10, 20, 50, 100];
-
-  // Computed para verificar si hay filtros activos
-  hasActiveFilters = computed(() => {
-    return this.filterStatus() !== '' ||
-           this.filterOrderDateFrom() !== '' ||
-           this.filterOrderDateTo() !== '' ||
-           this.filterDeliveryDateFrom() !== '' ||
-           this.filterDeliveryDateTo() !== '';
-  });
 
   ngOnInit(): void {
     this.loadOrders();
@@ -125,7 +124,7 @@ export class OrderListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading orders:', err);
-        this.error.set('Error al cargar las órdenes. Por favor, intente nuevamente.');
+        this.error.set('ORDERS.ERROR_LOADING');
         this.loading.set(false);
       }
     });
@@ -145,19 +144,6 @@ export class OrderListComponent implements OnInit {
    */
   onFilterChange(): void {
     this.currentPage.set(1); // Resetear a la primera página
-    this.loadOrders();
-  }
-
-  /**
-   * Limpia todos los filtros
-   */
-  clearFilters(): void {
-    this.filterStatus.set('');
-    this.filterOrderDateFrom.set('');
-    this.filterOrderDateTo.set('');
-    this.filterDeliveryDateFrom.set('');
-    this.filterDeliveryDateTo.set('');
-    this.currentPage.set(1);
     this.loadOrders();
   }
 
@@ -188,12 +174,12 @@ export class OrderListComponent implements OnInit {
    */
   getStatusLabel(status: OrderStatus): string {
     const statusLabels: Record<OrderStatus, string> = {
-      'pending': 'Pendiente',
-      'confirmed': 'Confirmada',
-      'processing': 'Procesando',
-      'in_transit': 'En Tránsito',
-      'delivered': 'Entregada',
-      'cancelled': 'Cancelada'
+      'pending': 'ORDERS.STATUS.PENDING',
+      'confirmed': 'ORDERS.STATUS.CONFIRMED',
+      'processing': 'ORDERS.STATUS.PROCESSING',
+      'in_transit': 'ORDERS.STATUS.IN_TRANSIT',
+      'delivered': 'ORDERS.STATUS.DELIVERED',
+      'cancelled': 'ORDERS.STATUS.CANCELLED'
     };
     return statusLabels[status] || status;
   }
@@ -234,6 +220,46 @@ export class OrderListComponent implements OnInit {
       year: 'numeric',
       month: 'short',
       day: 'numeric'
+    });
+  }
+
+  /**
+   * Verifica si hay filtros activos
+   */
+  hasActiveFilters(): boolean {
+    return !!(
+      this.filterStatus() ||
+      this.filterOrderDateFrom() ||
+      this.filterOrderDateTo() ||
+      this.filterDeliveryDateFrom() ||
+      this.filterDeliveryDateTo() ||
+      this.filterDeliveryCity()
+    );
+  }
+
+  /**
+   * Limpia todos los filtros
+   */
+  clearFilters(): void {
+    this.filterStatus.set('');
+    this.filterOrderDateFrom.set('');
+    this.filterOrderDateTo.set('');
+    this.filterDeliveryDateFrom.set('');
+    this.filterDeliveryDateTo.set('');
+    this.filterDeliveryCity.set('');
+    this.loadOrders();
+  }
+
+  /**
+   * Abre el detalle de una orden en modal
+   */
+  viewOrderDetail(order: OrderEntity): void {
+    this.dialog.open(OrderDetailComponent, {
+      width: '1200px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { id: order.id }
     });
   }
 }

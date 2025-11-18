@@ -9,114 +9,82 @@
   </div>
 
   <!-- Search Section -->
-  <mat-card class="search-card">
-    <mat-card-content>
-      <div class="search-form">
-        <mat-form-field appearance="outline" class="search-field">
-          <mat-label>
-            <mat-icon>search</mat-icon>
-            {{ 'PRODUCT_LOCATION.SEARCH_PRODUCT' | translate }}
-          </mat-label>
-          <input 
-            matInput 
-            [formControl]="searchControl"
-            [placeholder]="'PRODUCT_LOCATION.SEARCH_PLACEHOLDER' | translate"
-            autofocus
-          />
-          <mat-hint>{{ 'PRODUCT_LOCATION.SEARCH_HINT' | translate }}</mat-hint>
-          @if (searchControl.value) {
-            <button mat-icon-button matSuffix (click)="resetSearch()" [matTooltip]="'PRODUCT_LOCATION.CLEAR_SEARCH' | translate">
-              <mat-icon>close</mat-icon>
-            </button>
-          }
-        </mat-form-field>
-        
-        <button 
-          mat-raised-button 
-          color="primary" 
-          (click)="search()" 
-          [disabled]="loading() || !searchControl.value"
-          class="search-button"
-        >
-          <mat-icon>search</mat-icon>
-          {{ 'PRODUCT_LOCATION.SEARCH' | translate }}
-        </button>
-      </div>
-
-      @if (loading()) {
-        <mat-progress-bar mode="indeterminate" color="primary"></mat-progress-bar>
-      }
-
-      @if (errorMessage()) {
-        <div class="error-message">
-          <mat-icon>error_outline</mat-icon>
-          <span>{{ errorMessage() }}</span>
-        </div>
-      }
-    </mat-card-content>
-  </mat-card>
-
-  <!-- Summary Stats -->
-  @if (hasResults() && searchPerformed()) {
-    <div class="stats-container">
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <div class="stat-icon" style="background: #4CAF50;">
-            <mat-icon>inventory_2</mat-icon>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_LOCATIONS' | translate }}</span>
-            <span class="stat-value">{{ totalLocations() }}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <div class="stat-icon" style="background: #2196F3;">
-            <mat-icon>inventory</mat-icon>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_QUANTITY' | translate }}</span>
-            <span class="stat-value">{{ totalQuantity() }}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
-
-      <mat-card class="stat-card">
-        <mat-card-content>
-          <div class="stat-icon" style="background: #FF9800;">
-            <mat-icon>ac_unit</mat-icon>
-          </div>
-          <div class="stat-info">
-            <span class="stat-label">{{ 'PRODUCT_LOCATION.STATS.REFRIGERATED_ZONES' | translate }}</span>
-            <span class="stat-value">{{ refrigeratedZones() }}</span>
-          </div>
-        </mat-card-content>
-      </mat-card>
+  <div class="search-bar" style="flex: 1;">
+    <div class="search-wrap">
+      <mat-form-field appearance="outline" class="search-field">
+        <mat-label>{{ 'PRODUCT_LOCATION.SEARCH_PRODUCT' | translate }}</mat-label>
+        <input 
+          matInput 
+          [formControl]="searchControl"
+          [placeholder]="'PRODUCT_LOCATION.SEARCH_PLACEHOLDER' | translate"
+          (keyup.enter)="search()"
+          autofocus
+        />
+        @if (searchControl.value) {
+          <button 
+            matSuffix 
+            mat-icon-button 
+            [attr.aria-label]="'PRODUCT_LOCATION.CLEAR_SEARCH' | translate"
+            (click)="resetSearch()" 
+            color="primary"
+          >
+            <mat-icon>close</mat-icon>
+          </button>
+        }
+        <mat-icon matPrefix>search</mat-icon>
+      </mat-form-field>
     </div>
-  }
+  </div>
+</div>
 
-  <!-- Results Table -->
-  @if (hasResults()) {
-    <mat-card class="table-card">
-      <mat-card-header>
-        <mat-card-title>
-          <mat-icon>list</mat-icon>
-          {{ 'PRODUCT_LOCATION.LOCATIONS_FOUND_TITLE' | translate }}
-        </mat-card-title>
-      </mat-card-header>
-      <mat-card-content>
-        <div class="table-container">
-          <table mat-table [dataSource]="dataSource" matSort class="locations-table">
+<!-- Loading Spinner -->
+<mat-progress-bar *ngIf="loading()" mode="indeterminate"></mat-progress-bar>
+
+<!-- Error Message -->
+@if (errorMessage()) {
+  <div class="container">
+    <mat-card class="error-card">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ errorMessage() }}</p>
+    </mat-card>
+  </div>
+}
+
+<!-- Results Table -->
+<div class="container">
+  @if (hasResults() && !loading()) {
+    <!-- Summary Stats -->
+    <div class="totales-resumen">
+      <div class="total-item">
+        <mat-icon>inventory_2</mat-icon>
+        <div>
+          <span class="total-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_LOCATIONS' | translate }}</span>
+          <span class="total-value">{{ totalLocations() }}</span>
+        </div>
+      </div>
+      <div class="total-item">
+        <mat-icon>inventory</mat-icon>
+        <div>
+          <span class="total-label">{{ 'PRODUCT_LOCATION.STATS.TOTAL_QUANTITY' | translate }}</span>
+          <span class="total-value">{{ totalQuantity() }}</span>
+        </div>
+      </div>
+      <div class="total-item">
+        <mat-icon>ac_unit</mat-icon>
+        <div>
+          <span class="total-label">{{ 'PRODUCT_LOCATION.STATS.REFRIGERATED_ZONES' | translate }}</span>
+          <span class="total-value">{{ refrigeratedZones() }}</span>
+        </div>
+      </div>
+    </div>
+    <div class="table-container">
+      <table mat-table [dataSource]="dataSource" matSort class="modern-table locations-table">
             
             <!-- Product SKU Column -->
             <ng-container matColumnDef="product_sku">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>SKU</th>
               <td mat-cell *matCellDef="let location">
-                <div class="cell-content">
-                  <strong>{{ location.batch.product_sku }}</strong>
-                </div>
+                {{ location.batch.product_sku }}
               </td>
             </ng-container>
 
@@ -141,11 +109,7 @@
             <!-- Quantity Column -->
             <ng-container matColumnDef="quantity">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.QUANTITY' | translate }}</th>
-              <td mat-cell *matCellDef="let location">
-                <mat-chip [class.low-stock]="location.batch.batch_info.quantity < 10">
-                  {{ location.batch.batch_info.quantity }}
-                </mat-chip>
-              </td>
+              <td mat-cell *matCellDef="let location">{{ location.batch.batch_info.quantity }}</td>
             </ng-container>
 
             <!-- Expiry Date Column -->
@@ -165,10 +129,8 @@
             <ng-container matColumnDef="zone_type">
               <th mat-header-cell *matHeaderCellDef mat-sort-header>{{ 'PRODUCT_LOCATION.TABLE.ZONE' | translate }}</th>
               <td mat-cell *matCellDef="let location">
-                <mat-chip [class.zone-refrigerated]="location.physical_location.is_refrigerated">
-                  <span class="zone-icon">{{ getZoneIcon(location) }}</span>
-                  {{ getZoneLabel(location) }}
-                </mat-chip>
+                <span class="zone-icon">{{ getZoneIcon(location) }}</span>
+                {{ getZoneLabel(location) }}
               </td>
             </ng-container>
 
@@ -192,7 +154,7 @@
               <th mat-header-cell *matHeaderCellDef>{{ 'PRODUCT_LOCATION.TABLE.CENTER' | translate }}</th>
               <td mat-cell *matCellDef="let location">
                 <div class="dc-cell">
-                  <strong>{{ location.distribution_center.code }}</strong>
+                  <span>{{ location.distribution_center.code }}</span>
                   <small>{{ location.distribution_center.city }}</small>
                 </div>
               </td>
@@ -226,7 +188,7 @@
                   [matTooltip]="'PRODUCT_LOCATION.VIEW_DETAIL' | translate"
                   color="accent"
                 >
-                  <mat-icon>info</mat-icon>
+                  <mat-icon class="icon-ojito">visibility</mat-icon>
                 </button>
               </td>
             </ng-container>
@@ -234,200 +196,194 @@
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;" class="table-row"></tr>
           </table>
-        </div>
-        <mat-paginator 
-          [pageSize]="10" 
-          [pageSizeOptions]="[5, 10, 20, 50]"
-          showFirstLastButtons
-        ></mat-paginator>
-      </mat-card-content>
-    </mat-card>
+      </div>
+        
+      <!-- Paginación -->
+      <mat-paginator 
+        class="unified-paginator"
+        [length]="totalLocations()"
+        [pageSize]="10" 
+        [pageSizeOptions]="[5, 10, 20, 50]"
+        showFirstLastButtons>
+      </mat-paginator>
   }
 
   <!-- No Results Message -->
   @if (!hasResults() && searchPerformed() && !loading()) {
-    <mat-card class="empty-state">
-      <mat-card-content>
-        <mat-icon class="empty-icon">search_off</mat-icon>
-        <h3>{{ 'PRODUCT_LOCATION.NO_RESULTS_TITLE' | translate }}</h3>
-        <p>{{ 'PRODUCT_LOCATION.NO_RESULTS_MESSAGE' | translate }}</p>
-        <button mat-raised-button color="primary" (click)="resetSearch()">
-          <mat-icon>refresh</mat-icon>
-          {{ 'PRODUCT_LOCATION.NEW_SEARCH' | translate }}
-        </button>
-      </mat-card-content>
-    </mat-card>
+    <div class="no-results-message">
+      <mat-icon class="empty-icon">search_off</mat-icon>
+      <h3>{{ 'PRODUCT_LOCATION.NO_RESULTS_TITLE' | translate }}</h3>
+      <p>{{ 'PRODUCT_LOCATION.NO_RESULTS_MESSAGE' | translate }}</p>
+      <button mat-raised-button color="primary" (click)="resetSearch()">
+        <mat-icon>refresh</mat-icon>
+        {{ 'PRODUCT_LOCATION.NEW_SEARCH' | translate }}
+      </button>
+    </div>
   }
+</div>
 
   <!-- Detail Modal -->
   @if (selectedLocation()) {
     <div class="modal-overlay" (click)="cerrarDetalle()">
-      <mat-card class="detail-modal" (click)="$event.stopPropagation()">
-        <mat-card-header>
-          <mat-card-title>
-            <mat-icon>info</mat-icon>
+      <mat-card class="form-card" (click)="$event.stopPropagation()">
+        <mat-card-header class="card-header">
+          <mat-card-title class="card-title">
             {{ 'PRODUCT_LOCATION.DETAIL.TITLE' | translate }}
           </mat-card-title>
           <button mat-icon-button (click)="cerrarDetalle()" class="close-button">
             <mat-icon>close</mat-icon>
           </button>
         </mat-card-header>
-        <mat-card-content class="detail-content">
+        <mat-card-content>
           @if (selectedLocation(); as location) {
-            <!-- Product Info -->
-            <div class="detail-section">
-              <h3>
-                <mat-icon>inventory_2</mat-icon>
-                {{ 'PRODUCT_LOCATION.DETAIL.PRODUCT_INFO' | translate }}
-              </h3>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <label>SKU:</label>
-                  <span>{{ location.batch.product_sku }}</span>
+            <div class="detail-grid">
+              <!-- Product Info -->
+              <div class="detail-section">
+                <h3>
+                  <mat-icon>inventory_2</mat-icon>
+                  {{ 'PRODUCT_LOCATION.DETAIL.PRODUCT_INFO' | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                
+                <div class="detail-row">
+                  <mat-label>SKU:</mat-label>
+                  <span class="value">{{ location.batch.product_sku }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.BATCH' | translate }}:</label>
-                  <span>{{ location.batch.batch_info.batch_number }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.BATCH' | translate }}:</mat-label>
+                  <span class="value">{{ location.batch.batch_info.batch_number }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.QUANTITY' | translate }}:</label>
-                  <span class="highlight">{{ location.batch.batch_info.quantity }} {{ 'PRODUCT_LOCATION.DETAIL.UNITS' | translate }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.QUANTITY' | translate }}:</mat-label>
+                  <span class="value price-highlight">{{ location.batch.batch_info.quantity }} {{ 'PRODUCT_LOCATION.DETAIL.UNITS' | translate }}</span>
                 </div>
                 @if (location.batch.batch_info.barcode) {
-                  <div class="detail-item">
-                    <label>{{ 'PRODUCT_LOCATION.DETAIL.BARCODE' | translate }}:</label>
-                    <span>{{ location.batch.batch_info.barcode }}</span>
+                  <div class="detail-row">
+                    <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.BARCODE' | translate }}:</mat-label>
+                    <span class="value">{{ location.batch.batch_info.barcode }}</span>
                   </div>
                 }
               </div>
-            </div>
 
-            <!-- Location Info -->
-            <div class="detail-section">
-              <h3>
-                <mat-icon>place</mat-icon>
-                {{ 'PRODUCT_LOCATION.DETAIL.PHYSICAL_LOCATION' | translate }}
-              </h3>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.LOCATION_CODE' | translate }}:</label>
-                  <span class="location-code-large">{{ location.physical_location.location_code }}</span>
+              <!-- Location Info -->
+              <div class="detail-section">
+                <h3>
+                  <mat-icon>place</mat-icon>
+                  {{ 'PRODUCT_LOCATION.DETAIL.PHYSICAL_LOCATION' | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.LOCATION_CODE' | translate }}:</mat-label>
+                  <span class="value location-code-large">{{ location.physical_location.location_code }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.AISLE' | translate }}:</label>
-                  <span>{{ location.physical_location.aisle }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.AISLE' | translate }}:</mat-label>
+                  <span class="value">{{ location.physical_location.aisle }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.SHELF' | translate }}:</label>
-                  <span>{{ location.physical_location.shelf }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.SHELF' | translate }}:</mat-label>
+                  <span class="value">{{ location.physical_location.shelf }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.LEVEL' | translate }}:</label>
-                  <span>{{ location.physical_location.level_position }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.LEVEL' | translate }}:</mat-label>
+                  <span class="value">{{ location.physical_location.level_position }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.ZONE_TYPE' | translate }}:</label>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.ZONE_TYPE' | translate }}:</mat-label>
                   <mat-chip [class.zone-refrigerated]="location.physical_location.is_refrigerated">
                     {{ getZoneIcon(location) }} {{ getZoneLabel(location) }}
                   </mat-chip>
                 </div>
               </div>
-            </div>
 
-            <!-- Batch Details -->
-            <div class="detail-section">
-              <h3>
-                <mat-icon>calendar_today</mat-icon>
-                {{ 'PRODUCT_LOCATION.DETAIL.BATCH_INFO' | translate }}
-              </h3>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.EXPIRY_DATE' | translate }}:</label>
-                  <span [class]="'expiry-' + getExpiryColor(location.batch.dates.expiry_date)">
-                    {{ location.batch.dates.expiry_date | date:'dd/MM/yyyy' }}
-                    ({{ location.batch.dates.days_until_expiry }} {{ 'PRODUCT_LOCATION.DAYS' | translate }})
-                  </span>
+              <!-- Batch Details -->
+              <div class="detail-section">
+                <h3>
+                  <mat-icon>calendar_today</mat-icon>
+                  {{ 'PRODUCT_LOCATION.DETAIL.BATCH_INFO' | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.EXPIRY_DATE' | translate }}:</mat-label>
+                  <span class="value">{{ location.batch.dates.expiry_date | date:'mediumDate' }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.STATUS' | translate }}:</label>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.STATUS' | translate }}:</mat-label>
                   <mat-chip [color]="getStatusChipColor(location)">
                     {{ getStatusLabel(location) }}
                   </mat-chip>
                 </div>
               </div>
-            </div>
 
-            <!-- Temperature Info -->
-            @if (location.batch.temperature_requirements.range) {
-              <div class="detail-section">
-                <h3>
-                  <mat-icon>thermostat</mat-icon>
-                  {{ 'PRODUCT_LOCATION.DETAIL.TEMPERATURE_CONDITIONS' | translate }}
-                </h3>
-                <div class="detail-grid">
-                  <div class="detail-item">
-                    <label>{{ 'PRODUCT_LOCATION.DETAIL.REQUIRED_RANGE' | translate }}:</label>
-                    <span>{{ location.batch.temperature_requirements.range }}</span>
+              <!-- Temperature Conditions -->
+              @if (location.batch.temperature_requirements.range) {
+                <div class="detail-section">
+                  <h3>
+                    <mat-icon>thermostat</mat-icon>
+                    {{ 'PRODUCT_LOCATION.DETAIL.TEMPERATURE_CONDITIONS' | translate }}
+                  </h3>
+                  <mat-divider></mat-divider>
+                  
+                  <div class="detail-row">
+                    <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.REQUIRED_RANGE' | translate }}:</mat-label>
+                    <span class="value">{{ location.batch.temperature_requirements.range }}</span>
                   </div>
                   @if (location.batch.temperature_requirements.min !== null) {
-                    <div class="detail-item">
-                      <label>{{ 'PRODUCT_LOCATION.DETAIL.MIN_TEMP' | translate }}:</label>
-                      <span>{{ location.batch.temperature_requirements.min }}°C</span>
+                    <div class="detail-row">
+                      <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.MIN_TEMP' | translate }}:</mat-label>
+                      <span class="value">{{ location.batch.temperature_requirements.min }}°C</span>
                     </div>
                   }
                   @if (location.batch.temperature_requirements.max !== null) {
-                    <div class="detail-item">
-                      <label>{{ 'PRODUCT_LOCATION.DETAIL.MAX_TEMP' | translate }}:</label>
-                      <span>{{ location.batch.temperature_requirements.max }}°C</span>
+                    <div class="detail-row">
+                      <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.MAX_TEMP' | translate }}:</mat-label>
+                      <span class="value">{{ location.batch.temperature_requirements.max }}°C</span>
                     </div>
                   }
                 </div>
-              </div>
-            }
+              }
 
-            <!-- Distribution Center -->
-            <div class="detail-section">
-              <h3>
-                <mat-icon>business</mat-icon>
-                {{ 'PRODUCT_LOCATION.DETAIL.DISTRIBUTION_CENTER' | translate }}
-              </h3>
-              <div class="detail-grid">
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.CODE' | translate }}:</label>
-                  <span>{{ location.distribution_center.code }}</span>
+              <!-- Distribution Center -->
+              <div class="detail-section">
+                <h3>
+                  <mat-icon>business</mat-icon>
+                  {{ 'PRODUCT_LOCATION.DETAIL.DISTRIBUTION_CENTER' | translate }}
+                </h3>
+                <mat-divider></mat-divider>
+                
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.CODE' | translate }}:</mat-label>
+                  <span class="value">{{ location.distribution_center.code }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.NAME' | translate }}:</label>
-                  <span>{{ location.distribution_center.name }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.NAME' | translate }}:</mat-label>
+                  <span class="value">{{ location.distribution_center.name }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.CITY' | translate }}:</label>
-                  <span>{{ location.distribution_center.city }}</span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.CITY' | translate }}:</mat-label>
+                  <span class="value">{{ location.distribution_center.city }}</span>
                 </div>
-                <div class="detail-item">
-                  <label>{{ 'PRODUCT_LOCATION.DETAIL.COLD_CHAIN_SUPPORT' | translate }}:</label>
-                  <span>
-                    @if (location.distribution_center.supports_cold_chain) {
-                      <mat-icon class="status-icon success">check_circle</mat-icon> {{ 'COMMON.YES' | translate }}
-                    } @else {
-                      <mat-icon class="status-icon">cancel</mat-icon> {{ 'COMMON.NO' | translate }}
-                    }
-                  </span>
+                <div class="detail-row">
+                  <mat-label>{{ 'PRODUCT_LOCATION.DETAIL.COLD_CHAIN_SUPPORT' | translate }}:</mat-label>
+                  <mat-chip [class]="location.distribution_center.supports_cold_chain ? 'requires-cold-chain' : 'no-cold-chain'">
+                    {{ location.distribution_center.supports_cold_chain ? ('COMMON.YES' | translate) : ('COMMON.NO' | translate) }}
+                  </mat-chip>
                 </div>
               </div>
             </div>
+            
+            <!-- Action Buttons -->
+            <div class="action-buttons">
+              <button mat-raised-button (click)="cerrarDetalle()">{{ 'COMMON.CLOSE' | translate }}</button>
+              <button mat-raised-button color="primary" (click)="copiarUbicacion(location.physical_location.location_code)">
+                <mat-icon>content_copy</mat-icon>
+                {{ 'PRODUCT_LOCATION.COPY_LOCATION' | translate }}
+              </button>
+            </div>
           }
         </mat-card-content>
-        <mat-card-actions align="end">
-          <button mat-button (click)="cerrarDetalle()">{{ 'COMMON.CLOSE' | translate }}</button>
-          @if (selectedLocation()) {
-            <button mat-raised-button color="primary" (click)="copiarUbicacion(selectedLocation()!.physical_location.location_code)">
-              <mat-icon>content_copy</mat-icon>
-              {{ 'PRODUCT_LOCATION.COPY_LOCATION' | translate }}
-            </button>
-          }
-        </mat-card-actions>
       </mat-card>
     </div>
   }
-</div>

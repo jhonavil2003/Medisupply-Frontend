@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal, computed, ChangeDetectionStrategy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatButtonModule } from '@angular/material/button';
@@ -19,18 +19,21 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { TranslateModule } from '@ngx-translate/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
 import { GenerateRoutesUseCase } from '../../../../core/application/use-cases/generate-routes.usecase';
 import { GetAvailableVehiclesUseCase } from '../../../../core/application/use-cases/get-available-vehicles.usecase';
 import { OrderEntity, OrdersListResponse } from '../../../../core/domain/entities/order.entity';
 import { VehicleEntity, GenerateRoutesResponse, GeneratedRoute } from '../../../../core/infrastructure/repositories/route.repository';
+import { OrderDetailComponent } from '../order-detail/order-detail.component';
 
 @Component({
   selector: 'app-route-generation',
   imports: [
     CommonModule,
     FormsModule,
+    RouterModule,
     MatTableModule,
     MatCheckboxModule,
     MatButtonModule,
@@ -47,7 +50,8 @@ import { VehicleEntity, GenerateRoutesResponse, GeneratedRoute } from '../../../
     MatSelectModule,
     MatChipsModule,
     MatDialogModule,
-    MatExpansionModule
+    MatExpansionModule,
+    TranslateModule
   ],
   templateUrl: './route-generation.component.html',
   styleUrls: ['./route-generation.component.css'],
@@ -80,6 +84,7 @@ export class RouteGenerationComponent implements OnInit {
   
   generationResult = signal<GenerateRoutesResponse | null>(null);
   showResults = signal(false);
+  showVehicleDetails = signal(false);
 
   displayedColumns: string[] = ['select', 'orderNumber', 'customerName', 'date', 'totalAmount', 'actions'];
   vehicleColumns: string[] = ['plate', 'type', 'capacity', 'driver', 'status'];
@@ -91,11 +96,11 @@ export class RouteGenerationComponent implements OnInit {
   ];
 
   optimizationStrategies = [
-    { value: 'balanced', label: '⭐ Balanceada (Recomendada)', description: 'Balance entre distancia, tiempo y capacidad' },
-    { value: 'minimize_distance', label: '🛣️ Minimizar Distancia', description: 'Reduce kilómetros recorridos y combustible' },
-    { value: 'minimize_time', label: '⏱️ Minimizar Tiempo', description: 'Optimiza tiempo de entrega' },
-    { value: 'minimize_cost', label: '💰 Minimizar Costo', description: 'Reduce costo operativo total' },
-    { value: 'priority_first', label: '🔥 Prioridad Primero', description: 'Atiende primero clientes críticos' }
+    { value: 'balanced', label: 'ROUTE_GENERATION.STRATEGIES.BALANCED', description: 'ROUTE_GENERATION.STRATEGIES.BALANCED_DESC' },
+    { value: 'minimize_distance', label: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_DISTANCE', description: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_DISTANCE_DESC' },
+    { value: 'minimize_time', label: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_TIME', description: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_TIME_DESC' },
+    { value: 'minimize_cost', label: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_COST', description: 'ROUTE_GENERATION.STRATEGIES.MINIMIZE_COST_DESC' },
+    { value: 'priority_first', label: 'ROUTE_GENERATION.STRATEGIES.PRIORITY_FIRST', description: 'ROUTE_GENERATION.STRATEGIES.PRIORITY_FIRST_DESC' }
   ];
 
   selectedOrdersCount = computed(() => this.selectionCount());
@@ -176,7 +181,13 @@ export class RouteGenerationComponent implements OnInit {
   }
 
   viewOrderDetail(order: OrderEntity): void {
-    this.router.navigate(['/ordenes', order.id]);
+    this.dialog.open(OrderDetailComponent, {
+      width: '1200px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { id: order.id }
+    });
   }
 
   async generateRoutes(): Promise<void> {
@@ -313,10 +324,10 @@ export class RouteGenerationComponent implements OnInit {
 
   getVehicleTypeLabel(type: string): string {
     const types: Record<string, string> = {
-      'refrigerated_truck': '🧊 Refrigerado',
-      'standard_truck': '🚚 Estándar',
-      'van': '🚐 Van',
-      'motorcycle': '🏍️ Moto'
+      'refrigerated_truck': 'ROUTE_GENERATION.VEHICLES.TYPES.REFRIGERATED',
+      'standard_truck': 'ROUTE_GENERATION.VEHICLES.TYPES.TRUCK',
+      'van': 'ROUTE_GENERATION.VEHICLES.TYPES.VAN',
+      'motorcycle': 'ROUTE_GENERATION.VEHICLES.TYPES.MOTORCYCLE'
     };
     return types[type] || type;
   }
@@ -338,4 +349,12 @@ export class RouteGenerationComponent implements OnInit {
     };
     return colors[status] || '#9e9e9e';
   }
+
+  /**
+   * Alterna la visibilidad de los detalles de vehículos
+   */
+  toggleVehicleDetails(): void {
+    this.showVehicleDetails.update(v => !v);
+  }
+
 }

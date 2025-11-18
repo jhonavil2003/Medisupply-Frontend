@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ProveedorBulkUploadService } from './proveedor-bulk-upload.service';
 import { BulkUploadJob, BulkUploadStatus } from './models/bulk-upload.models';
@@ -20,13 +21,15 @@ import { BulkUploadJob, BulkUploadStatus } from './models/bulk-upload.models';
     MatIconModule,
     MatCardModule,
     MatProgressBarModule,
-    MatChipsModule
+    MatChipsModule,
+    TranslateModule
   ],
   templateUrl: './proveedor-upload.component.html',
   styleUrls: ['./proveedor-upload.component.css']
 })
 export class ProveedorUploadComponent implements OnDestroy {
   private notify = inject(NotificationService);
+  private translateService = inject(TranslateService);
   private bulkUploadService = inject(ProveedorBulkUploadService);
 
   // Signals para el estado del componente
@@ -49,13 +52,19 @@ export class ProveedorUploadComponent implements OnDestroy {
       
       // Validar tipo de archivo
       if (!file.name.endsWith('.csv')) {
-        this.notify.warning('Solo se aceptan archivos CSV', 'Error');
+        this.notify.warning(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.ONLY_CSV_FILES'), 
+          'Error'
+        );
         return;
       }
       
       // Validar tamaño (10MB según el backend)
       if (file.size > 10 * 1024 * 1024) {
-        this.notify.warning('El archivo excede el tamaño máximo de 10 MB', 'Error');
+        this.notify.warning(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.FILE_SIZE_LIMIT'), 
+          'Error'
+        );
         return;
       }
       
@@ -68,12 +77,18 @@ export class ProveedorUploadComponent implements OnDestroy {
     const archivo = this.archivoSeleccionado();
     
     if (!archivo || !this.archivoValido()) {
-      this.notify.warning('Seleccione un archivo válido antes de cargar', 'Error');
+      this.notify.warning(
+        this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.SELECT_VALID_FILE'), 
+        'Error'
+      );
       return;
     }
 
     this.cargando.set(true);
-    this.notify.info('Subiendo archivo', 'Por favor espere');
+    this.notify.info(
+      this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.UPLOADING_FILE'), 
+      'Por favor espere'
+    );
 
     // Subir el archivo
     this.bulkUploadService.uploadCSV(archivo).subscribe({
@@ -86,7 +101,7 @@ export class ProveedorUploadComponent implements OnDestroy {
       },
       error: (error) => {
         this.cargando.set(false);
-        const errorMsg = error.error?.message || 'Error al subir el archivo';
+        const errorMsg = error.error?.message || this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.UPLOAD_ERROR');
         this.notify.error(errorMsg, 'Error');
       }
     });
@@ -103,20 +118,24 @@ export class ProveedorUploadComponent implements OnDestroy {
           if (job.status === 'completed') {
             this.stopPolling();
             
-            const successMsg = `Archivo procesado exitosamente: ${job.progress.successful_rows} proveedores creados`;
+            const successMsg = this.translateService.instant(
+              'BULK_UPLOAD_PROVIDERS.MESSAGES.PROVIDERS_IMPORTED_SUCCESS',
+              { count: job.progress.successful_rows }
+            );
             this.notify.success(successMsg, 'Éxito');
             
             // Si hay errores, notificar
             if (job.progress.failed_rows > 0) {
-              this.notify.warning(
-                `${job.progress.failed_rows} filas fallaron. Puede descargar el reporte de errores`,
-                'Advertencia'
+              const warningMsg = this.translateService.instant(
+                'BULK_UPLOAD_PROVIDERS.MESSAGES.PROCESS_COMPLETED_WITH_ERRORS',
+                { successful: job.progress.successful_rows, failed: job.progress.failed_rows }
               );
+              this.notify.warning(warningMsg, 'Advertencia');
             }
           } else if (job.status === 'failed') {
             this.stopPolling();
             
-            const errorMsg = job.error_message || 'Error al procesar el archivo';
+            const errorMsg = job.error_message || this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.UPLOAD_FAILED');
             this.notify.error(errorMsg, 'Error');
           }
           // Si está en 'pending' o 'processing', continuar polling
@@ -125,7 +144,7 @@ export class ProveedorUploadComponent implements OnDestroy {
           this.stopPolling();
           this.cargando.set(false);
           
-          const errorMsg = error.error?.message || 'Error al verificar el estado del proceso';
+          const errorMsg = error.error?.message || this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.STATUS_CHECK_ERROR');
           this.notify.error(errorMsg, 'Error');
         }
       });
@@ -159,10 +178,16 @@ export class ProveedorUploadComponent implements OnDestroy {
     this.bulkUploadService.downloadTemplate().subscribe({
       next: (blob) => {
         this.bulkUploadService.downloadBlob(blob, 'plantilla_proveedores.csv');
-        this.notify.success('Plantilla descargada correctamente', 'Éxito');
+        this.notify.success(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.TEMPLATE_DOWNLOADED'), 
+          'Éxito'
+        );
       },
       error: (error) => {
-        this.notify.error('Error al descargar la plantilla', 'Error');
+        this.notify.error(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.TEMPLATE_DOWNLOAD_ERROR'), 
+          'Error'
+        );
       }
     });
   }
@@ -173,10 +198,16 @@ export class ProveedorUploadComponent implements OnDestroy {
     this.bulkUploadService.downloadErrors(this.currentJobId).subscribe({
       next: (blob) => {
         this.bulkUploadService.downloadBlob(blob, `errores_${this.currentJobId}.csv`);
-        this.notify.success('Reporte de errores descargado', 'Éxito');
+        this.notify.success(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.ERRORS_FILE_DOWNLOADED'), 
+          'Éxito'
+        );
       },
       error: (error) => {
-        this.notify.error('Error al descargar el reporte de errores', 'Error');
+        this.notify.error(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.ERRORS_DOWNLOAD_ERROR'), 
+          'Error'
+        );
       }
     });
   }
@@ -187,11 +218,17 @@ export class ProveedorUploadComponent implements OnDestroy {
     this.bulkUploadService.cancelJob(this.currentJobId).subscribe({
       next: (response) => {
         this.stopPolling();
-        this.notify.success('Proceso cancelado correctamente', 'Éxito');
+        this.notify.success(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.UPLOAD_CANCELLED'), 
+          'Éxito'
+        );
         this.reiniciar();
       },
       error: (error) => {
-        this.notify.error('Error al cancelar el proceso', 'Error');
+        this.notify.error(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.CANCEL_ERROR'), 
+          'Error'
+        );
       }
     });
   }
@@ -218,15 +255,8 @@ export class ProveedorUploadComponent implements OnDestroy {
   }
 
   getStatusText(status: BulkUploadStatus): string {
-    const texts: Record<BulkUploadStatus, string> = {
-      'pending': 'Pendiente',
-      'validating': 'Validando',
-      'processing': 'Procesando',
-      'completed': 'Completado',
-      'failed': 'Fallido',
-      'cancelled': 'Cancelado'
-    };
-    return texts[status] || status;
+    const statusKey = `BULK_UPLOAD_PROVIDERS.STATUS.${status.toUpperCase()}`;
+    return this.translateService.instant(statusKey);
   }
 
   getStatusColor(status: BulkUploadStatus): string {

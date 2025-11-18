@@ -1,37 +1,16 @@
-.route-list-container {
-  padding: 24px;
-  max-width: 1400px;
-  margin: 0 auto;
-}
-
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-}
-
-.header h1 {
-  margin: 0;
-  font-size: 28px;
-  font-weight: 500;
-  color: #333;
-}
-
-.header button {
-  gap: 8px;
+/* Container */
+.container {
+  padding: 24px !important;
+  margin: 24px 0 24px 16px !important;
 }
 
 /* Filtros */
-.filters-card {
-  margin-bottom: 24px;
-}
-
 .filters-row {
   display: flex;
   gap: 16px;
   align-items: flex-start;
   flex-wrap: wrap;
+  margin-bottom: 16px;
 }
 
 .filters-row mat-form-field {
@@ -41,30 +20,64 @@
 
 .filter-actions {
   display: flex;
-  gap: 12px;
+  justify-content: flex-end;
   align-items: center;
-  padding-top: 8px;
+  gap: 12px;
+  margin-top: 16px;
+  margin-bottom: 24px;
 }
 
-/* Loading */
-.loading-container {
+.filter-actions button {
+  background: rgba(99, 102, 241, 0.08) !important;
+  color: var(--color-primary) !important;
+  border: 1px solid rgba(99, 102, 241, 0.2) !important;
+  border-radius: 6px !important;
+  padding: 8px 16px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-actions button:hover {
+  background: rgba(99, 102, 241, 0.15) !important;
+}
+
+/* Mensaje sin resultados */
+.no-results-message {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  padding: 60px;
-  gap: 20px;
+  gap: 16px;
+  padding: 60px 40px;
+  text-align: center;
 }
 
-.loading-container p {
-  font-size: 16px;
-  color: #666;
+.no-results-message mat-icon {
+  font-size: 64px;
+  width: 64px;
+  height: 64px;
+  color: #2196f3;
+  opacity: 0.7;
+}
+
+.no-results-message h2 {
   margin: 0;
+  color: #333;
+  font-size: 24px;
+  font-weight: 500;
 }
 
-/* Table Card */
-.table-card {
-  overflow: auto;
+.no-results-message p {
+  margin: 0;
+  color: #666;
+  font-size: 16px;
+  max-width: 500px;
+}
+
+/* Table Container */
+.table-container {
+  margin-top: 20px;
 }
 
 .routes-table {

@@ -6,6 +6,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { NotificationService } from '../../../shared/services/notification.service';
 import { ProductoBulkUploadService } from './producto-bulk-upload.service';
 import { BulkUploadJob, JobStatus } from './models/bulk-upload.models';
@@ -20,7 +21,8 @@ import { BulkUploadJob, JobStatus } from './models/bulk-upload.models';
     MatIconModule,
     MatCardModule,
     MatProgressBarModule,
-    MatChipsModule
+    MatChipsModule,
+    TranslateModule
   ],
   templateUrl: './producto-upload.component.html',
   styleUrls: ['./producto-upload.component.css']
@@ -28,6 +30,7 @@ import { BulkUploadJob, JobStatus } from './models/bulk-upload.models';
 export class ProductoUploadComponent implements OnDestroy {
   private notify = inject(NotificationService);
   private uploadService = inject(ProductoBulkUploadService);
+  private translate = inject(TranslateService);
 
   // Señales para manejo de estado
   archivoSeleccionado = signal<File | null>(null);
@@ -44,11 +47,11 @@ export class ProductoUploadComponent implements OnDestroy {
     this.uploadService.downloadTemplate().subscribe({
       next: (blob) => {
         this.uploadService.downloadBlob(blob, 'plantilla_productos.csv');
-        this.notify.success('Plantilla descargada correctamente');
+        this.notify.success(this.translate.instant('BULK_UPLOAD.MESSAGES.TEMPLATE_DOWNLOADED'));
       },
       error: (error) => {
         console.error('Error al descargar plantilla:', error);
-        this.notify.error('Error al descargar la plantilla');
+        this.notify.error(this.translate.instant('BULK_UPLOAD.MESSAGES.TEMPLATE_DOWNLOAD_ERROR'));
       }
     });
   }
@@ -69,14 +72,14 @@ export class ProductoUploadComponent implements OnDestroy {
   private validarYSeleccionarArchivo(file: File): void {
     // Validar extensión
     if (!file.name.endsWith('.csv')) {
-      this.notify.warning('Solo se aceptan archivos CSV', 'Error');
+      this.notify.warning(this.translate.instant('BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES'), this.translate.instant('COMMON.ERROR'));
       return;
     }
 
     // Validar tamaño (20 MB según la API)
     const MAX_SIZE = 20 * 1024 * 1024; // 20 MB
     if (file.size > MAX_SIZE) {
-      this.notify.warning('El archivo excede el tamaño máximo de 20 MB', 'Error');
+      this.notify.warning(this.translate.instant('BULK_UPLOAD.MESSAGES.FILE_SIZE_LIMIT'), this.translate.instant('COMMON.ERROR'));
       return;
     }
 
@@ -91,12 +94,12 @@ export class ProductoUploadComponent implements OnDestroy {
     const archivo = this.archivoSeleccionado();
     
     if (!archivo || !this.archivoValido()) {
-      this.notify.warning('Seleccione un archivo válido antes de cargar', 'Error');
+      this.notify.warning(this.translate.instant('BULK_UPLOAD.MESSAGES.SELECT_VALID_FILE'), this.translate.instant('COMMON.ERROR'));
       return;
     }
 
     this.cargando.set(true);
-    this.notify.info('Subiendo archivo...', archivo.name);
+    this.notify.info(this.translate.instant('BULK_UPLOAD.MESSAGES.UPLOADING_FILE'), archivo.name);
 
     this.uploadService.uploadCSV(archivo).subscribe({
       next: (response) => {
@@ -107,7 +110,7 @@ export class ProductoUploadComponent implements OnDestroy {
         console.error('Error al subir archivo:', error);
         this.cargando.set(false);
         
-        const mensaje = error.error?.error || 'Error al subir el archivo';
+        const mensaje = error.error?.error || this.translate.instant('BULK_UPLOAD.MESSAGES.UPLOAD_ERROR');
         this.notify.error(mensaje);
       }
     });
@@ -135,7 +138,7 @@ export class ProductoUploadComponent implements OnDestroy {
           console.error('Error al consultar estado del job:', error);
           this.detenerPolling();
           this.cargando.set(false);
-          this.notify.error('Error al consultar el estado del proceso');
+          this.notify.error(this.translate.instant('BULK_UPLOAD.MESSAGES.STATUS_CHECK_ERROR'));
         }
       });
     }, 3000); // Polling cada 3 segundos
@@ -157,18 +160,21 @@ export class ProductoUploadComponent implements OnDestroy {
   private mostrarResultadoFinal(job: BulkUploadJob): void {
     if (job.status === 'completed') {
       if (job.failed_rows === 0) {
-        this.notify.success(
-          `✅ ${job.successful_rows} productos importados exitosamente`
-        );
+        this.translate.get('BULK_UPLOAD.MESSAGES.PRODUCTS_IMPORTED_SUCCESS', { count: job.successful_rows }).subscribe(message => {
+          this.notify.success(message);
+        });
       } else {
-        this.notify.warning(
-          `⚠️ Proceso completado: ${job.successful_rows} exitosos, ${job.failed_rows} con errores`
-        );
+        this.translate.get('BULK_UPLOAD.MESSAGES.PROCESS_COMPLETED_WITH_ERRORS', { 
+          successful: job.successful_rows, 
+          failed: job.failed_rows 
+        }).subscribe(message => {
+          this.notify.warning(message);
+        });
       }
     } else if (job.status === 'failed') {
-      this.notify.error('❌ La carga falló. Revise el archivo e intente nuevamente');
+      this.notify.error(this.translate.instant('BULK_UPLOAD.MESSAGES.UPLOAD_FAILED'));
     } else if (job.status === 'cancelled') {
-      this.notify.info('🚫 Carga cancelada');
+      this.notify.info(this.translate.instant('BULK_UPLOAD.MESSAGES.UPLOAD_CANCELLED'));
     }
 
     // Resetear archivo seleccionado
@@ -186,14 +192,14 @@ export class ProductoUploadComponent implements OnDestroy {
     this.uploadService.downloadErrors(job.job_id).subscribe({
       next: (blob) => {
         this.uploadService.downloadBlob(blob, `errores_${job.job_id}.csv`);
-        this.notify.success('Archivo de errores descargado');
+        this.notify.success(this.translate.instant('BULK_UPLOAD.MESSAGES.ERRORS_FILE_DOWNLOADED'));
       },
       error: (error) => {
         console.error('Error al descargar errores:', error);
         if (error.status === 404) {
-          this.notify.info('No hay errores para descargar');
+          this.notify.info(this.translate.instant('BULK_UPLOAD.MESSAGES.NO_ERRORS_TO_DOWNLOAD'));
         } else {
-          this.notify.error('Error al descargar el archivo de errores');
+          this.notify.error(this.translate.instant('BULK_UPLOAD.MESSAGES.ERRORS_DOWNLOAD_ERROR'));
         }
       }
     });
@@ -215,7 +221,7 @@ export class ProductoUploadComponent implements OnDestroy {
       },
       error: (error) => {
         console.error('Error al cancelar job:', error);
-        const mensaje = error.error?.error || 'No se pudo cancelar el proceso';
+        const mensaje = error.error?.error || this.translate.instant('BULK_UPLOAD.MESSAGES.CANCEL_ERROR');
         this.notify.error(mensaje);
       }
     });
@@ -283,15 +289,17 @@ export class ProductoUploadComponent implements OnDestroy {
    * Obtiene el texto en español del estado
    */
   getStatusText(status: JobStatus): string {
-    const texts: Record<JobStatus, string> = {
-      'pending': 'Pendiente',
-      'validating': 'Validando',
-      'processing': 'Procesando',
-      'completed': 'Completado',
-      'failed': 'Fallido',
-      'cancelled': 'Cancelado'
+    const statusKeys: Record<JobStatus, string> = {
+      'pending': 'BULK_UPLOAD.STATUS.PENDING',
+      'validating': 'BULK_UPLOAD.STATUS.VALIDATING',
+      'processing': 'BULK_UPLOAD.STATUS.PROCESSING',
+      'completed': 'BULK_UPLOAD.STATUS.COMPLETED',
+      'failed': 'BULK_UPLOAD.STATUS.FAILED',
+      'cancelled': 'BULK_UPLOAD.STATUS.CANCELLED'
     };
-    return texts[status] || status;
+    
+    const key = statusKeys[status];
+    return key ? this.translate.instant(key) : status;
   }
 
   ngOnDestroy(): void {

@@ -25,7 +25,9 @@
     "NO_RESULTS": "No hay resultados",
     "METADATA": "Metadatos",
     "CREATED_AT": "Fecha de Creación",
-    "UPDATED_AT": "Última Actualización"
+    "UPDATED_AT": "Última Actualización",
+    "ERROR": "Error",
+    "UNKNOWN_ERROR": "Error desconocido"
   },
   "DIALOG": {
     "CONFIRM_DELETE_TITLE": "Confirmar eliminación",
@@ -315,6 +317,155 @@
       "DRIVER": "Conductor",
       "STATUS": "Estado",
       "INCLUDED_ORDERS": "Pedidos incluidos"
+    },
+    "ROUTE": {
+      "TITLE": "Rutas de Entrega",
+      "GENERATE_NEW_ROUTE": "Generar Nueva Ruta",
+      "NO_ROUTES_FOUND": "No se encontraron rutas",
+      "NO_ROUTES_WITH_FILTERS": "No hay rutas con los filtros seleccionados",
+      "FILTERS": {
+        "PLANNED_DATE": "Fecha Planificada",
+        "STATUS": "Estado",
+        "VEHICLE_ID": "ID Vehículo",
+        "ENTER_ID": "Ingrese ID",
+        "CLEAR_FILTERS": "Limpiar Filtros"
+      },
+      "STATUS": {
+        "DRAFT": "Borrador",
+        "ACTIVE": "Activa",
+        "IN_PROGRESS": "En Progreso",
+        "COMPLETED": "Completada",
+        "CANCELLED": "Cancelada"
+      },
+      "TABLE": {
+        "ROUTE_NUMBER": "N° Ruta",
+        "PLANNED_DATE": "Fecha Planificada",
+        "STATUS": "Estado",
+        "VEHICLE": "Vehículo",
+        "DRIVER": "Conductor",
+        "STOPS": "Paradas",
+        "STOPS_UNIT": "paradas",
+        "COMPLETED": "completado",
+        "METRICS": "Métricas",
+        "ACTIONS": "Acciones"
+      },
+      "ACTIONS": {
+        "VIEW_DETAILS": "Ver Detalles",
+        "VIEW_ON_MAP": "Ver en Mapa",
+        "ACTIVATE_ROUTE": "Activar Ruta"
+      },
+      "MESSAGES": {
+        "ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED": "Solo se pueden activar rutas en estado borrador",
+        "ROUTE_ACTIVATED_SUCCESSFULLY": "✅ Ruta activada exitosamente",
+        "ERROR_ACTIVATING_ROUTE": "Error al activar la ruta"
+      }
+    }
+  },
+  "BULK_UPLOAD": {
+    "TITLE": "Carga Masiva de Productos",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Descargar Plantilla CSV",
+      "VIEW_HISTORY": "Ver Historial",
+      "DOWNLOAD_ERRORS": "Descargar Reporte de Errores",
+      "CANCEL_PROCESS": "Cancelar Proceso",
+      "UPLOAD_ANOTHER_FILE": "Cargar Otro Archivo"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instrucciones para la carga masiva",
+      "STEP_1": "Descargue la plantilla CSV haciendo clic en el botón \"Descargar Plantilla CSV\"",
+      "STEP_2": "Complete los datos de los productos en el archivo CSV (7 columnas requeridas, 19 opcionales)",
+      "STEP_3": "Asegúrese de que los proveedores (supplier_id) existan en el sistema",
+      "STEP_4": "Suba el archivo completado arrastrándolo o seleccionándolo",
+      "STEP_5": "Monitoree el progreso y descargue el reporte de errores si es necesario",
+      "LIMITS_LABEL": "Límites:",
+      "LIMITS_TEXT": "Máximo 20 MB y 10,000 filas por archivo"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Seleccionar Archivo CSV",
+      "DRAG_DROP_TEXT": "Arrastra y suelta tu archivo aquí o",
+      "SELECT_FILE_BUTTON": "Seleccionar Archivo",
+      "UPLOAD_TO_DATABASE": "Cargar Archivo a la Base de Datos"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Estado de la Carga",
+      "FILE": "Archivo",
+      "STARTED": "Iniciado",
+      "PROGRESS_LABEL": "Progreso",
+      "ROWS": "filas",
+      "ESTIMATED_TIME_REMAINING": "Tiempo estimado restante",
+      "SECONDS": "segundos"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Exitosos",
+      "FAILED": "Fallidos",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Tasa de Éxito"
+    },
+    "STATUS": {
+      "PENDING": "Pendiente",
+      "VALIDATING": "Validando",
+      "PROCESSING": "Procesando",
+      "COMPLETED": "Completado",
+      "FAILED": "Fallido",
+      "CANCELLED": "Cancelado"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Plantilla descargada correctamente",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error al descargar la plantilla",
+      "ONLY_CSV_FILES": "Solo se aceptan archivos CSV",
+      "FILE_SIZE_LIMIT": "El archivo excede el tamaño máximo de 20 MB",
+      "SELECT_VALID_FILE": "Seleccione un archivo válido antes de cargar",
+      "UPLOADING_FILE": "Subiendo archivo...",
+      "UPLOAD_ERROR": "Error al subir el archivo",
+      "STATUS_CHECK_ERROR": "Error al consultar el estado del proceso",
+      "PRODUCTS_IMPORTED_SUCCESS": "✅ {{count}} productos importados exitosamente",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Proceso completado: {{successful}} exitosos, {{failed}} con errores",
+      "UPLOAD_FAILED": "❌ La carga falló. Revise el archivo e intente nuevamente",
+      "UPLOAD_CANCELLED": "🚫 Carga cancelada",
+      "ERRORS_FILE_DOWNLOADED": "Archivo de errores descargado",
+      "NO_ERRORS_TO_DOWNLOAD": "No hay errores para descargar",
+      "ERRORS_DOWNLOAD_ERROR": "Error al descargar el archivo de errores",
+      "CANCEL_ERROR": "No se pudo cancelar el proceso"
+    },
+    "HISTORY": {
+      "TITLE": "Historial de Cargas Masivas de Productos",
+      "REFRESH": "Actualizar",
+      "LOADING": "Cargando historial...",
+      "NO_RECORDS": "No hay registros de cargas masivas",
+      "FILTER_BY_STATUS": "Filtrar por Estado",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total de Cargas",
+        "COMPLETED": "Completados",
+        "IN_PROGRESS": "En Progreso",
+        "FAILED": "Fallidos",
+        "PRODUCTS_IMPORTED": "Productos Importados",
+        "AVERAGE_SUCCESS_RATE": "Tasa de Éxito Promedio"
+      },
+      "TABLE": {
+        "FILENAME": "Archivo",
+        "STATUS": "Estado",
+        "CREATED_AT": "Fecha de Creación",
+        "TOTAL_ROWS": "Total",
+        "SUCCESSFUL_ROWS": "Exitosos",
+        "FAILED_ROWS": "Fallidos",
+        "SUCCESS_RATE": "Tasa de Éxito",
+        "ACTIONS": "Acciones"
+      },
+      "FILTER_OPTIONS": {
+        "ALL": "Todos",
+        "COMPLETED": "Completados",
+        "IN_PROGRESS": "En Proceso",
+        "FAILED": "Fallidos",
+        "CANCELLED": "Cancelados"
+      },
+      "ACTIONS": {
+        "DOWNLOAD_ERRORS": "Descargar errores"
+      },
+      "MESSAGES": {
+        "LOADING_ERROR": "Error al cargar historial",
+        "ERRORS_DOWNLOADED": "Archivo de errores descargado",
+        "DOWNLOAD_ERROR": "Error al descargar archivo de errores"
+      }
     }
   },
   "PRODUCT_LOCATION": {
@@ -328,6 +479,7 @@
     "MIN_SEARCH_LENGTH": "Ingrese al menos 3 caracteres para buscar",
     "NO_LOCATIONS_FOUND": "No se encontraron ubicaciones para este producto",
     "LOCATIONS_FOUND": "Se encontraron {{count}} ubicaciones",
+    "PRODUCT_NOT_FOUND": "Producto no encontrado en bodega",
     "DAYS": "días",
     "STATS": {
       "TOTAL_LOCATIONS": "Total Ubicaciones",
@@ -441,6 +593,222 @@
       "MONETARY": "Monetario"
     }
   },
+  "ORDERS": {
+    "TITLE": "Listado de Órdenes",
+    "LOADING": "Cargando órdenes...",
+    "ERROR_LOADING": "Error al cargar las órdenes. Por favor, intente nuevamente.",
+    "NO_ORDERS_FOUND": "No se encontraron órdenes",
+    "RETRY": "Reintentar",
+    "FILTERS": {
+      "STATUS": "Estado",
+      "ORDER_DATE_FROM": "Fecha Orden Desde",
+      "ORDER_DATE_TO": "Fecha Orden Hasta",
+      "DELIVERY_CITY": "Ciudad de Entrega",
+      "SEARCH_CITY_PLACEHOLDER": "Buscar ciudad..."
+    },
+    "STATUS": {
+      "ALL": "Todos",
+      "PENDING": "Pendiente",
+      "CONFIRMED": "Confirmada",
+      "PROCESSING": "Procesando",
+      "IN_TRANSIT": "En Tránsito",
+      "DELIVERED": "Entregada",
+      "CANCELLED": "Cancelada"
+    },
+    "TABLE": {
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "STATUS": "Estado",
+      "ORDER_DATE": "Fecha Orden",
+      "DELIVERY_DATE": "Fecha Entrega",
+      "CITY": "Ciudad",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle"
+    }
+  },
+  "ORDER_DETAIL": {
+    "TITLE": "Orden",
+    "LOADING": "Cargando detalles de la orden...",
+    "ERROR_LOADING": "Error al cargar la orden",
+    "RETRY": "Reintentar",
+    "CLOSE": "Cerrar",
+    "BACK_TO_LIST": "Volver al Listado",
+    "CUSTOMER_INFO": "Información del Cliente",
+    "BUSINESS_NAME": "Razón Social",
+    "DOCUMENT": "Documento",
+    "TYPE": "Tipo",
+    "PHONE": "Teléfono",
+    "EMAIL": "Email",
+    "DELIVERY_INFO": "Información de Entrega",
+    "COPY_ADDRESS": "Copiar dirección",
+    "ADDRESS": "Dirección",
+    "CITY": "Ciudad",
+    "DEPARTMENT": "Departamento",
+    "DELIVERY_DATE": "Fecha de Entrega",
+    "GPS_COORDINATES": "Coordenadas GPS",
+    "DELIVERY_ADDRESS": "Dirección de Entrega",
+    "NOTES": "Notas",
+    "ORDER_INFO": "Información de la Orden",
+    "ORDER_NUMBER": "Número de Orden",
+    "CREATED_AT": "Fecha de Creación",
+    "UPDATED_AT": "Última Actualización",
+    "SELLER": "Vendedor",
+    "DISTRIBUTION_CENTER": "Centro de Distribución",
+    "PAYMENT_INFO": "Información de Pago",
+    "PAYMENT_TERMS": "Términos de Pago",
+    "PAYMENT_METHOD": "Método de Pago",
+    "AMOUNTS_SUMMARY": "Resumen de Montos",
+    "SUBTOTAL": "Subtotal",
+    "DISCOUNT": "Descuento",
+    "TAX": "Impuestos (IVA)",
+    "TOTAL": "Total",
+    "METRICS": "Métricas",
+    "ITEMS": "Items",
+    "UNITS": "Unidades",
+    "ITEMS_WITH_DISCOUNT": "Items con Descuento",
+    "AVG_DISCOUNT": "Desc. Promedio",
+    "ORDER_ITEMS": "Items de la Orden",
+    "TABLE": {
+      "SKU": "SKU",
+      "PRODUCT": "Producto",
+      "QUANTITY": "Cantidad",
+      "UNIT_PRICE": "Precio Unit.",
+      "DISCOUNT_PCT": "Desc. %",
+      "SUBTOTAL": "Subtotal",
+      "DISCOUNT": "Descuento",
+      "TAX": "IVA",
+      "TOTAL": "Total",
+      "STOCK": "Stock",
+      "TOTALS": "Totales"
+    },
+    "ADDRESS_COPIED": "Dirección copiada al portapapeles"
+  },
+  "ROUTE_GENERATION": {
+    "TITLE": "Generación de Rutas de Entrega",
+    "SELECT_CONFIG": "Selecciona la configuración para la generación de la ruta",
+    "SELECT_ORDERS": "Selecciona las órdenes confirmadas que deseas incluir en la ruta",
+    "FILTERS": {
+      "DISTRIBUTION_CENTER": "Centro de Distribución",
+      "DELIVERY_DATE": "Fecha de Entrega",
+      "OPTIMIZATION_STRATEGY": "Estrategia de Optimización"
+    },
+    "STRATEGIES": {
+      "BALANCED": "⭐ Balanceada (Recomendada)",
+      "BALANCED_DESC": "Balance entre distancia, tiempo y capacidad",
+      "MINIMIZE_DISTANCE": "🛣️ Minimizar Distancia",
+      "MINIMIZE_DISTANCE_DESC": "Reduce kilómetros recorridos y combustible",
+      "MINIMIZE_TIME": "⏱️ Minimizar Tiempo",
+      "MINIMIZE_TIME_DESC": "Optimiza tiempo de entrega",
+      "MINIMIZE_COST": "💰 Minimizar Costo",
+      "MINIMIZE_COST_DESC": "Reduce costo operativo total",
+      "PRIORITY_FIRST": "🔥 Prioridad Primero",
+      "PRIORITY_FIRST_DESC": "Atiende primero clientes críticos"
+    },
+    "VEHICLES": {
+      "AVAILABLE": "Vehículos Disponibles",
+      "LOADING": "Cargando...",
+      "SHOW_DETAILS": "Ver detalles",
+      "HIDE_DETAILS": "Ocultar detalles",
+      "NO_VEHICLES": "No hay vehículos disponibles para la fecha seleccionada",
+      "CAPACITY": "Capacidad",
+      "DRIVER": "Conductor",
+      "PHONE": "Teléfono",
+      "FUEL": "Combustible",
+      "TYPES": {
+        "VAN": "Furgoneta",
+        "TRUCK": "Camión",
+        "REFRIGERATED": "Refrigerado",
+        "MOTORCYCLE": "Motocicleta"
+      }
+    },
+    "SELECTION": {
+      "ORDERS_SELECTED": "órdenes seleccionadas",
+      "ESTIMATED_WEIGHT": "Peso estimado",
+      "TOTAL": "Total",
+      "CLEAR": "Limpiar selección",
+      "GENERATE": "Generar Rutas"
+    },
+    "TABLE": {
+      "SELECT": "Seleccionar",
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "DATE": "Fecha",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle"
+    },
+    "LOADING_ORDERS": "Cargando órdenes confirmadas...",
+    "NO_ORDERS": "No hay órdenes confirmadas disponibles",
+    "RELOAD": "Recargar",
+    "GENERATION": {
+      "TITLE": "Generando rutas...",
+      "COMPLETED": "completado",
+      "SUCCESS": "¡Rutas Generadas Exitosamente!",
+      "PARTIAL": "Rutas Generadas con Advertencias"
+    },
+    "SUMMARY": {
+      "ROUTES_GENERATED": "Rutas Generadas",
+      "ORDERS_ASSIGNED": "Órdenes Asignadas",
+      "TOTAL_DISTANCE": "Distancia Total",
+      "ESTIMATED_DURATION": "Duración Estimada",
+      "OPTIMIZATION_SCORE": "Score de Optimización",
+      "FUEL_COST": "Costo Combustible"
+    },
+    "WARNINGS": "Advertencias",
+    "UNASSIGNED": {
+      "TITLE": "Órdenes No Asignadas",
+      "ORDER": "Orden"
+    },
+    "ROUTES_CREATED": "Rutas Creadas",
+    "ROUTE_INFO": {
+      "VEHICLE": "Vehículo",
+      "DRIVER": "Conductor",
+      "ORDERS_STOPS": "Órdenes / Paradas",
+      "ORDERS": "órdenes",
+      "STOPS": "paradas",
+      "DISTANCE": "Distancia",
+      "DURATION": "Duración",
+      "FUEL_COST": "Costo Combustible"
+    },
+    "ACTIONS": {
+      "GENERATE_NEW": "Generar Nuevas Rutas",
+      "VIEW_ROUTES": "Ver Rutas Generadas"
+    }
+  },
+  "CONFIRM_ORDERS": {
+    "TITLE": "Confirmación de Órdenes",
+    "LOADING": "Cargando órdenes preparadas...",
+    "ERROR_LOADING": "Error al cargar las órdenes",
+    "RETRY": "Reintentar",
+    "UPDATE": "Actualizar",
+    "PREPARED_ORDERS": "Órdenes Preparadas",
+    "NO_PREPARED_ORDERS": "No hay órdenes preparadas",
+    "NO_PREPARED_ORDERS_DESC": "Todas las órdenes han sido confirmadas o no hay órdenes pendientes",
+    "CONFIRM_SELECTED": "Confirmar Seleccionadas",
+    "CONFIRM": "Confirmar",
+    "NO_SELECTED": "No hay órdenes seleccionadas",
+    "NO_DATE_SPECIFIED": "No especificada",
+    "TABLE": {
+      "SELECT": "Seleccionar",
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "ORDER_DATE": "Fecha Orden",
+      "DELIVERY_DATE": "Fecha Entrega",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle de la orden",
+      "CONFIRM_ORDER": "Confirmar orden"
+    },
+    "SUCCESS": {
+      "SINGLE": "Orden {{orderNumber}} confirmada exitosamente",
+      "MULTIPLE": "{{count}} órdenes confirmadas exitosamente"
+    },
+    "ERROR": {
+      "SINGLE": "Error al confirmar la orden {{orderNumber}}",
+      "MULTIPLE": "Error al confirmar las órdenes seleccionadas"
+    }
+  },
   "SIDEBAR": {
     "HOME": "Inicio",
     "MANAGEMENT": "Gestión",
@@ -477,5 +845,104 @@
     "INVALID_BARCODE": "Solo números permitidos",
     "INVALID_SUPPLIER_ID": "Solo números enteros",
     "INVALID_URL": "Debe ser una URL válida (http:// o https://)"
+  },
+  "BULK_UPLOAD_PROVIDERS": {
+    "TITLE": "Carga Masiva de Proveedores",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Descargar Plantilla CSV",
+      "VIEW_HISTORY": "Ver Historial",
+      "DOWNLOAD_ERRORS": "Descargar Reporte de Errores",
+      "CANCEL_PROCESS": "Cancelar Proceso",
+      "UPLOAD_ANOTHER_FILE": "Cargar Otro Archivo"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instrucciones para la carga masiva",
+      "STEP_1": "Descargue la plantilla CSV haciendo clic en el botón \"Descargar Plantilla CSV\"",
+      "STEP_2": "Complete los datos de los proveedores en el archivo CSV (6 columnas requeridas, 13 opcionales)",
+      "STEP_3": "Asegúrese de que los tax_id sean únicos en el sistema",
+      "STEP_4": "Suba el archivo completado arrastrándolo o seleccionándolo",
+      "STEP_5": "Monitoree el progreso y descargue el reporte de errores si es necesario",
+      "LIMITS_LABEL": "Límites:",
+      "LIMITS_TEXT": "Máximo 10 MB y 10,000 filas por archivo"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Seleccionar Archivo CSV",
+      "DRAG_DROP_TEXT": "Arrastra y suelta tu archivo aquí o",
+      "SELECT_FILE_BUTTON": "Seleccionar Archivo",
+      "UPLOAD_TO_DATABASE": "Cargar Archivo a la Base de Datos"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Estado de la Carga",
+      "FILE": "Archivo",
+      "STARTED": "Iniciado",
+      "PROGRESS_LABEL": "Progreso",
+      "ROWS": "filas",
+      "ESTIMATED_TIME_REMAINING": "Tiempo estimado restante",
+      "SECONDS": "segundos"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Exitosos",
+      "FAILED": "Fallidos",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Tasa de Éxito"
+    },
+    "STATUS": {
+      "PENDING": "Pendiente",
+      "VALIDATING": "Validando",
+      "PROCESSING": "Procesando",
+      "COMPLETED": "Completado",
+      "FAILED": "Fallido",
+      "CANCELLED": "Cancelado"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Plantilla descargada correctamente",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error al descargar la plantilla",
+      "ONLY_CSV_FILES": "Solo se aceptan archivos CSV",
+      "FILE_SIZE_LIMIT": "El archivo excede el tamaño máximo de 10 MB",
+      "SELECT_VALID_FILE": "Seleccione un archivo válido antes de cargar",
+      "UPLOADING_FILE": "Subiendo archivo...",
+      "UPLOAD_ERROR": "Error al subir el archivo",
+      "STATUS_CHECK_ERROR": "Error al consultar el estado del proceso",
+      "PROVIDERS_IMPORTED_SUCCESS": "✅ {{count}} proveedores importados exitosamente",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Proceso completado: {{successful}} exitosos, {{failed}} con errores",
+      "UPLOAD_FAILED": "❌ La carga falló. Revise el archivo e intente nuevamente",
+      "UPLOAD_CANCELLED": "🚫 Carga cancelada",
+      "ERRORS_FILE_DOWNLOADED": "Archivo de errores descargado",
+      "NO_ERRORS_TO_DOWNLOAD": "No hay errores para descargar",
+      "ERRORS_DOWNLOAD_ERROR": "Error al descargar el archivo de errores",
+      "CANCEL_ERROR": "No se pudo cancelar el proceso"
+    },
+    "HISTORY": {
+      "TITLE": "Historial de Cargas Masivas de Proveedores",
+      "REFRESH": "Actualizar",
+      "LOADING": "Cargando historial...",
+      "NO_RECORDS": "No hay registros de cargas masivas",
+      "FILTER_BY_STATUS": "Filtrar por Estado",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total de Cargas",
+        "COMPLETED": "Completados",
+        "IN_PROGRESS": "En Progreso",
+        "FAILED": "Fallidos",
+        "PROVIDERS_IMPORTED": "Proveedores Importados",
+        "AVERAGE_SUCCESS_RATE": "Tasa de Éxito Promedio"
+      },
+      "TABLE": {
+        "ID": "ID",
+        "FILENAME": "Nombre del Archivo",
+        "STATUS": "Estado",
+        "TOTAL_ROWS": "Total Filas",
+        "PROCESSED": "Procesadas",
+        "SUCCESSFUL": "Exitosas",
+        "FAILED": "Fallidas",
+        "SUCCESS_RATE": "% Éxito",
+        "CREATED_AT": "Fecha Creación",
+        "UPDATED_AT": "Última Actualización",
+        "ACTIONS": "Acciones",
+        "DOWNLOAD_ERRORS": "Descargar Errores",
+        "VIEW_DETAILS": "Ver Detalles",
+        "LOADING_ERROR": "Error al cargar historial",
+        "ALL_STATUSES": "Todos los Estados"
+      }
+    }
   }
 }
