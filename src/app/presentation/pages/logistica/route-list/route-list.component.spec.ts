@@ -1,9 +1,28 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { Router, ActivatedRoute } from '@angular/router';
+import { RouterTestingModule } from '@angular/router/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { of, throwError, Subject } from 'rxjs';
+import { TranslateService, TranslateModule, TranslateLoader } from '@ngx-translate/core';
+import { of, throwError, Subject, Observable } from 'rxjs';
+
+// Mock TranslateLoader para tests
+class MockTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return of({
+      'LOGISTICS.MESSAGES.ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED': 'Solo se pueden activar rutas en estado borrador',
+      'LOGISTICS.MESSAGES.ROUTE_ACTIVATED_SUCCESSFULLY': '✅ Ruta activada exitosamente', 
+      'LOGISTICS.MESSAGES.ERROR_ACTIVATING_ROUTE': 'Error al activar la ruta',
+      'LOGISTICS.ROUTE.STATUS.DRAFT': 'Borrador',
+      'LOGISTICS.ROUTE.STATUS.ACTIVE': 'Activa',
+      'LOGISTICS.ROUTE.STATUS.IN_PROGRESS': 'En Progreso',
+      'LOGISTICS.ROUTE.STATUS.COMPLETED': 'Completada',
+      'LOGISTICS.ROUTE.STATUS.CANCELLED': 'Cancelada',
+      'COMMON.CLOSE': 'Cerrar'
+    });
+  }
+}
 import { RouteListComponent } from './route-list.component';
 import { GetRoutesUseCase } from '../../../../core/application/use-cases/get-routes.usecase';
 import { UpdateRouteStatusUseCase } from '../../../../core/application/use-cases/update-route-status.usecase';
@@ -92,10 +111,6 @@ describe('RouteListComponent', () => {
       activateRoute: jest.fn()
     } as any;
 
-    mockRouter = {
-      navigate: jest.fn()
-    } as any;
-
     mockDialog = {
       open: jest.fn()
     } as any;
@@ -113,12 +128,18 @@ describe('RouteListComponent', () => {
     await TestBed.configureTestingModule({
       imports: [
         RouteListComponent,
-        BrowserAnimationsModule
+        BrowserAnimationsModule,
+        RouterTestingModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: MockTranslateLoader
+          }
+        })
       ],
       providers: [
         { provide: GetRoutesUseCase, useValue: mockGetRoutesUseCase },
         { provide: UpdateRouteStatusUseCase, useValue: mockUpdateRouteStatusUseCase },
-        { provide: Router, useValue: mockRouter },
         { provide: ActivatedRoute, useValue: mockActivatedRoute },
         { provide: MatDialog, useValue: mockDialog },
         { provide: MatSnackBar, useValue: mockSnackBar }
@@ -138,6 +159,14 @@ describe('RouteListComponent', () => {
 
     fixture = TestBed.createComponent(RouteListComponent);
     component = fixture.componentInstance;
+    mockRouter = TestBed.inject(Router) as jest.Mocked<Router>;
+    mockRouter.navigate = jest.fn();
+    
+    // Configurar TranslateService para que cargue las traducciones
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('es');
+    translateService.use('es');
+    
     fixture.detectChanges();
   });
 
@@ -368,7 +397,7 @@ describe('RouteListComponent', () => {
       }, 10);
     });
 
-    it('should activate route if dialog is confirmed', (done) => {
+    it('should activate route if dialog is confirmed', fakeAsync(() => {
       const event = new Event('click');
       const mockDialogRef = {
         afterClosed: jest.fn().mockReturnValue(of(true))
@@ -377,19 +406,17 @@ describe('RouteListComponent', () => {
       mockUpdateRouteStatusUseCase.activateRoute.mockReturnValue(of({ status: 'success', message: 'Activated' }));
 
       component.activateRoute(mockRouteListItem, event);
+      tick();
 
-      setTimeout(() => {
-        expect(mockUpdateRouteStatusUseCase.activateRoute).toHaveBeenCalledWith(1, 'supervisor@medisupply.com');
-        expect(mockSnackBar.open).toHaveBeenCalledWith(
-          '✅ Ruta activada exitosamente',
-          'Cerrar',
-          expect.objectContaining({ duration: 3000 })
-        );
-        done();
-      }, 10);
-    });
+      expect(mockUpdateRouteStatusUseCase.activateRoute).toHaveBeenCalledWith(1, 'supervisor@medisupply.com');
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        '✅ Ruta activada exitosamente',
+        'Cerrar',
+        expect.objectContaining({ duration: 3000 })
+      );
+    }));
 
-    it('should show error snackbar on activation failure', (done) => {
+    it('should show error snackbar on activation failure', fakeAsync(() => {
       const event = new Event('click');
       const mockDialogRef = {
         afterClosed: jest.fn().mockReturnValue(of(true))
@@ -400,16 +427,14 @@ describe('RouteListComponent', () => {
       );
 
       component.activateRoute(mockRouteListItem, event);
+      tick();
 
-      setTimeout(() => {
-        expect(mockSnackBar.open).toHaveBeenCalledWith(
-          expect.stringContaining('Error al activar la ruta'),
-          'Cerrar',
-          expect.objectContaining({ duration: 5000 })
-        );
-        done();
-      }, 10);
-    });
+      expect(mockSnackBar.open).toHaveBeenCalledWith(
+        expect.stringContaining('Error al activar la ruta'),
+        'Cerrar',
+        expect.objectContaining({ duration: 5000 })
+      );
+    }));
 
     it('should stop event propagation', () => {
       const event = new Event('click');

@@ -3,6 +3,8 @@ import { NoopAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterTestingModule } from '@angular/router/testing';
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
+import { TranslateModule, TranslateLoader, TranslateService } from '@ngx-translate/core';
+import { Observable, of } from 'rxjs';
 
 import { ProductoUploadComponent } from './producto-upload.component';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -13,6 +15,24 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+
+// Mock TranslateLoader para tests
+class MockTranslateLoader implements TranslateLoader {
+  getTranslation(lang: string): Observable<any> {
+    return of({
+      'BULK_UPLOAD.MESSAGES.FILE_UPLOADED_SUCCESS': 'Archivo subido exitosamente',
+      'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES': 'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES',
+      'BULK_UPLOAD.MESSAGES.FILE_SIZE_LIMIT': 'BULK_UPLOAD.MESSAGES.FILE_SIZE_LIMIT',
+      'BULK_UPLOAD.MESSAGES.UPLOADING_FILE': 'BULK_UPLOAD.MESSAGES.UPLOADING_FILE',
+      'BULK_UPLOAD.MESSAGES.SELECT_VALID_FILE': 'BULK_UPLOAD.MESSAGES.SELECT_VALID_FILE',
+      'BULK_UPLOAD.MESSAGES.UPLOAD_ERROR': 'Error al subir archivo',
+      'BULK_UPLOAD.MESSAGES.SELECT_FILE': 'Seleccione un archivo',
+      'BULK_UPLOAD.MESSAGES.PRODUCTS_IMPORTED_SUCCESS': 'BULK_UPLOAD.MESSAGES.PRODUCTS_IMPORTED_SUCCESS',
+      'COMMON.ERROR': 'Error',
+      'COMMON.SUCCESS': 'Éxito'
+    });
+  }
+}
 
 const API_BASE_URL = `${environment.catalogApiUrl}/api/products/bulk-upload`;
 
@@ -38,7 +58,13 @@ describe('ProductoUploadComponent', () => {
         MatButtonModule,
         MatIconModule,
         MatCardModule,
-        MatProgressSpinnerModule
+        MatProgressSpinnerModule,
+        TranslateModule.forRoot({
+          loader: {
+            provide: TranslateLoader,
+            useClass: MockTranslateLoader
+          }
+        })
       ],
       providers: [
         { provide: NotificationService, useValue: notificationServiceSpy },
@@ -51,6 +77,11 @@ describe('ProductoUploadComponent', () => {
     component = fixture.componentInstance;
     mockNotificationService = TestBed.inject(NotificationService);
     httpMock = TestBed.inject(HttpTestingController);
+    
+    // Asegurar que el TranslateService está configurado
+    const translateService = TestBed.inject(TranslateService);
+    translateService.setDefaultLang('es');
+    fixture.detectChanges();
   });
 
   afterEach(() => {
@@ -60,7 +91,10 @@ describe('ProductoUploadComponent', () => {
     } catch (e) {
       // Ignore verification errors for tests that don't make HTTP calls
     }
-    component.ngOnDestroy();
+    // Solo llamar ngOnDestroy si el componente fue creado exitosamente
+    if (component && typeof component.ngOnDestroy === 'function') {
+      component.ngOnDestroy();
+    }
   });
 
   describe('Component Initialization', () => {
@@ -110,7 +144,7 @@ describe('ProductoUploadComponent', () => {
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV',
+        'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES',
         'Error'
       );
     });
@@ -132,7 +166,7 @@ describe('ProductoUploadComponent', () => {
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'El archivo excede el tamaño máximo de 20 MB',
+        'BULK_UPLOAD.MESSAGES.FILE_SIZE_LIMIT',
         'Error'
       );
     });
@@ -211,7 +245,7 @@ describe('ProductoUploadComponent', () => {
       component.procesarArchivo();
       expect(component.cargando()).toBe(true);
       expect(mockNotificationService.info).toHaveBeenCalledWith(
-        'Subiendo archivo...',
+        'BULK_UPLOAD.MESSAGES.UPLOADING_FILE',
         'test.csv'
       );
 
@@ -233,7 +267,7 @@ describe('ProductoUploadComponent', () => {
       // Assert
       expect(component.cargando()).toBe(false);
       expect(mockNotificationService.success).toHaveBeenCalledWith(
-        '✅ 10 productos importados exitosamente'
+        'BULK_UPLOAD.MESSAGES.PRODUCTS_IMPORTED_SUCCESS'
       );
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
@@ -250,7 +284,7 @@ describe('ProductoUploadComponent', () => {
       // Assert
       expect(component.cargando()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Seleccione un archivo válido antes de cargar',
+        'BULK_UPLOAD.MESSAGES.SELECT_VALID_FILE',
         'Error'
       );
       expect(mockNotificationService.info).not.toHaveBeenCalled();
@@ -268,7 +302,7 @@ describe('ProductoUploadComponent', () => {
       // Assert
       expect(component.cargando()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Seleccione un archivo válido antes de cargar',
+        'BULK_UPLOAD.MESSAGES.SELECT_VALID_FILE',
         'Error'
       );
       expect(mockNotificationService.info).not.toHaveBeenCalled();
@@ -459,7 +493,7 @@ describe('ProductoUploadComponent', () => {
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV',
+        'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES',
         'Error'
       );
     });
@@ -480,7 +514,7 @@ describe('ProductoUploadComponent', () => {
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV',
+        'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES',
         'Error'
       );
     });
@@ -501,7 +535,7 @@ describe('ProductoUploadComponent', () => {
       expect(component.archivoSeleccionado()).toBeNull();
       expect(component.archivoValido()).toBe(false);
       expect(mockNotificationService.warning).toHaveBeenCalledWith(
-        'Solo se aceptan archivos CSV',
+        'BULK_UPLOAD.MESSAGES.ONLY_CSV_FILES',
         'Error'
       );
     });
