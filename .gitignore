@@ -65,3 +65,6 @@ ARCHITECTURE_DOCUMENTATION.md
 DOCUMENTACION_API_REPORTES.md
 Justificacion_Diseno_Color_Tipografia.md
 GUIA_ESTILOS_EQUIPO.md
+
+# Environment files to ignore
+src/environments/environment.ts

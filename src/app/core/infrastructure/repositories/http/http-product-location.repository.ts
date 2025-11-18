@@ -8,7 +8,8 @@ import {
   ProductLocationQueryParams,
   StockLevelsResponse
 } from '../../../domain/entities/product-location.entity';
-import { environment } from '../../../../../environments/environment';
+import {environment} from "../../../../../environments/environment";
+
 
 @Injectable()
 export class HttpProductLocationRepository extends ProductLocationRepository {
@@ -23,7 +24,7 @@ export class HttpProductLocationRepository extends ProductLocationRepository {
 
   getStockLevels(productSku: string, distributionCenterId?: number): Observable<StockLevelsResponse> {
     let httpParams = new HttpParams().set('product_sku', productSku);
-    
+
     if (distributionCenterId !== undefined) {
       httpParams = httpParams.set('distribution_center_id', distributionCenterId.toString());
     }

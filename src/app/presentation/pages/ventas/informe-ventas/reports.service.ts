@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../../../../environments/environment';
+import { environment } from '../../../../..//environments/environment';
 
 export interface SalesSummaryFilters {
   from_date?: string;  // YYYY-MM-DD
@@ -91,7 +91,7 @@ export class ReportsService {
 
   getSalesSummary(filters?: SalesSummaryFilters): Observable<SalesSummaryResponse> {
     let params = new HttpParams();
-    
+
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== null && value !== undefined && value !== '') {
@@ -105,7 +105,7 @@ export class ReportsService {
 
   getSalesBySalesperson(filters?: SalesSummaryFilters): Observable<SalesBySalespersonResponse> {
     let params = new HttpParams();
-    
+
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== null && value !== undefined && value !== '') {
@@ -119,7 +119,7 @@ export class ReportsService {
 
   getSalesByProduct(filters?: SalesSummaryFilters): Observable<SalesByProductResponse> {
     let params = new HttpParams();
-    
+
     if (filters) {
       Object.entries(filters).forEach(([key, value]) => {
         if (value !== null && value !== undefined && value !== '') {

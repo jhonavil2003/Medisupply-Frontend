@@ -133,8 +133,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('search') === 'test' &&
         request.params.get('category') === 'Medicamentos' &&
         request.params.get('is_active') === 'true' &&
@@ -156,8 +156,8 @@ describe('HttpProductoRepository', () => {
 
       repository.getAll(params).subscribe();
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('search') === 'test' &&
         request.params.get('page') === '1' &&
         request.params.get('per_page') === '0' &&
@@ -258,8 +258,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('search') === searchTerm &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '1' &&
@@ -278,8 +278,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('search') === searchTerm &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '2' &&
@@ -295,8 +295,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '1' &&
         request.params.get('per_page') === '20'
@@ -312,8 +312,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '3' &&
         request.params.get('per_page') === '15'
@@ -330,8 +330,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('category') === category &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '1' &&
@@ -348,8 +348,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('category') === category &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '2' &&
@@ -365,8 +365,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('requires_cold_chain') === 'true' &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '1' &&
@@ -382,8 +382,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('requires_cold_chain') === 'true' &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '2' &&
@@ -401,8 +401,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('supplier_id') === '123' &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '1' &&
@@ -419,8 +419,8 @@ describe('HttpProductoRepository', () => {
         expect(response).toEqual(mockProductListResponse);
       });
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('supplier_id') === '456' &&
         request.params.get('is_active') === 'true' &&
         request.params.get('page') === '3' &&
@@ -653,8 +653,8 @@ describe('HttpProductoRepository', () => {
 
       repository.getAll(params).subscribe();
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('search') === 'valid search' &&
         request.params.get('per_page') === '0' &&
         !request.params.has('category') &&
@@ -672,8 +672,8 @@ describe('HttpProductoRepository', () => {
 
       repository.getAll(params).subscribe();
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('is_active') === 'true' &&
         request.params.get('requires_cold_chain') === 'false'
       );
@@ -689,8 +689,8 @@ describe('HttpProductoRepository', () => {
 
       repository.getAll(params).subscribe();
 
-      const req = httpTestingController.expectOne(request => 
-        request.url === apiUrl && 
+      const req = httpTestingController.expectOne(request =>
+        request.url === apiUrl &&
         request.params.get('page') === '0' &&
         request.params.get('per_page') === '100' &&
         request.params.get('supplier_id') === '999'
