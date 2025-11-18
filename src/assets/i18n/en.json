@@ -428,7 +428,7 @@
       "CANCEL_ERROR": "Could not cancel process"
     },
     "HISTORY": {
-      "TITLE": "Bulk Upload History",
+      "TITLE": "Product Bulk Upload History",
       "REFRESH": "Refresh",
       "LOADING": "Loading history...",
       "NO_RECORDS": "No bulk upload records found",
@@ -845,5 +845,104 @@
     "INVALID_BARCODE": "Only numbers allowed",
     "INVALID_SUPPLIER_ID": "Only whole numbers",
     "INVALID_URL": "Must be a valid URL (http:// or https://)"
+  },
+  "BULK_UPLOAD_PROVIDERS": {
+    "TITLE": "Bulk Provider Upload",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Download CSV Template",
+      "VIEW_HISTORY": "View History",
+      "DOWNLOAD_ERRORS": "Download Error Report",
+      "CANCEL_PROCESS": "Cancel Process",
+      "UPLOAD_ANOTHER_FILE": "Upload Another File"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instructions for bulk upload",
+      "STEP_1": "Download the CSV template by clicking the \"Download CSV Template\" button",
+      "STEP_2": "Complete the provider data in the CSV file (6 required columns, 13 optional)",
+      "STEP_3": "Ensure that tax_id values are unique in the system",
+      "STEP_4": "Upload the completed file by dragging it or selecting it",
+      "STEP_5": "Monitor the progress and download the error report if necessary",
+      "LIMITS_LABEL": "Limits:",
+      "LIMITS_TEXT": "Maximum 10 MB and 10,000 rows per file"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Select CSV File",
+      "DRAG_DROP_TEXT": "Drag and drop your file here or",
+      "SELECT_FILE_BUTTON": "Select File",
+      "UPLOAD_TO_DATABASE": "Upload File to Database"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Upload Status",
+      "FILE": "File",
+      "STARTED": "Started",
+      "PROGRESS_LABEL": "Progress",
+      "ROWS": "rows",
+      "ESTIMATED_TIME_REMAINING": "Estimated time remaining",
+      "SECONDS": "seconds"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Successful",
+      "FAILED": "Failed",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Success Rate"
+    },
+    "STATUS": {
+      "PENDING": "Pending",
+      "VALIDATING": "Validating",
+      "PROCESSING": "Processing",
+      "COMPLETED": "Completed",
+      "FAILED": "Failed",
+      "CANCELLED": "Cancelled"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Template downloaded successfully",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error downloading template",
+      "ONLY_CSV_FILES": "Only CSV files are accepted",
+      "FILE_SIZE_LIMIT": "File exceeds maximum size of 10 MB",
+      "SELECT_VALID_FILE": "Select a valid file before uploading",
+      "UPLOADING_FILE": "Uploading file...",
+      "UPLOAD_ERROR": "Error uploading file",
+      "STATUS_CHECK_ERROR": "Error checking process status",
+      "PROVIDERS_IMPORTED_SUCCESS": "✅ {{count}} providers imported successfully",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Process completed: {{successful}} successful, {{failed}} with errors",
+      "UPLOAD_FAILED": "❌ Upload failed. Please check the file and try again",
+      "UPLOAD_CANCELLED": "🚫 Upload cancelled",
+      "ERRORS_FILE_DOWNLOADED": "Error file downloaded",
+      "NO_ERRORS_TO_DOWNLOAD": "No errors to download",
+      "ERRORS_DOWNLOAD_ERROR": "Error downloading error file",
+      "CANCEL_ERROR": "Could not cancel process"
+    },
+    "HISTORY": {
+      "TITLE": "Provider Bulk Upload History",
+      "REFRESH": "Refresh",
+      "LOADING": "Loading history...",
+      "NO_RECORDS": "No bulk upload records found",
+      "FILTER_BY_STATUS": "Filter by Status",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total Uploads",
+        "COMPLETED": "Completed",
+        "IN_PROGRESS": "In Progress",
+        "FAILED": "Failed",
+        "PROVIDERS_IMPORTED": "Providers Imported",
+        "AVERAGE_SUCCESS_RATE": "Average Success Rate"
+      },
+      "TABLE": {
+        "ID": "ID",
+        "FILENAME": "Filename",
+        "STATUS": "Status",
+        "TOTAL_ROWS": "Total Rows",
+        "PROCESSED": "Processed",
+        "SUCCESSFUL": "Successful",
+        "FAILED": "Failed",
+        "SUCCESS_RATE": "% Success",
+        "CREATED_AT": "Created At",
+        "UPDATED_AT": "Last Updated",
+        "ACTIONS": "Actions",
+        "DOWNLOAD_ERRORS": "Download Errors",
+        "VIEW_DETAILS": "View Details",
+        "LOADING_ERROR": "Error loading history",
+        "ALL_STATUSES": "All Statuses"
+      }
+    }
   }
 }

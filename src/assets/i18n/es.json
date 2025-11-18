@@ -428,7 +428,7 @@
       "CANCEL_ERROR": "No se pudo cancelar el proceso"
     },
     "HISTORY": {
-      "TITLE": "Historial de Cargas Masivas",
+      "TITLE": "Historial de Cargas Masivas de Productos",
       "REFRESH": "Actualizar",
       "LOADING": "Cargando historial...",
       "NO_RECORDS": "No hay registros de cargas masivas",
@@ -845,5 +845,104 @@
     "INVALID_BARCODE": "Solo números permitidos",
     "INVALID_SUPPLIER_ID": "Solo números enteros",
     "INVALID_URL": "Debe ser una URL válida (http:// o https://)"
+  },
+  "BULK_UPLOAD_PROVIDERS": {
+    "TITLE": "Carga Masiva de Proveedores",
+    "ACTIONS": {
+      "DOWNLOAD_TEMPLATE": "Descargar Plantilla CSV",
+      "VIEW_HISTORY": "Ver Historial",
+      "DOWNLOAD_ERRORS": "Descargar Reporte de Errores",
+      "CANCEL_PROCESS": "Cancelar Proceso",
+      "UPLOAD_ANOTHER_FILE": "Cargar Otro Archivo"
+    },
+    "INSTRUCTIONS": {
+      "TITLE": "Instrucciones para la carga masiva",
+      "STEP_1": "Descargue la plantilla CSV haciendo clic en el botón \"Descargar Plantilla CSV\"",
+      "STEP_2": "Complete los datos de los proveedores en el archivo CSV (6 columnas requeridas, 13 opcionales)",
+      "STEP_3": "Asegúrese de que los tax_id sean únicos en el sistema",
+      "STEP_4": "Suba el archivo completado arrastrándolo o seleccionándolo",
+      "STEP_5": "Monitoree el progreso y descargue el reporte de errores si es necesario",
+      "LIMITS_LABEL": "Límites:",
+      "LIMITS_TEXT": "Máximo 10 MB y 10,000 filas por archivo"
+    },
+    "UPLOAD": {
+      "SELECT_FILE": "Seleccionar Archivo CSV",
+      "DRAG_DROP_TEXT": "Arrastra y suelta tu archivo aquí o",
+      "SELECT_FILE_BUTTON": "Seleccionar Archivo",
+      "UPLOAD_TO_DATABASE": "Cargar Archivo a la Base de Datos"
+    },
+    "PROGRESS": {
+      "UPLOAD_STATUS": "Estado de la Carga",
+      "FILE": "Archivo",
+      "STARTED": "Iniciado",
+      "PROGRESS_LABEL": "Progreso",
+      "ROWS": "filas",
+      "ESTIMATED_TIME_REMAINING": "Tiempo estimado restante",
+      "SECONDS": "segundos"
+    },
+    "METRICS": {
+      "SUCCESSFUL": "Exitosos",
+      "FAILED": "Fallidos",
+      "TOTAL": "Total",
+      "SUCCESS_RATE": "Tasa de Éxito"
+    },
+    "STATUS": {
+      "PENDING": "Pendiente",
+      "VALIDATING": "Validando",
+      "PROCESSING": "Procesando",
+      "COMPLETED": "Completado",
+      "FAILED": "Fallido",
+      "CANCELLED": "Cancelado"
+    },
+    "MESSAGES": {
+      "TEMPLATE_DOWNLOADED": "Plantilla descargada correctamente",
+      "TEMPLATE_DOWNLOAD_ERROR": "Error al descargar la plantilla",
+      "ONLY_CSV_FILES": "Solo se aceptan archivos CSV",
+      "FILE_SIZE_LIMIT": "El archivo excede el tamaño máximo de 10 MB",
+      "SELECT_VALID_FILE": "Seleccione un archivo válido antes de cargar",
+      "UPLOADING_FILE": "Subiendo archivo...",
+      "UPLOAD_ERROR": "Error al subir el archivo",
+      "STATUS_CHECK_ERROR": "Error al consultar el estado del proceso",
+      "PROVIDERS_IMPORTED_SUCCESS": "✅ {{count}} proveedores importados exitosamente",
+      "PROCESS_COMPLETED_WITH_ERRORS": "⚠️ Proceso completado: {{successful}} exitosos, {{failed}} con errores",
+      "UPLOAD_FAILED": "❌ La carga falló. Revise el archivo e intente nuevamente",
+      "UPLOAD_CANCELLED": "🚫 Carga cancelada",
+      "ERRORS_FILE_DOWNLOADED": "Archivo de errores descargado",
+      "NO_ERRORS_TO_DOWNLOAD": "No hay errores para descargar",
+      "ERRORS_DOWNLOAD_ERROR": "Error al descargar el archivo de errores",
+      "CANCEL_ERROR": "No se pudo cancelar el proceso"
+    },
+    "HISTORY": {
+      "TITLE": "Historial de Cargas Masivas de Proveedores",
+      "REFRESH": "Actualizar",
+      "LOADING": "Cargando historial...",
+      "NO_RECORDS": "No hay registros de cargas masivas",
+      "FILTER_BY_STATUS": "Filtrar por Estado",
+      "STATS": {
+        "TOTAL_UPLOADS": "Total de Cargas",
+        "COMPLETED": "Completados",
+        "IN_PROGRESS": "En Progreso",
+        "FAILED": "Fallidos",
+        "PROVIDERS_IMPORTED": "Proveedores Importados",
+        "AVERAGE_SUCCESS_RATE": "Tasa de Éxito Promedio"
+      },
+      "TABLE": {
+        "ID": "ID",
+        "FILENAME": "Nombre del Archivo",
+        "STATUS": "Estado",
+        "TOTAL_ROWS": "Total Filas",
+        "PROCESSED": "Procesadas",
+        "SUCCESSFUL": "Exitosas",
+        "FAILED": "Fallidas",
+        "SUCCESS_RATE": "% Éxito",
+        "CREATED_AT": "Fecha Creación",
+        "UPDATED_AT": "Última Actualización",
+        "ACTIONS": "Acciones",
+        "DOWNLOAD_ERRORS": "Descargar Errores",
+        "VIEW_DETAILS": "Ver Detalles",
+        "LOADING_ERROR": "Error al cargar historial",
+        "ALL_STATUSES": "Todos los Estados"
+      }
+    }
   }
 }
