@@ -9,6 +9,8 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatDialogRef, MAT_DIALOG_DATA, MatDialogModule } from '@angular/material/dialog';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GetOrderByIdUseCase } from '../../../../core/application/use-cases/order/get-order-by-id.usecase';
 import { OrderEntity, OrderItemEntity } from '../../../../core/domain/entities/order.entity';
 import { GoogleMapComponent } from '../../../shared/components/google-map/google-map.component';
@@ -27,6 +29,8 @@ import { GoogleMapComponent } from '../../../shared/components/google-map/google
     MatTooltipModule,
     MatDividerModule,
     MatDialogModule,
+    MatSnackBarModule,
+    TranslateModule,
     GoogleMapComponent
   ],
   templateUrl: './order-detail.component.html',
@@ -36,6 +40,8 @@ export class OrderDetailComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private getOrderByIdUseCase = inject(GetOrderByIdUseCase);
+  private translate = inject(TranslateService);
+  private snackBar = inject(MatSnackBar);
   public dialogRef = inject(MatDialogRef<OrderDetailComponent>, { optional: true });
 
   // Signals
@@ -98,7 +104,9 @@ export class OrderDetailComponent implements OnInit {
   loadOrder(): void {
     const id = this.orderId();
     if (!id) {
-      this.error.set('ID de orden inválido');
+      this.translate.get('ORDER_DETAIL.ERROR_LOADING').subscribe(msg => {
+        this.error.set(msg);
+      });
       this.loading.set(false);
       return;
     }
@@ -111,13 +119,17 @@ export class OrderDetailComponent implements OnInit {
         if (order) {
           this.order.set(order);
         } else {
-          this.error.set('Orden no encontrada');
+          this.translate.get('ORDER_DETAIL.ERROR_LOADING').subscribe(msg => {
+            this.error.set(msg);
+          });
         }
         this.loading.set(false);
       },
       error: (err) => {
         console.error('Error loading order:', err);
-        this.error.set(err.message || 'Error al cargar la orden');
+        this.translate.get('ORDER_DETAIL.ERROR_LOADING').subscribe(msg => {
+          this.error.set(err.message || msg);
+        });
         this.loading.set(false);
       }
     });
@@ -150,7 +162,9 @@ export class OrderDetailComponent implements OnInit {
     const fullAddress = `${order.deliveryAddress}, ${order.deliveryCity}, ${order.deliveryDepartment}`;
     
     navigator.clipboard.writeText(fullAddress).then(() => {
-      alert('Dirección copiada al portapapeles');
+      this.translate.get('ORDER_DETAIL.ADDRESS_COPIED').subscribe(msg => {
+        this.snackBar.open(msg, '', { duration: 3000 });
+      });
     });
   }
 
@@ -164,12 +178,12 @@ export class OrderDetailComponent implements OnInit {
 
   getStatusConfig(status: string): { label: string; className: string; icon: string } {
     const configs: Record<string, { label: string; className: string; icon: string }> = {
-      pending: { label: 'Pendiente', className: 'status-pending', icon: 'schedule' },
-      confirmed: { label: 'Confirmada', className: 'status-confirmed', icon: 'check_circle' },
-      processing: { label: 'Procesando', className: 'status-processing', icon: 'settings' },
-      in_transit: { label: 'En Tránsito', className: 'status-in-transit', icon: 'local_shipping' },
-      delivered: { label: 'Entregada', className: 'status-delivered', icon: 'inventory' },
-      cancelled: { label: 'Cancelada', className: 'status-cancelled', icon: 'cancel' }
+      pending: { label: 'ORDERS.STATUS.PENDING', className: 'status-pending', icon: 'schedule' },
+      confirmed: { label: 'ORDERS.STATUS.CONFIRMED', className: 'status-confirmed', icon: 'check_circle' },
+      processing: { label: 'ORDERS.STATUS.PROCESSING', className: 'status-processing', icon: 'settings' },
+      in_transit: { label: 'ORDERS.STATUS.IN_TRANSIT', className: 'status-in-transit', icon: 'local_shipping' },
+      delivered: { label: 'ORDERS.STATUS.DELIVERED', className: 'status-delivered', icon: 'inventory' },
+      cancelled: { label: 'ORDERS.STATUS.CANCELLED', className: 'status-cancelled', icon: 'cancel' }
     };
     return configs[status] || { label: status, className: 'status-default', icon: 'circle' };
   }

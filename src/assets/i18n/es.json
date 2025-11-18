@@ -328,6 +328,7 @@
     "MIN_SEARCH_LENGTH": "Ingrese al menos 3 caracteres para buscar",
     "NO_LOCATIONS_FOUND": "No se encontraron ubicaciones para este producto",
     "LOCATIONS_FOUND": "Se encontraron {{count}} ubicaciones",
+    "PRODUCT_NOT_FOUND": "Producto no encontrado en bodega",
     "DAYS": "días",
     "STATS": {
       "TOTAL_LOCATIONS": "Total Ubicaciones",
@@ -439,6 +440,222 @@
     "GOAL_TYPE": {
       "UNITS": "Unidades",
       "MONETARY": "Monetario"
+    }
+  },
+  "ORDERS": {
+    "TITLE": "Listado de Órdenes",
+    "LOADING": "Cargando órdenes...",
+    "ERROR_LOADING": "Error al cargar las órdenes. Por favor, intente nuevamente.",
+    "NO_ORDERS_FOUND": "No se encontraron órdenes",
+    "RETRY": "Reintentar",
+    "FILTERS": {
+      "STATUS": "Estado",
+      "ORDER_DATE_FROM": "Fecha Orden Desde",
+      "ORDER_DATE_TO": "Fecha Orden Hasta",
+      "DELIVERY_CITY": "Ciudad de Entrega",
+      "SEARCH_CITY_PLACEHOLDER": "Buscar ciudad..."
+    },
+    "STATUS": {
+      "ALL": "Todos",
+      "PENDING": "Pendiente",
+      "CONFIRMED": "Confirmada",
+      "PROCESSING": "Procesando",
+      "IN_TRANSIT": "En Tránsito",
+      "DELIVERED": "Entregada",
+      "CANCELLED": "Cancelada"
+    },
+    "TABLE": {
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "STATUS": "Estado",
+      "ORDER_DATE": "Fecha Orden",
+      "DELIVERY_DATE": "Fecha Entrega",
+      "CITY": "Ciudad",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle"
+    }
+  },
+  "ORDER_DETAIL": {
+    "TITLE": "Orden",
+    "LOADING": "Cargando detalles de la orden...",
+    "ERROR_LOADING": "Error al cargar la orden",
+    "RETRY": "Reintentar",
+    "CLOSE": "Cerrar",
+    "BACK_TO_LIST": "Volver al Listado",
+    "CUSTOMER_INFO": "Información del Cliente",
+    "BUSINESS_NAME": "Razón Social",
+    "DOCUMENT": "Documento",
+    "TYPE": "Tipo",
+    "PHONE": "Teléfono",
+    "EMAIL": "Email",
+    "DELIVERY_INFO": "Información de Entrega",
+    "COPY_ADDRESS": "Copiar dirección",
+    "ADDRESS": "Dirección",
+    "CITY": "Ciudad",
+    "DEPARTMENT": "Departamento",
+    "DELIVERY_DATE": "Fecha de Entrega",
+    "GPS_COORDINATES": "Coordenadas GPS",
+    "DELIVERY_ADDRESS": "Dirección de Entrega",
+    "NOTES": "Notas",
+    "ORDER_INFO": "Información de la Orden",
+    "ORDER_NUMBER": "Número de Orden",
+    "CREATED_AT": "Fecha de Creación",
+    "UPDATED_AT": "Última Actualización",
+    "SELLER": "Vendedor",
+    "DISTRIBUTION_CENTER": "Centro de Distribución",
+    "PAYMENT_INFO": "Información de Pago",
+    "PAYMENT_TERMS": "Términos de Pago",
+    "PAYMENT_METHOD": "Método de Pago",
+    "AMOUNTS_SUMMARY": "Resumen de Montos",
+    "SUBTOTAL": "Subtotal",
+    "DISCOUNT": "Descuento",
+    "TAX": "Impuestos (IVA)",
+    "TOTAL": "Total",
+    "METRICS": "Métricas",
+    "ITEMS": "Items",
+    "UNITS": "Unidades",
+    "ITEMS_WITH_DISCOUNT": "Items con Descuento",
+    "AVG_DISCOUNT": "Desc. Promedio",
+    "ORDER_ITEMS": "Items de la Orden",
+    "TABLE": {
+      "SKU": "SKU",
+      "PRODUCT": "Producto",
+      "QUANTITY": "Cantidad",
+      "UNIT_PRICE": "Precio Unit.",
+      "DISCOUNT_PCT": "Desc. %",
+      "SUBTOTAL": "Subtotal",
+      "DISCOUNT": "Descuento",
+      "TAX": "IVA",
+      "TOTAL": "Total",
+      "STOCK": "Stock",
+      "TOTALS": "Totales"
+    },
+    "ADDRESS_COPIED": "Dirección copiada al portapapeles"
+  },
+  "ROUTE_GENERATION": {
+    "TITLE": "Generación de Rutas de Entrega",
+    "SELECT_CONFIG": "Selecciona la configuración para la generación de la ruta",
+    "SELECT_ORDERS": "Selecciona las órdenes confirmadas que deseas incluir en la ruta",
+    "FILTERS": {
+      "DISTRIBUTION_CENTER": "Centro de Distribución",
+      "DELIVERY_DATE": "Fecha de Entrega",
+      "OPTIMIZATION_STRATEGY": "Estrategia de Optimización"
+    },
+    "STRATEGIES": {
+      "BALANCED": "⭐ Balanceada (Recomendada)",
+      "BALANCED_DESC": "Balance entre distancia, tiempo y capacidad",
+      "MINIMIZE_DISTANCE": "🛣️ Minimizar Distancia",
+      "MINIMIZE_DISTANCE_DESC": "Reduce kilómetros recorridos y combustible",
+      "MINIMIZE_TIME": "⏱️ Minimizar Tiempo",
+      "MINIMIZE_TIME_DESC": "Optimiza tiempo de entrega",
+      "MINIMIZE_COST": "💰 Minimizar Costo",
+      "MINIMIZE_COST_DESC": "Reduce costo operativo total",
+      "PRIORITY_FIRST": "🔥 Prioridad Primero",
+      "PRIORITY_FIRST_DESC": "Atiende primero clientes críticos"
+    },
+    "VEHICLES": {
+      "AVAILABLE": "Vehículos Disponibles",
+      "LOADING": "Cargando...",
+      "SHOW_DETAILS": "Ver detalles",
+      "HIDE_DETAILS": "Ocultar detalles",
+      "NO_VEHICLES": "No hay vehículos disponibles para la fecha seleccionada",
+      "CAPACITY": "Capacidad",
+      "DRIVER": "Conductor",
+      "PHONE": "Teléfono",
+      "FUEL": "Combustible",
+      "TYPES": {
+        "VAN": "Furgoneta",
+        "TRUCK": "Camión",
+        "REFRIGERATED": "Refrigerado",
+        "MOTORCYCLE": "Motocicleta"
+      }
+    },
+    "SELECTION": {
+      "ORDERS_SELECTED": "órdenes seleccionadas",
+      "ESTIMATED_WEIGHT": "Peso estimado",
+      "TOTAL": "Total",
+      "CLEAR": "Limpiar selección",
+      "GENERATE": "Generar Rutas"
+    },
+    "TABLE": {
+      "SELECT": "Seleccionar",
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "DATE": "Fecha",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle"
+    },
+    "LOADING_ORDERS": "Cargando órdenes confirmadas...",
+    "NO_ORDERS": "No hay órdenes confirmadas disponibles",
+    "RELOAD": "Recargar",
+    "GENERATION": {
+      "TITLE": "Generando rutas...",
+      "COMPLETED": "completado",
+      "SUCCESS": "¡Rutas Generadas Exitosamente!",
+      "PARTIAL": "Rutas Generadas con Advertencias"
+    },
+    "SUMMARY": {
+      "ROUTES_GENERATED": "Rutas Generadas",
+      "ORDERS_ASSIGNED": "Órdenes Asignadas",
+      "TOTAL_DISTANCE": "Distancia Total",
+      "ESTIMATED_DURATION": "Duración Estimada",
+      "OPTIMIZATION_SCORE": "Score de Optimización",
+      "FUEL_COST": "Costo Combustible"
+    },
+    "WARNINGS": "Advertencias",
+    "UNASSIGNED": {
+      "TITLE": "Órdenes No Asignadas",
+      "ORDER": "Orden"
+    },
+    "ROUTES_CREATED": "Rutas Creadas",
+    "ROUTE_INFO": {
+      "VEHICLE": "Vehículo",
+      "DRIVER": "Conductor",
+      "ORDERS_STOPS": "Órdenes / Paradas",
+      "ORDERS": "órdenes",
+      "STOPS": "paradas",
+      "DISTANCE": "Distancia",
+      "DURATION": "Duración",
+      "FUEL_COST": "Costo Combustible"
+    },
+    "ACTIONS": {
+      "GENERATE_NEW": "Generar Nuevas Rutas",
+      "VIEW_ROUTES": "Ver Rutas Generadas"
+    }
+  },
+  "CONFIRM_ORDERS": {
+    "TITLE": "Confirmación de Órdenes",
+    "LOADING": "Cargando órdenes preparadas...",
+    "ERROR_LOADING": "Error al cargar las órdenes",
+    "RETRY": "Reintentar",
+    "UPDATE": "Actualizar",
+    "PREPARED_ORDERS": "Órdenes Preparadas",
+    "NO_PREPARED_ORDERS": "No hay órdenes preparadas",
+    "NO_PREPARED_ORDERS_DESC": "Todas las órdenes han sido confirmadas o no hay órdenes pendientes",
+    "CONFIRM_SELECTED": "Confirmar Seleccionadas",
+    "CONFIRM": "Confirmar",
+    "NO_SELECTED": "No hay órdenes seleccionadas",
+    "NO_DATE_SPECIFIED": "No especificada",
+    "TABLE": {
+      "SELECT": "Seleccionar",
+      "ORDER_NUMBER": "Número de Orden",
+      "CUSTOMER": "Cliente",
+      "ORDER_DATE": "Fecha Orden",
+      "DELIVERY_DATE": "Fecha Entrega",
+      "TOTAL": "Total",
+      "ACTIONS": "Acciones",
+      "VIEW_DETAIL": "Ver detalle de la orden",
+      "CONFIRM_ORDER": "Confirmar orden"
+    },
+    "SUCCESS": {
+      "SINGLE": "Orden {{orderNumber}} confirmada exitosamente",
+      "MULTIPLE": "{{count}} órdenes confirmadas exitosamente"
+    },
+    "ERROR": {
+      "SINGLE": "Error al confirmar la orden {{orderNumber}}",
+      "MULTIPLE": "Error al confirmar las órdenes seleccionadas"
     }
   },
   "SIDEBAR": {

@@ -5,7 +5,7 @@
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Listado de Órdenes</h2>
+      <h2 style="margin: 0;">{{ 'ORDERS.TITLE' | translate }}</h2>
     </div>
   </div>
 
@@ -14,20 +14,20 @@
     <div class="filters-row">
       <!-- Filtro de Estado -->
       <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Estado</mat-label>
+        <mat-label>{{ 'ORDERS.FILTERS.STATUS' | translate }}</mat-label>
         <mat-select 
           [ngModel]="filterStatus()" 
           (ngModelChange)="filterStatus.set($event); onFilterChange()"
           [ngModelOptions]="{standalone: true}">
           @for (option of statusOptions; track option.value) {
-            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            <mat-option [value]="option.value">{{ option.label | translate }}</mat-option>
           }
         </mat-select>
       </mat-form-field>
 
       <!-- Filtro Fecha Orden Desde -->
       <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Fecha Orden Desde</mat-label>
+        <mat-label>{{ 'ORDERS.FILTERS.ORDER_DATE_FROM' | translate }}</mat-label>
         <input 
           matInput 
           type="date" 
@@ -38,7 +38,7 @@
 
       <!-- Filtro Fecha Orden Hasta -->
       <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Fecha Orden Hasta</mat-label>
+        <mat-label>{{ 'ORDERS.FILTERS.ORDER_DATE_TO' | translate }}</mat-label>
         <input 
           matInput 
           type="date" 
@@ -49,20 +49,20 @@
 
       <!-- Filtro Ciudad de Entrega -->
       <mat-form-field appearance="outline" floatLabel="always">
-        <mat-label>Ciudad de Entrega</mat-label>
+        <mat-label>{{ 'ORDERS.FILTERS.DELIVERY_CITY' | translate }}</mat-label>
         <input 
           matInput 
           [ngModel]="filterDeliveryCity()"
           (ngModelChange)="filterDeliveryCity.set($event); onFilterChange()"
           [ngModelOptions]="{standalone: true}"
-          placeholder="Buscar ciudad...">
+          [placeholder]="'ORDERS.FILTERS.SEARCH_CITY_PLACEHOLDER' | translate">
       </mat-form-field>
     </div>
 
     <div class="filter-actions">
       <button mat-button type="button" (click)="clearFilters()">
         <mat-icon>filter_list_off</mat-icon>
-        Limpiar Filtros
+        {{ 'COMMON.CLEAR_FILTERS' | translate }}
       </button>
     </div>
   </form>
@@ -75,10 +75,10 @@
 @if (error() && !loading()) {
   <mat-card class="error-card" style="margin: 16px;">
     <mat-icon color="warn">error</mat-icon>
-    <p>{{ error() }}</p>
+    <p>{{ error() | translate }}</p>
     <button mat-raised-button color="primary" (click)="retry()">
       <mat-icon>refresh</mat-icon>
-      Reintentar
+      {{ 'ORDERS.RETRY' | translate }}
     </button>
   </mat-card>
 }
@@ -91,7 +91,7 @@
             
             <!-- Columna: Número de Orden -->
             <ng-container matColumnDef="orderNumber">
-              <th mat-header-cell *matHeaderCellDef>Número de Orden</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.ORDER_NUMBER' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 <strong class="order-number">{{ order.orderNumber }}</strong>
               </td>
@@ -99,7 +99,7 @@
 
             <!-- Columna: Cliente -->
             <ng-container matColumnDef="customer">
-              <th mat-header-cell *matHeaderCellDef>Cliente</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.CUSTOMER' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 <div class="customer-info">
                   <div class="customer-name">{{ order.customer.businessName }}</div>
@@ -110,17 +110,17 @@
 
             <!-- Columna: Estado -->
             <ng-container matColumnDef="status">
-              <th mat-header-cell *matHeaderCellDef>Estado</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.STATUS' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 <mat-chip [class]="getStatusBadgeClass(order.status)">
-                  {{ getStatusLabel(order.status) }}
+                  {{ getStatusLabel(order.status) | translate }}
                 </mat-chip>
               </td>
             </ng-container>
 
             <!-- Columna: Fecha Orden -->
             <ng-container matColumnDef="orderDate">
-              <th mat-header-cell *matHeaderCellDef>Fecha Orden</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.ORDER_DATE' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 {{ formatDate(order.orderDate) }}
               </td>
@@ -128,7 +128,7 @@
 
             <!-- Columna: Fecha Entrega -->
             <ng-container matColumnDef="deliveryDate">
-              <th mat-header-cell *matHeaderCellDef>Fecha Entrega</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.DELIVERY_DATE' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 {{ formatDateOnly(order.deliveryDate) }}
               </td>
@@ -136,7 +136,7 @@
 
             <!-- Columna: Ciudad -->
             <ng-container matColumnDef="deliveryCity">
-              <th mat-header-cell *matHeaderCellDef>Ciudad</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.CITY' | translate }}</th>
               <td mat-cell *matCellDef="let order">
                 {{ order.deliveryCity || '-' }}
               </td>
@@ -144,7 +144,7 @@
 
             <!-- Columna: Total -->
             <ng-container matColumnDef="totalAmount">
-              <th mat-header-cell *matHeaderCellDef>Total</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.TOTAL' | translate }}</th>
               <td mat-cell *matCellDef="let order" class="amount-cell">
                 <strong>{{ formatCurrency(order.totalAmount) }}</strong>
               </td>
@@ -152,11 +152,11 @@
 
             <!-- Columna: Acciones -->
             <ng-container matColumnDef="actions">
-              <th mat-header-cell *matHeaderCellDef>Acciones</th>
+              <th mat-header-cell *matHeaderCellDef>{{ 'ORDERS.TABLE.ACTIONS' | translate }}</th>
               <td mat-cell *matCellDef="let order" class="actions">
                 <button 
                   class="btn-icon"
-                  title="Ver detalle"
+                  [title]="'ORDERS.TABLE.VIEW_DETAIL' | translate"
                   (click)="viewOrderDetail(order)">
                   <i class="fas fa-eye"></i>
                 </button>
@@ -172,7 +172,7 @@
                 <td class="mat-cell no-data-cell" [attr.colspan]="displayedColumns.length">
                   <div class="no-data-content">
                     <mat-icon>inbox</mat-icon>
-                    <p>No se encontraron órdenes</p>
+                    <p>{{ 'ORDERS.NO_ORDERS_FOUND' | translate }}</p>
                   </div>
                 </td>
               </tr>
@@ -195,7 +195,7 @@
       <!-- Sin Resultados -->
       @if (orders().length === 0 && !loading() && !error()) {
         <div class="no-results-message">
-          <p>No se encontraron órdenes</p>
+          <p>{{ 'ORDERS.NO_ORDERS_FOUND' | translate }}</p>
         </div>
       }
     </div>

@@ -148,7 +148,7 @@ describe('HttpProductLocationRepository', () => {
 
       repository.getProductLocation(params).subscribe({
         error: (error) => {
-          expect(error.message).toBe('Producto no encontrado en bodega');
+          expect(error.message).toBe('PRODUCT_LOCATION.PRODUCT_NOT_FOUND');
           done();
         }
       });

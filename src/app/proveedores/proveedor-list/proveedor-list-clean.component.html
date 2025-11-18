@@ -37,7 +37,7 @@
 
   <div class="table-container">
     <!-- Sin Resultados -->
-    <div *ngIf="dataSource.data.length === 0" class="no-results-message">
+    <div *ngIf="dataLoaded() && dataSource.data.length === 0" class="no-results-message">
       <p>{{ 'COMMON.NO_RESULTS' | translate }}</p>
     </div>
 

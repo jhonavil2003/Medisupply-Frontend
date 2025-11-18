@@ -141,10 +141,16 @@ export class ProductoLocalizacionComponent implements AfterViewInit {
         },
         error: (error) => {
           this.loading.set(false);
-          this.errorMessage.set(error.message);
+          
+          // Traducir el mensaje de error si es una clave de traducción
+          const errorMsg = error.message.startsWith('PRODUCT_LOCATION.') 
+            ? this.translate.instant(error.message)
+            : error.message;
+          
+          this.errorMessage.set(errorMsg);
           this.locations.set([]);
           this.dataSource.data = [];
-          this.notify.error(error.message);
+          this.notify.error(errorMsg);
           console.error('Error al buscar ubicación:', error);
         }
       });

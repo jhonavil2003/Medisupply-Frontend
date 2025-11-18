@@ -5,19 +5,19 @@
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Generación de Rutas de Entrega</h2>
+      <h2 style="margin: 0;">{{ 'ROUTE_GENERATION.TITLE' | translate }}</h2>
     </div>
   </div>
 
   <!-- Filtros -->
   @if (!showResults()) {
     <h3 style="margin: 24px 0 16px 0; font-size: 1.1rem; font-weight: 500; color: #333;">
-      Selecciona la configuración para la generación de la ruta
+      {{ 'ROUTE_GENERATION.SELECT_CONFIG' | translate }}
     </h3>
     <form>
       <div class="filters-row">
         <mat-form-field appearance="outline" floatLabel="always">
-          <mat-label>Centro de Distribución</mat-label>
+          <mat-label>{{ 'ROUTE_GENERATION.FILTERS.DISTRIBUTION_CENTER' | translate }}</mat-label>
           <mat-select 
             [ngModel]="distributionCenterId()" 
             (ngModelChange)="distributionCenterId.set($event); loadAvailableVehicles()"
@@ -31,7 +31,7 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" floatLabel="always">
-          <mat-label>Fecha de Entrega</mat-label>
+          <mat-label>{{ 'ROUTE_GENERATION.FILTERS.DELIVERY_DATE' | translate }}</mat-label>
           <input matInput [matDatepicker]="picker" 
                  [ngModel]="selectedDate()" 
                  (ngModelChange)="selectedDate.set($event); onDateChange($event)"
@@ -42,14 +42,14 @@
         </mat-form-field>
 
         <mat-form-field appearance="outline" floatLabel="always">
-          <mat-label>Estrategia de Optimización</mat-label>
+          <mat-label>{{ 'ROUTE_GENERATION.FILTERS.OPTIMIZATION_STRATEGY' | translate }}</mat-label>
           <mat-select 
             [ngModel]="optimizationStrategy()" 
             (ngModelChange)="optimizationStrategy.set($event)"
             [ngModelOptions]="{standalone: true}">
             @for (strategy of optimizationStrategies; track strategy.value) {
               <mat-option [value]="strategy.value">
-                {{ strategy.label }}
+                {{ strategy.label | translate }}
               </mat-option>
             }
           </mat-select>
@@ -67,17 +67,17 @@
       <div class="total-item clickable" (click)="toggleVehicleDetails()">
         <mat-icon class="total-icon">local_shipping</mat-icon>
         <div class="total-info">
-          <span class="total-label">Vehículos Disponibles</span>
+          <span class="total-label">{{ 'ROUTE_GENERATION.VEHICLES.AVAILABLE' | translate }}</span>
           <span class="total-value">{{ availableVehicles().length }}</span>
           @if (loadingVehicles()) {
             <span class="expand-hint">
               <mat-spinner diameter="16"></mat-spinner>
-              Cargando...
+              {{ 'ROUTE_GENERATION.VEHICLES.LOADING' | translate }}
             </span>
           } @else {
             <span class="expand-hint">
               <mat-icon>{{ showVehicleDetails() ? 'expand_less' : 'expand_more' }}</mat-icon>
-              {{ showVehicleDetails() ? 'Ocultar' : 'Ver' }} detalles
+              {{ showVehicleDetails() ? ('ROUTE_GENERATION.VEHICLES.HIDE_DETAILS' | translate) : ('ROUTE_GENERATION.VEHICLES.SHOW_DETAILS' | translate) }}
             </span>
           }
         </div>
@@ -95,7 +95,7 @@
                   <mat-icon class="vehicle-icon">local_shipping</mat-icon>
                   <div class="vehicle-main-info">
                     <strong class="vehicle-plate">{{ vehicle.plate }}</strong>
-                    <span class="vehicle-type">{{ getVehicleTypeLabel(vehicle.type) }}</span>
+                    <span class="vehicle-type">{{ getVehicleTypeLabel(vehicle.type) | translate }}</span>
                   </div>
                   <span class="status-badge" [style.background-color]="getStatusColor(vehicle.status)">
                     {{ vehicle.status }}
@@ -104,22 +104,22 @@
                 <div class="vehicle-card-body">
                   <div class="detail-item">
                     <mat-icon class="detail-icon">scale</mat-icon>
-                    <span class="detail-label">Capacidad:</span>
+                    <span class="detail-label">{{ 'ROUTE_GENERATION.VEHICLES.CAPACITY' | translate }}:</span>
                     <span class="detail-value">{{ vehicle.capacityKg }} kg</span>
                   </div>
                   <div class="detail-item">
                     <mat-icon class="detail-icon">person</mat-icon>
-                    <span class="detail-label">Conductor:</span>
+                    <span class="detail-label">{{ 'ROUTE_GENERATION.VEHICLES.DRIVER' | translate }}:</span>
                     <span class="detail-value">{{ vehicle.driver.name }}</span>
                   </div>
                   <div class="detail-item">
                     <mat-icon class="detail-icon">phone</mat-icon>
-                    <span class="detail-label">Teléfono:</span>
+                    <span class="detail-label">{{ 'ROUTE_GENERATION.VEHICLES.PHONE' | translate }}:</span>
                     <span class="detail-value">{{ vehicle.driver.phone }}</span>
                   </div>
                   <div class="detail-item">
                     <mat-icon class="detail-icon">local_gas_station</mat-icon>
-                    <span class="detail-label">Combustible:</span>
+                    <span class="detail-label">{{ 'ROUTE_GENERATION.VEHICLES.FUEL' | translate }}:</span>
                     <span class="detail-value">{{ vehicle.fuelType }}</span>
                   </div>
                 </div>
@@ -131,7 +131,7 @@
         <div class="vehicle-details-panel">
           <div class="empty-state">
             <mat-icon>warning</mat-icon>
-            <p>No hay vehículos disponibles para la fecha seleccionada</p>
+            <p>{{ 'ROUTE_GENERATION.VEHICLES.NO_VEHICLES' | translate }}</p>
           </div>
         </div>
       }
@@ -140,7 +140,7 @@
     <!-- Órdenes Confirmadas -->
     <div class="orders-section-header" style="margin-top: 32px; margin-bottom: 16px;">
       <h3 style="margin: 0; font-size: 1.1rem; font-weight: 500; color: #333;">
-        Selecciona las órdenes confirmadas que deseas incluir en la ruta
+        {{ 'ROUTE_GENERATION.SELECT_ORDERS' | translate }}
       </h3>
     </div>
 
@@ -148,20 +148,20 @@
       <div class="selection-banner">
         <div class="selection-info">
           <mat-icon>check_circle</mat-icon>
-          <span>{{ selectedOrdersCount() }} órdenes seleccionadas</span>
+          <span>{{ selectedOrdersCount() }} {{ 'ROUTE_GENERATION.SELECTION.ORDERS_SELECTED' | translate }}</span>
           <span class="divider">|</span>
-          <span>Peso estimado: {{ formatWeight(totalWeight()) }}</span>
+          <span>{{ 'ROUTE_GENERATION.SELECTION.ESTIMATED_WEIGHT' | translate }}: {{ formatWeight(totalWeight()) }}</span>
           <span class="divider">|</span>
-          <span>Total: {{ formatCurrency(totalAmount()) }}</span>
+          <span>{{ 'ROUTE_GENERATION.SELECTION.TOTAL' | translate }}: {{ formatCurrency(totalAmount()) }}</span>
         </div>
         <div class="selection-actions">
           <button mat-button (click)="selection.clear(); selectionCount.set(0)">
             <mat-icon>clear</mat-icon>
-            Limpiar selección
+            {{ 'ROUTE_GENERATION.SELECTION.CLEAR' | translate }}
           </button>
           <button mat-raised-button color="primary" [disabled]="!canGenerate()" (click)="generateRoutes()">
             <mat-icon>auto_awesome</mat-icon>
-            Generar Rutas
+            {{ 'ROUTE_GENERATION.SELECTION.GENERATE' | translate }}
           </button>
         </div>
       </div>
@@ -170,7 +170,7 @@
     @if (loadingOrders()) {
             <div class="loading-state">
               <mat-spinner></mat-spinner>
-              <p>Cargando órdenes confirmadas...</p>
+              <p>{{ 'ROUTE_GENERATION.LOADING_ORDERS' | translate }}</p>
             </div>
           } @else if (confirmedOrders().length > 0) {
             <div class="table-container">
@@ -193,14 +193,14 @@
                 </ng-container>
 
                 <ng-container matColumnDef="orderNumber">
-                  <th mat-header-cell *matHeaderCellDef>Número de Orden</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'ROUTE_GENERATION.TABLE.ORDER_NUMBER' | translate }}</th>
                   <td mat-cell *matCellDef="let order">
                     <div class="order-number">{{ order.orderNumber }}</div>
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="customerName">
-                  <th mat-header-cell *matHeaderCellDef>Cliente</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'ROUTE_GENERATION.TABLE.CUSTOMER' | translate }}</th>
                   <td mat-cell *matCellDef="let order">
                     <div class="customer-info">
                       <div class="customer-name">{{ order.customerName }}</div>
@@ -212,24 +212,24 @@
                 </ng-container>
 
                 <ng-container matColumnDef="date">
-                  <th mat-header-cell *matHeaderCellDef>Fecha</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'ROUTE_GENERATION.TABLE.DATE' | translate }}</th>
                   <td mat-cell *matCellDef="let order">
                     {{ order.orderDate | date:'dd/MM/yyyy' }}
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="totalAmount">
-                  <th mat-header-cell *matHeaderCellDef>Total</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'ROUTE_GENERATION.TABLE.TOTAL' | translate }}</th>
                   <td mat-cell *matCellDef="let order">
                     <div class="amount">{{ formatCurrency(order.totalAmount) }}</div>
                   </td>
                 </ng-container>
 
                 <ng-container matColumnDef="actions">
-                  <th mat-header-cell *matHeaderCellDef>Acciones</th>
+                  <th mat-header-cell *matHeaderCellDef>{{ 'ROUTE_GENERATION.TABLE.ACTIONS' | translate }}</th>
                   <td mat-cell *matCellDef="let order" class="actions">
                     <button class="btn-icon" 
-                            title="Ver detalle"
+                            [title]="'ROUTE_GENERATION.TABLE.VIEW_DETAIL' | translate"
                             (click)="viewOrderDetail(order)">
                       <i class="fas fa-eye"></i>
                     </button>
@@ -245,10 +245,10 @@
           } @else {
           <div class="empty-state">
             <mat-icon>inbox</mat-icon>
-            <p>No hay órdenes confirmadas disponibles</p>
+            <p>{{ 'ROUTE_GENERATION.NO_ORDERS' | translate }}</p>
             <button mat-raised-button color="primary" (click)="loadConfirmedOrders()">
               <mat-icon>refresh</mat-icon>
-              Recargar
+              {{ 'ROUTE_GENERATION.RELOAD' | translate }}
             </button>
           </div>
         }
@@ -263,7 +263,7 @@
             <mat-spinner diameter="60"></mat-spinner>
             <h2>{{ generationMessage() }}</h2>
             <mat-progress-bar mode="determinate" [value]="generationProgress()"></mat-progress-bar>
-            <p class="progress-text">{{ generationProgress() }}% completado</p>
+            <p class="progress-text">{{ generationProgress() }}% {{ 'ROUTE_GENERATION.GENERATION.COMPLETED' | translate }}</p>
           </div>
         </mat-card-content>
       </mat-card>
@@ -277,10 +277,10 @@
           <mat-card-title>
             @if (generationResult()!.status === 'success') {
               <mat-icon class="success-icon">check_circle</mat-icon>
-              ¡Rutas Generadas Exitosamente!
+              {{ 'ROUTE_GENERATION.GENERATION.SUCCESS' | translate }}
             } @else if (generationResult()!.status === 'partial') {
               <mat-icon class="warning-icon">warning</mat-icon>
-              Rutas Generadas con Advertencias
+              {{ 'ROUTE_GENERATION.GENERATION.PARTIAL' | translate }}
             }
           </mat-card-title>
           <mat-card-subtitle>
@@ -295,7 +295,7 @@
               </div>
               <div class="summary-details">
                 <div class="summary-value">{{ generationResult()!.summary.routesGenerated }}</div>
-                <div class="summary-label">Rutas Generadas</div>
+                <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.ROUTES_GENERATED' | translate }}</div>
               </div>
             </div>
 
@@ -305,7 +305,7 @@
               </div>
               <div class="summary-details">
                 <div class="summary-value">{{ generationResult()!.summary.ordersAssigned }}</div>
-                <div class="summary-label">Órdenes Asignadas</div>
+                <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.ORDERS_ASSIGNED' | translate }}</div>
               </div>
             </div>
 
@@ -315,7 +315,7 @@
               </div>
               <div class="summary-details">
                 <div class="summary-value">{{ formatDistance(generationResult()!.summary.totalDistanceKm) }}</div>
-                <div class="summary-label">Distancia Total</div>
+                <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.TOTAL_DISTANCE' | translate }}</div>
               </div>
             </div>
 
@@ -325,7 +325,7 @@
               </div>
               <div class="summary-details">
                 <div class="summary-value">{{ generationResult()!.summary.estimatedDurationHours.toFixed(1) }}h</div>
-                <div class="summary-label">Duración Estimada</div>
+                <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.ESTIMATED_DURATION' | translate }}</div>
               </div>
             </div>
 
@@ -335,7 +335,7 @@
               </div>
               <div class="summary-details">
                 <div class="summary-value">{{ generationResult()!.summary.optimizationScore.toFixed(1) }}%</div>
-                <div class="summary-label">Score de Optimización</div>
+                <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.OPTIMIZATION_SCORE' | translate }}</div>
               </div>
             </div>
 
@@ -346,7 +346,7 @@
                 </div>
                 <div class="summary-details">
                   <div class="summary-value">{{ formatCurrency(generationResult()!.summary.fuelCostEstimate!) }}</div>
-                  <div class="summary-label">Costo Combustible</div>
+                  <div class="summary-label">{{ 'ROUTE_GENERATION.SUMMARY.FUEL_COST' | translate }}</div>
                 </div>
               </div>
             }
@@ -356,7 +356,7 @@
             <mat-card class="warnings-card">
               <mat-card-header>
                 <mat-icon>warning</mat-icon>
-                Advertencias
+                {{ 'ROUTE_GENERATION.WARNINGS' | translate }}
               </mat-card-header>
               <mat-card-content>
                 @for (warning of generationResult()!.warnings; track $index) {
@@ -373,12 +373,12 @@
             <mat-card class="unassigned-card">
               <mat-card-header>
                 <mat-icon>error</mat-icon>
-                Órdenes No Asignadas ({{ generationResult()!.unassignedOrders!.length }})
+                {{ 'ROUTE_GENERATION.UNASSIGNED.TITLE' | translate }} ({{ generationResult()!.unassignedOrders!.length }})
               </mat-card-header>
               <mat-card-content>
                 @for (unassigned of generationResult()!.unassignedOrders; track unassigned.orderId) {
                   <div class="unassigned-item">
-                    <span class="order-id">Orden #{{ unassigned.orderId }}</span>
+                    <span class="order-id">{{ 'ROUTE_GENERATION.UNASSIGNED.ORDER' | translate }} #{{ unassigned.orderId }}</span>
                     <span class="reason">{{ unassigned.reason }}</span>
                   </div>
                 }
@@ -387,7 +387,7 @@
           }
 
           <div class="routes-list">
-            <h3>Rutas Creadas</h3>
+            <h3>{{ 'ROUTE_GENERATION.ROUTES_CREATED' | translate }}</h3>
             @for (route of generationResult()!.routes; track route.id) {
               <mat-card class="route-card">
                 <mat-card-header>
@@ -404,15 +404,15 @@
                     <div class="route-info-item">
                       <mat-icon>local_shipping</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Vehículo</div>
-                        <div class="info-value">{{ route.vehicle.plate }} - {{ getVehicleTypeLabel(route.vehicle.type) }}</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.VEHICLE' | translate }}</div>
+                        <div class="info-value">{{ route.vehicle.plate }} - {{ getVehicleTypeLabel(route.vehicle.type) | translate }}</div>
                       </div>
                     </div>
 
                     <div class="route-info-item">
                       <mat-icon>person</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Conductor</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.DRIVER' | translate }}</div>
                         <div class="info-value">{{ route.vehicle.driverName }}</div>
                       </div>
                     </div>
@@ -420,15 +420,15 @@
                     <div class="route-info-item">
                       <mat-icon>inventory_2</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Órdenes / Paradas</div>
-                        <div class="info-value">{{ route.ordersCount }} órdenes / {{ route.stopsCount }} paradas</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.ORDERS_STOPS' | translate }}</div>
+                        <div class="info-value">{{ route.ordersCount }} {{ 'ROUTE_GENERATION.ROUTE_INFO.ORDERS' | translate }} / {{ route.stopsCount }} {{ 'ROUTE_GENERATION.ROUTE_INFO.STOPS' | translate }}</div>
                       </div>
                     </div>
 
                     <div class="route-info-item">
                       <mat-icon>straighten</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Distancia</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.DISTANCE' | translate }}</div>
                         <div class="info-value">{{ formatDistance(route.distanceKm) }}</div>
                       </div>
                     </div>
@@ -436,7 +436,7 @@
                     <div class="route-info-item">
                       <mat-icon>schedule</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Duración</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.DURATION' | translate }}</div>
                         <div class="info-value">{{ formatDuration(route.durationMinutes) }}</div>
                       </div>
                     </div>
@@ -444,7 +444,7 @@
                     <div class="route-info-item">
                       <mat-icon>local_gas_station</mat-icon>
                       <div class="info-content">
-                        <div class="info-label">Costo Combustible</div>
+                        <div class="info-label">{{ 'ROUTE_GENERATION.ROUTE_INFO.FUEL_COST' | translate }}</div>
                         <div class="info-value">{{ formatCurrency(route.fuelCostEstimate) }}</div>
                       </div>
                     </div>
@@ -457,11 +457,11 @@
           <div class="results-actions">
             <button mat-stroked-button (click)="resetGeneration()">
               <mat-icon>refresh</mat-icon>
-              Generar Nuevas Rutas
+              {{ 'ROUTE_GENERATION.ACTIONS.GENERATE_NEW' | translate }}
             </button>
             <button mat-raised-button color="primary" (click)="viewGeneratedRoutes()">
               <mat-icon>visibility</mat-icon>
-              Ver Rutas Generadas
+              {{ 'ROUTE_GENERATION.ACTIONS.VIEW_ROUTES' | translate }}
             </button>
           </div>
         </mat-card-content>

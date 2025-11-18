@@ -328,6 +328,7 @@
     "MIN_SEARCH_LENGTH": "Enter at least 3 characters to search",
     "NO_LOCATIONS_FOUND": "No locations found for this product",
     "LOCATIONS_FOUND": "Found {{count}} locations",
+    "PRODUCT_NOT_FOUND": "Product not found in warehouse",
     "DAYS": "days",
     "STATS": {
       "TOTAL_LOCATIONS": "Total Locations",
@@ -439,6 +440,222 @@
     "GOAL_TYPE": {
       "UNITS": "Units",
       "MONETARY": "Monetary"
+    }
+  },
+  "ORDERS": {
+    "TITLE": "Orders List",
+    "LOADING": "Loading orders...",
+    "ERROR_LOADING": "Error loading orders. Please try again.",
+    "NO_ORDERS_FOUND": "No orders found",
+    "RETRY": "Retry",
+    "FILTERS": {
+      "STATUS": "Status",
+      "ORDER_DATE_FROM": "Order Date From",
+      "ORDER_DATE_TO": "Order Date To",
+      "DELIVERY_CITY": "Delivery City",
+      "SEARCH_CITY_PLACEHOLDER": "Search city..."
+    },
+    "STATUS": {
+      "ALL": "All",
+      "PENDING": "Pending",
+      "CONFIRMED": "Confirmed",
+      "PROCESSING": "Processing",
+      "IN_TRANSIT": "In Transit",
+      "DELIVERED": "Delivered",
+      "CANCELLED": "Cancelled"
+    },
+    "TABLE": {
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "STATUS": "Status",
+      "ORDER_DATE": "Order Date",
+      "DELIVERY_DATE": "Delivery Date",
+      "CITY": "City",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View detail"
+    }
+  },
+  "ORDER_DETAIL": {
+    "TITLE": "Order",
+    "LOADING": "Loading order details...",
+    "ERROR_LOADING": "Error loading order",
+    "RETRY": "Retry",
+    "CLOSE": "Close",
+    "BACK_TO_LIST": "Back to List",
+    "CUSTOMER_INFO": "Customer Information",
+    "BUSINESS_NAME": "Business Name",
+    "DOCUMENT": "Document",
+    "TYPE": "Type",
+    "PHONE": "Phone",
+    "EMAIL": "Email",
+    "DELIVERY_INFO": "Delivery Information",
+    "COPY_ADDRESS": "Copy address",
+    "ADDRESS": "Address",
+    "CITY": "City",
+    "DEPARTMENT": "Department",
+    "DELIVERY_DATE": "Delivery Date",
+    "GPS_COORDINATES": "GPS Coordinates",
+    "DELIVERY_ADDRESS": "Delivery Address",
+    "NOTES": "Notes",
+    "ORDER_INFO": "Order Information",
+    "ORDER_NUMBER": "Order Number",
+    "CREATED_AT": "Created At",
+    "UPDATED_AT": "Last Update",
+    "SELLER": "Seller",
+    "DISTRIBUTION_CENTER": "Distribution Center",
+    "PAYMENT_INFO": "Payment Information",
+    "PAYMENT_TERMS": "Payment Terms",
+    "PAYMENT_METHOD": "Payment Method",
+    "AMOUNTS_SUMMARY": "Amounts Summary",
+    "SUBTOTAL": "Subtotal",
+    "DISCOUNT": "Discount",
+    "TAX": "Tax (VAT)",
+    "TOTAL": "Total",
+    "METRICS": "Metrics",
+    "ITEMS": "Items",
+    "UNITS": "Units",
+    "ITEMS_WITH_DISCOUNT": "Items with Discount",
+    "AVG_DISCOUNT": "Avg. Discount",
+    "ORDER_ITEMS": "Order Items",
+    "TABLE": {
+      "SKU": "SKU",
+      "PRODUCT": "Product",
+      "QUANTITY": "Quantity",
+      "UNIT_PRICE": "Unit Price",
+      "DISCOUNT_PCT": "Disc. %",
+      "SUBTOTAL": "Subtotal",
+      "DISCOUNT": "Discount",
+      "TAX": "VAT",
+      "TOTAL": "Total",
+      "STOCK": "Stock",
+      "TOTALS": "Totals"
+    },
+    "ADDRESS_COPIED": "Address copied to clipboard"
+  },
+  "ROUTE_GENERATION": {
+    "TITLE": "Delivery Route Generation",
+    "SELECT_CONFIG": "Select the configuration for route generation",
+    "SELECT_ORDERS": "Select the confirmed orders you want to include in the route",
+    "FILTERS": {
+      "DISTRIBUTION_CENTER": "Distribution Center",
+      "DELIVERY_DATE": "Delivery Date",
+      "OPTIMIZATION_STRATEGY": "Optimization Strategy"
+    },
+    "STRATEGIES": {
+      "BALANCED": "⭐ Balanced (Recommended)",
+      "BALANCED_DESC": "Balance between distance, time and capacity",
+      "MINIMIZE_DISTANCE": "🛣️ Minimize Distance",
+      "MINIMIZE_DISTANCE_DESC": "Reduces kilometers traveled and fuel",
+      "MINIMIZE_TIME": "⏱️ Minimize Time",
+      "MINIMIZE_TIME_DESC": "Optimizes delivery time",
+      "MINIMIZE_COST": "💰 Minimize Cost",
+      "MINIMIZE_COST_DESC": "Reduces total operating cost",
+      "PRIORITY_FIRST": "🔥 Priority First",
+      "PRIORITY_FIRST_DESC": "Serves critical customers first"
+    },
+    "VEHICLES": {
+      "AVAILABLE": "Available Vehicles",
+      "LOADING": "Loading...",
+      "SHOW_DETAILS": "Show details",
+      "HIDE_DETAILS": "Hide details",
+      "NO_VEHICLES": "No vehicles available for the selected date",
+      "CAPACITY": "Capacity",
+      "DRIVER": "Driver",
+      "PHONE": "Phone",
+      "FUEL": "Fuel",
+      "TYPES": {
+        "VAN": "Van",
+        "TRUCK": "Truck",
+        "REFRIGERATED": "Refrigerated",
+        "MOTORCYCLE": "Motorcycle"
+      }
+    },
+    "SELECTION": {
+      "ORDERS_SELECTED": "orders selected",
+      "ESTIMATED_WEIGHT": "Estimated weight",
+      "TOTAL": "Total",
+      "CLEAR": "Clear selection",
+      "GENERATE": "Generate Routes"
+    },
+    "TABLE": {
+      "SELECT": "Select",
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "DATE": "Date",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View detail"
+    },
+    "LOADING_ORDERS": "Loading confirmed orders...",
+    "NO_ORDERS": "No confirmed orders available",
+    "RELOAD": "Reload",
+    "GENERATION": {
+      "TITLE": "Generating routes...",
+      "COMPLETED": "completed",
+      "SUCCESS": "Routes Generated Successfully!",
+      "PARTIAL": "Routes Generated with Warnings"
+    },
+    "SUMMARY": {
+      "ROUTES_GENERATED": "Routes Generated",
+      "ORDERS_ASSIGNED": "Orders Assigned",
+      "TOTAL_DISTANCE": "Total Distance",
+      "ESTIMATED_DURATION": "Estimated Duration",
+      "OPTIMIZATION_SCORE": "Optimization Score",
+      "FUEL_COST": "Fuel Cost"
+    },
+    "WARNINGS": "Warnings",
+    "UNASSIGNED": {
+      "TITLE": "Unassigned Orders",
+      "ORDER": "Order"
+    },
+    "ROUTES_CREATED": "Created Routes",
+    "ROUTE_INFO": {
+      "VEHICLE": "Vehicle",
+      "DRIVER": "Driver",
+      "ORDERS_STOPS": "Orders / Stops",
+      "ORDERS": "orders",
+      "STOPS": "stops",
+      "DISTANCE": "Distance",
+      "DURATION": "Duration",
+      "FUEL_COST": "Fuel Cost"
+    },
+    "ACTIONS": {
+      "GENERATE_NEW": "Generate New Routes",
+      "VIEW_ROUTES": "View Generated Routes"
+    }
+  },
+  "CONFIRM_ORDERS": {
+    "TITLE": "Order Confirmation",
+    "LOADING": "Loading prepared orders...",
+    "ERROR_LOADING": "Error loading orders",
+    "RETRY": "Retry",
+    "UPDATE": "Update",
+    "PREPARED_ORDERS": "Prepared Orders",
+    "NO_PREPARED_ORDERS": "No prepared orders",
+    "NO_PREPARED_ORDERS_DESC": "All orders have been confirmed or there are no pending orders",
+    "CONFIRM_SELECTED": "Confirm Selected",
+    "CONFIRM": "Confirm",
+    "NO_SELECTED": "No orders selected",
+    "NO_DATE_SPECIFIED": "Not specified",
+    "TABLE": {
+      "SELECT": "Select",
+      "ORDER_NUMBER": "Order Number",
+      "CUSTOMER": "Customer",
+      "ORDER_DATE": "Order Date",
+      "DELIVERY_DATE": "Delivery Date",
+      "TOTAL": "Total",
+      "ACTIONS": "Actions",
+      "VIEW_DETAIL": "View order detail",
+      "CONFIRM_ORDER": "Confirm order"
+    },
+    "SUCCESS": {
+      "SINGLE": "Order {{orderNumber}} confirmed successfully",
+      "MULTIPLE": "{{count}} orders confirmed successfully"
+    },
+    "ERROR": {
+      "SINGLE": "Error confirming order {{orderNumber}}",
+      "MULTIPLE": "Error confirming selected orders"
     }
   },
   "SIDEBAR": {

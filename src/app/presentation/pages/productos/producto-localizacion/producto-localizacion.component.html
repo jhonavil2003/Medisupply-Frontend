@@ -42,10 +42,12 @@
 
 <!-- Error Message -->
 @if (errorMessage()) {
-  <mat-card class="error-card" style="margin: 16px;">
-    <mat-icon color="warn">error</mat-icon>
-    <p>{{ errorMessage() }}</p>
-  </mat-card>
+  <div class="container">
+    <mat-card class="error-card">
+      <mat-icon color="warn">error</mat-icon>
+      <p>{{ errorMessage() }}</p>
+    </mat-card>
+  </div>
 }
 
 <!-- Summary Stats -->

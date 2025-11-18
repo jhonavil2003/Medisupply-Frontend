@@ -15,6 +15,7 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { TranslateModule } from '@ngx-translate/core';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
 import { OrderEntity, GetOrdersFilters, OrderStatus } from '../../../../core/domain/entities/order.entity';
 import { OrderDetailComponent } from '../order-detail/order-detail.component';
@@ -37,7 +38,8 @@ import { OrderDetailComponent } from '../order-detail/order-detail.component';
     MatProgressSpinnerModule,
     MatProgressBarModule,
     MatChipsModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './order-list.component.html',
   styleUrls: ['./order-list.component.css']
@@ -79,13 +81,13 @@ export class OrderListComponent implements OnInit {
 
   // Estados disponibles
   statusOptions: Array<{ value: OrderStatus | '', label: string }> = [
-    { value: '', label: 'Todos' },
-    { value: 'pending', label: 'Pendiente' },
-    { value: 'confirmed', label: 'Confirmada' },
-    { value: 'processing', label: 'Procesando' },
-    { value: 'in_transit', label: 'En Tránsito' },
-    { value: 'delivered', label: 'Entregada' },
-    { value: 'cancelled', label: 'Cancelada' }
+    { value: '', label: 'ORDERS.STATUS.ALL' },
+    { value: 'pending', label: 'ORDERS.STATUS.PENDING' },
+    { value: 'confirmed', label: 'ORDERS.STATUS.CONFIRMED' },
+    { value: 'processing', label: 'ORDERS.STATUS.PROCESSING' },
+    { value: 'in_transit', label: 'ORDERS.STATUS.IN_TRANSIT' },
+    { value: 'delivered', label: 'ORDERS.STATUS.DELIVERED' },
+    { value: 'cancelled', label: 'ORDERS.STATUS.CANCELLED' }
   ];
 
   // Opciones de items por página
@@ -122,7 +124,7 @@ export class OrderListComponent implements OnInit {
       },
       error: (err) => {
         console.error('Error loading orders:', err);
-        this.error.set('Error al cargar las órdenes. Por favor, intente nuevamente.');
+        this.error.set('ORDERS.ERROR_LOADING');
         this.loading.set(false);
       }
     });
@@ -172,12 +174,12 @@ export class OrderListComponent implements OnInit {
    */
   getStatusLabel(status: OrderStatus): string {
     const statusLabels: Record<OrderStatus, string> = {
-      'pending': 'Pendiente',
-      'confirmed': 'Confirmada',
-      'processing': 'Procesando',
-      'in_transit': 'En Tránsito',
-      'delivered': 'Entregada',
-      'cancelled': 'Cancelada'
+      'pending': 'ORDERS.STATUS.PENDING',
+      'confirmed': 'ORDERS.STATUS.CONFIRMED',
+      'processing': 'ORDERS.STATUS.PROCESSING',
+      'in_transit': 'ORDERS.STATUS.IN_TRANSIT',
+      'delivered': 'ORDERS.STATUS.DELIVERED',
+      'cancelled': 'ORDERS.STATUS.CANCELLED'
     };
     return statusLabels[status] || status;
   }
