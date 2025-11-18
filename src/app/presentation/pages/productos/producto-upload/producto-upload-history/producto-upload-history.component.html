@@ -1,224 +1,205 @@
-<div class="container">
-  <!-- Header -->
-  <div class="header">
-    <div class="header-left">
+<div class="informe-ventas-container">
+  <!-- Primer contenedor: Header y botón actualizar -->
+  <div class="container">
+    <!-- Header -->
+    <div class="header-bar">
       <a mat-icon-button [routerLink]="['/producto-upload']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2>Historial de Cargas Masivas</h2>
+      <h2>{{ 'BULK_UPLOAD.HISTORY.TITLE' | translate }}</h2>
+      <div style="margin-left: auto;">
+        <button mat-raised-button color="primary" (click)="refresh()">
+          <mat-icon>refresh</mat-icon>
+          {{ 'BULK_UPLOAD.HISTORY.REFRESH' | translate }}
+        </button>
+      </div>
     </div>
-    <button mat-raised-button color="primary" (click)="refresh()">
-      <mat-icon>refresh</mat-icon>
-      Actualizar
-    </button>
   </div>
 
-  <!-- Estadísticas -->
-  @if (stats(); as statistics) {
-    <div class="stats-grid">
-      <mat-card class="stat-card total">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>folder</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.total_jobs }}</div>
-              <div class="stat-label">Total de Cargas</div>
-            </div>
+  <!-- Segundo contenedor: KPIs y filtros -->
+  <div class="container">
+    <!-- Estadísticas KPIs -->
+    @if (stats(); as statistics) {
+      <div class="totales-resumen">
+        <div class="total-item">
+          <mat-icon>folder</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.TOTAL_UPLOADS' | translate }}</span>
+            <span class="total-value">{{ statistics.total_jobs }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="stat-card completed">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>check_circle</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.completed }}</div>
-              <div class="stat-label">Completados</div>
-            </div>
+        <div class="total-item">
+          <mat-icon>check_circle</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.COMPLETED' | translate }}</span>
+            <span class="total-value">{{ statistics.completed }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="stat-card processing">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>sync</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.in_progress }}</div>
-              <div class="stat-label">En Progreso</div>
-            </div>
+        <div class="total-item">
+          <mat-icon>sync</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.IN_PROGRESS' | translate }}</span>
+            <span class="total-value">{{ statistics.in_progress }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="stat-card failed">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>error</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.failed }}</div>
-              <div class="stat-label">Fallidos</div>
-            </div>
+        <div class="total-item">
+          <mat-icon>error</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.FAILED' | translate }}</span>
+            <span class="total-value">{{ statistics.failed }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="stat-card products">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>inventory</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.total_products_imported }}</div>
-              <div class="stat-label">Productos Importados</div>
-            </div>
+        <div class="total-item">
+          <mat-icon>inventory</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.PRODUCTS_IMPORTED' | translate }}</span>
+            <span class="total-value">{{ statistics.total_products_imported }}</span>
           </div>
-        </mat-card-content>
-      </mat-card>
+        </div>
 
-      <mat-card class="stat-card rate">
-        <mat-card-content>
-          <div class="stat-content">
-            <mat-icon>trending_up</mat-icon>
-            <div>
-              <div class="stat-value">{{ statistics.average_success_rate.toFixed(1) }}%</div>
-              <div class="stat-label">Tasa de Éxito Promedio</div>
-            </div>
+        <div class="total-item">
+          <mat-icon>trending_up</mat-icon>
+          <div>
+            <span class="total-label">{{ 'BULK_UPLOAD.HISTORY.STATS.AVERAGE_SUCCESS_RATE' | translate }}</span>
+            <span class="total-value">{{ statistics.average_success_rate.toFixed(1) }}%</span>
           </div>
-        </mat-card-content>
-      </mat-card>
-    </div>
-  }
-
-  <!-- Filtros -->
-  <mat-card class="filters-card">
-    <mat-card-content>
-      <div class="filters">
-        <mat-form-field>
-          <mat-label>Filtrar por Estado</mat-label>
-          <mat-select 
-            [value]="selectedStatus()" 
-            (selectionChange)="onStatusFilterChange($event.value)">
-            @for (option of statusOptions; track option.value) {
-              <mat-option [value]="option.value">{{ option.label }}</mat-option>
-            }
-          </mat-select>
-        </mat-form-field>
+        </div>
       </div>
-    </mat-card-content>
-  </mat-card>
+    }
 
-  <!-- Tabla de historial -->
-  <mat-card>
+    <!-- Filtros -->
+    <div class="filtros">
+      <mat-form-field appearance="outline">
+        <mat-label>{{ 'BULK_UPLOAD.HISTORY.FILTER_BY_STATUS' | translate }}</mat-label>
+        <mat-select 
+          [value]="selectedStatus()" 
+          (selectionChange)="onStatusFilterChange($event.value)">
+          @for (option of statusOptions; track option.value) {
+            <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <!-- Tercer contenedor: Tabla -->
+  <div class="container">
     @if (loading()) {
       <div class="loading-container">
         <mat-spinner></mat-spinner>
-        <p>Cargando historial...</p>
+        <p>{{ 'BULK_UPLOAD.HISTORY.LOADING' | translate }}</p>
       </div>
     } @else {
-      <div class="table-container">
-        <table mat-table [dataSource]="jobs()" class="history-table">
-          <!-- Filename Column -->
-          <ng-container matColumnDef="filename">
-            <th mat-header-cell *matHeaderCellDef>Archivo</th>
-            <td mat-cell *matCellDef="let job">
-              <div class="filename-cell">
-                <mat-icon>description</mat-icon>
-                <span>{{ job.filename }}</span>
-              </div>
-            </td>
-          </ng-container>
+      <div class="card">
+        <div class="table-container">
+          <table mat-table [dataSource]="jobs()" class="modern-table">
+            <!-- Filename Column -->
+            <ng-container matColumnDef="filename">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.FILENAME' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <div class="filename-cell">
+                  <mat-icon>description</mat-icon>
+                  <span>{{ job.filename }}</span>
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Status Column -->
-          <ng-container matColumnDef="status">
-            <th mat-header-cell *matHeaderCellDef>Estado</th>
-            <td mat-cell *matCellDef="let job">
-              <mat-chip [class]="getStatusColor(job.status)">
-                <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
-                {{ getStatusText(job.status) }}
-              </mat-chip>
-            </td>
-          </ng-container>
+            <!-- Status Column -->
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.STATUS' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <mat-chip [class]="getStatusColor(job.status)">
+                  <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
+                  {{ getStatusText(job.status) }}
+                </mat-chip>
+              </td>
+            </ng-container>
 
-          <!-- Created At Column -->
-          <ng-container matColumnDef="created_at">
-            <th mat-header-cell *matHeaderCellDef>Fecha de Creación</th>
-            <td mat-cell *matCellDef="let job">
-              {{ job.created_at | date:'dd/MM/yyyy HH:mm' }}
-            </td>
-          </ng-container>
+            <!-- Created At Column -->
+            <ng-container matColumnDef="created_at">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.CREATED_AT' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                {{ job.created_at | date:'dd/MM/yyyy HH:mm' }}
+              </td>
+            </ng-container>
 
-          <!-- Total Rows Column -->
-          <ng-container matColumnDef="total_rows">
-            <th mat-header-cell *matHeaderCellDef>Total</th>
-            <td mat-cell *matCellDef="let job">
-              <strong>{{ job.total_rows }}</strong>
-            </td>
-          </ng-container>
+            <!-- Total Rows Column -->
+            <ng-container matColumnDef="total_rows">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.TOTAL_ROWS' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <strong>{{ job.total_rows }}</strong>
+              </td>
+            </ng-container>
 
-          <!-- Successful Rows Column -->
-          <ng-container matColumnDef="successful_rows">
-            <th mat-header-cell *matHeaderCellDef>Exitosos</th>
-            <td mat-cell *matCellDef="let job">
-              <span class="success-text">{{ job.successful_rows }}</span>
-            </td>
-          </ng-container>
+            <!-- Successful Rows Column -->
+            <ng-container matColumnDef="successful_rows">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.SUCCESSFUL_ROWS' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <span class="success-text">{{ job.successful_rows }}</span>
+              </td>
+            </ng-container>
 
-          <!-- Failed Rows Column -->
-          <ng-container matColumnDef="failed_rows">
-            <th mat-header-cell *matHeaderCellDef>Fallidos</th>
-            <td mat-cell *matCellDef="let job">
-              <span class="error-text">{{ job.failed_rows }}</span>
-            </td>
-          </ng-container>
+            <!-- Failed Rows Column -->
+            <ng-container matColumnDef="failed_rows">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.FAILED_ROWS' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <span class="error-text">{{ job.failed_rows }}</span>
+              </td>
+            </ng-container>
 
-          <!-- Success Rate Column -->
-          <ng-container matColumnDef="success_rate">
-            <th mat-header-cell *matHeaderCellDef>Tasa de Éxito</th>
-            <td mat-cell *matCellDef="let job">
-              <div class="success-rate">
-                {{ job.success_rate.toFixed(1) }}%
-              </div>
-            </td>
-          </ng-container>
+            <!-- Success Rate Column -->
+            <ng-container matColumnDef="success_rate">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.SUCCESS_RATE' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                <div class="success-rate">
+                  {{ job.success_rate.toFixed(1) }}%
+                </div>
+              </td>
+            </ng-container>
 
-          <!-- Actions Column -->
-          <ng-container matColumnDef="actions">
-            <th mat-header-cell *matHeaderCellDef>Acciones</th>
-            <td mat-cell *matCellDef="let job">
-              @if (job.failed_rows > 0) {
-                <button 
-                  mat-icon-button 
-                  color="warn"
-                  (click)="downloadErrors(job)"
-                  matTooltip="Descargar errores">
-                  <mat-icon>download</mat-icon>
-                </button>
-              }
-            </td>
-          </ng-container>
+            <!-- Actions Column -->
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef>{{ 'BULK_UPLOAD.HISTORY.TABLE.ACTIONS' | translate }}</th>
+              <td mat-cell *matCellDef="let job">
+                @if (job.failed_rows > 0) {
+                  <button 
+                    mat-icon-button 
+                    color="warn"
+                    (click)="downloadErrors(job)"
+                    [matTooltip]="'BULK_UPLOAD.HISTORY.ACTIONS.DOWNLOAD_ERRORS' | translate">
+                    <mat-icon>download</mat-icon>
+                  </button>
+                }
+              </td>
+            </ng-container>
 
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
 
-        @if (jobs().length === 0) {
-          <div class="no-data">
-            <mat-icon>inbox</mat-icon>
-            <p>No hay registros de cargas masivas</p>
-          </div>
-        }
+          @if (jobs().length === 0) {
+            <div class="no-data">
+              <mat-icon>inbox</mat-icon>
+              <p>{{ 'BULK_UPLOAD.HISTORY.NO_RECORDS' | translate }}</p>
+            </div>
+          }
+        </div>
+
+        <!-- Paginador -->
+        <mat-paginator
+          class="unified-paginator"
+          [length]="totalJobs()"
+          [pageSize]="pageSize()"
+          [pageIndex]="pageIndex()"
+          [pageSizeOptions]="[5, 10, 25, 50]"
+          (page)="onPageChange($event)"
+          showFirstLastButtons>
+        </mat-paginator>
       </div>
-
-      <!-- Paginador -->
-      <mat-paginator
-        [length]="totalJobs()"
-        [pageSize]="pageSize()"
-        [pageIndex]="pageIndex()"
-        [pageSizeOptions]="[5, 10, 25, 50]"
-        (page)="onPageChange($event)"
-        showFirstLastButtons>
-      </mat-paginator>
     }
-  </mat-card>
+  </div>
 </div>

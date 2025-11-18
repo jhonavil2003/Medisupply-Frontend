@@ -10,6 +10,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProductoBulkUploadService } from '../producto-bulk-upload.service';
 import { BulkUploadJob, BulkUploadStats, JobStatus } from '../models/bulk-upload.models';
 import { NotificationService } from '../../../../shared/services/notification.service';
@@ -28,7 +30,9 @@ import { NotificationService } from '../../../../shared/services/notification.se
     MatSelectModule,
     MatFormFieldModule,
     MatPaginatorModule,
-    MatProgressSpinnerModule
+    MatProgressSpinnerModule,
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './producto-upload-history.component.html',
   styleUrls: ['./producto-upload-history.component.css']
@@ -36,6 +40,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
 export class ProductoUploadHistoryComponent implements OnInit {
   private uploadService = inject(ProductoBulkUploadService);
   private notify = inject(NotificationService);
+  private translate = inject(TranslateService);
 
   // Señales
   jobs = signal<BulkUploadJob[]>([]);
@@ -60,16 +65,19 @@ export class ProductoUploadHistoryComponent implements OnInit {
     'actions'
   ];
 
-  // Opciones de filtro
-  statusOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'completed', label: 'Completados' },
-    { value: 'processing', label: 'En Proceso' },
-    { value: 'failed', label: 'Fallidos' },
-    { value: 'cancelled', label: 'Cancelados' }
-  ];
+  // Opciones de filtro - Se inicializan en ngOnInit
+  statusOptions: { value: string; label: string }[] = [];
 
   ngOnInit(): void {
+    // Inicializar opciones de filtro con traducciones
+    this.statusOptions = [
+      { value: 'all', label: this.translate.instant('BULK_UPLOAD.HISTORY.FILTER_OPTIONS.ALL') },
+      { value: 'completed', label: this.translate.instant('BULK_UPLOAD.HISTORY.FILTER_OPTIONS.COMPLETED') },
+      { value: 'processing', label: this.translate.instant('BULK_UPLOAD.HISTORY.FILTER_OPTIONS.IN_PROGRESS') },
+      { value: 'failed', label: this.translate.instant('BULK_UPLOAD.HISTORY.FILTER_OPTIONS.FAILED') },
+      { value: 'cancelled', label: this.translate.instant('BULK_UPLOAD.HISTORY.FILTER_OPTIONS.CANCELLED') }
+    ];
+    
     this.loadHistory();
     this.loadStats();
   }
@@ -97,7 +105,7 @@ export class ProductoUploadHistoryComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar historial:', error);
-        this.notify.error('Error al cargar el historial');
+        this.notify.error(this.translate.instant('BULK_UPLOAD.HISTORY.MESSAGES.LOADING_ERROR'));
         this.loading.set(false);
       }
     });
@@ -142,14 +150,14 @@ export class ProductoUploadHistoryComponent implements OnInit {
     this.uploadService.downloadErrors(job.job_id).subscribe({
       next: (blob) => {
         this.uploadService.downloadBlob(blob, `errores_${job.job_id}.csv`);
-        this.notify.success('Archivo de errores descargado');
+        this.notify.success(this.translate.instant('BULK_UPLOAD.HISTORY.MESSAGES.ERRORS_DOWNLOADED'));
       },
       error: (error) => {
         console.error('Error al descargar errores:', error);
         if (error.status === 404) {
-          this.notify.info('No hay errores para este job');
+          this.notify.info(this.translate.instant('BULK_UPLOAD.MESSAGES.NO_ERRORS_TO_DOWNLOAD'));
         } else {
-          this.notify.error('Error al descargar el archivo de errores');
+          this.notify.error(this.translate.instant('BULK_UPLOAD.HISTORY.MESSAGES.DOWNLOAD_ERROR'));
         }
       }
     });
@@ -161,7 +169,7 @@ export class ProductoUploadHistoryComponent implements OnInit {
   refresh(): void {
     this.loadHistory();
     this.loadStats();
-    this.notify.success('Historial actualizado');
+    this.notify.success(this.translate.instant('BULK_UPLOAD.HISTORY.REFRESH'));
   }
 
   /**
@@ -195,17 +203,17 @@ export class ProductoUploadHistoryComponent implements OnInit {
   }
 
   /**
-   * Obtiene el texto en español del estado
+   * Obtiene el texto traducido del estado
    */
   getStatusText(status: JobStatus): string {
-    const texts: Record<JobStatus, string> = {
-      'pending': 'Pendiente',
-      'validating': 'Validando',
-      'processing': 'Procesando',
-      'completed': 'Completado',
-      'failed': 'Fallido',
-      'cancelled': 'Cancelado'
+    const textKeys: Record<JobStatus, string> = {
+      'pending': 'BULK_UPLOAD.STATUS.PENDING',
+      'validating': 'BULK_UPLOAD.STATUS.VALIDATING',
+      'processing': 'BULK_UPLOAD.STATUS.PROCESSING',
+      'completed': 'BULK_UPLOAD.STATUS.COMPLETED',
+      'failed': 'BULK_UPLOAD.STATUS.FAILED',
+      'cancelled': 'BULK_UPLOAD.STATUS.CANCELLED'
     };
-    return texts[status] || status;
+    return this.translate.instant(textKeys[status] || status);
   }
 }

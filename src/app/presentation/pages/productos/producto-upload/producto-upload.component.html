@@ -5,16 +5,16 @@
       <a mat-icon-button [routerLink]="['/dashboard-admin']">
         <mat-icon>arrow_back</mat-icon>
       </a>
-      <h2 style="margin: 0;">Carga Masiva de Productos</h2>
+      <h2 style="margin: 0;">{{ 'BULK_UPLOAD.TITLE' | translate }}</h2>
     </div>
     <div class="header-actions">
       <button mat-raised-button color="accent" (click)="descargarPlantilla()">
         <mat-icon>download</mat-icon>
-        Descargar Plantilla CSV
+        {{ 'BULK_UPLOAD.ACTIONS.DOWNLOAD_TEMPLATE' | translate }}
       </button>
       <a mat-raised-button [routerLink]="['/productos/upload/historial']">
         <mat-icon>history</mat-icon>
-        Ver Historial
+        {{ 'BULK_UPLOAD.ACTIONS.VIEW_HISTORY' | translate }}
       </a>
     </div>
   </div>
@@ -26,15 +26,15 @@
         <div class="info-content">
           <mat-icon class="info-icon">info</mat-icon>
           <div>
-            <h3>Instrucciones para la carga masiva</h3>
+            <h3>{{ 'BULK_UPLOAD.INSTRUCTIONS.TITLE' | translate }}</h3>
             <ol>
-              <li>Descargue la plantilla CSV haciendo clic en el botón "Descargar Plantilla CSV"</li>
-              <li>Complete los datos de los productos en el archivo CSV (7 columnas requeridas, 19 opcionales)</li>
-              <li>Asegúrese de que los proveedores (supplier_id) existan en el sistema</li>
-              <li>Suba el archivo completado arrastrándolo o seleccionándolo</li>
-              <li>Monitoree el progreso y descargue el reporte de errores si es necesario</li>
+              <li>{{ 'BULK_UPLOAD.INSTRUCTIONS.STEP_1' | translate }}</li>
+              <li>{{ 'BULK_UPLOAD.INSTRUCTIONS.STEP_2' | translate }}</li>
+              <li>{{ 'BULK_UPLOAD.INSTRUCTIONS.STEP_3' | translate }}</li>
+              <li>{{ 'BULK_UPLOAD.INSTRUCTIONS.STEP_4' | translate }}</li>
+              <li>{{ 'BULK_UPLOAD.INSTRUCTIONS.STEP_5' | translate }}</li>
             </ol>
-            <p><strong>Límites:</strong> Máximo 20 MB y 10,000 filas por archivo</p>
+            <p><strong>{{ 'BULK_UPLOAD.INSTRUCTIONS.LIMITS_LABEL' | translate }}</strong> {{ 'BULK_UPLOAD.INSTRUCTIONS.LIMITS_TEXT' | translate }}</p>
           </div>
         </div>
       </mat-card-content>
@@ -47,7 +47,7 @@
       <mat-card-header>
         <mat-card-title>
           <mat-icon>cloud_upload</mat-icon>
-          Seleccionar Archivo CSV
+          {{ 'BULK_UPLOAD.UPLOAD.SELECT_FILE' | translate }}
         </mat-card-title>
       </mat-card-header>
       <mat-card-content>
@@ -55,11 +55,11 @@
           (dragover)="onDragOver($event)"
           (drop)="onFileDrop($event)">
           <mat-icon class="upload-icon">description</mat-icon>
-          <p>Arrastra y suelta tu archivo aquí o</p>
+          <p>{{ 'BULK_UPLOAD.UPLOAD.DRAG_DROP_TEXT' | translate }}</p>
           <input type="file" id="fileInput" (change)="onFileSelected($event)" accept=".csv" hidden />
           <label for="fileInput" class="btn-outline">
             <mat-icon>folder_open</mat-icon>
-            Seleccionar Archivo
+            {{ 'BULK_UPLOAD.UPLOAD.SELECT_FILE_BUTTON' | translate }}
           </label>
 
           @if (archivoSeleccionado()) {
@@ -75,7 +75,7 @@
           <div class="actions">
             <button mat-raised-button color="primary" (click)="procesarArchivo()">
               <mat-icon>upload</mat-icon>
-              Cargar Archivo a la Base de Datos
+              {{ 'BULK_UPLOAD.UPLOAD.UPLOAD_TO_DATABASE' | translate }}
             </button>
           </div>
         }
@@ -89,7 +89,7 @@
       <mat-card-header>
         <mat-card-title>
           <mat-icon>{{ getStatusIcon(job.status) }}</mat-icon>
-          Estado de la Carga
+          {{ 'BULK_UPLOAD.PROGRESS.UPLOAD_STATUS' | translate }}
         </mat-card-title>
         <mat-chip [class]="getStatusColor(job.status)">
           {{ getStatusText(job.status) }}
@@ -102,14 +102,14 @@
           <div class="info-item">
             <mat-icon>description</mat-icon>
             <div>
-              <span class="label">Archivo:</span>
+              <span class="label">{{ 'BULK_UPLOAD.PROGRESS.FILE' | translate }}:</span>
               <span class="value">{{ job.filename }}</span>
             </div>
           </div>
           <div class="info-item">
             <mat-icon>event</mat-icon>
             <div>
-              <span class="label">Iniciado:</span>
+              <span class="label">{{ 'BULK_UPLOAD.PROGRESS.STARTED' | translate }}:</span>
               <span class="value">{{ job.created_at | date:'dd/MM/yyyy HH:mm' }}</span>
             </div>
           </div>
@@ -118,8 +118,8 @@
         <!-- Barra de progreso -->
         <div class="progress-section">
           <div class="progress-header">
-            <span>Progreso: {{ job.progress_percentage.toFixed(1) }}%</span>
-            <span>{{ job.processed_rows }} / {{ job.total_rows }} filas</span>
+            <span>{{ 'BULK_UPLOAD.PROGRESS.PROGRESS_LABEL' | translate }}: {{ job.progress_percentage.toFixed(1) }}%</span>
+            <span>{{ job.processed_rows }} / {{ job.total_rows }} {{ 'BULK_UPLOAD.PROGRESS.ROWS' | translate }}</span>
           </div>
           <mat-progress-bar 
             mode="determinate" 
@@ -134,7 +134,7 @@
             <mat-icon>check_circle</mat-icon>
             <div>
               <div class="metric-value">{{ job.successful_rows }}</div>
-              <div class="metric-label">Exitosos</div>
+              <div class="metric-label">{{ 'BULK_UPLOAD.METRICS.SUCCESSFUL' | translate }}</div>
             </div>
           </div>
 
@@ -142,7 +142,7 @@
             <mat-icon>error</mat-icon>
             <div>
               <div class="metric-value">{{ job.failed_rows }}</div>
-              <div class="metric-label">Fallidos</div>
+              <div class="metric-label">{{ 'BULK_UPLOAD.METRICS.FAILED' | translate }}</div>
             </div>
           </div>
 
@@ -150,7 +150,7 @@
             <mat-icon>inventory</mat-icon>
             <div>
               <div class="metric-value">{{ job.total_rows }}</div>
-              <div class="metric-label">Total</div>
+              <div class="metric-label">{{ 'BULK_UPLOAD.METRICS.TOTAL' | translate }}</div>
             </div>
           </div>
 
@@ -158,7 +158,7 @@
             <mat-icon>trending_up</mat-icon>
             <div>
               <div class="metric-value">{{ job.success_rate.toFixed(1) }}%</div>
-              <div class="metric-label">Tasa de Éxito</div>
+              <div class="metric-label">{{ 'BULK_UPLOAD.METRICS.SUCCESS_RATE' | translate }}</div>
             </div>
           </div>
         </div>
@@ -167,7 +167,7 @@
         @if (job.estimated_time_remaining && job.status === 'processing') {
           <div class="time-remaining">
             <mat-icon>timer</mat-icon>
-            <span>Tiempo estimado restante: {{ job.estimated_time_remaining.toFixed(0) }} segundos</span>
+            <span>{{ 'BULK_UPLOAD.PROGRESS.ESTIMATED_TIME_REMAINING' | translate }}: {{ job.estimated_time_remaining.toFixed(0) }} {{ 'BULK_UPLOAD.PROGRESS.SECONDS' | translate }}</span>
           </div>
         }
 
@@ -184,21 +184,21 @@
           @if (job.status === 'completed' && job.failed_rows > 0) {
             <button mat-raised-button color="warn" (click)="descargarErrores()">
               <mat-icon>download</mat-icon>
-              Descargar Reporte de Errores
+              {{ 'BULK_UPLOAD.ACTIONS.DOWNLOAD_ERRORS' | translate }}
             </button>
           }
 
           @if (job.status === 'pending' || job.status === 'validating') {
             <button mat-raised-button color="warn" (click)="cancelarJob()">
               <mat-icon>cancel</mat-icon>
-              Cancelar Proceso
+              {{ 'BULK_UPLOAD.ACTIONS.CANCEL_PROCESS' | translate }}
             </button>
           }
 
           @if (job.status === 'completed' || job.status === 'failed' || job.status === 'cancelled') {
             <button mat-raised-button color="primary" (click)="reiniciar()">
               <mat-icon>refresh</mat-icon>
-              Cargar Otro Archivo
+              {{ 'BULK_UPLOAD.ACTIONS.UPLOAD_ANOTHER_FILE' | translate }}
             </button>
           }
         </div>
