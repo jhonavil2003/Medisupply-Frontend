@@ -1,167 +1,178 @@
-/* Container */
-.container {
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: 24px;
-}
+/* ============================================
+   ESTILOS ESPECÍFICOS PARA HISTORIAL DE CARGAS
+   Siguiendo los patrones visuales de reportes
+   ============================================ */
 
-/* Header */
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 24px;
-  flex-wrap: wrap;
-  gap: 16px;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.header-left h2 {
+/* Contenedor principal - idéntico a reportes */
+.informe-ventas-container {
+  padding: 0;
+  max-width: none;
   margin: 0;
-  font-size: 1.75rem;
+}
+
+/* Barra de encabezado - estilo reportes */
+.header-bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 1.5rem;
+}
+
+.header-bar h2 {
+  margin: 0;
+  font-size: 20px;
   font-weight: 600;
   color: #1976d2;
+  line-height: 1.2;
 }
 
-/* Stats Grid */
-.stats-grid {
+/* Filtros - idéntico a reportes */
+.filtros {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filtros mat-form-field {
+  width: 100%;
+}
+
+/* Resumen de totales - KPIs estilo reportes */
+.totales-resumen {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.stat-card {
+.total-item {
+  color: #FFFFFF;
+  padding: 20px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
   transition: transform 0.2s, box-shadow 0.2s;
 }
 
-.stat-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+/* KPI 1 - Total de Cargas (azul brillante) */
+.total-item:nth-child(1) {
+  background: #3B82F6;
+  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.25);
 }
 
-.stat-content {
+.total-item:nth-child(1):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.35);
+}
+
+/* KPI 2 - Completados (verde esmeralda) */
+.total-item:nth-child(2) {
+  background: #14B8A6;
+  box-shadow: 0 4px 12px rgba(20, 184, 166, 0.25);
+}
+
+.total-item:nth-child(2):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(20, 184, 166, 0.35);
+}
+
+/* KPI 3 - En Progreso (violeta) */
+.total-item:nth-child(3) {
+  background: #6366F1;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.25);
+}
+
+.total-item:nth-child(3):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.35);
+}
+
+/* KPI 4 - Fallidos (rojo coral) */
+.total-item:nth-child(4) {
+  background: #EF4444;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+}
+
+.total-item:nth-child(4):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(239, 68, 68, 0.35);
+}
+
+/* KPI 5 - Productos Importados (turquesa) */
+.total-item:nth-child(5) {
+  background: #06B6D4;
+  box-shadow: 0 4px 12px rgba(6, 182, 212, 0.25);
+}
+
+.total-item:nth-child(5):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(6, 182, 212, 0.35);
+}
+
+/* KPI 6 - Tasa de Éxito (verde lima) */
+.total-item:nth-child(6) {
+  background: #22C55E;
+  box-shadow: 0 4px 12px rgba(34, 197, 94, 0.25);
+}
+
+.total-item:nth-child(6):hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(34, 197, 94, 0.35);
+}
+
+.total-item mat-icon {
+  font-size: 36px;
+  width: 36px;
+  height: 36px;
+  color: #FFFFFF;
+  opacity: 1;
+}
+
+.total-item > div {
   display: flex;
-  align-items: center;
-  gap: 16px;
+  flex-direction: column;
+  gap: 4px;
 }
 
-.stat-card mat-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
+.total-label {
+  font-size: 0.875rem;
+  color: #E0E7FF;
+  font-weight: 500;
 }
 
-.stat-value {
-  font-size: 2.25rem;
+.total-value {
+  font-size: 1.5rem;
   font-weight: 700;
-  line-height: 1;
-  margin-bottom: 4px;
+  color: #FFFFFF;
 }
 
-.stat-label {
-  font-size: 0.85rem;
-  color: #616161;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.stat-card.total {
-  background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
-  border-left: 4px solid #1976d2;
-}
-
-.stat-card.total mat-icon {
-  color: #1565c0;
-}
-
-.stat-card.total .stat-value {
-  color: #0d47a1;
-}
-
-.stat-card.completed {
-  background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
-  border-left: 4px solid #4caf50;
-}
-
-.stat-card.completed mat-icon {
-  color: #2e7d32;
-}
-
-.stat-card.completed .stat-value {
-  color: #1b5e20;
-}
-
-.stat-card.processing {
-  background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-  border-left: 4px solid #ff9800;
-}
-
-.stat-card.processing mat-icon {
-  color: #e65100;
-}
-
-.stat-card.processing .stat-value {
-  color: #e65100;
-}
-
-.stat-card.failed {
-  background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
-  border-left: 4px solid #f44336;
-}
-
-.stat-card.failed mat-icon {
-  color: #c62828;
-}
-
-.stat-card.failed .stat-value {
-  color: #b71c1c;
-}
-
-.stat-card.products {
-  background: linear-gradient(135deg, #f3e5f5 0%, #e1bee7 100%);
-  border-left: 4px solid #9c27b0;
-}
-
-.stat-card.products mat-icon {
-  color: #6a1b9a;
-}
-
-.stat-card.products .stat-value {
-  color: #4a148c;
-}
-
-.stat-card.rate {
-  background: linear-gradient(135deg, #e0f2f1 0%, #b2dfdb 100%);
-  border-left: 4px solid #009688;
-}
-
-.stat-card.rate mat-icon {
-  color: #00695c;
-}
-
-.stat-card.rate .stat-value {
-  color: #004d40;
-}
-
-/* Filters */
-.filters-card {
+/* Contenedor de tabla - estilo reportes */
+.card {
+  background: var(--color-white);
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  padding: 0;
   margin-bottom: 24px;
+  overflow: visible !important;
+  border: none !important;
 }
 
-.filters {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
+.card .unified-paginator {
+  border-bottom: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
 }
 
-.filters mat-form-field {
-  min-width: 200px;
+/* Tabla - usando estilos globales */
+.table-container {
+  background: var(--color-white);
+  overflow-x: auto;
+  padding: 0;
+  margin: 0;
+  border: none !important;
+  box-shadow: none !important;
 }
 
 /* Loading */
@@ -179,26 +190,7 @@
   font-size: 1rem;
 }
 
-/* Table */
-.table-container {
-  overflow-x: auto;
-}
-
-.history-table {
-  width: 100%;
-}
-
-.history-table th {
-  background-color: #f5f5f5;
-  font-weight: 600;
-  color: #424242;
-  padding: 16px;
-}
-
-.history-table td {
-  padding: 16px;
-}
-
+/* Estilos específicos para celdas */
 .filename-cell {
   display: flex;
   align-items: center;
@@ -292,35 +284,22 @@ mat-chip mat-icon {
   margin: 0;
 }
 
-/* Responsive */
+/* Responsive - Patrones de reportes */
 @media (max-width: 768px) {
-  .header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
-  .stats-grid {
+  .filtros {
     grid-template-columns: 1fr;
   }
 
-  .stat-value {
-    font-size: 1.75rem;
-  }
-
-  .filters {
-    flex-direction: column;
-  }
-
-  .filters mat-form-field {
+  .filtros mat-form-field {
     width: 100%;
+    min-width: auto;
+  }
+
+  .totales-resumen {
+    grid-template-columns: 1fr;
   }
 
   .table-container {
     font-size: 0.9rem;
-  }
-
-  .history-table th,
-  .history-table td {
-    padding: 12px 8px;
   }
 }

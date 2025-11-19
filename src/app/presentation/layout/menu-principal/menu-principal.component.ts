@@ -86,4 +86,30 @@ export class MenuPrincipalComponent {
       this.logisticaOpen = !this.logisticaOpen;
     }
   }
+
+  // Verificar si alguna ruta del submenú Gestión está activa
+  isGestionActive(): boolean {
+    return this.isActive('proveedor-list') || 
+           this.isActive('proveedor') || 
+           this.isActive('producto-list') || 
+           this.isActive('producto') || 
+           this.isActive('vendedores') || 
+           this.isActive('vendedor');
+  }
+
+  // Verificar si alguna ruta del submenú Ventas está activa
+  isVentasActive(): boolean {
+    return this.isActive('mis-metas') || 
+           this.isActive('metas') || 
+           this.isActive('informe-ventas');
+  }
+
+  // Verificar si alguna ruta del submenú Logística está activa
+  isLogisticaActive(): boolean {
+    return this.isActive('producto-localizacion') || 
+           this.isActive('ordenes') || 
+           this.isActive('confirmar-ordenes') || 
+           this.isActive('generar-rutas') || 
+           this.isActive('rutas');
+  }
 }

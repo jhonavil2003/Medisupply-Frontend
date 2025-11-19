@@ -1,64 +1,47 @@
-<div class="order-detail-container">
+<mat-card class="form-card">
   <!-- Loading State -->
   @if (loading()) {
     <div class="loading-container">
       <mat-spinner diameter="50"></mat-spinner>
-      <p>Cargando detalles de la orden...</p>
+      <p>{{ 'ORDER_DETAIL.LOADING' | translate }}</p>
     </div>
   }
 
   <!-- Error State -->
   @if (error() && !loading()) {
-    <mat-card class="error-card">
-      <mat-card-content>
-        <div class="error-content">
-          <mat-icon color="warn" class="error-icon">error</mat-icon>
-          <h2>Error al cargar la orden</h2>
-          <p>{{ error() }}</p>
-          <div class="error-actions">
-            <button mat-raised-button color="primary" (click)="retry()">
-              <mat-icon>refresh</mat-icon>
-              Reintentar
-            </button>
-            <button mat-raised-button (click)="goBack()">
-              <mat-icon>arrow_back</mat-icon>
-              Volver al Listado
-            </button>
-          </div>
-        </div>
-      </mat-card-content>
-    </mat-card>
+    <div class="error-content">
+      <mat-icon color="warn" class="error-icon">error</mat-icon>
+      <h2>{{ 'ORDER_DETAIL.ERROR_LOADING' | translate }}</h2>
+      <p>{{ error() }}</p>
+      <div class="error-actions">
+        <button mat-raised-button color="primary" (click)="retry()">
+          <mat-icon>refresh</mat-icon>
+          {{ 'ORDER_DETAIL.RETRY' | translate }}
+        </button>
+        <button mat-raised-button (click)="goBack()">
+          <mat-icon>arrow_back</mat-icon>
+          {{ (isModal() ? 'ORDER_DETAIL.CLOSE' : 'ORDER_DETAIL.BACK_TO_LIST') | translate }}
+        </button>
+      </div>
+    </div>
   }
 
   <!-- Order Detail Content -->
   @if (order() && !loading()) {
     <!-- Header -->
-    <div class="order-header">
-      <div class="header-left">
-        <button mat-icon-button (click)="goBack()" matTooltip="Volver al listado">
-          <mat-icon>arrow_back</mat-icon>
-        </button>
-        <div class="header-title">
-          <h1>
-            <mat-icon>shopping_cart</mat-icon>
-            Orden {{ order()!.orderNumber }}
-          </h1>
-          <mat-chip [class]="getStatusConfig(order()!.status).className">
-            <mat-icon>{{ getStatusConfig(order()!.status).icon }}</mat-icon>
-            {{ getStatusConfig(order()!.status).label }}
-          </mat-chip>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button mat-raised-button (click)="handlePrint()">
-          <mat-icon>print</mat-icon>
-          Imprimir
-        </button>
-      </div>
-    </div>
+    <mat-card-header class="card-header">
+      <mat-card-title class="card-title">
+        {{ 'ORDER_DETAIL.TITLE' | translate }} {{ order()!.orderNumber }}
+        <mat-chip [class]="getStatusConfig(order()!.status).className">
+          <mat-icon>{{ getStatusConfig(order()!.status).icon }}</mat-icon>
+          {{ getStatusConfig(order()!.status).label | translate }}
+        </mat-chip>
+      </mat-card-title>
+    </mat-card-header>
 
-    <!-- Grid Layout -->
-    <div class="order-grid">
+    <mat-card-content>
+      <!-- Grid Layout -->
+      <div class="order-grid">
       <!-- Columna Izquierda -->
       <div class="order-column">
         <!-- Información del Cliente -->
@@ -66,31 +49,31 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>person</mat-icon>
-              Información del Cliente
+              {{ 'ORDER_DETAIL.CUSTOMER_INFO' | translate }}
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="info-row">
-              <label>Razón Social:</label>
+              <label>{{ 'ORDER_DETAIL.BUSINESS_NAME' | translate }}:</label>
               <strong>{{ order()!.customer.businessName }}</strong>
             </div>
             <div class="info-row">
-              <label>Documento:</label>
+              <label>{{ 'ORDER_DETAIL.DOCUMENT' | translate }}:</label>
               <span>{{ order()!.customer.documentNumber }}</span>
             </div>
             <div class="info-row">
-              <label>Tipo:</label>
+              <label>{{ 'ORDER_DETAIL.TYPE' | translate }}:</label>
               <span>{{ order()!.customer.customerType }}</span>
             </div>
             @if (order()!.customer.phone) {
               <div class="info-row">
-                <label>Teléfono:</label>
+                <label>{{ 'ORDER_DETAIL.PHONE' | translate }}:</label>
                 <span>{{ order()!.customer.phone }}</span>
               </div>
             }
             @if (order()!.customer.email) {
               <div class="info-row">
-                <label>Email:</label>
+                <label>{{ 'ORDER_DETAIL.EMAIL' | translate }}:</label>
                 <span>{{ order()!.customer.email }}</span>
               </div>
             }
@@ -102,40 +85,40 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>local_shipping</mat-icon>
-              Información de Entrega
+              {{ 'ORDER_DETAIL.DELIVERY_INFO' | translate }}
             </mat-card-title>
-            <button mat-icon-button (click)="copyAddress()" matTooltip="Copiar dirección">
+            <button mat-icon-button (click)="copyAddress()" [matTooltip]="'ORDER_DETAIL.COPY_ADDRESS' | translate">
               <mat-icon>content_copy</mat-icon>
             </button>
           </mat-card-header>
           <mat-card-content>
             @if (order()!.deliveryAddress) {
               <div class="info-row">
-                <label>Dirección:</label>
+                <label>{{ 'ORDER_DETAIL.ADDRESS' | translate }}:</label>
                 <strong>{{ order()!.deliveryAddress }}</strong>
               </div>
             }
             @if (order()!.deliveryCity) {
               <div class="info-row">
-                <label>Ciudad:</label>
+                <label>{{ 'ORDER_DETAIL.CITY' | translate }}:</label>
                 <span>{{ order()!.deliveryCity }}</span>
               </div>
             }
             @if (order()!.deliveryDepartment) {
               <div class="info-row">
-                <label>Departamento:</label>
+                <label>{{ 'ORDER_DETAIL.DEPARTMENT' | translate }}:</label>
                 <span>{{ order()!.deliveryDepartment }}</span>
               </div>
             }
             <div class="info-row">
-              <label>Fecha de Entrega:</label>
+              <label>{{ 'ORDER_DETAIL.DELIVERY_DATE' | translate }}:</label>
               <strong class="text-primary">{{ formatDateOnly(order()!.deliveryDate) }}</strong>
             </div>
             
             @if (order()!.deliveryLatitude && order()!.deliveryLongitude) {
               <mat-divider></mat-divider>
               <div class="info-row">
-                <label>Coordenadas GPS:</label>
+                <label>{{ 'ORDER_DETAIL.GPS_COORDINATES' | translate }}:</label>
                 <span class="coordinates">
                   {{ order()!.deliveryLatitude!.toFixed(6) }}, {{ order()!.deliveryLongitude!.toFixed(6) }}
                 </span>
@@ -146,7 +129,7 @@
                 <app-google-map
                   [latitude]="order()!.deliveryLatitude!"
                   [longitude]="order()!.deliveryLongitude!"
-                  [markerTitle]="'Dirección de Entrega - ' + order()!.orderNumber"
+                  [markerTitle]="('ORDER_DETAIL.DELIVERY_ADDRESS' | translate) + ' - ' + order()!.orderNumber"
                   [zoom]="15">
                 </app-google-map>
               </div>
@@ -160,7 +143,7 @@
             <mat-card-header>
               <mat-card-title>
                 <mat-icon>notes</mat-icon>
-                Notas
+                {{ 'ORDER_DETAIL.NOTES' | translate }}
               </mat-card-title>
             </mat-card-header>
             <mat-card-content>
@@ -177,33 +160,33 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>description</mat-icon>
-              Información de la Orden
+              {{ 'ORDER_DETAIL.ORDER_INFO' | translate }}
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="info-row">
-              <label>Número de Orden:</label>
+              <label>{{ 'ORDER_DETAIL.ORDER_NUMBER' | translate }}:</label>
               <strong>{{ order()!.orderNumber }}</strong>
             </div>
             <div class="info-row">
-              <label>Fecha de Creación:</label>
+              <label>{{ 'ORDER_DETAIL.CREATED_AT' | translate }}:</label>
               <span>{{ formatDateTime(order()!.createdAt) }}</span>
             </div>
             @if (order()!.updatedAt && order()!.updatedAt !== order()!.createdAt) {
               <div class="info-row">
-                <label>Última Actualización:</label>
+                <label>{{ 'ORDER_DETAIL.UPDATED_AT' | translate }}:</label>
                 <span>{{ formatDateTime(order()!.updatedAt!) }}</span>
               </div>
             }
             @if (order()!.sellerName) {
               <div class="info-row">
-                <label>Vendedor:</label>
+                <label>{{ 'ORDER_DETAIL.SELLER' | translate }}:</label>
                 <span>{{ order()!.sellerName }} ({{ order()!.sellerId }})</span>
               </div>
             }
             @if (order()!.preferredDistributionCenter) {
               <div class="info-row">
-                <label>Centro de Distribución:</label>
+                <label>{{ 'ORDER_DETAIL.DISTRIBUTION_CENTER' | translate }}:</label>
                 <span>{{ order()!.preferredDistributionCenter }}</span>
               </div>
             }
@@ -215,19 +198,19 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>payment</mat-icon>
-              Información de Pago
+              {{ 'ORDER_DETAIL.PAYMENT_INFO' | translate }}
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             @if (order()!.paymentTerms) {
               <div class="info-row">
-                <label>Términos de Pago:</label>
+                <label>{{ 'ORDER_DETAIL.PAYMENT_TERMS' | translate }}:</label>
                 <strong>{{ order()!.paymentTerms }}</strong>
               </div>
             }
             @if (order()!.paymentMethod) {
               <div class="info-row">
-                <label>Método de Pago:</label>
+                <label>{{ 'ORDER_DETAIL.PAYMENT_METHOD' | translate }}:</label>
                 <span>{{ order()!.paymentMethod }}</span>
               </div>
             }
@@ -239,16 +222,16 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>attach_money</mat-icon>
-              Resumen de Montos
+              {{ 'ORDER_DETAIL.AMOUNTS_SUMMARY' | translate }}
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="info-row">
-              <label>Subtotal:</label>
+              <label>{{ 'ORDER_DETAIL.SUBTOTAL' | translate }}:</label>
               <span>{{ formatCurrency(order()!.subtotal) }}</span>
             </div>
             <div class="info-row">
-              <label>Descuento:</label>
+              <label>{{ 'ORDER_DETAIL.DISCOUNT' | translate }}:</label>
               <span class="text-danger">
                 - {{ formatCurrency(order()!.discountAmount) }}
                 @if (discountRate() > 0) {
@@ -257,12 +240,12 @@
               </span>
             </div>
             <div class="info-row">
-              <label>Impuestos (IVA):</label>
+              <label>{{ 'ORDER_DETAIL.TAX' | translate }}:</label>
               <span>{{ formatCurrency(order()!.taxAmount) }}</span>
             </div>
             <mat-divider></mat-divider>
             <div class="info-row total-row">
-              <label>Total:</label>
+              <label>{{ 'ORDER_DETAIL.TOTAL' | translate }}:</label>
               <strong class="total-amount">{{ formatCurrency(order()!.totalAmount) }}</strong>
             </div>
           </mat-card-content>
@@ -273,25 +256,25 @@
           <mat-card-header>
             <mat-card-title>
               <mat-icon>analytics</mat-icon>
-              Métricas
+              {{ 'ORDER_DETAIL.METRICS' | translate }}
             </mat-card-title>
           </mat-card-header>
           <mat-card-content>
             <div class="metrics-grid">
               <div class="metric-item">
-                <div class="metric-label">Items</div>
+                <div class="metric-label">{{ 'ORDER_DETAIL.ITEMS' | translate }}</div>
                 <div class="metric-value">{{ totalItems() }}</div>
               </div>
               <div class="metric-item">
-                <div class="metric-label">Unidades</div>
+                <div class="metric-label">{{ 'ORDER_DETAIL.UNITS' | translate }}</div>
                 <div class="metric-value">{{ totalQuantity() }}</div>
               </div>
               <div class="metric-item">
-                <div class="metric-label">Items con Descuento</div>
+                <div class="metric-label">{{ 'ORDER_DETAIL.ITEMS_WITH_DISCOUNT' | translate }}</div>
                 <div class="metric-value">{{ itemsWithDiscount() }}</div>
               </div>
               <div class="metric-item">
-                <div class="metric-label">Desc. Promedio</div>
+                <div class="metric-label">{{ 'ORDER_DETAIL.AVG_DISCOUNT' | translate }}</div>
                 <div class="metric-value">{{ averageDiscount().toFixed(1) }}%</div>
               </div>
             </div>
@@ -306,7 +289,7 @@
         <mat-card-header>
           <mat-card-title>
             <mat-icon>list</mat-icon>
-            Items de la Orden ({{ order()!.items!.length }})
+            {{ 'ORDER_DETAIL.ORDER_ITEMS' | translate }} ({{ order()!.items!.length }})
           </mat-card-title>
         </mat-card-header>
         <mat-card-content>
@@ -314,16 +297,16 @@
             <table class="items-table">
               <thead>
                 <tr>
-                  <th>SKU</th>
-                  <th>Producto</th>
-                  <th class="text-center">Cantidad</th>
-                  <th class="text-right">Precio Unit.</th>
-                  <th class="text-center">Desc. %</th>
-                  <th class="text-right">Subtotal</th>
-                  <th class="text-right">Descuento</th>
-                  <th class="text-right">IVA</th>
-                  <th class="text-right">Total</th>
-                  <th class="text-center">Stock</th>
+                  <th>{{ 'ORDER_DETAIL.TABLE.SKU' | translate }}</th>
+                  <th>{{ 'ORDER_DETAIL.TABLE.PRODUCT' | translate }}</th>
+                  <th class="text-center">{{ 'ORDER_DETAIL.TABLE.QUANTITY' | translate }}</th>
+                  <th class="text-right">{{ 'ORDER_DETAIL.TABLE.UNIT_PRICE' | translate }}</th>
+                  <th class="text-center">{{ 'ORDER_DETAIL.TABLE.DISCOUNT_PCT' | translate }}</th>
+                  <th class="text-right">{{ 'ORDER_DETAIL.TABLE.SUBTOTAL' | translate }}</th>
+                  <th class="text-right">{{ 'ORDER_DETAIL.TABLE.DISCOUNT' | translate }}</th>
+                  <th class="text-right">{{ 'ORDER_DETAIL.TABLE.TAX' | translate }}</th>
+                  <th class="text-right">{{ 'ORDER_DETAIL.TABLE.TOTAL' | translate }}</th>
+                  <th class="text-center">{{ 'ORDER_DETAIL.TABLE.STOCK' | translate }}</th>
                 </tr>
               </thead>
               <tbody>
@@ -377,7 +360,7 @@
               </tbody>
               <tfoot>
                 <tr class="totals-row">
-                  <td colspan="5" class="text-right"><strong>Totales:</strong></td>
+                  <td colspan="5" class="text-right"><strong>{{ 'ORDER_DETAIL.TABLE.TOTALS' | translate }}:</strong></td>
                   <td class="text-right"><strong>{{ formatCurrency(order()!.subtotal) }}</strong></td>
                   <td class="text-right text-danger">
                     <strong>-{{ formatCurrency(order()!.discountAmount) }}</strong>
@@ -394,5 +377,13 @@
         </mat-card-content>
       </mat-card>
     }
+
+    <!-- Action Buttons -->
+    <div class="action-buttons">
+      <button mat-raised-button type="button" (click)="goBack()">
+        {{ 'ORDER_DETAIL.CLOSE' | translate }}
+      </button>
+    </div>
+    </mat-card-content>
   }
-</div>
+</mat-card>

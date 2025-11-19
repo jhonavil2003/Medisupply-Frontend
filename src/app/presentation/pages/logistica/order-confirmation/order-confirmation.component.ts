@@ -14,6 +14,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/get-orders.usecase';
 import { UpdateOrderStatusUseCase } from '../../../../core/application/use-cases/order/update-order-status.usecase';
@@ -38,7 +39,8 @@ import { OrderEntity } from '../../../../core/domain/entities/order.entity';
     MatCardModule,
     MatDialogModule,
     MatFormFieldModule,
-    MatInputModule
+    MatInputModule,
+    TranslateModule
   ],
   templateUrl: './order-confirmation.component.html',
   styleUrls: ['./order-confirmation.component.css']
@@ -49,6 +51,7 @@ export class OrderConfirmationComponent implements OnInit {
   private updateMultipleOrdersStatusUseCase = inject(UpdateMultipleOrdersStatusUseCase);
   private snackBar = inject(MatSnackBar);
   private dialog = inject(MatDialog);
+  private translate = inject(TranslateService);
 
   orders = signal<OrderEntity[]>([]);
   loading = signal<boolean>(false);
@@ -86,7 +89,7 @@ export class OrderConfirmationComponent implements OnInit {
         this.selection.clear();
       },
       error: (err) => {
-        this.error.set('Error al cargar las órdenes preparadas');
+        this.error.set('CONFIRM_ORDERS.ERROR_LOADING');
         this.loading.set(false);
         console.error('Error loading prepared orders:', err);
       }
@@ -120,11 +123,13 @@ export class OrderConfirmationComponent implements OnInit {
 
     this.updateOrderStatusUseCase.execute(order.id, 'confirmed').subscribe({
       next: (updatedOrder) => {
-        this.snackBar.open(`Orden ${order.orderNumber} confirmada exitosamente`, 'Cerrar', {
-          duration: 3000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['success-snackbar']
+        this.translate.get('CONFIRM_ORDERS.SUCCESS.SINGLE', { orderNumber: order.orderNumber }).subscribe(msg => {
+          this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), {
+            duration: 3000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['success-snackbar']
+          });
         });
 
         const updatedConfirming = new Set(this.confirmingIds());
@@ -134,11 +139,13 @@ export class OrderConfirmationComponent implements OnInit {
         this.loadPreparedOrders();
       },
       error: (err) => {
-        this.snackBar.open(`Error al confirmar la orden ${order.orderNumber}`, 'Cerrar', {
-          duration: 5000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
+        this.translate.get('CONFIRM_ORDERS.ERROR.SINGLE', { orderNumber: order.orderNumber }).subscribe(msg => {
+          this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          });
         });
 
         const updatedConfirming = new Set(this.confirmingIds());
@@ -155,11 +162,15 @@ export class OrderConfirmationComponent implements OnInit {
     const orderIds = selectedOrders.map(order => order.id);
 
     if (orderIds.length === 0) {
-      this.snackBar.open('No hay órdenes seleccionadas', 'Cerrar', {
-        duration: 3000,
-        horizontalPosition: 'end',
-        verticalPosition: 'top'
-      });
+      this.snackBar.open(
+        this.translate.instant('CONFIRM_ORDERS.NO_SELECTED'), 
+        this.translate.instant('COMMON.CLOSE'), 
+        {
+          duration: 3000,
+          horizontalPosition: 'end',
+          verticalPosition: 'top'
+        }
+      );
       return;
     }
 
@@ -167,27 +178,29 @@ export class OrderConfirmationComponent implements OnInit {
 
     this.updateMultipleOrdersStatusUseCase.execute(orderIds, 'confirmed').subscribe({
       next: (result) => {
-        this.snackBar.open(
-          `${result.updatedCount} órdenes confirmadas exitosamente`,
-          'Cerrar',
-          {
+        this.translate.get('CONFIRM_ORDERS.SUCCESS.MULTIPLE', { count: result.updatedCount }).subscribe(msg => {
+          this.snackBar.open(msg, this.translate.instant('COMMON.CLOSE'), {
             duration: 3000,
             horizontalPosition: 'end',
             verticalPosition: 'top',
             panelClass: ['success-snackbar']
-          }
-        );
+          });
+        });
 
         this.loading.set(false);
         this.loadPreparedOrders();
       },
       error: (err) => {
-        this.snackBar.open('Error al confirmar las órdenes seleccionadas', 'Cerrar', {
-          duration: 5000,
-          horizontalPosition: 'end',
-          verticalPosition: 'top',
-          panelClass: ['error-snackbar']
-        });
+        this.snackBar.open(
+          this.translate.instant('CONFIRM_ORDERS.ERROR.MULTIPLE'), 
+          this.translate.instant('COMMON.CLOSE'), 
+          {
+            duration: 5000,
+            horizontalPosition: 'end',
+            verticalPosition: 'top',
+            panelClass: ['error-snackbar']
+          }
+        );
 
         this.loading.set(false);
         console.error('Error confirming multiple orders:', err);

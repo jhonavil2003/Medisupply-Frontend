@@ -82,7 +82,7 @@ export class HttpProductLocationRepository extends ProductLocationRepository {
           errorMessage = error.error.error || 'Parámetros de búsqueda inválidos';
           break;
         case 404:
-          errorMessage = 'Producto no encontrado en bodega';
+          errorMessage = 'PRODUCT_LOCATION.PRODUCT_NOT_FOUND';
           break;
         case 500:
           errorMessage = 'Error del servidor de logística. Intente nuevamente.';

@@ -16,7 +16,9 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatDialogModule, MatDialog } from '@angular/material/dialog';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { FormsModule } from '@angular/forms';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { GetRoutesUseCase } from '../../../../core/application/use-cases/get-routes.usecase';
 import { UpdateRouteStatusUseCase } from '../../../../core/application/use-cases/update-route-status.usecase';
 import { ListRoutesFilters, RouteListItem, RouteStatus } from '../../../../core/domain/entities/route.entity';
@@ -24,6 +26,7 @@ import { ActivateRouteDialogComponent } from './activate-route-dialog.component'
 
 @Component({
   selector: 'app-route-list',
+  standalone: true,
   imports: [
     CommonModule,
     FormsModule,
@@ -42,7 +45,9 @@ import { ActivateRouteDialogComponent } from './activate-route-dialog.component'
     MatPaginatorModule,
     MatTooltipModule,
     MatSnackBarModule,
-    MatDialogModule
+    MatDialogModule,
+    MatProgressBarModule,
+    TranslateModule
   ],
   templateUrl: './route-list.component.html',
   styleUrl: './route-list.component.css',
@@ -54,6 +59,7 @@ export class RouteListComponent implements OnInit {
   private readonly router = inject(Router);
   private readonly snackBar = inject(MatSnackBar);
   private readonly dialog = inject(MatDialog);
+  private readonly translate = inject(TranslateService);
 
   // Estado
   routes = signal<RouteListItem[]>([]);
@@ -87,12 +93,12 @@ export class RouteListComponent implements OnInit {
   ];
 
   // Opciones de estado
-  statusOptions: { value: RouteStatus; label: string; color: string }[] = [
-    { value: 'draft', label: 'Borrador', color: 'accent' },
-    { value: 'active', label: 'Activa', color: 'primary' },
-    { value: 'in_progress', label: 'En Progreso', color: 'primary' },
-    { value: 'completed', label: 'Completada', color: '' },
-    { value: 'cancelled', label: 'Cancelada', color: 'warn' }
+  statusOptions: { value: RouteStatus; labelKey: string; color: string }[] = [
+    { value: 'draft', labelKey: 'LOGISTICS.ROUTE.STATUS.DRAFT', color: 'accent' },
+    { value: 'active', labelKey: 'LOGISTICS.ROUTE.STATUS.ACTIVE', color: 'primary' },
+    { value: 'in_progress', labelKey: 'LOGISTICS.ROUTE.STATUS.IN_PROGRESS', color: 'primary' },
+    { value: 'completed', labelKey: 'LOGISTICS.ROUTE.STATUS.COMPLETED', color: '' },
+    { value: 'cancelled', labelKey: 'LOGISTICS.ROUTE.STATUS.CANCELLED', color: 'warn' }
   ];
 
   ngOnInit(): void {
@@ -129,6 +135,10 @@ export class RouteListComponent implements OnInit {
     this.loadRoutes();
   }
 
+  onFilterChange(): void {
+    this.applyFilters();
+  }
+
   clearFilters(): void {
     this.plannedDate = null;
     this.selectedStatus = '';
@@ -163,9 +173,11 @@ export class RouteListComponent implements OnInit {
 
     // Validar que la ruta esté en estado draft
     if (route.status !== 'draft') {
-      this.snackBar.open('Solo se pueden activar rutas en estado borrador', 'Cerrar', {
-        duration: 3000,
-        panelClass: ['error-snackbar']
+      this.translate.get('LOGISTICS.MESSAGES.ONLY_DRAFT_ROUTES_CAN_BE_ACTIVATED').subscribe(message => {
+        this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), {
+          duration: 3000,
+          panelClass: ['error-snackbar']
+        });
       });
       return;
     }
@@ -195,31 +207,37 @@ export class RouteListComponent implements OnInit {
       this.updateRouteStatusUseCase.activateRoute(route.id, 'supervisor@medisupply.com').subscribe({
         next: (response) => {
           if (response.status === 'success') {
-            this.snackBar.open('✅ Ruta activada exitosamente', 'Cerrar', {
-              duration: 3000,
-              panelClass: ['success-snackbar']
+            this.translate.get('LOGISTICS.MESSAGES.ROUTE_ACTIVATED_SUCCESSFULLY').subscribe(message => {
+              this.snackBar.open(message, this.translate.instant('COMMON.CLOSE'), {
+                duration: 3000,
+                panelClass: ['success-snackbar']
+              });
             });
             
             // Recargar la lista de rutas
             this.loadRoutes();
           } else {
-            this.snackBar.open(`Error: ${response.message}`, 'Cerrar', {
-              duration: 5000,
-              panelClass: ['error-snackbar']
+            this.translate.get('COMMON.ERROR').subscribe(errorLabel => {
+              this.snackBar.open(`${errorLabel}: ${response.message}`, this.translate.instant('COMMON.CLOSE'), {
+                duration: 5000,
+                panelClass: ['error-snackbar']
+              });
             });
             this.loading.set(false);
           }
         },
         error: (err) => {
           console.error('Error activating route:', err);
-          this.snackBar.open(
-            `Error al activar la ruta: ${err.message || 'Error desconocido'}`, 
-            'Cerrar', 
-            {
-              duration: 5000,
-              panelClass: ['error-snackbar']
-            }
-          );
+          this.translate.get('LOGISTICS.MESSAGES.ERROR_ACTIVATING_ROUTE').subscribe(message => {
+            this.snackBar.open(
+              `${message}: ${err.message || this.translate.instant('COMMON.UNKNOWN_ERROR')}`, 
+              this.translate.instant('COMMON.CLOSE'), 
+              {
+                duration: 5000,
+                panelClass: ['error-snackbar']
+              }
+            );
+          });
           this.loading.set(false);
         }
       });
@@ -237,7 +255,10 @@ export class RouteListComponent implements OnInit {
 
   getStatusLabel(status: RouteStatus): string {
     const statusConfig = this.statusOptions.find(s => s.value === status);
-    return statusConfig?.label || status;
+    if (statusConfig) {
+      return this.translate.instant(statusConfig.labelKey);
+    }
+    return status;
   }
 
   formatDuration(minutes: number): string {

@@ -11,6 +11,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatPaginatorModule, PageEvent } from '@angular/material/paginator';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatTooltipModule } from '@angular/material/tooltip';
+import { TranslateModule, TranslateService } from '@ngx-translate/core';
 import { ProveedorBulkUploadService } from '../proveedor-bulk-upload.service';
 import { BulkUploadJob, BulkUploadStats, JobStatus } from '../models/bulk-upload.models';
 import { NotificationService } from '../../../../shared/services/notification.service';
@@ -29,7 +30,8 @@ import { NotificationService } from '../../../../shared/services/notification.se
     MatFormFieldModule,
     MatPaginatorModule,
     MatProgressSpinnerModule,
-    MatTooltipModule
+    MatTooltipModule,
+    TranslateModule
   ],
   templateUrl: './proveedor-upload-history.component.html',
   styleUrls: ['./proveedor-upload-history.component.css']
@@ -37,6 +39,7 @@ import { NotificationService } from '../../../../shared/services/notification.se
 export class ProveedorUploadHistoryComponent implements OnInit {
   private uploadService = inject(ProveedorBulkUploadService);
   private notify = inject(NotificationService);
+  private translateService = inject(TranslateService);
 
   // Señales
   jobs = signal<BulkUploadJob[]>([]);
@@ -61,13 +64,14 @@ export class ProveedorUploadHistoryComponent implements OnInit {
     'actions'
   ];
 
-  // Opciones de filtro
+  // Opciones para el filtro de estado
   statusOptions = [
-    { value: 'all', label: 'Todos' },
-    { value: 'completed', label: 'Completados' },
-    { value: 'processing', label: 'En Proceso' },
-    { value: 'failed', label: 'Fallidos' },
-    { value: 'cancelled', label: 'Cancelados' }
+    { value: 'all', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.HISTORY.TABLE.ALL_STATUSES') },
+    { value: 'pending', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.STATUS.PENDING') },
+    { value: 'completed', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.STATUS.COMPLETED') },
+    { value: 'processing', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.STATUS.PROCESSING') },
+    { value: 'failed', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.STATUS.FAILED') },
+    { value: 'cancelled', label: this.translateService.instant('BULK_UPLOAD_PROVIDERS.STATUS.CANCELLED') }
   ];
 
   ngOnInit(): void {
@@ -98,7 +102,9 @@ export class ProveedorUploadHistoryComponent implements OnInit {
       },
       error: (error) => {
         console.error('Error al cargar historial:', error);
-        this.notify.error('Error al cargar el historial');
+        this.notify.error(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.HISTORY.TABLE.LOADING_ERROR')
+        );
         this.loading.set(false);
       }
     });
@@ -142,15 +148,28 @@ export class ProveedorUploadHistoryComponent implements OnInit {
   downloadErrors(job: BulkUploadJob): void {
     this.uploadService.downloadErrors(job.job_id).subscribe({
       next: (blob) => {
-        this.uploadService.downloadBlob(blob, `errores_proveedores_${job.job_id}.csv`);
-        this.notify.success('Archivo de errores descargado');
+        // Crear y descargar el archivo
+        const url = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.download = `errores_${job.job_id}.csv`;
+        link.click();
+        window.URL.revokeObjectURL(url);
+        
+        this.notify.success(
+          this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.ERRORS_FILE_DOWNLOADED')
+        );
       },
       error: (error) => {
         console.error('Error al descargar errores:', error);
         if (error.status === 404) {
-          this.notify.info('No hay errores para este job');
+          this.notify.info(
+            this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.NO_ERRORS_TO_DOWNLOAD')
+          );
         } else {
-          this.notify.error('Error al descargar el archivo de errores');
+          this.notify.error(
+            this.translateService.instant('BULK_UPLOAD_PROVIDERS.MESSAGES.ERRORS_DOWNLOAD_ERROR')
+          );
         }
       }
     });
@@ -162,7 +181,9 @@ export class ProveedorUploadHistoryComponent implements OnInit {
   refresh(): void {
     this.loadHistory();
     this.loadStats();
-    this.notify.success('Historial actualizado');
+    this.notify.success(
+      this.translateService.instant('BULK_UPLOAD_PROVIDERS.HISTORY.REFRESH')
+    );
   }
 
   /**
@@ -196,17 +217,10 @@ export class ProveedorUploadHistoryComponent implements OnInit {
   }
 
   /**
-   * Obtiene el texto en español del estado
+   * Obtiene el texto internacionalizado del estado
    */
   getStatusText(status: JobStatus): string {
-    const texts: Record<JobStatus, string> = {
-      'pending': 'Pendiente',
-      'validating': 'Validando',
-      'processing': 'Procesando',
-      'completed': 'Completado',
-      'failed': 'Fallido',
-      'cancelled': 'Cancelado'
-    };
-    return texts[status] || status;
+    const statusKey = `BULK_UPLOAD_PROVIDERS.STATUS.${status.toUpperCase()}`;
+    return this.translateService.instant(statusKey);
   }
 }

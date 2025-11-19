@@ -90,19 +90,22 @@
    ============================================ */
 .metas-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-  gap: 20px;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 16px;
 }
 
 .meta-card {
-  background: white;
-  border-left: 4px solid #1976d2;
-  transition: transform 0.2s, box-shadow 0.2s;
+  background: #F8F9FA;
+  border-radius: 8px;
+  border-left: 4px solid #06B6D4;
+  padding: 16px;
+  transition: all 0.2s ease;
 }
 
 .meta-card:hover {
+  background: #F3F4F6;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .meta-header {
@@ -122,8 +125,8 @@
 }
 
 .meta-details {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
   gap: 12px;
   margin-bottom: 20px;
 }

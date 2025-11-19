@@ -70,6 +70,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
 
   // Signals para estado reactivo (opcional)
   isLoading = signal(false);
+  dataLoaded = signal(false);
   
   proveedores: ProveedorEntity[] = [];
   filtroBusqueda: string = '';
@@ -106,6 +107,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         this.proveedores = proveedoresActivos;
         this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
+        this.dataLoaded.set(true);
       },
       error: (error) => {
         this.notify.error('Error al cargar proveedores', 'Error');
@@ -132,6 +134,7 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
         this.dataSource.data = proveedoresActivos;
         this.isLoading.set(false);
+        this.dataLoaded.set(true);
       },
       error: (error) => {
         this.notify.error('Error al buscar proveedores', 'Error');

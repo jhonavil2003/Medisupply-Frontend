@@ -55,4 +55,16 @@ Thumbs.db
 # Generated environment files
 src/assets/env.json
 
+# Documentation files
+SUPPLIERS_API_DOCUMENTATION.md
+SALES_SERVICE_DOCUMENTATION.md
+RESUMEN_CAMBIOS_API_REPORTES.md
+LOGISTICS_SERVICE_DOCUMENTATION.md
+CATALOG_SERVICE_DOCUMENTATION.md
+ARCHITECTURE_DOCUMENTATION.md
+DOCUMENTACION_API_REPORTES.md
+Justificacion_Diseno_Color_Tipografia.md
+GUIA_ESTILOS_EQUIPO.md
+
+# Environment files to ignore
 src/environments/environment.ts
