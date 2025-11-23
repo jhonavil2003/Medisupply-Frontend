@@ -48,7 +48,7 @@ export class VendedorCreateComponent {
   vendedorForm: FormGroup;
 
   constructor() {
-    this.vendedorForm = this.fb.group({
+    this.vendedorForm = this.fb.nonNullable.group({
       employeeId: ['', [
         Validators.required,
         Validators.minLength(2),
@@ -75,7 +75,7 @@ export class VendedorCreateComponent {
         Validators.pattern(/^[0-9+\-\s()]+$/)
       ]],
       territory: ['', Validators.maxLength(100)],
-      hireDate: [''],
+      hireDate: [null as Date | null],
       isActive: [true]
     });
   }

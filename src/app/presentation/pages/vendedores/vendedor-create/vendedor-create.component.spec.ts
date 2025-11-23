@@ -77,7 +77,7 @@ describe('VendedorCreateComponent', () => {
       expect(component.vendedorForm.get('email')?.value).toBe('');
       expect(component.vendedorForm.get('phone')?.value).toBe('');
       expect(component.vendedorForm.get('territory')?.value).toBe('');
-      expect(component.vendedorForm.get('hireDate')?.value).toBe('');
+      expect(component.vendedorForm.get('hireDate')?.value).toBeNull();
       expect(component.vendedorForm.get('isActive')?.value).toBe(true);
     });
 
