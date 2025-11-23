@@ -48,12 +48,22 @@ describe('VendedorCreateComponent', () => {
       providers: [
         { provide: CreateVendedorUseCase, useValue: mockCreateVendedorUseCase },
         { provide: NotificationService, useValue: mockNotificationService },
-        { provide: MatDialogRef, useValue: mockDialogRef }
+        { provide: MatDialogRef, useValue: mockDialogRef },
+        TranslateService
       ]
     }).compileComponents();
 
     fixture = TestBed.createComponent(VendedorCreateComponent);
     component = fixture.componentInstance;
+    
+    // Mock TranslateService instant method
+    const translateService = TestBed.inject(TranslateService);
+    jest.spyOn(translateService, 'instant').mockImplementation((key: string | string[]) => {
+      return Array.isArray(key) ? key[0] : key;
+    });
+    jest.spyOn(translateService, 'stream').mockReturnValue(of(''));
+    jest.spyOn(translateService, 'get').mockReturnValue(of(''));
+    
     fixture.detectChanges();
   });
 
@@ -68,6 +78,9 @@ describe('VendedorCreateComponent', () => {
       expect(component.vendedorForm.get('firstName')?.value).toBe('');
       expect(component.vendedorForm.get('lastName')?.value).toBe('');
       expect(component.vendedorForm.get('email')?.value).toBe('');
+      expect(component.vendedorForm.get('phone')?.value).toBe('');
+      expect(component.vendedorForm.get('territory')?.value).toBe('');
+      expect(component.vendedorForm.get('hireDate')?.value).toBe('');
       expect(component.vendedorForm.get('isActive')?.value).toBe(true);
     });
 
@@ -79,6 +92,10 @@ describe('VendedorCreateComponent', () => {
       const employeeIdControl = component.vendedorForm.get('employeeId');
       const firstNameControl = component.vendedorForm.get('firstName');
       const emailControl = component.vendedorForm.get('email');
+
+      employeeIdControl?.markAsTouched();
+      firstNameControl?.markAsTouched();
+      emailControl?.markAsTouched();
 
       expect(employeeIdControl?.hasError('required')).toBe(true);
       expect(firstNameControl?.hasError('required')).toBe(true);
@@ -94,7 +111,8 @@ describe('VendedorCreateComponent', () => {
         employeeId: 'EMP001',
         firstName: 'Juan',
         lastName: 'Pérez',
-        email: 'juan.perez@test.com'
+        email: 'juan.perez@test.com',
+        isActive: true
       });
 
       expect(component.vendedorForm.valid).toBeTruthy();
@@ -102,6 +120,7 @@ describe('VendedorCreateComponent', () => {
 
     it('should require employeeId', () => {
       const control = component.vendedorForm.get('employeeId');
+      control?.markAsTouched();
       expect(control?.hasError('required')).toBeTruthy();
       
       control?.setValue('E');
