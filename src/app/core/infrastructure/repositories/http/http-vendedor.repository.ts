@@ -3,11 +3,12 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { VendedorRepository, VendedorFilters } from '../../../domain/repositories/vendedor.repository';
-import { 
-  VendedorEntity, 
-  CreateVendedorDto, 
-  UpdateVendedorDto 
+import {
+  VendedorEntity,
+  CreateVendedorDto,
+  UpdateVendedorDto
 } from '../../../domain/entities/vendedor.entity';
+import {environment} from "../../../../../environments/environment";
 
 /**
  * Formato de respuesta del backend
@@ -94,7 +95,7 @@ interface BackendTerritoryResponse {
 export class HttpVendedorRepository extends VendedorRepository {
   private readonly http = inject(HttpClient);
   // Usar proxy para evitar problemas de CORS
-  private readonly baseUrl = '/salespersons';
+  private readonly baseUrl = `${environment.salesApiUrl}/salespersons`;
 
   /**
    * Mapea de backend a entidad de dominio
@@ -136,7 +137,7 @@ export class HttpVendedorRepository extends VendedorRepository {
    */
   private mapUpdateToBackend(dto: UpdateVendedorDto): BackendUpdateVendedor {
     const update: BackendUpdateVendedor = {};
-    
+
     if (dto.employeeId !== undefined) update.employee_id = dto.employeeId;
     if (dto.firstName !== undefined) update.first_name = dto.firstName;
     if (dto.lastName !== undefined) update.last_name = dto.lastName;
@@ -145,7 +146,7 @@ export class HttpVendedorRepository extends VendedorRepository {
     if (dto.territory !== undefined) update.territory = dto.territory;
     if (dto.hireDate !== undefined) update.hire_date = dto.hireDate;
     if (dto.isActive !== undefined) update.is_active = dto.isActive;
-    
+
     return update;
   }
 
@@ -154,7 +155,7 @@ export class HttpVendedorRepository extends VendedorRepository {
    */
   getAll(filters?: VendedorFilters): Observable<VendedorEntity[]> {
     let params = new HttpParams();
-    
+
     if (filters?.territory) {
       params = params.set('territory', filters.territory);
     }
@@ -163,18 +164,18 @@ export class HttpVendedorRepository extends VendedorRepository {
     }
 
     console.log('🌐 HTTP Request: GET', `${this.baseUrl}/`, { params: params.toString() });
-    
+
     return this.http.get<BackendListResponse>(`${this.baseUrl}/`, { params }).pipe(
       map(response => {
         console.log('📦 Backend Response (raw):', response);
         console.log('📦 Type of response:', typeof response);
         console.log('📦 Has salespersons?:', 'salespersons' in response);
-        
+
         if (!response || !response.salespersons) {
           console.error('⚠️ Respuesta inválida del backend:', response);
           throw new Error('Respuesta inválida del backend: falta el campo salespersons');
         }
-        
+
         const vendedores = response.salespersons.map(v => this.mapToEntity(v));
         console.log('🔄 Mapped Vendedores:', vendedores);
         return vendedores;
@@ -244,7 +245,7 @@ export class HttpVendedorRepository extends VendedorRepository {
    */
   create(vendedor: CreateVendedorDto): Observable<VendedorEntity> {
     const backendDto = this.mapCreateToBackend(vendedor);
-    
+
     return this.http.post<BackendCreateResponse>(`${this.baseUrl}/`, backendDto).pipe(
       map(response => this.mapToEntity(response.salesperson)),
       catchError(error => {
@@ -259,7 +260,7 @@ export class HttpVendedorRepository extends VendedorRepository {
    */
   update(vendedor: UpdateVendedorDto): Observable<VendedorEntity> {
     const backendDto = this.mapUpdateToBackend(vendedor);
-    
+
     return this.http.put<BackendUpdateResponse>(`${this.baseUrl}/${vendedor.id}`, backendDto).pipe(
       map(response => this.mapToEntity(response.salesperson)),
       catchError(error => {

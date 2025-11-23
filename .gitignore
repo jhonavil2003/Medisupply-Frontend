@@ -74,3 +74,4 @@ debug-ci.sh
 
 # Environment files to ignore
 src/environments/environment.ts
+/src/environments/environment.ts
