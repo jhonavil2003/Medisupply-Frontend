@@ -2,7 +2,6 @@ import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialogRef } from '@angular/material/dialog';
 import { of, throwError } from 'rxjs';
 import { TranslateModule, TranslateService } from '@ngx-translate/core';
-import { MockTranslateService } from '../../../../../testing/translate.mock';
 import { VendedorCreateComponent } from './vendedor-create.component';
 import { CreateVendedorUseCase } from '../../../../core/application/use-cases/vendedor/vendedor.use-cases';
 import { NotificationService } from '../../../shared/services/notification.service';
@@ -56,13 +55,11 @@ describe('VendedorCreateComponent', () => {
     fixture = TestBed.createComponent(VendedorCreateComponent);
     component = fixture.componentInstance;
     
-    // Mock TranslateService instant method
+    // Mock TranslateService instant method para las pruebas
     const translateService = TestBed.inject(TranslateService);
     jest.spyOn(translateService, 'instant').mockImplementation((key: string | string[]) => {
       return Array.isArray(key) ? key[0] : key;
     });
-    jest.spyOn(translateService, 'stream').mockReturnValue(of(''));
-    jest.spyOn(translateService, 'get').mockReturnValue(of(''));
     
     fixture.detectChanges();
   });
