@@ -19,8 +19,8 @@ COPY . .
 # 2) Generar environment.prod.ts a partir de un template
 #    (el template se comitea sin el valor real del API key)
 RUN cp src/environments/environment.prod.template.ts src/environments/environment.ts && \
-    sed -i "s#__API_KEY__#${API_KEY}#g" src/environments/environment.ts \
-    sed -i "s#__USER_POOL_ID__#${USER_POOL_ID}#g" src/environments/environment.ts \
+    sed -i "s#__API_KEY__#${API_KEY}#g" src/environments/environment.ts &&\
+    sed -i "s#__USER_POOL_ID__#${USER_POOL_ID}#g" src/environments/environment.ts &&\
     sed -i "s#__USER_POOL_CLIENT_ID__#${USER_POOL_CLIENT_ID}#g" src/environments/environment.ts
 
 # 3) build prod (Angular 20 genera dist/<app>/browser)
