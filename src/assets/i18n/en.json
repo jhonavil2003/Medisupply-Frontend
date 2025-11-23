@@ -27,6 +27,8 @@
     "CREATED_AT": "Created At",
     "UPDATED_AT": "Last Updated",
     "ERROR": "Error",
+    "SUCCESS": "Success",
+    "WARNING": "Warning",
     "UNKNOWN_ERROR": "Unknown error"
   },
   "DIALOG": {
@@ -548,6 +550,16 @@
     "DATA_LOAD_ERROR": "Error loading report data",
     "EXPORT_PDF": "Export to PDF",
     "EXPORT_EXCEL": "Export to Excel",
+    "EXPORTING": "Exporting...",
+    "GENERATING_FILE": "Generating file",
+    "NO_DATA_TO_EXPORT": "No data to export",
+    "EXPORTING_FORMAT": "Generating {{format}} file...",
+    "EXPORT_SUCCESS": "{{format}} file downloaded successfully",
+    "EXPORT_ERROR": "Error exporting report",
+    "INVALID_FILTERS": "The selected filters are not valid",
+    "SERVICE_NOT_AVAILABLE": "Export service is not available",
+    "SERVER_ERROR": "Internal server error. Please try again",
+    "CONNECTION_ERROR": "Connection error. Check your internet connection",
     "FILTERS": {
       "MONTH": "Month",
       "YEAR": "Year",

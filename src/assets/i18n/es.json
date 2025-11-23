@@ -27,6 +27,8 @@
     "CREATED_AT": "Fecha de Creación",
     "UPDATED_AT": "Última Actualización",
     "ERROR": "Error",
+    "SUCCESS": "Éxito",
+    "WARNING": "Advertencia",
     "UNKNOWN_ERROR": "Error desconocido"
   },
   "DIALOG": {
@@ -548,6 +550,16 @@
     "DATA_LOAD_ERROR": "Error al cargar los datos de reportes",
     "EXPORT_PDF": "Exportar a PDF",
     "EXPORT_EXCEL": "Exportar a Excel",
+    "EXPORTING": "Exportando...",
+    "GENERATING_FILE": "Generando archivo",
+    "NO_DATA_TO_EXPORT": "No hay datos para exportar",
+    "EXPORTING_FORMAT": "Generando archivo {{format}}...",
+    "EXPORT_SUCCESS": "Archivo {{format}} descargado exitosamente",
+    "EXPORT_ERROR": "Error al exportar el reporte",
+    "INVALID_FILTERS": "Los filtros seleccionados no son válidos",
+    "SERVICE_NOT_AVAILABLE": "El servicio de exportación no está disponible",
+    "SERVER_ERROR": "Error interno del servidor. Intenta nuevamente",
+    "CONNECTION_ERROR": "Error de conexión. Verifica tu conexión a internet",
     "FILTERS": {
       "MONTH": "Mes",
       "YEAR": "Año",

@@ -45,6 +45,7 @@ export class InformeVentasComponent implements OnInit {
 
   // Signals para estado
   loading = signal(false);
+  exporting = signal(false);
   
   // Listas únicas para filtros (se cargarán de la respuesta)
   vendedores = signal<Array<{id: string, nombre: string}>>([]);
@@ -225,8 +226,113 @@ export class InformeVentasComponent implements OnInit {
     return 'cumplimiento-bajo';
   }
 
+  /**
+   * Construye los filtros actuales para enviar a la API de exportación
+   */
+  private buildCurrentFilters(): SalesSummaryFilters {
+    const filters: SalesSummaryFilters = {
+      year: this.filtroAnio
+    };
+
+    if (this.filtroMes) {
+      filters.month = this.filtroMes;
+    }
+    if (this.filtroVendedor) {
+      filters.employee_id = this.filtroVendedor;
+    }
+    if (this.filtroProducto) {
+      filters.product_sku = this.filtroProducto;
+    }
+    if (this.filtroRegion) {
+      filters.region = this.filtroRegion;
+    }
+
+    return filters;
+  }
+
+  /**
+   * Genera un nombre de archivo con timestamp
+   */
+  private generateFilename(extension: 'xlsx' | 'pdf'): string {
+    const timestamp = new Date().toISOString().slice(0, 19).replace(/[:\-]/g, '');
+    return `reporte_ventas_${timestamp}.${extension}`;
+  }
+
+  /**
+   * Descarga un blob como archivo
+   */
+  private downloadBlob(blob: Blob, filename: string): void {
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Exporta el reporte en el formato especificado
+   */
   exportar(tipo: 'pdf' | 'excel') {
-    this.toastr.info(`Exportando a ${tipo.toUpperCase()}...`);
-    // TODO: Implementar exportación real
+    // Verificar que hay datos para exportar
+    if (this.ventas.length === 0) {
+      this.toastr.warning(
+        this.translate.instant('REPORTS.NO_DATA_TO_EXPORT'),
+        this.translate.instant('COMMON.WARNING')
+      );
+      return;
+    }
+
+    // Prevenir múltiples exportaciones simultáneas
+    if (this.exporting()) {
+      return;
+    }
+
+    this.exporting.set(true);
+    const filters = this.buildCurrentFilters();
+    const formatName = tipo === 'excel' ? 'Excel' : 'PDF';
+    
+    this.toastr.info(
+      this.translate.instant('REPORTS.EXPORTING_FORMAT', { format: formatName }),
+      this.translate.instant('REPORTS.GENERATING_FILE')
+    );
+
+    const exportObservable = tipo === 'excel' 
+      ? this.reportsService.exportToExcel(filters)
+      : this.reportsService.exportToPDF(filters);
+
+    exportObservable.subscribe({
+      next: (blob) => {
+        const extension = tipo === 'excel' ? 'xlsx' : 'pdf';
+        const filename = this.generateFilename(extension);
+        this.downloadBlob(blob, filename);
+        
+        this.toastr.success(
+          this.translate.instant('REPORTS.EXPORT_SUCCESS', { format: formatName }),
+          this.translate.instant('COMMON.SUCCESS')
+        );
+        this.exporting.set(false);
+      },
+      error: (error) => {
+        console.error(`Error exportando a ${formatName}:`, error);
+        
+        let errorMessage = this.translate.instant('REPORTS.EXPORT_ERROR');
+        
+        if (error.status === 400) {
+          errorMessage = this.translate.instant('REPORTS.INVALID_FILTERS');
+        } else if (error.status === 404) {
+          errorMessage = this.translate.instant('REPORTS.SERVICE_NOT_AVAILABLE');
+        } else if (error.status === 500) {
+          errorMessage = this.translate.instant('REPORTS.SERVER_ERROR');
+        } else if (error.status === 0) {
+          errorMessage = this.translate.instant('REPORTS.CONNECTION_ERROR');
+        }
+        
+        this.toastr.error(errorMessage, this.translate.instant('COMMON.ERROR'));
+        this.exporting.set(false);
+      }
+    });
   }
 }
