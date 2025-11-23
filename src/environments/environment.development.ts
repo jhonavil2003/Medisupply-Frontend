@@ -29,10 +29,15 @@ const salesBaseUrl = ''
 const googleMapsApiKey = (window as any)['env']?.['GOOGLE_MAPS_API_KEY'] || '';
 
 export const environment = {
-    production: false,
-    baseUrl: catalogBaseUrl,
-    catalogApiUrl: catalogBaseUrl,
-    logisticsApiUrl: logisticsBaseUrl,
-    salesApiUrl: salesBaseUrl,
-    googleMapsApiKey: googleMapsApiKey
+  production: false,
+  baseUrl: catalogBaseUrl,
+  catalogApiUrl: catalogBaseUrl,
+  logisticsApiUrl: logisticsBaseUrl,
+  salesApiUrl: salesBaseUrl,
+  googleMapsApiKey: googleMapsApiKey,
+  cognito: {
+    region: 'us-east-1',
+    userPoolId: 'us-east-1_WtwXWl0UD',
+    userPoolClientId: '1idavn84ird6li6i54eq54q68j',
+  }
 };
