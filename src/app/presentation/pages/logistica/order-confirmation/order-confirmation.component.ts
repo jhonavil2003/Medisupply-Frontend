@@ -20,6 +20,7 @@ import { GetOrdersUseCase } from '../../../../core/application/use-cases/order/g
 import { UpdateOrderStatusUseCase } from '../../../../core/application/use-cases/order/update-order-status.usecase';
 import { UpdateMultipleOrdersStatusUseCase } from '../../../../core/application/use-cases/order/update-multiple-orders-status.usecase';
 import { OrderEntity } from '../../../../core/domain/entities/order.entity';
+import { OrderDetailComponent } from '../order-detail/order-detail.component';
 
 @Component({
   selector: 'app-order-confirmation',
@@ -210,6 +211,16 @@ export class OrderConfirmationComponent implements OnInit {
 
   isConfirming(orderId: number): boolean {
     return this.confirmingIds().has(orderId);
+  }
+
+  viewOrderDetail(order: OrderEntity): void {
+    this.dialog.open(OrderDetailComponent, {
+      width: '1200px',
+      maxHeight: '90vh',
+      disableClose: false,
+      autoFocus: false,
+      data: { id: order.id }
+    });
   }
 
   formatCurrency(value: number): string {

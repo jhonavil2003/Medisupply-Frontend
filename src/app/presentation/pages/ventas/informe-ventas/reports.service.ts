@@ -85,7 +85,7 @@ export interface SalesByProductResponse {
   providedIn: 'root'
 })
 export class ReportsService {
-  private readonly apiUrl = '/reports';  // Usa proxy de Angular
+  private readonly apiUrl = `${environment.salesApiUrl}/reports`;
 
   constructor(private http: HttpClient) {}
 
