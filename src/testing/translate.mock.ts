@@ -21,7 +21,14 @@ export class MockTranslateService {
   }
 
   stream(key: string | string[], interpolateParams?: object): any {
-    return this.get(key, interpolateParams);
+    if (Array.isArray(key)) {
+      const obj: any = {};
+      key.forEach((k) => {
+        obj[k] = k;
+      });
+      return of(obj);
+    }
+    return of(key);
   }
 
   instant(key: string | string[], interpolateParams?: object): string {

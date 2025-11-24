@@ -86,7 +86,31 @@ jobs:
       - name: Run unit tests with Jest
         run: |
           echo "Running Jest unit tests..."
-          npm test -- --ci --coverage --maxWorkers=2
+          npm test -- --ci --coverage --maxWorkers=2 --verbose 2>&1 | tee jest-output.log
+          exit ${PIPESTATUS[0]}
+
+      - name: Upload test logs on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: jest-test-logs
+          path: |
+            jest-output.log
+            junit.xml
+          retention-days: 7
+
+      - name: Display test failures
+        if: failure()
+        run: |
+          echo ""
+          echo "❌ TEST FAILURES DETECTED"
+          echo "========================="
+          echo ""
+          echo "📋 Last 200 lines of test output:"
+          echo ""
+          tail -n 200 jest-output.log || echo "No log file found"
+          echo ""
+          echo "💡 Download the full log artifact from the Actions summary page"
 
       - name: Display coverage summary
         if: always()

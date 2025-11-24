@@ -218,13 +218,41 @@
       
       <!-- Acciones fuera de la card -->
       <div class="acciones">
-        <button mat-raised-button color="accent" (click)="exportar('pdf')" data-cy="export-pdf">
-          <mat-icon>picture_as_pdf</mat-icon> 
-          <span>{{ 'REPORTS.EXPORT_PDF' | translate }}</span>
+        <button 
+          mat-raised-button 
+          color="accent" 
+          (click)="exportar('pdf')" 
+          [disabled]="exporting() || ventas.length === 0"
+          data-cy="export-pdf">
+          @if (exporting()) {
+            <ng-container>
+              <mat-icon>hourglass_empty</mat-icon>
+              <span>{{ 'REPORTS.EXPORTING' | translate }}</span>
+            </ng-container>
+          } @else {
+            <ng-container>
+              <mat-icon>picture_as_pdf</mat-icon> 
+              <span>{{ 'REPORTS.EXPORT_PDF' | translate }}</span>
+            </ng-container>
+          }
         </button>
-        <button mat-raised-button color="accent" (click)="exportar('excel')" data-cy="export-excel">
-          <mat-icon>table_view</mat-icon> 
-          <span>{{ 'REPORTS.EXPORT_EXCEL' | translate }}</span>
+        <button 
+          mat-raised-button 
+          color="accent" 
+          (click)="exportar('excel')" 
+          [disabled]="exporting() || ventas.length === 0"
+          data-cy="export-excel">
+          @if (exporting()) {
+            <ng-container>
+              <mat-icon>hourglass_empty</mat-icon>
+              <span>{{ 'REPORTS.EXPORTING' | translate }}</span>
+            </ng-container>
+          } @else {
+            <ng-container>
+              <mat-icon>table_view</mat-icon> 
+              <span>{{ 'REPORTS.EXPORT_EXCEL' | translate }}</span>
+            </ng-container>
+          }
         </button>
       </div>
     }

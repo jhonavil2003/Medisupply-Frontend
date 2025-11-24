@@ -26,6 +26,7 @@ describe('InformeVentasComponent', () => {
   let fixture: ComponentFixture<InformeVentasComponent>;
   let reportsServiceMock: jest.Mocked<ReportsService>;
   let toastrServiceMock: jest.Mocked<ToastrService>;
+  let translateService: TranslateService;
 
   // Mock data
   const mockSalesSummaryItems: SalesSummaryItem[] = [
@@ -130,6 +131,7 @@ describe('InformeVentasComponent', () => {
 
     fixture = TestBed.createComponent(InformeVentasComponent);
     component = fixture.componentInstance;
+    translateService = TestBed.inject(TranslateService);
   });
 
   describe('Component Initialization', () => {
@@ -422,16 +424,45 @@ describe('InformeVentasComponent', () => {
   });
 
   describe('Export Functionality', () => {
+    beforeEach(() => {
+      // Cargar datos antes de cada test de exportación
+      component.ventas = mockSalesSummaryItems;
+      component.dataSource.data = mockSalesSummaryItems;
+      
+      // Configurar mocks de exportación
+      reportsServiceMock.exportToExcel = jest.fn().mockReturnValue(of(new Blob()));
+      reportsServiceMock.exportToPDF = jest.fn().mockReturnValue(of(new Blob()));
+    });
+
     it('should show info toast when exporting to PDF', () => {
+      const instantSpy = jest.spyOn(translateService, 'instant');
+      
       component.exportar('pdf');
       
-      expect(toastrServiceMock.info).toHaveBeenCalledWith('Exportando a PDF...');
+      expect(instantSpy).toHaveBeenCalledWith('REPORTS.EXPORTING_FORMAT', { format: 'PDF' });
+      expect(instantSpy).toHaveBeenCalledWith('REPORTS.GENERATING_FILE');
+      expect(toastrServiceMock.info).toHaveBeenCalled();
     });
 
     it('should show info toast when exporting to Excel', () => {
+      const instantSpy = jest.spyOn(translateService, 'instant');
+      
       component.exportar('excel');
       
-      expect(toastrServiceMock.info).toHaveBeenCalledWith('Exportando a EXCEL...');
+      expect(instantSpy).toHaveBeenCalledWith('REPORTS.EXPORTING_FORMAT', { format: 'Excel' });
+      expect(instantSpy).toHaveBeenCalledWith('REPORTS.GENERATING_FILE');
+      expect(toastrServiceMock.info).toHaveBeenCalled();
+    });
+
+    it('should show warning when trying to export without data', () => {
+      const instantSpy = jest.spyOn(translateService, 'instant');
+      component.ventas = [];
+      component.exportar('pdf');
+      
+      expect(instantSpy).toHaveBeenCalledWith('REPORTS.NO_DATA_TO_EXPORT');
+      expect(instantSpy).toHaveBeenCalledWith('COMMON.WARNING');
+      expect(toastrServiceMock.warning).toHaveBeenCalled();
+      expect(reportsServiceMock.exportToPDF).not.toHaveBeenCalled();
     });
   });
 
