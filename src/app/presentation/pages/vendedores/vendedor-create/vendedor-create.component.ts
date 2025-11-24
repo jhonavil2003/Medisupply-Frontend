@@ -50,12 +50,7 @@ export class VendedorCreateComponent {
   vendedorForm: FormGroup;
 
   constructor() {
-    this.vendedorForm = this.fb.group({
-      /*employeeId: ['', [
-        Validators.required,
-        Validators.minLength(2),
-        Validators.maxLength(50)
-      ]],*/
+    this.vendedorForm = this.fb.nonNullable.group({
       userName: ['', [
         Validators.required,
         Validators.minLength(2),
@@ -81,9 +76,7 @@ export class VendedorCreateComponent {
         Validators.maxLength(20),
         Validators.pattern(/^[0-9+\-\s()]+$/)
       ]],
-      territory: ['', Validators.maxLength(100)]/*,
-      hireDate: [''],
-      isActive: [true]*/
+      territory: ['', Validators.maxLength(100)]
     });
   }
 
@@ -95,18 +88,6 @@ export class VendedorCreateComponent {
     }
 
     this.loading.set(true);
-    const formValue = this.vendedorForm.value;
-
-    // Formatear la fecha si existe
-    let hireDate: string | undefined = undefined;
-    if (formValue.hireDate) {
-      const date = new Date(formValue.hireDate);
-      // Usar fecha local para evitar problemas con zona horaria
-      const year = date.getFullYear();
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const day = String(date.getDate()).padStart(2, '0');
-      hireDate = `${year}-${month}-${day}`; // Formato YYYY-MM-DD
-    }
 
     try {
       await this.authService.register(this.vendedorForm.getRawValue() as any);
@@ -119,49 +100,6 @@ export class VendedorCreateComponent {
     } finally {
       this.loading.set(false);
     }
-
-    /*const vendedorDto: CreateVendedorDto = {
-      employeeId: formValue.employeeId,
-      firstName: formValue.firstName,
-      lastName: formValue.lastName,
-      email: formValue.email,
-      phone: formValue.phone || undefined,
-      territory: formValue.territory || undefined,
-      hireDate: hireDate,
-      isActive: formValue.isActive ?? true
-    };*/
-
-    /*console.log('📝 VendedorDTO a crear:', vendedorDto);
-    console.log('📧 Email a validar:', vendedorDto.email, 'Tipo:', typeof vendedorDto.email);*/
-
-    /*this.createVendedorUseCase.execute(vendedorDto).subscribe({
-      next: (vendedor) => {
-        this.loading.set(false);
-        this.notificationService.success(this.translate.instant('SALESPERSONS.CREATE_SUCCESS'));
-        this.dialogRef.close(true);
-      },
-      error: (error) => {
-        this.loading.set(false);
-        console.error('Error al crear vendedor:', error);
-
-        // Error de validación del use case
-        if (error.message) {
-          this.notificationService.error(error.message);
-        }
-        // Error HTTP 400 (duplicado)
-        else if (error.status === 400) {
-          this.notificationService.error('El ID de empleado o email ya existe');
-        }
-        // Otros errores HTTP
-        else if (error.status) {
-          this.notificationService.error(`Error del servidor: ${error.statusText || 'Error desconocido'}`);
-        }
-        // Error genérico
-        else {
-          this.notificationService.error('Error al crear vendedor');
-        }
-      }
-    });*/
   }
 
   cancel(): void {

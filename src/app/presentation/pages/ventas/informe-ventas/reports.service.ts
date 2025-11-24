@@ -85,7 +85,7 @@ export interface SalesByProductResponse {
   providedIn: 'root'
 })
 export class ReportsService {
-  private readonly apiUrl = '/reports';  // Usa proxy de Angular
+  private readonly apiUrl = `${environment.salesApiUrl}/reports`;
 
   constructor(private http: HttpClient) {}
 
@@ -133,5 +133,51 @@ export class ReportsService {
 
   healthCheck(): Observable<{ service: string; status: string; endpoints: string[] }> {
     return this.http.get<{ service: string; status: string; endpoints: string[] }>(`${this.apiUrl}/health`);
+  }
+
+  /**
+   * Exporta el reporte a Excel (.xlsx)
+   * @param filters Filtros aplicados al reporte
+   * @returns Observable con el blob del archivo Excel
+   */
+  exportToExcel(filters?: SalesSummaryFilters): Observable<Blob> {
+    let params = new HttpParams();
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get(`${this.apiUrl}/export/excel`, {
+      params,
+      responseType: 'blob',
+      observe: 'body'
+    });
+  }
+
+  /**
+   * Exporta el reporte a PDF
+   * @param filters Filtros aplicados al reporte
+   * @returns Observable con el blob del archivo PDF
+   */
+  exportToPDF(filters?: SalesSummaryFilters): Observable<Blob> {
+    let params = new HttpParams();
+
+    if (filters) {
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== null && value !== undefined && value !== '') {
+          params = params.set(key, value.toString());
+        }
+      });
+    }
+
+    return this.http.get(`${this.apiUrl}/export/pdf`, {
+      params,
+      responseType: 'blob',
+      observe: 'body'
+    });
   }
 }

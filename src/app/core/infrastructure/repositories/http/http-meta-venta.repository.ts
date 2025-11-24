@@ -2,6 +2,7 @@ import { Injectable, inject } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
+import { environment } from '../../../../../environments/environment';
 import { 
   MetaVentaRepository, 
   MetaVentaFilters 
@@ -133,8 +134,7 @@ interface BackendProductoResponse {
 @Injectable({ providedIn: 'root' })
 export class HttpMetaVentaRepository extends MetaVentaRepository {
   private readonly http = inject(HttpClient);
-  // Usar proxy para evitar problemas de CORS
-  private readonly baseUrl = '/salesperson-goals';
+  private readonly baseUrl = `${environment.salesApiUrl}/salesperson-goals`;
 
   /**
    * Mapea vendedor info de backend a dominio

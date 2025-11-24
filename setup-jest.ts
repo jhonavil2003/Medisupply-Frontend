@@ -41,6 +41,8 @@ beforeAll(() => {
   console.warn = jest.fn((message) => {
     // Filtrar warnings específicos que queramos ignorar
     if (message.includes('Angular Material')) return;
+    if (message.includes('NG0505')) return; // Angular hydration warning
+    if (message.includes('Angular hydration')) return;
     originalWarn(message);
   });
 

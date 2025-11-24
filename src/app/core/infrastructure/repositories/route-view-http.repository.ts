@@ -2,6 +2,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { inject, Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { environment } from '../../../../environments/environment';
 import { RouteViewRepository, UpdateRouteStatusRequest, UpdateRouteStatusResponse } from '../../domain/repositories/route-view.repository';
 import { 
   ListRoutesFilters, 
@@ -136,7 +137,7 @@ interface BackendRouteSummaryResponse {
 })
 export class RouteViewHttpRepository extends RouteViewRepository {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = '/routes';
+  private readonly baseUrl = `${environment.logisticsApiUrl}/routes`;
 
   override getRoutes(filters?: ListRoutesFilters): Observable<ListRoutesResponse> {
     let params = new HttpParams();

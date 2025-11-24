@@ -106,6 +106,15 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
         this.proveedores = proveedoresActivos;
         this.dataSource.data = proveedoresActivos;
+        
+        // Reasignar paginator después de cargar datos
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            this.paginator.firstPage();
+          }
+        }, 0);
+        
         this.isLoading.set(false);
         this.dataLoaded.set(true);
       },
@@ -133,6 +142,15 @@ export class ProveedorListComponentClean implements OnInit, AfterViewInit {
         // Filtrar solo proveedores activos
         const proveedoresActivos = proveedores.filter(p => p.estado === EstadoProveedor.ACTIVO);
         this.dataSource.data = proveedoresActivos;
+        
+        // Reasignar paginator después de filtrar
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            this.paginator.firstPage();
+          }
+        }, 0);
+        
         this.isLoading.set(false);
         this.dataLoaded.set(true);
       },

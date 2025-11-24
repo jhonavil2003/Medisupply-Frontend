@@ -110,6 +110,15 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
         console.log('📊 Cantidad:', vendedores.length);
         this.vendedores.set(vendedores);
         this.dataSource.data = vendedores;
+        
+        // Reasignar paginator después de cargar datos
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            this.paginator.firstPage();
+          }
+        }, 0);
+        
         this.loading.set(false);
       },
       error: (error) => {
@@ -135,6 +144,15 @@ export class VendedorListComponent implements OnInit, AfterViewInit {
       next: (vendedores) => {
         this.vendedores.set(vendedores);
         this.dataSource.data = vendedores;
+        
+        // Reasignar paginator después de buscar
+        setTimeout(() => {
+          if (this.paginator) {
+            this.dataSource.paginator = this.paginator;
+            this.paginator.firstPage();
+          }
+        }, 0);
+        
         this.loading.set(false);
       },
       error: (error) => {

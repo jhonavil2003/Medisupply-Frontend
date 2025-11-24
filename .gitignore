@@ -65,6 +65,12 @@ ARCHITECTURE_DOCUMENTATION.md
 DOCUMENTACION_API_REPORTES.md
 Justificacion_Diseno_Color_Tipografia.md
 GUIA_ESTILOS_EQUIPO.md
+GUIA_FRONTEND_EXPORTACION_REPORTES.md
+README_EXPORTACION.md
+
+# Debug and backup files
+debug-ci.sh
+*.backup
 
 # Environment files to ignore
 src/environments/environment.ts
